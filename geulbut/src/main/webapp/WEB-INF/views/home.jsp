@@ -213,6 +213,7 @@
 
 <div class="page">
 
+
     <!-- 추천 도서 배너 -->
     <section class="ad-banner">
         <h2 class="ad-banner-title">편집장의 선택</h2>
@@ -256,6 +257,7 @@
         </div>
     </section>
     <!-- // 추천 도서 배너 -->
+
 
 <%--    광고창 아이콘 사이 특별할인 멘트--%>
     <section class="ad-marquee">
@@ -355,6 +357,7 @@
             </a>
         </div>
     </section>
+
 </div>
 
 </body>
