@@ -1,0 +1,28 @@
+package com.error404.geulbut.jpa.publishers.entity;
+
+import com.error404.geulbut.common.BaseTimeEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "PUBLISHERS")
+@SequenceGenerator(
+        name = "SEQ_PUBLISHERS_JPA",
+        sequenceName = "SEQ_PUBLISHERS",
+        allocationSize = 1
+)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode(of = "publisherId", callSuper = false)
+public class Publishers extends BaseTimeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "SEQ_PUBLISHERS_JPA")
+    private String publisherId;
+    private String name;
+    private String description;
+
+}

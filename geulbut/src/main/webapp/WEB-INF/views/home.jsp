@@ -99,6 +99,7 @@
 
 <div class="page">
 
+
     <!-- 추천 도서 배너 -->
     <section class="ad-banner">
         <h2 class="ad-banner-title">추천 도서</h2>
@@ -142,6 +143,7 @@
         </div>
     </section>
     <!-- // 추천 도서 배너 -->
+
 
 </div>
 
