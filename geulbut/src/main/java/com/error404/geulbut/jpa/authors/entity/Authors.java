@@ -24,4 +24,7 @@ public class Authors extends BaseTimeEntity {
     private Long authorId;
     private String name;
     private String description;
+    @Lob
+    private byte[] authorImg;
+    private String imgUrl;
 }
