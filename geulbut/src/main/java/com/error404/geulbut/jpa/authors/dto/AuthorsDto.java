@@ -10,12 +10,12 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode(of = "authorId")
 public class AuthorsDto {
-    private String authorId;
+    private Long authorId;
     private String name;
     private String description;
     private String imgUrl;
 
-    public AuthorsDto(String authorId, String name, String description) {
+    public AuthorsDto(Long authorId, String name, String description) {
         this.authorId = authorId;
         this.name = name;
         this.description = description;
