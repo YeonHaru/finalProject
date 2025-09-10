@@ -21,12 +21,12 @@ spring:
 
 #          카카오 로그인 custom provider 필요
           kakao:
-            client-id: ${OAUTH_KAKAO_CLIENT_ID}
-            client-secret: ${OAUTH_KAKAO_CLIENT_SECRET}
+            client-id: 906ccf1dd3817e271d9f00ef65423f45
+            client-secret: Ayc34KeTEe2HDu2BGO3yQgbXzrYQbaTR
             client-name: kakao
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: [profile_nickname, account_email, profile_image]
+            scope: [profile_nickname, profile_image]
 
         provider:
 #          네이버 API 엔드포인트
