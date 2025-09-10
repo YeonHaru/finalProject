@@ -1,0 +1,85 @@
+/* =======================
+File: login.css (put next to HTML)
+- 공통 CSS(00_common.css)에 없는 것만 커버
+- VS Code 미리보기용으로 기본 톤/레이아웃 포함
+======================= */
+
+
+:root{
+--main-bg:#ffffff; --main-fg:#111827; --muted-fg:#6b7280;
+--brand:#2563eb; --brand-600:#1d4ed8; --surface:#f8fafc;
+--line:#e5e7eb; --radius-lg:16px; --radius-md:12px; --radius-sm:10px;
+--shadow-sm:0 1px 2px rgba(0,0,0,.06); --shadow-md:0 6px 16px rgba(0,0,0,.08);
+}
+html,body{height:100%; background:var(--surface);} body{margin:0; font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; color:var(--main-fg);}
+.page{width:100vw; margin:0 auto;} .wrap{max-width:720px; margin:0 auto; padding:24px 20px 48px;}
+
+
+/* 모바일 퍼스트 공통 반응형(프로젝트 규칙 준수) */
+@media (min-width:768px){ .page{width:90vw;} .wrap{max-width:960px; padding:40px 24px 64px;} }
+@media (min-width:1024px){ .page{width:60vw;} .wrap{max-width:1200px;} .grid-2{display:grid; grid-template-columns:1.2fr .8fr; gap:24px; align-items:stretch;} }
+
+
+/* 로고 & 헤더 */
+.gb-header{display:flex; align-items:center; justify-content:center; padding:16px 0 12px;}
+.logo{display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--main-fg);}
+.logo-badge{width:28px; height:28px; border-radius:50%; background:var(--brand); box-shadow:var(--shadow-sm); display:grid; place-items:center; color:#fff; font-weight:800; font-size:14px;}
+.logo-title{font-weight:800; letter-spacing:.2px; font-size:20px;} .logo-sub{color:var(--muted-fg); font-weight:600; margin-left:4px; font-size:12px;}
+
+
+/* 카드 & 탭 */
+.card{background:var(--main-bg); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);}
+.tabbar{display:flex; border-bottom:1px solid var(--line);}
+.tabbar .tab{flex:1; padding:14px 10px; background:transparent; border:0; font-weight:700; color:var(--muted-fg); cursor:pointer;}
+.tabbar .tab.active{color:var(--brand); border-bottom:2px solid var(--brand);}
+.card-body{padding:18px 16px 20px;}
+
+
+/* 폼 */
+.form{display:grid; gap:12px;} .field{display:grid; gap:6px;} .field label{font-size:13px; color:var(--muted-fg);}
+.input{display:flex; align-items:center; border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff;}
+.input:focus-within{border-color:var(--brand); box-shadow:0 0 0 3px rgba(37,99,235,.15);}
+.input input{flex:1; border:0; outline:0; padding:12px 14px; font-size:15px; background:transparent;}
+.options{display:flex; align-items:center; gap:14px; padding-top:4px;} .opt{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted-fg);}
+
+
+/* 버튼 & 링크 */
+.btn-primary{width:100%; padding:12px 16px; border-radius:12px; background:var(--brand); color:#fff; font-weight:800; border:0; cursor:pointer; box-shadow:var(--shadow-md);}
+.btn-primary:hover{background:var(--brand-600);}
+.links{display:flex; justify-content:center; gap:10px; margin-top:10px; font-size:13px;} .links a{color:var(--muted-fg); text-decoration:none;} .links .dot{color:var(--line);}
+
+
+/* 구분선 & SNS */
+.divider{display:flex; align-items:center; gap:10px; margin:18px 0 12px; color:var(--muted-fg); font-size:12px;}
+.divider::before,.divider::after{content:""; flex:1; height:1px; background:var(--line);}
+.sns-list{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.sns-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0 10px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 12px;
+}
+.sns-ic{width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font-weight:800; color:#fff;}
+.ic-nv{background:#03c75a;} .ic-kk{background:#fee500; color:#181600;} .ic-gg{background:#4285f4;} .ic-ap{background:#000;}
+.sns-btn:hover {
+  transform: translateY(-2px);
+}
+.sns-btn .sns-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 배너 */
+@media (min-width:1024px){ .banner{border:1px solid var(--line); border-radius:var(--radius-lg); background:linear-gradient(135deg,#fff 0%,#f0f7ff 100%); display:flex; align-items:center; justify-content:center; text-align:center; padding:18px; box-shadow:var(--shadow-sm);} .banner h3{margin:0 0 8px; font-size:22px;} .banner p{margin:0; color:var(--muted-fg);} }
+
+
+/* 유틸 */
+.sr-only{position:absolute; left:-9999px;} .mt-1{margin-top:12px;}

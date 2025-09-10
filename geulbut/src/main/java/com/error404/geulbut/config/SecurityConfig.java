@@ -1,6 +1,7 @@
 package com.error404.geulbut.config;
 
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 //    개발 중 임시 전체 오픈 스위치(true = 전체허용, false = 원래보안)
-    private static final boolean DEV_BYPASS = true;
+    private static final boolean DEV_BYPASS = false;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -42,11 +43,19 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/", "/ping", "/login", "/oauth2/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR)
+                        .permitAll()
+                        .requestMatchers("/", "/ping", "/login", "/login/**", "/oauth2/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/error", "/v/**").permitAll()
                         .anyRequest().authenticated()
                 )
+//             TODO : 폼(홈페이지) 로그인 설정
                 .formLogin(form->form
-                        .loginPage("/login")
+                        .loginPage("/login")                            // GET /login -> 로그인화면
+                        .loginProcessingUrl("/loginProc")        //  POST /loginProc -> 시큐리티가 직접인증
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", false)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .oauth2Login(oauth->oauth
