@@ -55,33 +55,17 @@ dependencies {
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
-<<<<<<< Updated upstream
 //    TODO: spring security 라이브러리 추가(암호화도 포함됩니다.) -> 주석 풀었음 9/10
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	//    TODO: spring security tag 라이브러리 추가(JSP 사용 시 추가합니다.) -> 주석 풀었음 9/10
 	implementation 'org.springframework.security:spring-security-taglibs'
-=======
-//    TODO: spring security 라이브러리 추가(암호화도 포함됩니다.) -> 주석풀었음9/10
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	//    TODO: spring security tag 라이브러리 추가(JSP 사용 시 추가합니다.) -> 주석풀었음9/10
-	implementation 'org.springframework.security:spring-security-taglibs'
+
 //    TODO :  외부 로그인 필수 - 덕규
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
->>>>>>> Stashed changes
 
 //    TODO: es 라이브러리
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-
-<<<<<<< Updated upstream
-//    TODO: 외부 로그인 필수 의존성(덕규)
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
-//    TODO: jsp에서 <sec:authorize> 쓸때 필요(덕규)
-	implementation 'org.springframework.security:spring-security-taglibs'
-=======
->>>>>>> Stashed changes
 }
 
 tasks.named('test') {
