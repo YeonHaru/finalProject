@@ -13,7 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     //    개발 중 임시 전체 오픈 스위치(true = 전체허용, false = 원래보안)
+
     private static final boolean DEV_BYPASS = true;
 
     @Bean

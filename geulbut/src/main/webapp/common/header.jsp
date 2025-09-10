@@ -9,10 +9,9 @@
             </ul>
         </nav>
 
-        <!-- 가운데 로고 (flex로 자연스럽게 중앙) -->
+        <!-- 가운데 로고 -->
         <h1 class="site-header__logo">
             <a href="${pageContext.request.contextPath}/" title="홈으로">
-                <!-- 로고 이미지 경로 변경해주세요 -->
                 <img src="/images/logo.png" alt="글벗">
             </a>
         </h1>
@@ -34,7 +33,7 @@
             </ul>
         </nav>
 
-        <!-- 검색 (항상 아래줄 전체 차지) -->
+        <!-- 검색 -->
         <div class="site-header__search" role="search">
             <form action="${pageContext.request.contextPath}/search" method="get" class="search-form">
                 <label for="type" class="visually-hidden">검색 유형</label>
@@ -51,5 +50,14 @@
                 <button type="submit" class="btn-search">검색</button>
             </form>
         </div>
+
+        <!-- 하단: 추가 메뉴 -->
+        <nav class="site-header__nav site-header__nav--bottom" aria-label="Sub">
+            <ul class="site-header__menu site-header__menu--bottom">
+                <li><a href="${pageContext.request.contextPath}/books">도서목록</a></li>
+                <li><a href="${pageContext.request.contextPath}/publishers">출판사목록</a></li>
+                <li><a href="${pageContext.request.contextPath}/authors">작가목록</a></li>
+            </ul>
+        </nav>
     </div>
 </header>
