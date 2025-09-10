@@ -22,7 +22,11 @@ public class SecurityConfig {
 //            임시 전체 허용 모드
             http
                     .authorizeHttpRequests(auth->auth
+                            .requestMatchers("/oauth2/**").permitAll()
                             .anyRequest().permitAll()
+                    )
+                    .oauth2Login(oauth ->oauth
+                            .loginPage("/login")
                     )
                     .csrf(AbstractHttpConfigurer::disable)
                     .headers(headers->headers.frameOptions(frame->frame.sameOrigin()))
