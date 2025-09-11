@@ -18,7 +18,7 @@
 
         <!-- 우측: 계정 메뉴 -->
         <nav class="site-header__nav site-header__nav--right" aria-label="Account">
-            <ul class="site-header__menu">
+            <ul class="site-header__menu site-header__menu--mobile">
                 <c:choose>
                     <c:when test="${not empty sessionScope.loginUser}">
                         <li><a href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
@@ -32,6 +32,14 @@
                 </c:choose>
             </ul>
         </nav>
+
+        <!-- 모바일 햄버거 버튼: 기존 우측 메뉴 뒤, 검색창 위쪽에 위치 -->
+        <button class="site-header__hamburger" aria-label="메뉴 열기">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
 
         <!-- 검색 -->
         <div class="site-header__search" role="search">
@@ -59,5 +67,15 @@
                 <li><a href="${pageContext.request.contextPath}/authors">작가목록</a></li>
             </ul>
         </nav>
+        <!-- 햄버거 토글 JS -->
+        <script>
+            const hamburger = document.querySelector('.site-header__hamburger');
+            const mobileMenu = document.querySelector('.site-header__mobile-menu');
+
+            hamburger.addEventListener('click', () => {
+                mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+            });
+        </script>
+
     </div>
 </header>
