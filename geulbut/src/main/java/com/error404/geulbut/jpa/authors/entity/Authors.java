@@ -23,6 +23,7 @@ public class Authors extends BaseTimeEntity {
     generator = "SEQ_AUTHORS_JPA")
     private Long authorId;
     private String name;
+    @Lob
     private String description;
     @Lob
     private byte[] authorImg;
