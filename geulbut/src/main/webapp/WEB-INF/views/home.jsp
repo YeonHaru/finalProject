@@ -15,197 +15,10 @@
     <title>추천 도서</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/home.css">
 
-    <!-- 배너 전용 CSS -->
+
     <style>
-        /* 네임스페이스: ad-banner */
-        .ad-banner {
-            background: var(--color-surface);
-            padding: var(--space-4);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            margin-top: 40px;
-        }
-
-        /* 추천 도서와 같은 글 꾸미는 용도*/
-        .ad-banner-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: var(--space-3);
-            color: var(--color-accent-dark);
-        }
-
-        /* 책 카드 영역 */
-        .ad-banner-books {
-            display: flex;
-            gap: calc(var(--gap-4) * 2);   /* 책 사이 여백 */
-            justify-content:  center; /* 책 카드들이 가로로 균등 배치 */
-            overflow-x: visible;
-            margin-bottom: 10px;
-        }
-
-        .ad-book {
-            flex: 0 0 180px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s var(--ease);
-        }
-
-        /*애니메이션 효과*/
-        .ad-book:hover {
-            transform: translateY(-5px);
-        }
-
-
-        .ad-book img {
-            width: 100%;
-            height: 260px;
-            object-fit: cover;
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .ad-book-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-top: var(--space-2);
-            color: var(--color-text);
-        }
-
-        .ad-book-author {
-            font-size: 0.8rem;
-            color: var(--color-text-light);
-        }
-
-        /* 하단에 탭 메뉴 클릭 가능 광고창 */
-        .ad-banner-tabs {
-            display: flex;
-            justify-content: center;
-            gap: var(--gap-3);
-            border-top: 1px solid var(--color-border);
-            padding-top: var(--space-3);
-            flex-wrap: wrap;
-        }
-
-        .ad-tab {
-            font-size: 0.9rem;
-            color: var(--color-accent-dark);
-            cursor: pointer;
-            transition: color 0.2s var(--ease);
-        }
-
-        .ad-tab:hover {
-            color: var(--color-accent);
-        }
-
-        /* 아이콘과 광고창 사이 멘트*/
-        .ad-marquee {
-            background: var(--color-bg);
-            color: var(--color-accent-dark);
-            padding: 10px 0;
-            overflow: hidden;
-            position: relative;
-            border-radius: var(--radius-sm);
-            margin: var(--space-4) auto;
-            max-width: 960px;
-        }
-
-        .marquee-content {
-            display: inline-block;
-            white-space: nowrap;
-            animation: marquee 15s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* === 새로 추가: 아이콘 메뉴 스타일 === */
-        .icon-menu {
-            background: var(--color-surface);
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            margin-top: var(--space-4);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .icon-menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: var(--gap-3);
-            justify-items: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .icon-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--color-text);
-            cursor: pointer;
-            transition: all 0.3s var(--ease);
-            padding: var(--space-2);
-            border-radius: var(--radius-sm);
-        }
-
-        .icon-item:hover {
-            background: rgba(102, 102, 102, 0.05);
-            transform: translateY(-2px);
-        }
-
-        .icon-wrapper {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--space-2);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s var(--ease);
-        }
-
-        .icon-item:hover .icon-wrapper {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            transform: scale(1.05);
-        }
-
-        /* 각 아이콘별 컬러 테마 */
-        .icon-item.gift .icon-wrapper { background: linear-gradient(135deg, #fff5f5, #fed7d7); }
-        .icon-item.discount .icon-wrapper { background: linear-gradient(135deg, #f0fff4, #c6f6d5); }
-        .icon-item.event .icon-wrapper { background: linear-gradient(135deg, #fffaf0, #fbd38d); }
-        .icon-item.bestseller .icon-wrapper { background: linear-gradient(135deg, #f7fafc, #bee3f8); }
-        .icon-item.review .icon-wrapper { background: linear-gradient(135deg, #faf5ff, #d6bcfa); }
-
-        .icon-label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-align: center;
-            line-height: 1.3;
-            color: var(--color-text);
-        }
-
-        /* 반응형 */
-        @media (max-width: 767px) {
-            .icon-menu-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: var(--gap-2);
-            }
-
-            .icon-wrapper {
-                width: 40px;
-                height: 40px;
-            }
-
-            .icon-label {
-                font-size: 0.8rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -214,9 +27,11 @@
 <div class="page">
 
 
+
     <!-- 추천 도서 배너 -->
     <section class="ad-banner">
         <h2 class="ad-banner-title">편집장의 선택</h2>
+
 
         <!-- 책 카드 영역 -->
         <div class="ad-banner-books">
@@ -257,6 +72,7 @@
         </div>
     </section>
     <!-- // 추천 도서 배너 -->
+
 
 
 <%--    광고창 아이콘 사이 특별할인 멘트--%>
@@ -357,6 +173,200 @@
             </a>
         </div>
     </section>
+    <!-- ad-top10 card list (미니멀 · 반응형) -->
+    <section class="ad-top10">
+        <h2 class="ad-top10-title">어제 베스트셀러 TOP 10</h2>
+
+        <div class="ad-top10-grid">
+            <!-- 반복 아이템: 순위 1~10 -->
+            <!-- 1위 (특별 강조: gold) -->
+            <article class="ad-top10-card top-1">
+                <div class="ad-top10-rank">1</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg" alt="혼한남매 20 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">혼한남매 20</div>
+                        <span class="ad-top10-chip new">NEW</span>
+                    </div>
+                    <div class="ad-top10-author">글 • 그림</div>
+                </div>
+            </article>
+
+            <!-- 2위 (silver) -->
+            <article class="ad-top10-card top-2">
+                <div class="ad-top10-rank">2</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/95/cover500/k892830604_1.jpg" alt="절창 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">절창</div>
+                        <span class="ad-top10-chip down">▼1</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <!-- 3위 (bronze) -->
+            <article class="ad-top10-card top-3">
+                <div class="ad-top10-rank">3</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/85/cover500/k712830604_1.jpg" alt="호의에 대하여 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">호의에 대하여</div>
+                        <span class="ad-top10-chip up">▲2</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <!-- 4~10위: 동일한 카드 스타일로 계속 -->
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">4</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/75/cover500/k622830604_1.jpg" alt="텍스트 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">텟템 이론</div>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">5</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/70/cover500/k512830604_1.jpg" alt="혼모노 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">혼모노</div>
+                        <span class="ad-top10-chip up">▲1</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">6</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/64/cover500/k412830604_1.jpg" alt="천국대마경 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">천국대마경 11</div>
+                        <span class="ad-top10-chip new">NEW</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">7</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/56/cover500/k312830604_1.jpg" alt="코믹 가이드 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">천국대마경 공식 코믹 가이드</div>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">8</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/48/cover500/k212830604_1.jpg" alt="노인과 바다 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">노인과 바다 (멘슬리 클래식)</div>
+                        <span class="ad-top10-chip down">▼5</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">9</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/40/cover500/k112830604_1.jpg" alt="양명의 조개껍데기 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">양명의 조개껍데기</div>
+                        <span class="ad-top10-chip up">▲4</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+
+            <article class="ad-top10-card">
+                <div class="ad-top10-rank">10</div>
+                <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/35/cover500/k062830604_1.jpg" alt="큰별쌤 표지">
+                <div class="ad-top10-body">
+                    <div class="ad-top10-titleline">
+                        <div class="ad-top10-name">2025 큰별쌤 최태성의 별★…</div>
+                        <span class="ad-top10-chip down">▼8</span>
+                    </div>
+                    <div class="ad-top10-author">저자 예시</div>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section class="ad-banner-slider">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <!-- 광고 1 -->
+                <div class="swiper-slide">
+                    <div class="ad-banner-item">
+                        <img src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg"
+                             alt="광고 도서" class="ad-banner-thumb">
+                        <div class="ad-banner-text">
+                            <p class="ad-banner-desc">가짜 뉴스 시대, 진실의 탈을 쓴 정치 언어의 기만에 속지 않는 법</p>
+                            <span class="ad-banner-label">AD</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 광고 2 -->
+                <div class="swiper-slide">
+                    <div class="ad-banner-item">
+                        <img src="https://image.aladin.co.kr/product/32659/85/cover500/k712830604_1.jpg"
+                             alt="광고 도서" class="ad-banner-thumb">
+                        <div class="ad-banner-text">
+                            <p class="ad-banner-desc">지금 주목해야 할 베스트셀러를 만나보세요</p>
+                            <span class="ad-banner-label">AD</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 광고 3 -->
+                <div class="swiper-slide">
+                    <div class="ad-banner-item">
+                        <img src="https://image.aladin.co.kr/product/32659/70/cover500/k512830604_1.jpg"
+                             alt="광고 도서" class="ad-banner-thumb">
+                        <div class="ad-banner-text">
+                            <p class="ad-banner-desc">신간 도서 특별 이벤트 진행 중!</p>
+                            <span class="ad-banner-label">AD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 좌우 버튼 -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+
+            <!-- 페이지 표시 -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Swiper 라이브러리 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        const adSwiper = new Swiper('.ad-banner-slider .swiper', {
+            loop: true,
+            navigation: {
+                nextEl: '.ad-banner-slider .swiper-button-next',
+                prevEl: '.ad-banner-slider .swiper-button-prev',
+            },
+            pagination: {
+                el: '.ad-banner-slider .swiper-pagination',
+                type: 'fraction',
+            },
+        });
+    </script>
+
 
 </div>
 

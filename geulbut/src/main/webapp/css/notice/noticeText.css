@@ -1,0 +1,31 @@
+/* 공지사항 2:8 레이아웃 */
+.notice-layout {
+    display: grid;
+    gap: var(--gap-4);
+    grid-template-columns: 1fr; /* 모바일에서는 1단 */
+}
+
+@media (min-width: 768px) {
+    .notice-layout {
+        grid-template-columns: 1.5fr 8.5fr; /* 태블릿 이상 2:8 비율 */
+    }
+}
+.panel {
+    display: flex;
+    align-items: center;  /* 수직 정렬 */
+    gap: 0.5rem;          /* 요소 사이 간격 */
+    flex-wrap: nowrap;    /* 한 줄로 유지 */
+    background:#ECECEC;
+}
+
+
+/* 사이드바 메뉴 hover */
+aside nav a {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background var(--dur) var(--ease);
+}
+aside nav a:hover {
+    background: var(--color-bg);
+    color: var(--color-accent-dark);
+}
