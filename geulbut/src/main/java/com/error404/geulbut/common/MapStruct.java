@@ -8,6 +8,11 @@ import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
 import com.error404.geulbut.jpa.hashtags.entity.Hashtags;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
+import com.error404.geulbut.jpa.users.dto.UsersLoginDto;
+import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
+import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
+import com.error404.geulbut.jpa.users.entity.Users;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -44,4 +49,14 @@ public interface MapStruct {
 
 //    elasticsearch
 
+
+//    덕규9/11
+//    로그인 매핑
+    UsersLoginDto toDto(Users users);
+    Users toEntity(UsersLoginDto usersLoginDto);
+//    회원가입 DTO -> Users
+    Users toEntity(UsersSignupDto usersSignupDto);
+//    OAuth 업서트 DTO -> Users (부분 업데이트용)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateFromOAuth(UsersOAuthUpsertDto usersOAuthUpsertDto, @MappingTarget Users entity);
 }
