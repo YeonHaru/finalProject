@@ -23,6 +23,7 @@ public class SecurityConfig {
 //    개발 중 임시 전체 오픈 스위치(true = 전체허용, false = 원래보안)
     private static final boolean DEV_BYPASS = false;
 
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -52,7 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR)
                         .permitAll()
-                        .requestMatchers("/", "/ping", "/login", "/login/**", "/oauth2/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/error", "/v/**").permitAll()
+                        .requestMatchers("/", "/ping", "/login", "/login/**", "/oauth2/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/error", "dustApi", "DustWeatherApi","/v/**").permitAll()
                         .anyRequest().authenticated()
                 )
 //             TODO : 폼(홈페이지) 로그인 설정

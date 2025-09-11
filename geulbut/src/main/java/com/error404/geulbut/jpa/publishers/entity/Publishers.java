@@ -23,6 +23,7 @@ public class Publishers extends BaseTimeEntity {
     generator = "SEQ_PUBLISHERS_JPA")
     private String publisherId;
     private String name;
+    @Lob
     private String description;
 
 }

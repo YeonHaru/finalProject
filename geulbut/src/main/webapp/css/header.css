@@ -146,3 +146,18 @@
 }
 
 /* 참고: 반응형 별도 미디어쿼리 불필요 — 항상 2행 구조 유지 */
+
+
+/* 하단 메뉴 (검색창 밑) */
+.site-header__nav--bottom {
+    order: 3;               /* 검색 다음 줄 */
+    flex: 0 0 100%;         /* 전체 너비 */
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.site-header__menu--bottom {
+    gap: 24px;              /* 간격 넉넉히 */
+}
+
