@@ -12,10 +12,7 @@ import com.error404.geulbut.jpa.users.dto.UsersLoginDto;
 import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.entity.Users;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
 nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -54,9 +51,14 @@ public interface MapStruct {
 //    로그인 매핑
     UsersLoginDto toDto(Users users);
     Users toEntity(UsersLoginDto usersLoginDto);
-//    회원가입 DTO -> Users
+//    회원가입 DTO -> Users (boolean -> char 명시적 매핑추가)
+    @Mappings({
+            @Mapping(target = "postNotifyAgree", expression = "java(usersSignupDto.isPostNotifyAgree() ? 'Y' : 'N')"),
+            @Mapping(target = "promoAgree", expression = "java(usersSignupDto.isPromoAgree() ? 'Y' : 'N')")
+    })
     Users toEntity(UsersSignupDto usersSignupDto);
 //    OAuth 업서트 DTO -> Users (부분 업데이트용)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromOAuth(UsersOAuthUpsertDto usersOAuthUpsertDto, @MappingTarget Users entity);
+
 }

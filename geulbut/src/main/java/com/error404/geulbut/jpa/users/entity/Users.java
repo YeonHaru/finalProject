@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 public class Users {
 
     @Id
-    @Column(name = "USER_ID", length = 50, nullable = false)
+    @Column(name = "USER_ID", length = 50, nullable = false)        // 컬럼 어노테이션 쓸 이유가없다.
     private String userId; // @GeneratedValue 제거
 //    로그인/회원가입 공통
     private String password;
