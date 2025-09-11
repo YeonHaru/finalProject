@@ -28,6 +28,7 @@
                         <li><a href="${pageContext.request.contextPath}/login">로그인</a></li>
                         <li><a href="${pageContext.request.contextPath}/signup">회원가입</a></li>
                         <li><a href="${pageContext.request.contextPath}/mypage">마이페이지</a></li>
+                        <li><a href="${pageContext.request.contextPath}/notice">공지사항</a></li>
                     </c:otherwise>
                 </c:choose>
             </ul>

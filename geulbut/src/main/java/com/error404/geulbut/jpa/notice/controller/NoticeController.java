@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class NoticeController {
     @GetMapping("/notice")
     public String notice() {
+        return "notice/notice2";
+    }
+
+    @GetMapping("/noticeText")
+    public String noticeText() {
         return "notice/notice-text";
     }
 }
