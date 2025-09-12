@@ -15,7 +15,8 @@ import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
-nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MapStruct {
 //    jpa
 //    종일
@@ -42,7 +43,7 @@ public interface MapStruct {
     PublishersDto toDto(Publishers publishers);
     Publishers toEntity(PublishersDto publishersDto);
 
-    void updatFromDto(PublishersDto publishersDto, @MappingTarget Publishers publishers);
+    void updateFromDto(PublishersDto publishersDto, @MappingTarget Publishers publishers);
 
 //    elasticsearch
 

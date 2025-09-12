@@ -5,28 +5,30 @@ spring:
         registration:
 #          구글 로그인
           google:
-            client-id: 361804552914-8um7u0bkk99nr0m6jkmes7o189cr7o7q.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${361804552914-8um7u0bkk99nr0m6jkmes7o189cr7o7q.apps.googleusercontent.com}
+            client-secret: ${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}
             scope: [openid, profile, email]
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
 #          네이버 로그인 custom provider 필요
           naver:
-            client-id: 1Wp9bzywroz8W3Uj0CaH
-            client-secret: IzQ7uyuInu
+            client-id: ${1Wp9bzywroz8W3Uj0CaH}
+            client-secret: ${IzQ7uyuInu}
             client-name: Naver
             authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope: [name, email, profile_image]
 
 #          카카오 로그인 custom provider 필요
           kakao:
-            client-id: 906ccf1dd3817e271d9f00ef65423f45
-            client-secret: Ayc34KeTEe2HDu2BGO3yQgbXzrYQbaTR
+            client-id: ${906ccf1dd3817e271d9f00ef65423f45}
+            client-secret: ${Ayc34KeTEe2HDu2BGO3yQgbXzrYQbaTR}
             client-name: kakao
             authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: [profile_nickname, profile_image]
+            scope: [profile_nickname, profile_image, account_email, phone_number, gender, birthday, birthyear]
 
         provider:
 #          네이버 API 엔드포인트

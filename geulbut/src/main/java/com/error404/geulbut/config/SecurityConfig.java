@@ -1,7 +1,8 @@
 package com.error404.geulbut.config;
 
-
+import com.error404.geulbut.jpa.users.service.CustomOAuth2UserService;
 import jakarta.servlet.DispatcherType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +13,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+private final CustomOAuth2UserService customOAuth2UserService;
 
 //    비밀번호 인코더 등록 9/11
     @Bean
@@ -55,9 +59,15 @@ public class SecurityConfig {
                         .permitAll()
                         .dispatcherTypeMatchers(DispatcherType.INCLUDE).permitAll() // jsp 태그중에 jsp:include 태그 허용
 
-                        .requestMatchers("/", "/ping", "/login", "/login/**", "/oauth2/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/error", "dustApi", "DustWeatherApi","/v/**", "/dust","weather","weatherApi", "admin/css/admin-header.css").permitAll()
-
-                        
+                        .requestMatchers(
+                                "/", "/ping",
+                                "/login", "/login/**",
+                                "/oauth2/**", "/login/oauth2/**",
+                                "/css/**", "/js/**", "/images/**", "/webjars/**",
+                                "/favicon.ico", "/error",
+                                "dustApi", "DustWeatherApi","/v/**", "/dust","weather","weatherApi",
+                                "admin/css/admin-header.css"
+                        ).permitAll()
 
                         .anyRequest().authenticated()
                 )
@@ -75,6 +85,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/", false)
                         .failureUrl("/login?error")
+                        .userInfoEndpoint(cfg->cfg.userService(customOAuth2UserService))
                 )
                 .logout(logout->logout
                         .logoutUrl("/logout")
@@ -86,7 +97,9 @@ public class SecurityConfig {
 //                여기 반드시 확인!! 막혔다면 여기 임시로 비활성화 시켜놔서 그럴수도 있음
 //                9/10 10:00 빠르게 확인할려는 목적으로 해놓은것
 //                9/10 12:00 주석으로 막아서 풀어놨습니다. 활동로그 남기기위해서 해놓은거
-                .csrf(csrf->csrf.disable());
+                .csrf(csrf->csrf.disable())
+                .headers(h->h.frameOptions(f->f.sameOrigin()));
+
         return http.build();
     }
 }
