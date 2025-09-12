@@ -79,7 +79,9 @@ aside nav a:hover {
     background: var(--color-bg);
     color: var(--color-accent-dark);
 }
-
+.text-center {
+    text-align: center;
+}
 
 
 

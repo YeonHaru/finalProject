@@ -161,3 +161,60 @@
     gap: 24px;              /* 간격 넉넉히 */
 }
 
+@media (max-width: 768px) {
+    .site-header__nav--left,
+    .site-header__nav--right,
+    .site-header__nav--bottom {
+        display: none;
+    }
+
+    .site-header__hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 28px;
+        height: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+    .site-header__hamburger span {
+        display: block;
+        height: 3px;
+        background: var(--color-text);
+        border-radius: var(--radius-sm);
+    }
+
+    /* 모바일 메뉴 슬라이드 초기 상태 */
+    .site-header__mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 200px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        z-index: 1001;
+        box-shadow: var(--shadow-sm);
+    }
+    .site-header__menu--mobile {
+        flex-direction: column;
+        padding: 8px 0;
+        margin: 0;
+        list-style: none;
+    }
+    .site-header__menu--mobile li a {
+        display: block;
+        padding: 8px 16px;
+    }
+
+    /* 메뉴 열렸을 때 max-height 크게 설정 */
+    .site-header__mobile-menu.open {
+        max-height: 500px; /* 메뉴 항목 수에 맞춰 충분히 크게 */
+    }
+}
+

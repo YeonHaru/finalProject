@@ -1,66 +1,43 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user
-  Date: 25. 9. 9.
-  Time: 오전 10:21
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
-    <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="/css/header.css">
-
     <title>추천 도서</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/home.css">
-
-
-    <style>
-    </style>
+    <link rel="stylesheet" href="/css/slider-ad.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
 <div class="page">
-
-
-
     <!-- 추천 도서 배너 -->
     <section class="ad-banner">
         <h2 class="ad-banner-title">편집장의 선택</h2>
-
-
-        <!-- 책 카드 영역 -->
         <div class="ad-banner-books">
             <a href="book1.jsp" class="ad-book">
                 <img src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg" alt="빼빼 롱스타킹">
                 <div class="ad-book-title">빼빼 롱스타킹</div>
                 <div class="ad-book-author">아스트리드 린드그렌</div>
             </a>
-
             <a href="book2.jsp" class="ad-book">
                 <img src="https://image.aladin.co.kr/product/32659/95/cover500/k892830604_1.jpg" alt="헬바운드 하트">
                 <div class="ad-book-title">헬바운드 하트</div>
                 <div class="ad-book-author">클라이브 바커</div>
             </a>
-
             <a href="book3.jsp" class="ad-book">
                 <img src="https://image.aladin.co.kr/product/32659/85/cover500/k712830604_1.jpg" alt="이타미 준 나의 건축">
                 <div class="ad-book-title">이타미 준 나의 건축</div>
                 <div class="ad-book-author">이타미 준</div>
             </a>
-
             <a href="book4.jsp" class="ad-book">
                 <img src="https://image.aladin.co.kr/product/32659/75/cover500/k622830604_1.jpg" alt="롤랑 바르트가 쓴 롤랑 바르트">
                 <div class="ad-book-title">롤랑 바르트가 쓴 롤랑 바르트</div>
                 <div class="ad-book-author">롤랑 바르트</div>
             </a>
         </div>
-
-        <!-- 탭 메뉴 -->
         <div class="ad-banner-tabs">
             <div class="ad-tab">편집장의 선택</div>
             <div class="ad-tab">추천 이벤트</div>
@@ -71,20 +48,15 @@
             <div class="ad-tab">지금 핫딜중</div>
         </div>
     </section>
-    <!-- // 추천 도서 배너 -->
 
-
-
-<%--    광고창 아이콘 사이 특별할인 멘트--%>
+    <!-- 광고창 아이콘 사이 특별할인 멘트 -->
     <section class="ad-marquee">
         <div class="marquee-content">
-            📢 특별 할인! 9월 한정, 인기 도서 최대 30% 할인 중! 🎁 |
-            신규 회원은 첫 구매 시 추가 쿠폰 지급! ✨ |
-            이번 주 이벤트: 베스트셀러 1+1!
+            📢 특별 할인! 9월 한정, 인기 도서 최대 30% 할인 중! 🎁 | 신규 회원은 첫 구매 시 추가 쿠폰 지급! ✨ | 이번 주 이벤트: 베스트셀러 1+1!
         </div>
     </section>
 
-    <!-- === 새로 추가: 아이콘 메뉴 === -->
+    <!-- 아이콘 메뉴 -->
     <section class="icon-menu">
         <div class="icon-menu-grid">
             <a href="/gift" class="icon-item gift">
@@ -98,7 +70,6 @@
                 </div>
                 <span class="icon-label">기프트카드</span>
             </a>
-
             <a href="/discount" class="icon-item discount">
                 <div class="icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38a169" stroke-width="2">
@@ -111,7 +82,6 @@
                 </div>
                 <span class="icon-label">할인혜택</span>
             </a>
-
             <a href="/event" class="icon-item event">
                 <div class="icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d69e2e" stroke-width="2">
@@ -120,7 +90,6 @@
                 </div>
                 <span class="icon-label">이벤트</span>
             </a>
-
             <a href="/bestseller" class="icon-item bestseller">
                 <div class="icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3182ce" stroke-width="2">
@@ -129,7 +98,6 @@
                 </div>
                 <span class="icon-label">베스트셀러</span>
             </a>
-
             <a href="/review" class="icon-item review">
                 <div class="icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#805ad5" stroke-width="2">
@@ -142,11 +110,12 @@
             </a>
         </div>
     </section>
-    <!-- // 아이콘 메뉴 -->
+
     <section class="ad-banner">
         <h2 class="ad-banner-title">이달의 주목도서</h2>
-        <div class="ad-banner-books">
-            <a href="book1.jsp" class="ad-book">
+        <div class="ad-banner-books five-books">
+
+        <a href="book1.jsp" class="ad-book">
                 <img src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg" alt="부모의 태도가 아이의 불안이 되지 않게">
                 <div class="ad-book-title">부모의 태도가 아이의 불안이 되지 않게</div>
                 <div class="ad-book-author">예슬</div>
@@ -173,13 +142,11 @@
             </a>
         </div>
     </section>
-    <!-- ad-top10 card list (미니멀 · 반응형) -->
+
+    <!-- ad-top10 card list -->
     <section class="ad-top10">
         <h2 class="ad-top10-title">어제 베스트셀러 TOP 10</h2>
-
         <div class="ad-top10-grid">
-            <!-- 반복 아이템: 순위 1~10 -->
-            <!-- 1위 (특별 강조: gold) -->
             <article class="ad-top10-card top-1">
                 <div class="ad-top10-rank">1</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg" alt="혼한남매 20 표지">
@@ -191,8 +158,6 @@
                     <div class="ad-top10-author">글 • 그림</div>
                 </div>
             </article>
-
-            <!-- 2위 (silver) -->
             <article class="ad-top10-card top-2">
                 <div class="ad-top10-rank">2</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/95/cover500/k892830604_1.jpg" alt="절창 표지">
@@ -204,8 +169,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
-            <!-- 3위 (bronze) -->
             <article class="ad-top10-card top-3">
                 <div class="ad-top10-rank">3</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/85/cover500/k712830604_1.jpg" alt="호의에 대하여 표지">
@@ -217,8 +180,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
-            <!-- 4~10위: 동일한 카드 스타일로 계속 -->
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">4</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/75/cover500/k622830604_1.jpg" alt="텍스트 표지">
@@ -229,7 +190,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">5</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/70/cover500/k512830604_1.jpg" alt="혼모노 표지">
@@ -241,7 +201,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">6</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/64/cover500/k412830604_1.jpg" alt="천국대마경 표지">
@@ -253,7 +212,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">7</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/56/cover500/k312830604_1.jpg" alt="코믹 가이드 표지">
@@ -264,7 +222,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">8</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/48/cover500/k212830604_1.jpg" alt="노인과 바다 표지">
@@ -276,7 +233,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">9</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/40/cover500/k112830604_1.jpg" alt="양명의 조개껍데기 표지">
@@ -288,7 +244,6 @@
                     <div class="ad-top10-author">저자 예시</div>
                 </div>
             </article>
-
             <article class="ad-top10-card">
                 <div class="ad-top10-rank">10</div>
                 <img class="ad-top10-thumb" src="https://image.aladin.co.kr/product/32659/35/cover500/k062830604_1.jpg" alt="큰별쌤 표지">
@@ -302,73 +257,104 @@
             </article>
         </div>
     </section>
-    <section class="ad-banner-slider">
-        <div class="swiper">
-            <div class="swiper-wrapper">
-                <!-- 광고 1 -->
-                <div class="swiper-slide">
-                    <div class="ad-banner-item">
-                        <img src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg"
-                             alt="광고 도서" class="ad-banner-thumb">
-                        <div class="ad-banner-text">
-                            <p class="ad-banner-desc">가짜 뉴스 시대, 진실의 탈을 쓴 정치 언어의 기만에 속지 않는 법</p>
-                            <span class="ad-banner-label">AD</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- 광고 2 -->
-                <div class="swiper-slide">
-                    <div class="ad-banner-item">
-                        <img src="https://image.aladin.co.kr/product/32659/85/cover500/k712830604_1.jpg"
-                             alt="광고 도서" class="ad-banner-thumb">
-                        <div class="ad-banner-text">
-                            <p class="ad-banner-desc">지금 주목해야 할 베스트셀러를 만나보세요</p>
-                            <span class="ad-banner-label">AD</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- 광고 3 -->
-                <div class="swiper-slide">
-                    <div class="ad-banner-item">
-                        <img src="https://image.aladin.co.kr/product/32659/70/cover500/k512830604_1.jpg"
-                             alt="광고 도서" class="ad-banner-thumb">
-                        <div class="ad-banner-text">
-                            <p class="ad-banner-desc">신간 도서 특별 이벤트 진행 중!</p>
-                            <span class="ad-banner-label">AD</span>
-                        </div>
-                    </div>
+</div>
+
+<!-- === 새로 추가: 전폭 슬라이더 광고 배너 === -->
+<div class="slider-ad-container">
+    <div class="slider-ad">
+        <div class="slider-track">
+            <!-- 슬라이드 1: 가을 독서 이벤트 -->
+            <div class="slider-item">
+                <div class="slider-decoration book1">📚</div>
+                <div class="slider-decoration book2">📖</div>
+                <div class="slider-content">
+                    <h2 class="slider-title">🍂 가을 독서 페스티벌 🍂</h2>
+                    <p class="slider-subtitle">9월 한정! 모든 문학도서 25% 할인 + 무료배송</p>
+                    <a href="/autumn-event" class="slider-button">지금 구매하기</a>
                 </div>
             </div>
 
-            <!-- 좌우 버튼 -->
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
+            <!-- 슬라이드 2: 멤버십 혜택 -->
+            <div class="slider-item">
+                <div class="slider-decoration gift">🎁</div>
+                <div class="slider-decoration book1">⭐</div>
+                <div class="slider-content">
+                    <h2 class="slider-title">✨ VIP 멤버십 특가 ✨</h2>
+                    <p class="slider-subtitle">프리미엄 회원 가입시 전자책 무제한 이용권 증정!</p>
+                    <a href="/membership" class="slider-button">멤버십 가입</a>
+                </div>
+            </div>
 
-            <!-- 페이지 표시 -->
-            <div class="swiper-pagination"></div>
+            <!-- 슬라이드 3: 신간 출시 이벤트 -->
+            <div class="slider-item">
+                <div class="slider-decoration book2">🆕</div>
+                <div class="slider-decoration gift">🏆</div>
+                <div class="slider-content">
+                    <h2 class="slider-title">🔥 이달의 신간 베스트 🔥</h2>
+                    <p class="slider-subtitle">화제의 신간도서 예약 주문시 15% 할인 + 굿즈 증정</p>
+                    <a href="/new-books" class="slider-button">신간 보러가기</a>
+                </div>
+            </div>
         </div>
-    </section>
 
-    <!-- Swiper 라이브러리 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-    <script>
-        const adSwiper = new Swiper('.ad-banner-slider .swiper', {
-            loop: true,
-            navigation: {
-                nextEl: '.ad-banner-slider .swiper-button-next',
-                prevEl: '.ad-banner-slider .swiper-button-prev',
-            },
-            pagination: {
-                el: '.ad-banner-slider .swiper-pagination',
-                type: 'fraction',
-            },
-        });
-    </script>
-
-
+        <!-- 슬라이더 인디케이터 -->
+        <div class="slider-indicators">
+            <div class="indicator active"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+        </div>
+    </div>
 </div>
 
+
+<script>
+    // 슬라이더 인디케이터 업데이트
+    const indicators = document.querySelectorAll('.indicator');
+    let currentSlide = 0;
+
+    function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    // 5초마다 인디케이터 업데이트 (CSS 애니메이션과 동기화)
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % 3;
+        updateIndicators();
+    }, 5000);
+</script>
+<div class="page">
+    <section class="ad-banner">
+        <h2 class="ad-banner-title">이달의 주목도서</h2>
+        <div class="ad-banner-books five-books">
+            <a href="book6.jsp" class="ad-book">
+                <img src="https://image.aladin.co.kr/product/32659/60/cover500/k362830605_1.jpg" alt="언어의 온도">
+                <div class="ad-book-title">언어의 온도</div>
+                <div class="ad-book-author">이기주</div>
+            </a>
+            <a href="book7.jsp" class="ad-book">
+                <img src="https://image.aladin.co.kr/product/32659/55/cover500/k892830605_1.jpg" alt="미드나이트 라이브러리">
+                <div class="ad-book-title">미드나이트 라이브러리</div>
+                <div class="ad-book-author">매트 헤이그</div>
+            </a>
+            <a href="book8.jsp" class="ad-book">
+                <img src="https://image.aladin.co.kr/product/32659/50/cover500/k712830605_1.jpg" alt="어린왕자">
+                <div class="ad-book-title">어린왕자</div>
+                <div class="ad-book-author">생텍쥐페리</div>
+            </a>
+            <a href="book9.jsp" class="ad-book">
+                <img src="https://image.aladin.co.kr/product/32659/45/cover500/k622830605_1.jpg" alt="설민석의 한국사 대모험">
+                <div class="ad-book-title">설민석의 한국사 대모험</div>
+                <div class="ad-book-author">설민석</div>
+            </a>
+            <a href="book10.jsp" class="ad-book">
+                <img src="https://image.aladin.co.kr/product/32659/25/cover500/k512830605_1.jpg" alt="코스모스">
+                <div class="ad-book-title">코스모스</div>
+                <div class="ad-book-author">칼 세이건</div>
+            </a>
+        </div>
+    </section>
+</div>
 </body>
 </html>
