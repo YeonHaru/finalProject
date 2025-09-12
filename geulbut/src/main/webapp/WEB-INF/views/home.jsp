@@ -4,6 +4,7 @@
     <title>추천 도서</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/slider-ad.css">
     <meta charset="UTF-8">
@@ -356,5 +357,7 @@
         </div>
     </section>
 </div>
+
+<jsp:include page="/common/footer.jsp"></jsp:include>
 </body>
 </html>
