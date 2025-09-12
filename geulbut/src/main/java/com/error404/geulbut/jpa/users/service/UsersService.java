@@ -95,6 +95,14 @@ public class UsersService {
 
         final String key = usersOAuthUpsertDto.toUserIdKey();      // 예) "kakao:123456"
 
+        // A) 빈 문자열 정규화 (null만 무시하는 MapStruct와 궁합)
+        usersOAuthUpsertDto.setEmail(nz(usersOAuthUpsertDto.getEmail()));
+        usersOAuthUpsertDto.setName(nz(usersOAuthUpsertDto.getName()));
+        usersOAuthUpsertDto.setPhone(nz(usersOAuthUpsertDto.getPhone()));
+        usersOAuthUpsertDto.setImgUrl(nz(usersOAuthUpsertDto.getImgUrl()));
+
+
+        try{
 //        (1) 존재 -> 로드, 없다 -> 기본값 신규생성
         Users users = usersRepository.findById(key).orElseGet(() -> {
             Users nusers = new Users();
@@ -110,5 +118,16 @@ public class UsersService {
 //        (2) 부분업데이트 널은 무시 - 맵 스트럭쳐 사용
         mapStruct.updateFromOAuth(usersOAuthUpsertDto, users);
         return usersRepository.save(users);
+    } 
+//      동시에 두 번 최초 로그인 요청이 들어오면, 둘 다 조회 시 없음 
+//      → insert 레이스 컨디션으로 PK 중복 예외가 날 수 있다.
+//      필요하면 아래처럼 재시도 한 번 넣어 안전하게 가져갈 수 있음
+        catch (org.springframework.dao.DataIntegrityViolationException e) {
+        return usersRepository.findById(key)
+                .orElseThrow(() -> e);
+        }
     }
+
+    // 헬퍼
+    private static String nz(String s) { return (s == null || s.isBlank()) ? null : s; }
 }
