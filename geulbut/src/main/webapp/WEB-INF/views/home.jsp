@@ -8,10 +8,6 @@
 %>
 <html>
 <head>
-    <title>Title</title>
-    <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="/css/header.css">
-
     <title>추천 도서</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
