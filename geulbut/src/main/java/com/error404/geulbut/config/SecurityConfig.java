@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR)
                         .permitAll()
+                        .dispatcherTypeMatchers(DispatcherType.INCLUDE).permitAll() // jsp 태그중에 jsp:include 태그 허용
                         .requestMatchers("/", "/ping", "/login", "/login/**", "/oauth2/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/error", "dustApi", "DustWeatherApi","/v/**").permitAll()
                         .anyRequest().authenticated()
                 )

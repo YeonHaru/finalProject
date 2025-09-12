@@ -1,13 +1,22 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--
+ Created by IntelliJ IDEA.
+ User: user Date: 25. 9. 9.
+  Time: 오전 10:21
+  To change this template use File | Settings | File Templates.
+   --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+%>
 <html>
 <head>
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/00_common.css">
+    <link rel="stylesheet" href="/css/header.css">
+
     <title>추천 도서</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/home.css">
-    <link rel="stylesheet" href="/css/slider-ad.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
@@ -355,5 +364,226 @@
         </div>
     </section>
 </div>
+<!-- 화제의 책 소식 섹션 -->
+<div class="page">
+    <section class="book-news-section">
+        <h2 class="section-title">화제의 책 소식</h2>
+
+        <div class="slider-wrapper">
+            <div class="books-slider">
+                <!-- 첫 번째 슬라이드 (3권) -->
+                <div class="slide-group">
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/90/cover500/k362830604_1.jpg" alt="수확이 사랑하는 살간형">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">수확이 사랑하는 살간형</h3>
+                                <p class="book-description">
+                                    앨기구에세 게임, 주호, DNA까지 거리와 작동의 농지를 추적
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">소설</span>
+                                    <span class="rating">★★★★☆</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/95/cover500/k892830604_1.jpg" alt="아버지의 레시피">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">아버지의 레시피</h3>
+                                <p class="book-description">
+                                    나가가와 히데코, 예세이와 레시피로 완성한 인생 이야기 아름의 요리책
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">요리/에세이</span>
+                                    <span class="rating">★★★★★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/85/cover500/k712830604_1.jpg" alt="아이스크림 탐정">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">아이스크림 탐정</h3>
+                                <p class="book-description">
+                                    아이스크림이 녹기 전에 사건을 해결해 주는 아이스크림 탐정의 첫 컵
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">추리/아동</span>
+                                    <span class="rating">★★★★☆</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 두 번째 슬라이드 (3권) -->
+                <div class="slide-group">
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/75/cover500/k622830604_1.jpg" alt="봄날의 서점">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">봄날의 서점</h3>
+                                <p class="book-description">
+                                    작은 서점에서 펼쳐지는 따뜻한 이야기들과 책을 사랑하는 사람들의 만남
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">힐링/에세이</span>
+                                    <span class="rating">★★★★★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/60/cover500/k362830605_1.jpg" alt="숲속의 도서관">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">숲속의 도서관</h3>
+                                <p class="book-description">
+                                    자연과 책이 어우러진 신비로운 공간에서 벌어지는 마법 같은 이야기
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">판타지</span>
+                                    <span class="rating">★★★★☆</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/55/cover500/k892830605_1.jpg" alt="달빛 카페의 비밀">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">달빛 카페의 비밀</h3>
+                                <p class="book-description">
+                                    밤에만 문을 여는 신비한 카페에서 일어나는 따뜻하고 신비로운 이야기들
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">로맨스/판타지</span>
+                                    <span class="rating">★★★★★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 세 번째 슬라이드 (3권) -->
+                <div class="slide-group">
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/50/cover500/k712830605_1.jpg" alt="미드나이트 라이브러리">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">미드나이트 라이브러리</h3>
+                                <p class="book-description">
+                                    인생의 다른 선택들을 경험해볼 수 있는 신비한 도서관 이야기
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">현대문학</span>
+                                    <span class="rating">★★★★★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/45/cover500/k622830605_1.jpg" alt="언어의 온도">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">언어의 온도</h3>
+                                <p class="book-description">
+                                    말과 글에 숨겨진 따뜻함과 차가움에 대한 아름다운 에세이
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">에세이</span>
+                                    <span class="rating">★★★★☆</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="book-card">
+                        <div class="book-content">
+                            <div class="book-image">
+                                <img src="https://image.aladin.co.kr/product/32659/25/cover500/k512830605_1.jpg" alt="코스모스">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">코스모스</h3>
+                                <p class="book-description">
+                                    우주에 대한 경이로움과 과학적 탐구 정신을 담은 클래식한 명저
+                                </p>
+                                <div class="book-meta">
+                                    <span class="category">과학</span>
+                                    <span class="rating">★★★★★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <div class="navigation">
+            <button class="nav-btn prev-btn" onclick="prevSlide()">‹ 이전</button>
+            <div class="page-indicator">
+                <span class="dot active" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
+            <button class="nav-btn next-btn" onclick="nextSlide()">다음 ›</button>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.querySelector('.books-slider');
+        const slides = document.querySelectorAll('.books-slider .slide-group');
+        const dots = document.querySelectorAll('.dot');
+        let slideIndex = 0;
+
+        function showSlide(n) {
+            if (n >= slides.length) slideIndex = 0;
+            else if (n < 0) slideIndex = slides.length - 1;
+            else slideIndex = n;
+
+            slider.style.transform = `translateX(-${slideIndex * 100}%)`;
+
+            dots.forEach((dot, idx) => dot.classList.toggle('active', idx === slideIndex));
+        }
+
+        // 버튼 이벤트
+        document.querySelector('.prev-btn').addEventListener('click', () => showSlide(slideIndex - 1));
+        document.querySelector('.next-btn').addEventListener('click', () => showSlide(slideIndex + 1));
+
+        // 초기 표시
+        showSlide(slideIndex);
+    });
+
+
+
+</script>
 </body>
 </html>
