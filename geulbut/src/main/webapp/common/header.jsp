@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!-- CSS 불러오기 -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+
 <header class="site-header">
     <div class="container site-header__inner">
         <!-- 좌측: 홈만 -->
@@ -53,7 +57,7 @@
                 </select>
 
                 <label for="q" class="visually-hidden">검색어</label>
-                <input id="q" name="q" type="text" placeholder="검색어를 입력하세요" />
+                <input id="q" name="q" type="text" placeholder="검색어를 입력하세요"/>
 
                 <button type="submit" class="btn-search">검색</button>
             </form>
@@ -83,17 +87,52 @@
 ">
             불러오는 중...
         </div>
+
+        <!-- 관리자 버튼 -->
+        <button class="admin-toggle">관리자</button>
+
+
+        <!-- 관리자 패널 -->
+        <aside class="admin-panel">
+            <h3>관리자 패널</h3>
+
+            <div class="admin-group">
+                <div class="group-title">📚 책 관리</div>
+                <ul>
+                    <li><a href="#">도서 등록</a></li>
+                    <li><a href="#">도서 수정</a></li>
+                    <li><a href="#">도서 삭제</a></li>
+                </ul>
+            </div>
+
+            <div class="admin-group">
+                <div class="group-title">👥 회원 관리</div>
+                <ul>
+                    <li><a href="#">회원 조회</a></li>
+                    <li><a href="#">회원 권한 변경</a></li>
+                </ul>
+            </div>
+
+            <div class="admin-group">
+                <div class="group-title">🎉 이벤트 관리</div>
+                <ul>
+                    <li><a href="#">이벤트 등록</a></li>
+                    <li><a href="#">이벤트 수정</a></li>
+                </ul>
+            </div>
+        </aside>
+
         <!-- 햄버거 토글 JS -->
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const hamburger = document.querySelector('.site-header__hamburger');
                 const mobileMenu = document.querySelector('.site-header__nav--right');
 
                 if (!hamburger || !mobileMenu) return;
 
                 // 햄버거 버튼 클릭 이벤트
-                hamburger.addEventListener('click', function(e) {
+                hamburger.addEventListener('click', function (e) {
                     e.stopPropagation();
                     toggleMenu();
                 });
@@ -133,14 +172,14 @@
                 }
 
                 // 메뉴 외부 클릭 시 메뉴 닫기
-                document.addEventListener('click', function(e) {
+                document.addEventListener('click', function (e) {
                     if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
                         closeMenu();
                     }
                 });
 
                 // ESC 키로 메뉴 닫기
-                document.addEventListener('keydown', function(e) {
+                document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') {
                         closeMenu();
                     }
@@ -153,7 +192,7 @@
                 });
 
                 // 창 크기 변경 시 데스크톱으로 돌아가면 메뉴 닫기
-                window.addEventListener('resize', function() {
+                window.addEventListener('resize', function () {
                     if (window.innerWidth > 768) {
                         closeMenu();
                     }
@@ -231,6 +270,33 @@
                 }
             });
 
+        </script>
+<%--관리자토글--%>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // 관리자 토글
+                const adminBtn = document.querySelector('.admin-toggle');
+                const adminPanel = document.querySelector('.admin-panel');
+
+                if (!adminBtn || !adminPanel) return;
+
+                adminBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    adminPanel.classList.toggle('open');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!adminPanel.contains(e.target) && !adminBtn.contains(e.target)) {
+                        adminPanel.classList.remove('open');
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        adminPanel.classList.remove('open');
+                    }
+                });
+            });
         </script>
 
 
