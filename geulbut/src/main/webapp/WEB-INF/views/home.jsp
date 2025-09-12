@@ -11,7 +11,6 @@
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
-
 <div class="page">
     <!-- 추천 도서 배너 -->
     <section class="ad-banner">
