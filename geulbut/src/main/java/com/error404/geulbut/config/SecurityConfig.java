@@ -54,7 +54,11 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR)
                         .permitAll()
                         .dispatcherTypeMatchers(DispatcherType.INCLUDE).permitAll() // jsp 태그중에 jsp:include 태그 허용
+
                         .requestMatchers("/", "/ping", "/login", "/login/**", "/oauth2/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/error", "dustApi", "DustWeatherApi","/v/**", "/dust","weather","weatherApi").permitAll()
+
+                        
+
                         .anyRequest().authenticated()
                 )
 //             TODO : 폼(홈페이지) 로그인 설정

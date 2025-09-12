@@ -15,7 +15,6 @@
                 <img src="/images/logo.png" alt="글벗">
             </a>
         </h1>
-
         <!-- 우측: 계정 메뉴 -->
         <nav class="site-header__nav site-header__nav--right" aria-label="Account">
             <ul class="site-header__menu site-header__menu--mobile">
@@ -69,6 +68,7 @@
             </ul>
         </nav>
 
+
         <!-- 헤더 최상단 좌측에 고정 -->
         <div id="weather-dust-header" style="
     position: fixed;
@@ -84,12 +84,80 @@
             불러오는 중...
         </div>
         <!-- 햄버거 토글 JS -->
-        <script>
-            const hamburger = document.querySelector('.site-header__hamburger');
-            const mobileMenu = document.querySelector('.site-header__mobile-menu');
 
-            hamburger.addEventListener('click', () => {
-                mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const hamburger = document.querySelector('.site-header__hamburger');
+                const mobileMenu = document.querySelector('.site-header__nav--right');
+
+                if (!hamburger || !mobileMenu) return;
+
+                // 햄버거 버튼 클릭 이벤트
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleMenu();
+                });
+
+                // 메뉴 토글 함수
+                function toggleMenu() {
+                    const isOpen = mobileMenu.classList.contains('open');
+
+                    if (isOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+
+                // 메뉴 열기
+                function openMenu() {
+                    mobileMenu.classList.add('open');
+                    hamburger.classList.add('active');
+                    hamburger.setAttribute('aria-label', '메뉴 닫기');
+
+                    // 메뉴가 열릴 때 약간의 바운스 효과 (햄버거 버튼 바로 아래)
+                    setTimeout(() => {
+                        mobileMenu.style.transform = 'translateY(2px) scale(1.02)';
+                        setTimeout(() => {
+                            mobileMenu.style.transform = 'translateY(0) scale(1)';
+                        }, 100);
+                    }, 50);
+                }
+
+                // 메뉴 닫기
+                function closeMenu() {
+                    mobileMenu.classList.remove('open');
+                    hamburger.classList.remove('active');
+                    hamburger.setAttribute('aria-label', '메뉴 열기');
+                    mobileMenu.style.transform = '';
+                }
+
+                // 메뉴 외부 클릭 시 메뉴 닫기
+                document.addEventListener('click', function(e) {
+                    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+                        closeMenu();
+                    }
+                });
+
+                // ESC 키로 메뉴 닫기
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        closeMenu();
+                    }
+                });
+
+                // 메뉴 링크 클릭 시 메뉴 닫기 (모바일에서 페이지 이동 시)
+                const menuLinks = mobileMenu.querySelectorAll('a');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                // 창 크기 변경 시 데스크톱으로 돌아가면 메뉴 닫기
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        closeMenu();
+                    }
+                });
             });
         </script>
         <script>

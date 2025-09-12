@@ -1,0 +1,155 @@
+/* 공지사항 2:8 레이아웃 */
+.notice-layout {
+    display: grid;
+    gap: var(--gap-4);
+    grid-template-columns: 1fr; /* 모바일에서는 1단 */
+}
+
+@media (min-width: 768px) {
+    .notice-layout {
+        grid-template-columns: 1.5fr 8.5fr; /* 태블릿 이상 2:8 비율 */
+    }
+}
+.panel {
+    display: flex;
+    align-items: center;  /* 수직 정렬 */
+    gap: 0.5rem;          /* 요소 사이 간격 */
+    flex-wrap: nowrap;    /* 한 줄로 유지 */
+    background:#ECECEC;
+}
+
+
+/* 사이드바 메뉴 hover */
+aside nav a {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background var(--dur) var(--ease);
+}
+aside nav a:hover {
+    background: var(--color-bg);
+    color: var(--color-accent-dark);
+}
+.text-center {
+    text-align: center;
+}
+
+/* -----------------------------------------------------------------------
+   공지사항 아이콘 + 텍스트 가로·세로 중앙 정렬
+----------------------------------------------------------------------- */
+.notice-meta {
+    display: flex;
+    height: 2rem;
+    flex-wrap: wrap;
+    gap: var(--gap-3);
+    background: #ECECEC;
+    border-top: 2px solid var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
+    align-items: center;
+}
+
+.notice-meta .meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-1);
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+}
+
+.notice-meta .meta-item i {
+    font-size: 0.75rem;
+}
+
+/* 시간 아이템만 오른쪽 끝으로 보내기 */
+.notice-meta .time-item {
+    margin-left: auto;
+}
+/*공지사항 내용*/
+.notice-text {
+    font-size: var(--space-3);        /* 글씨 크기 */
+    line-height: var(--space-6);         /* 줄 간격 확대 */
+    color: var(--color-text); /* 글색상 */
+}
+/*Comments 관련*/
+.comment-title {
+    border-bottom: 2px solid var(--color-accent); /* 밑줄 */
+    padding-bottom: 0.25rem;                     /* 글과 밑줄 간격 */
+    display: inline-block;                        /* 밑줄 길이를 글 길이에 맞춤 */
+    font-weight: 600;                    /* 필요시 글씨 굵게 */
+    margin-bottom: var(--space-3);       /* 아래 요소와 간격 */
+}
+
+/* 공지사항 본문 줄 간격 */
+.notice-text p {
+    margin-bottom: var(--space-2);
+    line-height: 1.8;   /* 줄 간격 */
+}
+
+/* 댓글 헤더 밑줄 */
+.comment-title {
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.25rem;
+    display: inline-block;
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+}
+
+/* 댓글 입력 영역 */
+.comment-input {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2);
+}
+
+.comment-textarea {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+    font-family: inherit;
+}
+
+.btn-comment {
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--dur) var(--ease);
+}
+.btn-comment:hover {
+    background: var(--color-accent-dark);
+}
+
+/* 댓글 리스트 */
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-3);
+}
+
+.comment-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2);
+}
+
+.comment-author {
+    font-weight: 600;
+    margin-right: var(--space-2);
+}
+
+.comment-date {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+}
+
+.comment-text {
+    margin-top: var(--space-1);
+}
+
+
+
+

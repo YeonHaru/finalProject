@@ -3,7 +3,7 @@
 <head>
     <title>공지사항</title>
     <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="/css/notice/noticeText.css">
+    <link rel="stylesheet" href="/css/qna/qnaText.css">
     <link rel="stylesheet" href="/css/header.css">
     <!-- 이미지 아이콘 사용 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

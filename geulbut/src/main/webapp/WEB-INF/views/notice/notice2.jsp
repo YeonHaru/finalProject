@@ -30,7 +30,7 @@
 
         <!-- 오른쪽 공지사항 콘텐츠 -->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
-            <h2 class="mb-4">공지사항</h2>
+            <h2 class="mb-4 notice-title">▣ 공지사항</h2>
 
             <table class="notice-table border" style="width: 100%;">
                 <thead class="bg-main">
@@ -52,43 +52,46 @@
                         </a>
 
                     </td>
-                    <td class="py-2 px-3">${data.writer}zxc</td>
-                    <td class="py-2 px-3">${data.regDate}cxc</td>
-                    <td class="py-2 px-3">${data.viewCnt}adxc</td>
+                    <td class="py-2 text-center">${data.writer}zxc</td>
+                    <td class="py-2 text-center">${data.regDate}cxc</td>
+                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
                 </tr>
 
                 <tr>
                     <td class="py-2 px-3 text-light">${data.no}sdsd</td>
                     <td class="py-2 px-3">
-                        <a href="noticeDetail.do?id=${data.no}" class="text-main">
-                            ${data.title}asd
+                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
+                            ${data.title}aass
                         </a>
+
                     </td>
-                    <td class="py-2 px-3">${data.writer}zxc</td>
-                    <td class="py-2 px-3">${data.regDate}cxc</td>
-                    <td class="py-2 px-3">${data.viewCnt}adxc</td>
+                    <td class="py-2 text-center">${data.writer}zxc</td>
+                    <td class="py-2 text-center">${data.regDate}cxc</td>
+                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
                 </tr>
                 <tr>
                     <td class="py-2 px-3 text-light">${data.no}sdsd</td>
                     <td class="py-2 px-3">
-                        <a href="noticeDetail.do?id=${data.no}" class="text-main">
-                            ${data.title}asd
+                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
+                            ${data.title}aass
                         </a>
+
                     </td>
-                    <td class="py-2 px-3">${data.writer}zxc</td>
-                    <td class="py-2 px-3">${data.regDate}cxc</td>
-                    <td class="py-2 px-3">${data.viewCnt}adxc</td>
+                    <td class="py-2 text-center">${data.writer}zxc</td>
+                    <td class="py-2 text-center">${data.regDate}cxc</td>
+                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
                 </tr>
                 <tr>
                     <td class="py-2 px-3 text-light">${data.no}sdsd</td>
                     <td class="py-2 px-3">
-                        <a href="noticeDetail.do?id=${data.no}" class="text-main">
-                            ${data.title}asd
+                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
+                            ${data.title}aass
                         </a>
+
                     </td>
-                    <td class="py-2 px-3">${data.writer}zxc</td>
-                    <td class="py-2 px-3">${data.regDate}cxc</td>
-                    <td class="py-2 px-3">${data.viewCnt}adxc</td>
+                    <td class="py-2 text-center">${data.writer}zxc</td>
+                    <td class="py-2 text-center">${data.regDate}cxc</td>
+                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
                 </tr>
                 <%--            </c:forEach>--%>
                 </tbody>
