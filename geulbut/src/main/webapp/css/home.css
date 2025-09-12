@@ -618,6 +618,7 @@
 .books-slider {
     display: flex;
     transition: transform 0.5s ease; /* 부드럽게 이동 */
+    flex-wrap: nowrap; /* 반드시 nowrap */
 }
 
 .slide-group {
