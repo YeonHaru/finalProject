@@ -1,0 +1,309 @@
+/* ======================================= */
+/* 관리자 회원조회 통합 CSS (검색창 + 테이블 + 버튼 + 통계) */
+/* ======================================= */
+
+:root {
+
+    --admin-accent-dark: #0056b3;  /* 버튼 hover 등 */
+    --admin-btn-search: #17a2b8;   /* 검색 버튼 기본 */
+    --admin-btn-delete: #dc3545;   /* 삭제 버튼 */
+    --admin-btn-delete-hover: #c82333; /* 삭제 hover */
+    --admin-detail-bg: #f1f5f9;    /* 상세 데이터 배경 */
+}
+
+
+/* 검색창 wrapper */
+.search-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+/* 검색폼 */
+.search-wrapper .search-form {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    max-width: 500px;
+    height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+/* select */
+.search-form select {
+    height: 100%;
+    padding: 0 12px;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background: var(--color-bg);
+    border: none;
+    border-right: 1px solid var(--color-border);
+    cursor: pointer;
+    appearance: none;
+}
+
+/* input */
+.search-form input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0 12px;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: none;
+}
+
+.search-form input::placeholder {
+    color: var(--color-text-light);
+}
+
+.search-form input:focus-visible {
+    outline: none;
+}
+
+/* 버튼 */
+.search-form .btn-search {
+    height: 100%;
+    padding: 0 16px;
+    font-size: 0.9rem;
+    background: var(--color-accent-dark);
+    color: #fff;
+    font-weight: 600;
+    border-left: 1px solid var(--color-border);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.search-form .btn-search:hover {
+    opacity: .92;
+}
+
+.search-form .btn-search:active {
+    opacity: .86;
+}
+
+/* 세부검색 영역 */
+.advanced-search {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;  /* ← 중앙 정렬 */
+    align-items: center;
+    gap: 8px 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.advanced-search label {
+    font-size: 0.85rem;
+}
+
+.advanced-search input,
+.advanced-search select {
+    height: 36px;
+    padding: 0 8px;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+/* --------------------------- */
+/* 테이블 스타일 */
+/* --------------------------- */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: var(--space-4);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: var(--space-2) var(--space-3);
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+    vertical-align: middle;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.admin-table th {
+    background: var(--color-bg);
+    color: var(--color-accent-dark);
+    font-weight: 600;
+}
+
+/* 데이터 컬럼 글자 줄임 처리 (마지막 컬럼 제외) */
+.admin-table td:not(:last-child) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+/* 버튼 컬럼은 줄임 적용하지 않음 */
+.admin-table td:last-child {
+    white-space: normal;
+    overflow: visible;
+}
+
+/* select, 버튼 내부 글자 겹침 방지 */
+.admin-table select,
+.admin-table .btn {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --------------------------- */
+/* 버튼 */
+/* --------------------------- */
+.btn {
+    display: inline-block;
+    min-width: 60px;
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: none;
+}
+
+.btn-accent {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.btn-accent:hover {
+    background: var(--admin-accent-dark);
+}
+
+.btn-delete {
+    background: var(--admin-btn-delete);
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+}
+
+/* select box */
+.admin-table select {
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: #fff;
+    font-size: 0.85rem;
+    height: 28px;
+}
+
+/* --------------------------- */
+/* 페이지네이션 */
+/* --------------------------- */
+.pagination a {
+    margin: 0 3px;
+    padding: 3px 6px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-radius: var(--radius-sm);
+    color: inherit;
+}
+
+.pagination a.active {
+    font-weight: bold;
+    background-color: #ddd;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* --------------------------- */
+/* 통계 영역 */
+/* --------------------------- */
+.stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.stats p {
+    margin: 0;
+    padding: 4px 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.stats span {
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+/* --------------------------- */
+/* 상세 데이터 숨김/확장 영역 */
+/* --------------------------- */
+.detail-row .detail-content {
+    padding: 10px 16px;
+    background-color: var(--admin-detail-bg);
+    border-top: 1px solid #ddd;
+    font-size: 0.9rem;
+    line-height: 1.4em;
+}
+
+.detail-row .detail-content p {
+    margin: 4px 0;
+}
+
+/* --------------------------- */
+/* 모바일 대응 */
+/* --------------------------- */
+@media (max-width: 767px) {
+    .admin-table th,
+    .admin-table td {
+        font-size: 0.8rem;
+        padding: var(--space-1) var(--space-2);
+    }
+
+    .btn {
+        padding: var(--space-0) var(--space-1);
+        font-size: 0.75rem;
+    }
+
+    .search-wrapper .search-form,
+    .advanced-search {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .stats {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .detail-row .detail-content {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+}

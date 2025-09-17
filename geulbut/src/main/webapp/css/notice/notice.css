@@ -1,0 +1,72 @@
+/* notice 테이블 전용 밑줄 */
+.notice-table {
+    border-collapse: collapse;
+}
+
+.notice-table tr {
+    border-bottom: 1px solid #ccc; /* 색상은 원하는 대로 조절 */
+    text-align: center;
+}
+
+.notice-table tr:last-child {
+    border-bottom: none; /* 마지막 행 밑줄 제거 */
+}
+/*페이지네이션*/
+/* -----------------------------------------------------------------------
+   9) 페이지네이션 스타일
+----------------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-2);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    min-width: 36px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.pagination a:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.pagination .current {
+    background: var(--color-accent-dark);
+    color: #fff;
+    border-color: var(--color-accent-dark);
+    pointer-events: none;
+}
+
+.pagination .prev,
+.pagination .next {
+    font-weight: 600;
+}
+
+.pagination .prev:hover,
+.pagination .next:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+.panel {
+    display: flex;
+    align-items: center;  /* 수직 정렬 */
+    gap: 0.5rem;          /* 요소 사이 간격 */
+    flex-wrap: nowrap;    /* 한 줄로 유지 */
+    background:#ECECEC;
+}
+
+
+
+

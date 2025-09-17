@@ -1,0 +1,12 @@
+#dust-ticker {
+    font-weight: bold;
+    padding: 5px;
+}
+
+.warning {
+    color: orange;
+}
+
+.danger {
+    color: red;
+}

@@ -1,0 +1,105 @@
+/* --------------------
+  관리자 버튼
+-------------------- */
+.admin-toggle {
+    background: var(--color-accent);  /* 전역 변수 사용 */
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    z-index: 110;
+
+    /* 항상 표시 */
+    position: fixed;       /* relative → fixed로 바꿔 상단 우측 고정 */
+    top: 10px;
+    right: 10px;
+}
+
+/* --------------------
+  관리자 패널
+-------------------- */
+.admin-panel {
+    position: fixed;
+    top: 0;
+    right: -320px;          /* 패널 숨김 상태 */
+    width: 300px;
+    height: 100%;
+    background: var(--color-surface);  /* 투명도 제거 */
+    box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+    padding: 1rem;
+    overflow-y: auto;
+    transition: right 0.3s var(--ease), opacity 0.3s var(--ease);
+    opacity: 1;               /* 완전 불투명 */
+    z-index: 105;
+}
+
+/* 토글 버튼 클릭 시 보이기 */
+.admin-panel.open {
+    right: 0;
+}
+
+/* 관리자 토글 클릭 시 활성화 색상 */
+.admin-toggle.active {
+    background-color: var(--color-accent-dark);
+    color: #fff;
+}
+
+/* 헤딩 */
+.admin-panel h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: var(--color-accent-dark);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* 그룹 */
+.admin-group {
+    margin-bottom: 1.5rem;
+}
+
+.group-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--color-accent-dark);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: 0.2rem;
+}
+
+/* 리스트 */
+.admin-group ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.admin-group li a {
+    display: block;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    margin-bottom: 0.3rem;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+/* hover 효과 */
+.admin-group li a:hover {
+    background-color: var(--color-accent);
+    color: #fff;
+}
+/*날씨*/
+#weather-dust-header {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    font-size: 12px;
+    padding: 3px 6px;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    z-index: 9999;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+

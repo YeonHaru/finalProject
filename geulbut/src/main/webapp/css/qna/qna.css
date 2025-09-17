@@ -1,0 +1,147 @@
+
+/*페이지네이션*/
+/* -----------------------------------------------------------------------
+   9) 페이지네이션 스타일
+----------------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-2);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    min-width: 36px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.pagination a:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.pagination .current {
+    background: var(--color-accent-dark);
+    color: #fff;
+    border-color: var(--color-accent-dark);
+    pointer-events: none;
+}
+
+.pagination .prev,
+.pagination .next {
+    font-weight: 600;
+}
+
+.pagination .prev:hover,
+.pagination .next:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+.panel {
+    display: flex;
+    align-items: center;  /* 수직 정렬 */
+    gap: 0.5rem;          /* 요소 사이 간격 */
+    flex-wrap: nowrap;    /* 한 줄로 유지 */
+    background:#ECECEC;
+}
+/* 공지사항 2:8 레이아웃 */
+.notice-layout {
+    display: grid;
+    gap: var(--gap-4);
+    grid-template-columns: 1fr; /* 모바일에서는 1단 */
+}
+
+@media (min-width: 768px) {
+    .notice-layout {
+        grid-template-columns: 1.5fr 8.5fr; /* 태블릿 이상 2:8 비율 */
+    }
+}
+/* 사이드바 메뉴 hover */
+aside nav a {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background var(--dur) var(--ease);
+}
+aside nav a:hover {
+    background: var(--color-bg);
+    color: var(--color-accent-dark);
+}
+.text-center {
+    text-align: center;
+}
+
+
+
+
+
+/*오른쪽 공지사항 콘텐츠*/
+.notice-title {
+    display: flex;
+    justify-content: space-between; /* 양 끝으로 배치 */
+    align-items: center;           /* 세로 가운데 정렬 */
+    font-weight: bold;        /* 강조 */
+    padding-bottom: 0.75rem;   /* 밑줄과 텍스트 사이 간격 */
+    border-bottom: 2px solid #333; /* 밑줄 색상/두께 */
+    margin-bottom: 2rem;      /* 밑줄 아래 여백 */
+}
+.notice-title .btn-main {
+
+    background-color: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    padding: 0.3rem 0.7rem;       /* 패딩 약간 줄임 */
+    font-weight: bold;
+    font-size: 0.75rem;            /* 글자 크기 조절 */
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.notice-title .btn-main:hover {
+    background-color: var(--color-accent); /* 호버 시 배경 채우기 */
+    color: #fff;                            /* 글자 색 변경 */
+}
+
+/* 테이블 구분선: 셀에 적용 (연하게) */
+.notice-table {
+    border-collapse: collapse; /* 필수: 셀 경계가 합쳐져서 선이 깨끗하게 보임 */
+    border-spacing: 0;
+    width: 100%;
+}
+
+/* 테이블 본문 셀 아래에 연한 선 */
+.notice-table tbody td {
+    border-bottom: 1px solid rgba(0,0,0,0.12); /* 연한 회색 (원하면 더 연하게 0.04 등으로) */
+    /* 기존 유틸리티 px/py와 충돌할 수 있으니 필요시 제거/조정 */
+    /* padding: 0.75rem 1rem; */
+}
+
+/* 마지막 행의 밑줄 제거 */
+.notice-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* (옵션) 헤더와 본문 선 구분을 조금 더 명확히 */
+.notice-table thead th {
+    border-bottom: 1px solid #666666;
+}
+
+
+
+
+
+
+
+
+
+
+
