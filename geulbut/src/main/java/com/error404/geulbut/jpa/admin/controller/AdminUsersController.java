@@ -29,7 +29,7 @@ import java.util.Map;
 @PreAuthorize("hasRole('ADMIN')") // ADMIN 권한만 접근 가능
 public class AdminUsersController {
 
-    private final AdminUsersService adminUsersService; // 비즈니스 로직 처리용 서비스aaa
+    private final AdminUsersService adminUsersService; // 비즈니스 로직 처리용 서비스aaaxxx
 
     // ====================================================
     // 1️⃣ JSP 페이지 렌더링 (회원 관리 페이지)

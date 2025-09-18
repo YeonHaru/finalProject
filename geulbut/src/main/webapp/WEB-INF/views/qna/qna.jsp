@@ -24,7 +24,11 @@
             </nav>
         </aside>
 
-        <!-- 오른쪽 콘텐츠 -->
+<<<<<<< Updated upstream
+        <!-- 오른쪽 콘텐츠ddddxxcczzz  ddd-->
+=======
+        <!-- 오른쪽 콘텐츠 aacccc-->
+>>>>>>> Stashed changes
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
             <h2 class="mb-4 notice-title">
                 ▣ 1:1 문의
