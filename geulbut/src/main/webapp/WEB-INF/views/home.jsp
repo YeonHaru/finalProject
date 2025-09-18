@@ -937,8 +937,8 @@
     <!-- 큰 도서 광고창 -->
     <section class="slider-ad-container">
         <div class="slider-ad">
-            <button class="slider-nav prev" onclick="prevSlide()">‹</button>
-            <button class="slider-nav next" onclick="nextSlide()">›</button>
+            <button class="slider-nav prev" onclick="prevBanner()">‹</button>
+            <button class="slider-nav next" onclick="nextBanner()">›</button>
             <div class="slider-track" id="sliderTrack">
                 <div class="slider-item">
                     <div class="slider-content">
@@ -1378,13 +1378,13 @@
 
         <!-- 하단 내비게이션 -->
         <div class="bottom-navigation">
-            <button class="slider-nav prev" id="prevBtn">‹ 이전</button>
+            <button class="slider-nav prev" id="prevBtn">‹이전</button>
             <div class="pagination-dots">
                 <span class="dot active" data-page="0"></span>
                 <span class="dot" data-page="1"></span>
                 <span class="dot" data-page="2"></span>
             </div>
-            <button class="slider-nav next" id="nextBtn">다음 ›</button>
+            <button class="slider-nav next" id="nextBtn">다음›</button>
         </div>
     </section>
 
@@ -1392,8 +1392,8 @@
     <section class="promotion-section">
         <div class="promotion-slider">
             <!-- 슬라이더 화살표 -->
-            <button class="promo-slider-btn prev" id="promoPrevBtn">‹</button>
-            <button class="promo-slider-btn next" id="promoNextBtn">›</button>
+            <button class="promo-slider-btn prev" id="promoPrevBtn">></button>
+            <button class="promo-slider-btn next" id="promoNextBtn">></button>
 
             <div class="promotion-container">
                 <!-- 첫 번째 페이지 -->
@@ -1801,19 +1801,16 @@
             </div>
         </div>
     </section>
-
 </div>
-
 </section>
 </div>
-
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-        /*** === 편집장의 선택 (탭 자동/수동 슬라이드) === ***/
-        let currentTabIndex = 0;
-        let autoSlideInterval = null;
-        let isPlaying = false;
-        const autoSlideDelay = 4000;
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            /*** === 편집장의 선택 (탭 자동 슬라이드) === ***/
+            let currentTabIndex = 0;
+            let autoSlideInterval = null;
+            let isPlaying = false;
+            const autoSlideDelay = 4000;
 
         const tabItems = document.querySelectorAll('.tab-item');
         const playButton = document.querySelector('.play-button');
@@ -2002,6 +1999,7 @@
 
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
-</script>
+
+    </script>
 </body>
 </html>
