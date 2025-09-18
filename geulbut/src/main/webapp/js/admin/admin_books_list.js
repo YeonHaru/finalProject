@@ -1,168 +1,167 @@
-$(function() {
-    // =============================
-    // 🔹 모달 select 옵션 로드
-    // =============================
-    function loadOptions(callback) {
-        $.get('/admin/books/options', function(res) {
-            let authorSelect = $('#authorId');
-            let publisherSelect = $('#publisherId');
-            let categorySelect = $('#categoryId');
+(function($){
+    const $modal = $('#bookModal');
+    const $form  = $('#bookForm');
+    const $title = $('#title');
+    const $isbn  = $('#isbn');
+    const $price = $('#price');
+    const $stock = $('#stock');
+    const $bookId= $('#bookId');
 
-            authorSelect.empty().append('<option value="">선택</option>');
-            publisherSelect.empty().append('<option value="">선택</option>');
-            categorySelect.empty().append('<option value="">선택</option>');
+    const $author = $('#authorId');
+    const $publisher = $('#publisherId');
+    const $category = $('#categoryId');
 
-            res.authors.forEach(a => authorSelect.append(`<option value="${a.authorId}">${a.name}</option>`));
-            res.publishers.forEach(p => publisherSelect.append(`<option value="${p.publisherId}">${p.name}</option>`));
-            res.categories.forEach(c => categorySelect.append(`<option value="${c.categoryId}">${c.name}</option>`));
-
-            if (callback) callback();
-        });
+    // ---------- 공통: 모달 ----------
+    function openModal(titleText){
+        $('#modalTitle').text(titleText || '도서 등록');
+        $modal.addClass('is-open').attr('aria-hidden', 'false');
+    }
+    function closeModal(){
+        $modal.removeClass('is-open').attr('aria-hidden', 'true');
     }
 
-    // =============================
-    // 🔹 모달 열기 (도서 등록)
-    // =============================
-    $('#btnAddBook').click(function() {
-        $('#modalTitle').text('도서 등록');
-        $('#bookForm')[0].reset();
-        $('#bookId').val('');
-        loadOptions(); // 옵션 최신화
-        $('#bookModal').show();
+    $('#btnAddBook').on('click', function(){
+        // 초기화
+        $form[0].reset();
+        $bookId.val('');
+        openModal('도서 등록');
     });
 
-    // =============================
-    // 🔹 모달 닫기
-    // =============================
-    $('#btnCloseModal').click(function() {
-        $('#bookModal').hide();
+    $('#btnCloseModal, #btnCancel, [data-close-modal]').on('click', function(){
+        closeModal();
     });
 
-    // =============================
-    // 🔹 등록 / 수정 submit
-    // =============================
-    $('#bookForm').submit(function(e) {
-        e.preventDefault();
+    $(document).on('keydown', function(e){
+        if(e.key === 'Escape' && $modal.hasClass('is-open')) closeModal();
+    });
 
-        let bookId = $('#bookId').val();
-        let method = bookId ? 'PUT' : 'POST';
-        let url = bookId ? '/admin/books/' + bookId : '/admin/books';
+    // ---------- 편집 ----------
+    $('#booksTableBody').on('click', '.btnEdit', function(){
+        const $tr = $(this).closest('tr');
+        const id  = $tr.data('id');
 
-        let data = {
-            bookId: bookId || null,
-            title: $('#title').val().trim(),
-            isbn: $('#isbn').val().trim(),
-            price: parseInt($('#price').val()),
-            stock: parseInt($('#stock').val()),
-            discountedPrice: null,
-            author: { authorId: parseInt($('#authorId').val()) || null },
-            publisher: { publisherId: parseInt($('#publisherId').val()) || null },
-            category: { categoryId: parseInt($('#categoryId').val()) || null }
-        };
+        $bookId.val(id);
+        $title.val($tr.data('title') || '');
+        $isbn.val($tr.data('isbn') || '');
+        $price.val($tr.data('price') || 0);
+        $stock.val($tr.data('stock') || 0);
 
-        if (!data.title) { alert('제목을 입력해주세요.'); return; }
-        if (!data.isbn) { alert('ISBN을 입력해주세요.'); return; }
-        if (data.price < 0 || data.stock < 0) { alert('가격/재고는 0 이상이어야 합니다.'); return; }
-
-        $.ajax({
-            url: url,
-            method: method,
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function() {
-                alert('저장 완료');
-                location.reload();
-            },
-            error: function(xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    alert('저장 실패: ' + xhr.responseJSON.message);
-                } else {
-                    alert('저장 실패');
-                }
-            }
+        // 선택값(저자/출판사/카테고리)은 서버에서 ID를 내려주고 셀렉트를 채워야 정확함.
+        // data-*에 name만 있는 경우, 일단 리스트를 불러온 뒤 사용자가 다시 선택하도록 둡니다.
+        // 옵션 자동 로딩(엔드포인트가 존재할 때만 동작)
+        populateSelects().then(() => {
+            // 만약 서버가 book의 authorId/publisherId/categoryId를 data-*로 내려준다면 아래처럼 preselect
+            // $author.val($tr.data('authorid') || '');
+            // $publisher.val($tr.data('publisherid') || '');
+            // $category.val($tr.data('categoryid') || '');
         });
+
+        openModal('도서 수정');
     });
 
-    // =============================
-    // 🔹 삭제
-    // =============================
-    $('#booksTableBody').on('click', '.btnDelete', function() {
-        let bookId = $(this).closest('tr').data('id');
-        if (confirm('정말 삭제하시겠습니까?')) {
-            $.ajax({
-                url: '/admin/books/' + bookId,
+    // ---------- 삭제 ----------
+    $('#booksTableBody').on('click', '.btnDelete', function(){
+        const $tr = $(this).closest('tr');
+        const id  = $tr.data('id');
+        if(!id) return;
+
+        if(confirm(`이 도서를 삭제하시겠습니까? (#${id})`)){
+            // 1순위: REST API가 있을 때 (DELETE /admin/books/{id})
+            fetch(`${getCtx()}/admin/books/${id}`, {
                 method: 'DELETE',
-                success: function() {
-                    alert('삭제 완료');
-                    location.reload();
-                },
-                error: function() {
-                    alert('삭제 실패');
-                }
-            });
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(res => {
+                    if(res.ok){ location.reload(); return; }
+                    // 2순위: 쿼리스트링 기반 엔드포인트로 폴백
+                    location.href = `${getCtx()}/admin/books/delete?bookId=${id}`;
+                })
+                .catch(() => {
+                    // 폴백
+                    location.href = `${getCtx()}/admin/books/delete?bookId=${id}`;
+                });
         }
     });
 
-    // =============================
-    // 🔹 수정 버튼 클릭
-    // =============================
-    $('#booksTableBody').on('click', '.btnEdit', function() {
-        let bookId = $(this).closest('tr').data('id');
-
-        $.get('/admin/books/' + bookId, function(book) {
-            $('#modalTitle').text('도서 수정');
-            $('#bookId').val(book.bookId);
-            $('#title').val(book.title);
-            $('#isbn').val(book.isbn);
-            $('#price').val(book.price);
-            $('#stock').val(book.stock);
-
-            // ✅ 옵션 로드 후 기존 값 세팅
-            loadOptions(function() {
-                $('#authorId').val(book.authorId || '');
-                $('#publisherId').val(book.publisherId || '');
-                $('#categoryId').val(book.categoryId || '');
-            });
-
-            $('#bookModal').show();
-        });
-    });
-
-    // =============================
-    // 🔹 검색
-    // =============================
-    $('#searchForm').submit(function(e) {
+    // ---------- 저장 (등록/수정 공용) ----------
+    $form.on('submit', function(e){
         e.preventDefault();
-        let keyword = $(this).find('input[name="keyword"]').val().trim();
 
-        $.get('/admin/books/search', { keyword: keyword }, function(res) {
-            let tbody = $('#booksTableBody');
-            tbody.empty();
+        const formData = new FormData($form[0]);
+        const id = formData.get('bookId');
+        const isEdit = !!(id && String(id).trim().length);
 
-            if (res.content.length === 0) {
-                tbody.append('<tr><td colspan="9">검색 결과가 없습니다.</td></tr>');
-                return;
-            }
+        // 1순위: REST API가 있을 때
+        const url = isEdit ? `${getCtx()}/admin/books/${id}` : `${getCtx()}/admin/books`;
+        const method = isEdit ? 'PUT' : 'POST';
 
-            res.content.forEach(book => {
-                let row = `
-                    <tr data-id="${book.bookId}">
-                        <td>${book.bookId}</td>
-                        <td>${book.title}</td>
-                        <td>${book.isbn}</td>
-                        <td>${book.author ? book.author.name : ''}</td>
-                        <td>${book.publisher ? book.publisher.name : ''}</td>
-                        <td>${book.price}</td>
-                        <td>${book.stock}</td>
-                        <td>${book.createdAt}</td>
-                        <td>
-                            <button class="btnEdit">수정</button>
-                            <button class="btnDelete">삭제</button>
-                        </td>
-                    </tr>
-                `;
-                tbody.append(row);
+        fetch(url, {
+            method,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: isEdit ? JSON.stringify(toJson(formData)) : JSON.stringify(toJson(formData))
+        })
+            .then(res => {
+                if(res.ok){ location.reload(); return; }
+                // 2순위: 기존 폼 액션으로 포스트 (백엔드 기존 형태)
+                $form.off('submit'); // 무한루프 방지
+                $form[0].submit();
+            })
+            .catch(() => {
+                // 폴백: 기존 폼 제출
+                $form.off('submit');
+                $form[0].submit();
             });
-        });
     });
-});
+
+    function toJson(fd){
+        const obj = {};
+        fd.forEach((v,k)=>{ obj[k]=v; });
+        return obj;
+    }
+
+    function getCtx(){
+        // JSP에서 header 포함 시, 보통 절대경로 사용이므로 contextPath 추정
+        return window.location.pathname.startsWith('/')
+            ? (document.body.getAttribute('data-ctx') || '')
+            : '';
+    }
+
+    // ---------- 옵션 셀렉트(저자/출판사/카테고리) 자동 로딩 (엔드포인트 있을 때만) ----------
+    async function populateSelects(){
+        const tasks = [
+            fillSelect($author),
+            fillSelect($publisher),
+            fillSelect($category),
+        ];
+        await Promise.allSettled(tasks);
+    }
+
+    async function fillSelect($select){
+        const src = $select.attr('data-src');
+        if(!src) return;
+        try{
+            const res = await fetch(src, { headers:{'X-Requested-With':'XMLHttpRequest'} });
+            if(!res.ok) return;
+            const list = await res.json();
+            if(!Array.isArray(list)) return;
+
+            // 기대형태: [{id:1, name:'...'}, ...] 혹은 [{authorId:1, name:'...'}]
+            const idKey = Object.keys(list[0]||{}).find(k => /id$/i.test(k)) || 'id';
+            const nameKey = Object.keys(list[0]||{}).find(k => /(name|title)/i.test(k)) || 'name';
+
+            // 기존 옵션 초기화(첫 '선택' 유지)
+            $select.find('option:not(:first)').remove();
+
+            list.forEach(item=>{
+                const opt = document.createElement('option');
+                opt.value = item[idKey];
+                opt.textContent = item[nameKey];
+                $select.append(opt);
+            });
+        }catch(_e){ /* 엔드포인트 없으면 조용히 패스 */ }
+    }
+
+    // 초기화: 필요 시 옵션 미리 로딩
+    // populateSelects();
+
+})(jQuery);
