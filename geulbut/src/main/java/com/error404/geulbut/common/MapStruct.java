@@ -30,6 +30,7 @@ public interface MapStruct {
     //    jpa
 //    종일
 //    Authors <-> AuthorsDto
+    @Mapping(target = "createdAt", source = "createdAt")
     AuthorsDto toDto(Authors authors);
 
     Authors toEntity(AuthorsDto authorsDto);
