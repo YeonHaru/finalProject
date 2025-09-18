@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
 <head>
     <title>공지사항</title>
@@ -31,19 +33,31 @@
             </h2>
 
             <form action="${pageContext.request.contextPath}/qnaSubmit" method="post">
+                <c:if test="${not empty qna.id}">
+                    <input type="hidden" name="id" value="${qna.id}"/>
+                </c:if>
+
                 <!-- 제목 -->
                 <label for="title" class="ml-1">제목</label>
-                <input type="text" id="title" name="title" class="form-input mb-5 mt-3" placeholder="제목을 입력하세요" required>
+                <input type="text" id="title" name="title" class="form-input mb-5 mt-3"
+                       value="${qna.title}" placeholder="제목을 입력하세요" required>
 
                 <!-- 내용 -->
                 <label for="content" class="ml-1">내용</label>
-                <textarea id="content" name="content" class="form-textarea mb-3 mt-3" placeholder="문의 내용을 입력하세요" rows="8" required></textarea>
+                <textarea id="qContent" name="qContent" class="form-textarea mb-3 mt-3"
+                          placeholder="문의 내용을 입력하세요" rows="8" required>${qna.QContent}</textarea>
 
-                <!-- 등록 버튼 -->
+                <!-- 제출 버튼 -->
                 <div class="text-right">
-                    <button type="submit" class="btn btn-main">등록</button>
+                    <button type="submit" class="btn btn-main">
+                        <c:choose>
+                            <c:when test="${not empty qna.id}">수정</c:when>
+                            <c:otherwise>등록</c:otherwise>
+                        </c:choose>
+                    </button>
                 </div>
             </form>
+
         </div>
 
     </div>

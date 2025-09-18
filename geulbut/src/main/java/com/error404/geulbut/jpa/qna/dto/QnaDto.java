@@ -14,10 +14,10 @@ public class QnaDto {
     private Long id;
     private String title;
     private String qContent;
-    private LocalDateTime qAt;
+    private Date  qAt;
     private String aId;
     private String aContent;
-    private LocalDateTime aAt;
+    private Date  aAt;
     private String userId;
 }
 
