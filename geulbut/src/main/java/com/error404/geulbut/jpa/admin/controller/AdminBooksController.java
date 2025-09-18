@@ -71,13 +71,20 @@ public class AdminBooksController {
     // ================================
     @PostMapping
     @ResponseBody
-    public ResponseEntity<BooksDto> createBook(@RequestBody BooksDto bookDto) {
+    public ResponseEntity<Map<String, Object>> createBook(@RequestBody BooksDto bookDto) {
         try {
-            Books book = adminBooksService.fromDto(bookDto); // DTO → Entity + FK 세팅
+            Books book = adminBooksService.fromDto(bookDto);
             Books savedBook = adminBooksService.saveBook(book);
-            return ResponseEntity.ok(adminBooksService.toDto(savedBook));
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "book", adminBooksService.toDto(savedBook)
+            ));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            // ISBN 중복 등 예외 발생 시 상세 메시지를 반환
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
         }
     }
 
@@ -169,4 +176,5 @@ public class AdminBooksController {
         private List<Publishers> publishers;
         private List<Categories> categories;
     }
+
 }

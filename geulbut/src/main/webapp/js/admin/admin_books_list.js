@@ -27,7 +27,7 @@ $(function() {
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
-        loadOptions(); // 옵션 최신화
+        loadOptions();
         $('#bookModal').show();
     });
 
@@ -44,6 +44,15 @@ $(function() {
     $('#bookForm').submit(function(e) {
         e.preventDefault();
 
+        // 옵션 선택 체크
+        let authorVal = $('#authorId').val();
+        let publisherVal = $('#publisherId').val();
+        let categoryVal = $('#categoryId').val();
+
+        if (!authorVal) { alert('저자를 선택해주세요.'); return; }
+        if (!publisherVal) { alert('출판사를 선택해주세요.'); return; }
+        if (!categoryVal) { alert('카테고리를 선택해주세요.'); return; }
+
         let bookId = $('#bookId').val();
         let method = bookId ? 'PUT' : 'POST';
         let url = bookId ? '/admin/books/' + bookId : '/admin/books';
@@ -52,12 +61,12 @@ $(function() {
             bookId: bookId || null,
             title: $('#title').val().trim(),
             isbn: $('#isbn').val().trim(),
-            price: parseInt($('#price').val()),
-            stock: parseInt($('#stock').val()),
+            price: parseInt($('#price').val()) || 0,
+            stock: parseInt($('#stock').val()) || 0,
             discountedPrice: null,
-            author: { authorId: parseInt($('#authorId').val()) || null },
-            publisher: { publisherId: parseInt($('#publisherId').val()) || null },
-            category: { categoryId: parseInt($('#categoryId').val()) || null }
+            authorId: parseInt(authorVal),
+            publisherId: parseInt(publisherVal),
+            categoryId: parseInt(categoryVal)
         };
 
         if (!data.title) { alert('제목을 입력해주세요.'); return; }
@@ -117,7 +126,7 @@ $(function() {
             $('#price').val(book.price);
             $('#stock').val(book.stock);
 
-            // ✅ 옵션 로드 후 기존 값 세팅
+            // 옵션 로드 후 기존 값 세팅
             loadOptions(function() {
                 $('#authorId').val(book.authorId || '');
                 $('#publisherId').val(book.publisherId || '');
@@ -153,6 +162,7 @@ $(function() {
                         <td>${book.author ? book.author.name : ''}</td>
                         <td>${book.publisher ? book.publisher.name : ''}</td>
                         <td>${book.price}</td>
+                        <td>${book.discountedPrice != null ? book.discountedPrice : ''}</td>
                         <td>${book.stock}</td>
                         <td>${book.createdAt}</td>
                         <td>
