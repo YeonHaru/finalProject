@@ -95,4 +95,5 @@ $(function() {
         const keyword = $('#searchKeyword').val().trim();
         location.href = `/admin/authors?page=${page}&keyword=${encodeURIComponent(keyword)}`;
     });
+
 });
