@@ -27,7 +27,7 @@ body {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 40px;
-    overflow: hidden; /* 컨텐츠가 섹션을 벗어나지 않도록 */
+    overflow: hidden;
 }
 
 .section-header {
@@ -37,48 +37,79 @@ body {
     margin-bottom: 40px;
 }
 
+.section-header::before {
+    content: '📖';
+    font-size: 24px;
+    margin-right: 12px;
+}
 
 .section-title {
     position: relative;
-    display: inline-block; /* 글자 길이에 맞게 밑줄 적용 */
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 100%; /* 제목 글자 길이에 맞게 */
-    height: 4px;
-    background: linear-gradient(90deg, #424c5e 0%, #7d858c 100%); /* 진한 무채색 그라데이션 */
-    border-radius: 2px;
+    display: inline-block;
+    font-size: 27px;
+    font-weight: 800;
+    color: #1f2937;
+    letter-spacing: -0.5px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 
+/* 수정된 작은 재생/정지 버튼 */
 .play-button {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #6c757d 0%, #000000 100%); /* 회색 그라데이션 */
+    width: 36px;
+    height: 36px;
+    background: none;
     border: none;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3); /* 회색 그림자 */
+    transition: all 0.2s ease;
+    opacity: 0.7;
+    position: relative;
 }
 
 .play-button:hover {
+    opacity: 1;
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4); /* hover 시 회색 그림자 */
 }
 
 .play-button::before {
-    content: '▶';
-    color: white;
+    color: #2f3239;
     font-size: 16px;
-    margin-left: 2px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.play-button:hover::before {
+    color: #374151;
+}
+
+.play-button.playing::before {
+    content: '▶';
+    margin-left: 1px;
+}
+
+.play-button.paused::before {
+    content: '';
+}
+
+.play-button.paused::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 3px;
+    height: 14px;
+    background: #6b7280;
+    box-shadow: 6px 0 0 #6b7280;
+    transition: all 0.2s ease;
+}
+
+.play-button.paused:hover::after {
+    background: #262d39;
+    box-shadow: 6px 0 0 #374151;
 }
 
 /* 탭 메뉴 */
@@ -152,7 +183,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, rgb(255, 255, 255) 0%, #284b7c 100%);
+    background: linear-gradient(90deg, rgb(175, 193, 216) 0%, #284b7c 100%);
 }
 
 .book-card:hover {
@@ -173,7 +204,7 @@ body {
 }
 
 .book-badge.recommend {
-    background: #6f9cd1; /* 진한 그레이 계열 */
+    background: #6e8ebc; /* 진한 그레이 계열 */
     color: #f9fafb;      /* 글자는 밝은 회색/흰색 */
 }
 
@@ -217,7 +248,7 @@ body {
 .book-title {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #344d60;
     margin-bottom: 6px;
     line-height: 1.3;
 }
@@ -357,19 +388,6 @@ body {
     z-index: 2;
 }
 
-
-.book-badge.trending {
-    background: #ff6b6b;
-}
-
-.book-badge.hot {
-    background: #ff4757;
-}
-
-.book-badge.new {
-    background: #2ed573;
-}
-
 .book-image {
     position: relative;
     width: 130px; /* 60px → 90px */
@@ -500,7 +518,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #d1d5db 0%, #6b7280 100%);
+    background: linear-gradient(90deg, #bbc6d5 0%, #4f6173 100%);
 }
 
 .new-book-card:hover {
@@ -512,7 +530,7 @@ body {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #4b5563; /* 중간 정도 어두운 회색 */
+    background: #40515c; /* 중간 정도 어두운 회색 */
     color: #f9fafb;      /* 밝은 글자 */
     padding: 4px 12px;
     border-radius: 16px;
@@ -623,7 +641,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff6b6b 0%, #ff8e53 100%);
+    background: linear-gradient(90deg, #edcab3 0%, #e67842 100%);
 }
 
 .trending-card:hover {
@@ -644,15 +662,15 @@ body {
 }
 
 .trending-badge.hot {
-    background: #ff4757;
+    background: rgba(248, 79, 91, 0.89);
 }
 
 .trending-badge.rising {
-    background: #ff6b6b;
+    background: rgb(250, 93, 93);
 }
 
 .trending-badge.viral {
-    background: #ff3838;
+    background: rgba(246, 60, 60, 0.83);
 }
 
 .trending-image {
@@ -678,11 +696,11 @@ body {
 
 .trending-rank {
     position: absolute;
-    top: 8px;
+    bottom: 8px;
     right: 8px;
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+    background: linear-gradient(135deg, #f15757 0%, #ef7c3e 100%);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -718,7 +736,7 @@ body {
 .stats-title {
     font-size: 10px;
     font-weight: 600;
-    color: #ff6b6b;
+    color: #ea6666;
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -741,7 +759,7 @@ body {
 
 .stats-trend {
     font-size: 11px;
-    color: #ff6b6b;
+    color: #d65a5a;
     font-weight: 600;
 }
 
@@ -754,7 +772,7 @@ body {
 }
 
 .trending-rating .star {
-    color: #ff6b6b;
+    color: #df5e5e;
     font-size: 14px;
 }
 
@@ -797,7 +815,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #e74c3c 0%, #f39c12 100%);
+    background: linear-gradient(90deg, #efe3af 0%, #e8b50e 100%);
 }
 
 .hotdeal-card:hover {
@@ -818,7 +836,7 @@ body {
 }
 
 .hotdeal-badge.discount-30 {
-    background: #e74c3c;
+    background: #f4b04f;
 }
 
 .hotdeal-image {
@@ -871,17 +889,18 @@ body {
 }
 
 .hotdeal-time {
-    background: #fff5f5;
-    border: 1px solid #fed7d7;
+    background: #fff5d5;
+    border: 1px solid #f6e2c5;
     border-radius: 8px;
     padding: 8px;
     font-size: 11px;
     color: #c53030;
     font-weight: 600;
+    margin-bottom: 7px;
 }
 
 .hotdeal-button {
-    background: linear-gradient(135deg, #e74c3c 0%, #f39c12 100%);
+    background: linear-gradient(135deg, #ffce4c 0%, #f39c12 100%);
     color: white;
     border: none;
     border-radius: 20px;
@@ -930,7 +949,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff6b6b 0%, #feca57 100%);
+    background: linear-gradient(90deg, #f4b6b6 0%, #ca3a3a 100%);
 }
 
 .event-card:hover {
@@ -983,15 +1002,15 @@ body {
 }
 
 .event-date {
-    color: #3498db;
+    color: #379cd8;
 }
 
 .event-location {
-    color: #e74c3c;
+    color: #d84839;
 }
 
 .event-time {
-    color: #9b59b6;
+    color: #b166d1;
 }
 
 /* 굿즈 카드 스타일 */
@@ -1027,7 +1046,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #6c5ce7 0%, #a29bfe 100%);
+    background: linear-gradient(90deg, #cdc8f8 0%, #5339ae 100%);
 }
 
 .goods-card:hover {
@@ -1048,15 +1067,15 @@ body {
 }
 
 .goods-badge.special {
-    background: #ff6b6b;
+    background: #894fa8;
 }
 
 .goods-badge.new {
-    background: #2ed573;
+    background: #4946c3;
 }
 
 .goods-badge.hot {
-    background: #ff4757;
+    background: #c98af4;
 }
 
 .goods-badge.best {
@@ -1091,19 +1110,19 @@ body {
 
 .goods-period {
     font-size: 12px;
-    color: #3498db;
+    color: #3291d1;
     margin-bottom: 4px;
 }
 
 .goods-publisher {
     font-size: 12px;
-    color: #e74c3c;
+    color: #df4b3c;
     margin-bottom: 4px;
 }
 
 .goods-author {
     font-size: 12px;
-    color: #9b59b6;
+    color: #864c9e;
     margin-bottom: 12px;
 }
 
@@ -1160,7 +1179,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #2ed573 0%, #7bed9f 100%);
+    background: linear-gradient(90deg, #b3e6cd 0%, #238a37 100%);
 }
 
 .weekly-card:hover {
@@ -1172,7 +1191,7 @@ body {
     position: absolute;
     top: 12px;
     right: 12px;
-    background: #2ed573;
+    background: #2bc367;
     color: white;
     padding: 4px 10px;
     border-radius: 16px;
@@ -1327,8 +1346,8 @@ body {
 
 /* 광고창 */
 .ad-marquee {
-    background: linear-gradient(45deg, #f8f9fa, #a4b0be);
-    color: #2f3542;
+    background: linear-gradient(45deg, #f8f9fa, #9aadc5);
+    color: #182839;
     padding: 12px 0;
     overflow: hidden;
     margin: 20px 0;
@@ -1448,7 +1467,7 @@ body {
 }
 
 .hot-indicator {
-    background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+    background: linear-gradient(135deg, #e44a4a 0%, #ff924b 100%);
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
@@ -1501,7 +1520,7 @@ body {
 }
 
 .category-tag {
-    background: #6366f1;
+    background: #34639f;
     color: white;
     padding: 4px 8px;
     border-radius: 12px;
@@ -1539,7 +1558,7 @@ body {
 .featured-book-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1f2937;
+    color: #273345;
     margin-bottom: 4px;
     line-height: 1.3;
     display: -webkit-box;
@@ -1553,6 +1572,15 @@ body {
     font-size: 12px;
     color: #6b7280;
     margin-bottom: 8px;
+}
+
+.book-rating {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+    padding-right: 8px;  /* 오른쪽에 약간의 여백 */
 }
 
 .stars {
@@ -1746,17 +1774,17 @@ body {
 }
 
 .bestseller-badge.new {
-    background: #ef4444;
+    background: #e14040;
     color: white;
 }
 
 .bestseller-badge.up {
-    background: #10b981;
+    background: #10a574;
     color: white;
 }
 
 .bestseller-badge.down {
-    background: #f59e0b;
+    background: #f19e0e;
     color: white;
 }
 
@@ -1788,7 +1816,7 @@ body {
 .special-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    background: linear-gradient(135deg, #eab055 0%, #f97316 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -1811,7 +1839,7 @@ body {
 
 .special-subtitle {
     font-size: 14px;
-    color: #f59e0b;
+    color: #e19208;
     margin: 0;
     font-weight: 600;
 }
@@ -1864,7 +1892,7 @@ body {
 }
 
 .discount-percent {
-    background: #ef4444;
+    background: #da3e3e;
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
@@ -1873,7 +1901,7 @@ body {
 }
 
 .days-left {
-    background: #f59e0b;
+    background: #f38519;
     color: white;
     padding: 4px 8px;
     border-radius: 12px;
@@ -1950,12 +1978,12 @@ body {
 .special-price {
     font-size: 16px;
     font-weight: 700;
-    color: #f59e0b;
+    color: #d58a0a;
 }
 
 .price-label {
     font-size: 10px;
-    color: #f59e0b;
+    color: #e1930b;
     font-weight: 500;
 }
 
@@ -1964,8 +1992,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    background: #fef3c7;
-    border: 1px solid #fde68a;
+    background: #fbefc4;
+    border: 1px solid #e6c17a;
     border-radius: 12px;
     margin-top: 20px;
 }
@@ -1999,7 +2027,8 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
-/*  2칸씩 있는 도서 광고창  */
+
+/*  큰 도서 광고창  */
 .slider-ad-container {
     width: 100vw;
     position: relative;
@@ -2015,14 +2044,14 @@ body {
 
 .slider-ad {
     position: relative;
-    height: 200px;
+    height: 160px;  /* 190px → 160px로 줄임 */
 }
 
 .slider-track {
     display: flex;
     width: 300%;
     height: 100%;
-    animation: slide 15s infinite;
+    transition: transform 0.5s ease;  /* 자동 애니메이션 제거하고 transition 추가 */
 }
 
 .slider-item {
@@ -2031,17 +2060,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #78716c 0%, #57534e 100%);  /* 차분한 색상으로 변경 */
     position: relative;
     overflow: hidden;
 }
 
 .slider-item:nth-child(2) {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(135deg, #6b4c57 0%, #523a47 100%);
 }
 
 .slider-item:nth-child(3) {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: linear-gradient(135deg, #3c4f76 0%, #2a3b5c 100%);
 }
 
 .slider-content {
@@ -2052,21 +2081,23 @@ body {
 }
 
 .slider-title {
-    font-size: 32px;
+    font-size: 26px;  /* 32px → 26px로 줄임 */
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 12px;  /* 15px → 12px로 줄임 */
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    line-height: 1.2;  /* 줄 높이 추가 */
 }
 
 .slider-subtitle {
-    font-size: 18px;
+    font-size: 15px;  /* 18px → 15px로 줄임 */
     opacity: 0.9;
-    margin-bottom: 20px;
+    margin-bottom: 16px;  /* 20px → 16px로 줄임 */
+    line-height: 1.3;  /* 줄 높이 추가 */
 }
 
 .slider-button {
     display: inline-block;
-    padding: 12px 30px;
+    padding: 10px 24px;  /* 12px 30px → 10px 24px로 줄임 */
     background: rgba(255,255,255,0.2);
     color: white;
     text-decoration: none;
@@ -2075,6 +2106,7 @@ body {
     border: 2px solid rgba(255,255,255,0.3);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    font-size: 14px;  /* 글자 크기 명시 */
 }
 
 .slider-button:hover {
@@ -2083,34 +2115,39 @@ body {
     transform: translateY(-2px);
 }
 
-@keyframes slide {
-    0%, 30% { transform: translateX(0); }
-    33.333%, 63.333% { transform: translateX(-33.333%); }
-    66.666%, 96.666% { transform: translateX(-66.666%); }
-    100% { transform: translateX(0); }
-}
-
-.slider-indicators {
+/* 화살표 네비게이션 버튼 */
+.slider-nav {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 3;
-}
-
-.indicator {
-    width: 12px;
-    height: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
     border-radius: 50%;
-    background: rgba(255,255,255,0.4);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     transition: all 0.3s ease;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    z-index: 10;
 }
 
-.indicator.active {
-    background: white;
-    transform: scale(1.2);
+.slider-nav:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.slider-nav.prev {
+    left: 20px;
+}
+
+.slider-nav.next {
+    right: 20px;
 }
 
 /* 화제의 책 소식 섹션 */
@@ -2132,17 +2169,6 @@ body {
     position: relative;
 }
 
-.hot-news-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    border-radius: 2px;
-}
 
 .hot-news-slider {
     position: relative;
@@ -2223,7 +2249,7 @@ body {
 
 .rank-badge.rank-3 {
     background: linear-gradient(135deg, #cd7f32 0%, #daa850 100%);
-    color: white;
+    color: #1f2937;
 }
 
 .status-badge {
@@ -2235,19 +2261,19 @@ body {
 }
 
 .status-badge.hot {
-    background: #ef4444;
+    background: #d84040;
 }
 
 .status-badge.best {
-    background: #10b981;
+    background: #10b57d;
 }
 
 .status-badge.new {
-    background: #3b82f6;
+    background: #3776da;
 }
 
 .status-badge.trending {
-    background: #f59e0b;
+    background: #f69f13;
 }
 
 .book-cover {
@@ -2428,19 +2454,19 @@ body {
 }
 
 .bestseller-promo {
-    border-left: 4px solid #fbbf24;
+    border-left: 4px solid #ecb421;
 }
 
 .md-promo {
-    border-left: 4px solid #8b5cf6;
+    border-left: 4px solid rgba(113, 74, 202, 0.78);
 }
 
 .new-book-promo {
-    border-left: 4px solid #10b981;
+    border-left: 4px solid #0d9f6f;
 }
 
 .audiobook-promo {
-    border-left: 4px solid #6366f1;
+    border-left: 4px solid #262ab6;
 }
 
 .promo-icon {
@@ -2456,22 +2482,22 @@ body {
 
 .bestseller-promo .promo-icon {
     background: #fef3c7;
-    color: #d97706;
+    color: #f48506;
 }
 
 .md-promo .promo-icon {
     background: #f3e8ff;
-    color: #8b5cf6;
+    color: #6826f8;
 }
 
 .new-book-promo .promo-icon {
     background: #d1fae5;
-    color: #059669;
+    color: #07d695;
 }
 
 .audiobook-promo .promo-icon {
     background: #e0e7ff;
-    color: #4f46e5;
+    color: #3a2de4;
 }
 
 .promo-icon svg {
@@ -2705,7 +2731,7 @@ body {
 .audiobook-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    background: linear-gradient(135deg, #21b7d1 0%, #0c9ec5 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -2739,7 +2765,7 @@ body {
 }
 
 .free-trial-btn {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    background: linear-gradient(135deg, #06bfdd 0%, #09a7cd 100%);
     color: white;
     border: none;
     border-radius: 20px;
@@ -2918,7 +2944,7 @@ body {
 /* 오디오북 프로모션 */
 .audiobook-promotion {
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1px solid #bae6fd;
+    border: 1px solid #95c2da;
     border-radius: 16px;
     padding: 24px;
     display: flex;
@@ -3199,10 +3225,10 @@ body {
     flex-wrap: wrap;
 }
 
-.feature.red { color: #e74c3c; }
-.feature.green { color: #2ecc71; }
-.feature.navy { color: #34495e; }
-.feature.yellow { color: #f1c40f; }
+.feature.red { color: #c84233; }
+.feature.green { color: #29b866; }
+.feature.navy { color: #33485c; }
+.feature.yellow { color: #dcb210; }
 
 
 /* 반응형 디자인 */
