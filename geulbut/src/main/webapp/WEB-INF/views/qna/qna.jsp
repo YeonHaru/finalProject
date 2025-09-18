@@ -24,7 +24,7 @@
             </nav>
         </aside>
 
-        <!-- 오른쪽 콘텐츠dddd -->
+        <!-- 오른쪽 콘텐츠ddddxxcc -->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
             <h2 class="mb-4 notice-title">
                 ▣ 1:1 문의
