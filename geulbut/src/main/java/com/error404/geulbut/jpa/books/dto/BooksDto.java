@@ -33,5 +33,5 @@ public class BooksDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     //    ES_DELETE_FLAG
-    private String esDeleteFlag;            // Y or N  디폴트 N
+    private String esDeleteFlag= "N";            // Y or N  디폴트 N
 }

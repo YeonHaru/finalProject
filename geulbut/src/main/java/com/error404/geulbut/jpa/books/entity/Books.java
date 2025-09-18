@@ -63,10 +63,7 @@ public class Books extends BaseTimeEntity {
     private String isbn;
 
     //    ES_DELETE_FLAG
-//   어노테이션 지정한건 도서등록할 때 db에 null 값이 못들어가게 설정
-//    새로 등록되는 데이터는 N이 들어가도록 지정
-    @Column(name = "es_delete_flag", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private String esDeleteFlag = "N";
+    private String esDeleteFlag;
 
 
 }

@@ -78,8 +78,12 @@ public interface MapStruct {
     //    더티체킹: 수정시 사용
     void updateFromDto(SearchAllBooksDto searchAllBooksDto, @MappingTarget SearchAllBooks searchAllBooks);
 
+
     BooksDto toDto(Books books);
 
+    @Mapping(target = "author.authorId", source = "authorId")
+    @Mapping(target = "publisher.publisherId", source = "publisherId")
+    @Mapping(target = "category.categoryId", source = "categoryId")
     Books toEntity(BooksDto booksDto);
 
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
