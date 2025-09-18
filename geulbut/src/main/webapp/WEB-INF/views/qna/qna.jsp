@@ -25,7 +25,7 @@
         </aside>
 
 <<<<<<< Updated upstream
-        <!-- 오른쪽 콘텐츠ddddxxcczzz -->
+        <!-- 오른쪽 콘텐츠ddddxxcczzz  ddd-->
 =======
         <!-- 오른쪽 콘텐츠 aacccc-->
 >>>>>>> Stashed changes
