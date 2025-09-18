@@ -1,12 +1,17 @@
 package com.error404.geulbut.jpa.admin.service;
 
+import com.error404.geulbut.common.ErrorMsg;
+import com.error404.geulbut.common.MapStruct;
+import com.error404.geulbut.jpa.authors.dto.AuthorsDto;
 import com.error404.geulbut.jpa.authors.entity.Authors;
 import com.error404.geulbut.jpa.authors.repository.AuthorsRepository;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
+import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
 import com.error404.geulbut.jpa.categories.entity.Categories;
 import com.error404.geulbut.jpa.categories.repository.CategoriesRepository;
+import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import com.error404.geulbut.jpa.publishers.repository.PublishersRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +19,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,244 +30,162 @@ public class AdminBooksService {
     private final AuthorsRepository authorsRepository;
     private final CategoriesRepository categoriesRepository;
     private final PublishersRepository publishersRepository;
+    private final MapStruct mapStruct;
+    private final ErrorMsg errorMsg;
 
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-
-    // 1️⃣ 전체 도서 조회 (페이징)
-    public Page<Books> getAllBooks(int page, int size) {
+    // 전체 조회 (페이징)
+    public Page<BooksDto> getAllBooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return booksRepository.findAll(pageable);
+        return booksRepository.findAll(pageable)
+                .map(book -> {
+                    BooksDto dto = mapStruct.toDto(book);
+                    // Author/Publisher/Category 이름 세팅
+                    setNames(dto, book);
+                    return dto;
+                });
     }
 
-    // 2️⃣ 단일 도서 조회
-    public Optional<Books> getBookById(Long bookId) {
-        return booksRepository.findById(bookId);
+    // 단일 조회
+    public BooksDto getBookById(Long bookId) {
+        Books book = booksRepository.findById(bookId)
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
+        BooksDto dto = mapStruct.toDto(book);
+        setNames(dto, book);
+        return dto;
     }
 
-    // 3️⃣ 도서 등록
-    public Books saveBook(Books book) {
-        if (book.getIsbn() != null && booksRepository.existsByIsbn(book.getIsbn())) {
-            throw new IllegalArgumentException("이미 존재하는 ISBN입니다.");
+    // 도서 등록
+    public BooksDto saveBook(BooksDto dto) {
+        if (dto.getIsbn() != null && booksRepository.existsByIsbn(dto.getIsbn())) {
+            throw new IllegalArgumentException(errorMsg.getMessage("error.books.isbn.duplicate"));
         }
+
+        Books book = mapStruct.toEntity(dto);
+        // Author/Category/Publisher 엔티티 세팅
         setRelations(book);
-        return booksRepository.save(book);
+        // DB 저장
+        Books saved = booksRepository.save(book);
+
+        // 저장 후 DTO 변환 및 이름 세팅
+        BooksDto savedDto = mapStruct.toDto(saved);
+        setNames(savedDto, saved);
+        return savedDto;
     }
 
-    // 4️⃣ 도서 수정
-    public Books updateBook(Books book) {
-        Books existingBook = booksRepository.findById(book.getBookId())
-                .orElseThrow(() -> new IllegalArgumentException("도서가 존재하지 않습니다."));
+    // 도서 수정
+    public BooksDto updateBook(BooksDto dto) {
+        Books existingBook = booksRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
 
-        setRelations(book, existingBook);
+        mapStruct.updateFromDto(dto, existingBook);
+        // 관계 엔티티 세팅
+        setRelations(existingBook);
+        Books saved = booksRepository.save(existingBook);
 
-        // 나머지 필드 업데이트
-        existingBook.setTitle(book.getTitle());
-        existingBook.setDescription(book.getDescription());
-        existingBook.setPrice(book.getPrice());
-        existingBook.setDiscountedPrice(book.getDiscountedPrice());
-        existingBook.setStock(book.getStock());
-        existingBook.setImgUrl(book.getImgUrl());
-        existingBook.setIsbn(book.getIsbn());
-        existingBook.setNation(book.getNation());
-        existingBook.setPublishedDate(book.getPublishedDate()); // LocalDate
-        existingBook.setOrderCount(book.getOrderCount());
-        existingBook.setWishCount(book.getWishCount());
-
-        return booksRepository.save(existingBook);
+        BooksDto updatedDto = mapStruct.toDto(saved);
+        setNames(updatedDto, saved);
+        return updatedDto;
     }
 
-    // 5️⃣ 도서 삭제
-//    es동기화 -> db에 플래그 저장 -> db에 실제 삭제
+    // 도서 삭제
     @Transactional
     public boolean deleteBook(Long bookId) {
-        return booksRepository.findById(bookId).map(books -> {
-//            ES 동기화를 위해 삭제 플래그 표시
-            books.setEsDeleteFlag("Y");
-            booksRepository.save(books);
-
-//          db는 엘라스틱이 처리한다고 해서 삭제값은 제거했습니다
-
-
+        return booksRepository.findById(bookId).map(book -> {
+            // 삭제 플래그
+            book.setEsDeleteFlag("Y");
+            booksRepository.save(book);
             return true;
         }).orElse(false);
     }
 
-    // 6️⃣ 검색 기능 (임시)
-    public Page<Books> searchBooks(String keyword, int page, int size) {
+    // 검색
+    public Page<BooksDto> searchBooks(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Books> result;
         if (keyword == null || keyword.isEmpty()) {
-            return booksRepository.findAll(pageable);
+            result = booksRepository.findAll(pageable);
+        } else {
+            result = booksRepository.searchByKeyword(keyword, pageable);
         }
-        return booksRepository.searchByKeyword(keyword, pageable);
+        return result.map(book -> {
+            BooksDto dto = mapStruct.toDto(book);
+            setNames(dto, book);
+            return dto;
+        });
     }
 
-    // ==============================
-    // 🔹 Author, Category, Publisher 세팅
-    // ==============================
+    // Author, Category, Publisher 관계 세팅
     private void setRelations(Books book) {
-        if (book.getAuthor() != null && book.getAuthor().getAuthorId() != null) {
+        // Author 존재 여부 확인
+        if (book.getAuthor() == null || book.getAuthor().getAuthorId() == null) {
+            throw new IllegalArgumentException(errorMsg.getMessage("error.books.author.required"));
+        } else {
             Authors author = authorsRepository.findById(book.getAuthor().getAuthorId())
-                    .orElseThrow(() -> new IllegalArgumentException("저자가 존재하지 않습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.author.notfound")));
             book.setAuthor(author);
-        } else book.setAuthor(null);
+        }
 
-        if (book.getCategory() != null && book.getCategory().getCategoryId() != null) {
+        // Category 존재 여부 확인
+        if (book.getCategory() == null || book.getCategory().getCategoryId() == null) {
+            throw new IllegalArgumentException(errorMsg.getMessage("error.books.category.required"));
+        } else {
             Categories category = categoriesRepository.findById(book.getCategory().getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.category.notfound")));
             book.setCategory(category);
-        } else book.setCategory(null);
+        }
 
-        if (book.getPublisher() != null && book.getPublisher().getPublisherId() != null) {
+        // Publisher 존재 여부 확인
+        if (book.getPublisher() == null || book.getPublisher().getPublisherId() == null) {
+            throw new IllegalArgumentException(errorMsg.getMessage("error.books.publisher.required"));
+        } else {
             Publishers publisher = publishersRepository.findById(book.getPublisher().getPublisherId())
-                    .orElseThrow(() -> new IllegalArgumentException("퍼블리셔가 존재하지 않습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.publisher.notfound")));
             book.setPublisher(publisher);
-        } else book.setPublisher(null);
+        }
     }
 
-    // Overload: 기존 Book과 매핑 (수정용)
-    private void setRelations(Books source, Books target) {
-        if (source.getAuthor() != null && source.getAuthor().getAuthorId() != null) {
-            Authors author = authorsRepository.findById(source.getAuthor().getAuthorId())
-                    .orElseThrow(() -> new IllegalArgumentException("저자가 존재하지 않습니다."));
-            target.setAuthor(author);
-        } else target.setAuthor(null);
-
-        if (source.getCategory() != null && source.getCategory().getCategoryId() != null) {
-            Categories category = categoriesRepository.findById(source.getCategory().getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
-            target.setCategory(category);
-        } else target.setCategory(null);
-
-        if (source.getPublisher() != null && source.getPublisher().getPublisherId() != null) {
-            Publishers publisher = publishersRepository.findById(source.getPublisher().getPublisherId())
-                    .orElseThrow(() -> new IllegalArgumentException("퍼블리셔가 존재하지 않습니다."));
-            target.setPublisher(publisher);
-        } else target.setPublisher(null);
+    // DTO에 이름 필드 세팅
+    private void setNames(BooksDto dto, Books book) {
+        if (book.getAuthor() != null) dto.setAuthorName(book.getAuthor().getName());
+        if (book.getPublisher() != null) dto.setPublisherName(book.getPublisher().getName());
+        if (book.getCategory() != null) dto.setCategoryName(book.getCategory().getName());
     }
 
-    // 7️⃣ 모달용 전체 조회
-    public List<Authors> getAllAuthors() { return authorsRepository.findAll(Sort.by("name").ascending()); }
-    public List<Publishers> getAllPublishers() { return publishersRepository.findAll(Sort.by("name").ascending()); }
-    public List<Categories> getAllCategories() { return categoriesRepository.findAll(Sort.by("name").ascending()); }
+    // 모달용 전체 조회
+    public List<AuthorsDto> getAllAuthorsDto() {
+        return authorsRepository.findAll(Sort.by("name").ascending())
+                .stream().map(mapStruct::toDto).collect(Collectors.toList());
+    }
 
-    // 🔹 수정 모달용
+    public List<PublishersDto> getAllPublishersDto() {
+        return publishersRepository.findAll(Sort.by("name").ascending())
+                .stream().map(mapStruct::toDto).collect(Collectors.toList());
+    }
+
+    public List<CategoriesDto> getAllCategoriesDto() {
+        return categoriesRepository.findAll(Sort.by("name").ascending())
+                .stream().map(mapStruct::toDto).collect(Collectors.toList());
+    }
+
+    // 수정 모달용: 단일 도서 + 전체 옵션
+//    관계 엔티티 세팅
     public Map<String, Object> getBookAndRelations(Long bookId) {
         Books book = booksRepository.findById(bookId)
-                .orElseThrow(() -> new IllegalArgumentException("도서가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
+        BooksDto dto = mapStruct.toDto(book);
+//        이름세팅
+        setNames(dto, book);
+
+        // ID 세팅 (select option 기본값으로 사용)
+        if (book.getAuthor() != null) dto.setAuthorId(book.getAuthor().getAuthorId());
+        if (book.getPublisher() != null) dto.setPublisherId(book.getPublisher().getPublisherId());
+        if (book.getCategory() != null) dto.setCategoryId(book.getCategory().getCategoryId());
+
         Map<String, Object> map = new HashMap<>();
-        map.put("book", book);
-        map.put("authors", getAllAuthors());
-        map.put("publishers", getAllPublishers());
-        map.put("categories", getAllCategories());
+        map.put("book", dto);
+        map.put("authors", getAllAuthorsDto());
+        map.put("publishers", getAllPublishersDto());
+        map.put("categories", getAllCategoriesDto());
         return map;
-    }
-
-    // 단일 조회
-    public Authors getAuthorById(Long authorId) {
-        return authorsRepository.findById(authorId)
-                .orElseThrow(() -> new IllegalArgumentException("저자가 존재하지 않습니다."));
-    }
-    public Publishers getPublisherById(Long publisherId) {
-        return publishersRepository.findById(publisherId)
-                .orElseThrow(() -> new IllegalArgumentException("퍼블리셔가 존재하지 않습니다."));
-    }
-    public Categories getCategoryById(Long categoryId) {
-        return categoriesRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
-    }
-
-    // ==============================
-    // 🔹 DTO ↔ Entity 변환 (publishedDate 처리)
-    // ==============================
-    public Books fromDto(BooksDto dto) {
-        Books book = new Books();
-        book.setTitle(dto.getTitle());
-        book.setIsbn(dto.getIsbn());
-        book.setPrice(dto.getPrice());
-        book.setDiscountedPrice(dto.getDiscountedPrice());
-        book.setStock(dto.getStock());
-        book.setImgUrl(dto.getImgUrl());
-        book.setDescription(dto.getDescription());
-        book.setNation(dto.getNation());
-
-        // ✅ String -> LocalDate 변환
-        if(dto.getPublishedDate() != null && !dto.getPublishedDate().isEmpty()) {
-            book.setPublishedDate(LocalDate.parse(dto.getPublishedDate(), dateFormatter));
-        }
-
-        book.setOrderCount(dto.getOrderCount() != null ? dto.getOrderCount() : 0);
-        book.setWishCount(dto.getWishCount() != null ? dto.getWishCount() : 0);
-        book.setDiscountedPrice(dto.getDiscountedPrice() != null ? dto.getDiscountedPrice() : 0);
-
-
-        if(dto.getAuthorId() != null) book.setAuthor(getAuthorById(dto.getAuthorId()));
-        if(dto.getPublisherId() != null) book.setPublisher(getPublisherById(dto.getPublisherId()));
-        if(dto.getCategoryId() != null) book.setCategory(getCategoryById(dto.getCategoryId()));
-
-        return book;
-    }
-
-    public void updateFromDto(BooksDto dto, Books book) {
-        book.setTitle(dto.getTitle());
-        book.setIsbn(dto.getIsbn());
-        book.setPrice(dto.getPrice());
-        book.setDiscountedPrice(dto.getDiscountedPrice());
-        book.setStock(dto.getStock());
-        book.setImgUrl(dto.getImgUrl());
-        book.setDescription(dto.getDescription());
-        book.setNation(dto.getNation());
-
-        // ✅ String -> LocalDate 변환
-        if(dto.getPublishedDate() != null && !dto.getPublishedDate().isEmpty()) {
-            book.setPublishedDate(LocalDate.parse(dto.getPublishedDate(), dateFormatter));
-        } else {
-            book.setPublishedDate(null);
-        }
-
-        book.setOrderCount(dto.getOrderCount());
-        book.setWishCount(dto.getWishCount());
-
-        if(dto.getAuthorId() != null) book.setAuthor(getAuthorById(dto.getAuthorId()));
-        if(dto.getPublisherId() != null) book.setPublisher(getPublisherById(dto.getPublisherId()));
-        if(dto.getCategoryId() != null) book.setCategory(getCategoryById(dto.getCategoryId()));
-    }
-
-    public BooksDto toDto(Books book) {
-        BooksDto dto = new BooksDto();
-        dto.setBookId(book.getBookId());
-        dto.setTitle(book.getTitle());
-        dto.setIsbn(book.getIsbn());
-        dto.setPrice(book.getPrice());
-        dto.setDiscountedPrice(book.getDiscountedPrice());
-        dto.setStock(book.getStock());
-        dto.setImgUrl(book.getImgUrl());
-        dto.setDescription(book.getDescription());
-        dto.setNation(book.getNation());
-
-        // ✅ LocalDate -> String 변환
-        if(book.getPublishedDate() != null) {
-            dto.setPublishedDate(book.getPublishedDate().format(dateFormatter));
-        }
-
-        dto.setOrderCount(book.getOrderCount());
-        dto.setWishCount(book.getWishCount());
-
-        if(book.getAuthor() != null) {
-            dto.setAuthorId(book.getAuthor().getAuthorId());
-            dto.setAuthorName(book.getAuthor().getName());
-        }
-        if(book.getPublisher() != null) {
-            dto.setPublisherId(book.getPublisher().getPublisherId());
-            dto.setPublisherName(book.getPublisher().getName());
-        }
-        if(book.getCategory() != null) {
-            dto.setCategoryId(book.getCategory().getCategoryId());
-            dto.setCategoryName(book.getCategory().getName());
-        }
-//        생성/수정일 세팅 추가
-        dto.setCreatedAt(book.getCreatedAt());
-        dto.setUpdatedAt(book.getUpdatedAt());
-        
-        return dto;
     }
 }

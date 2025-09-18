@@ -1,4 +1,5 @@
 $(function() {
+
     // =============================
     // 🔹 모달 select 옵션 로드
     // =============================
@@ -44,7 +45,6 @@ $(function() {
     $('#bookForm').submit(function(e) {
         e.preventDefault();
 
-        // 옵션 선택 체크
         let authorVal = $('#authorId').val();
         let publisherVal = $('#publisherId').val();
         let categoryVal = $('#categoryId').val();
@@ -118,7 +118,12 @@ $(function() {
     $('#booksTableBody').on('click', '.btnEdit', function() {
         let bookId = $(this).closest('tr').data('id');
 
-        $.get('/admin/books/' + bookId, function(book) {
+        $.get('/admin/books/' + bookId + '/edit-options', function(res) {
+            let book = res.book;
+            let authors = res.authors;
+            let publishers = res.publishers;
+            let categories = res.categories;
+
             $('#modalTitle').text('도서 수정');
             $('#bookId').val(book.bookId);
             $('#title').val(book.title);
@@ -126,12 +131,19 @@ $(function() {
             $('#price').val(book.price);
             $('#stock').val(book.stock);
 
-            // 옵션 로드 후 기존 값 세팅
-            loadOptions(function() {
-                $('#authorId').val(book.authorId || '');
-                $('#publisherId').val(book.publisherId || '');
-                $('#categoryId').val(book.categoryId || '');
-            });
+            // select 옵션 초기화 후 세팅
+            let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
+            let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
+            let categorySelect = $('#categoryId').empty().append('<option value="">선택</option>');
+
+            authors.forEach(a => authorSelect.append(`<option value="${a.authorId}">${a.name}</option>`));
+            publishers.forEach(p => publisherSelect.append(`<option value="${p.publisherId}">${p.name}</option>`));
+            categories.forEach(c => categorySelect.append(`<option value="${c.categoryId}">${c.name}</option>`));
+
+            // 선택값 세팅
+            $('#authorId').val(book.authorId || '');
+            $('#publisherId').val(book.publisherId || '');
+            $('#categoryId').val(book.categoryId || '');
 
             $('#bookModal').show();
         });
@@ -149,7 +161,7 @@ $(function() {
             tbody.empty();
 
             if (res.content.length === 0) {
-                tbody.append('<tr><td colspan="9">검색 결과가 없습니다.</td></tr>');
+                tbody.append('<tr><td colspan="11">검색 결과가 없습니다.</td></tr>');
                 return;
             }
 
@@ -159,8 +171,9 @@ $(function() {
                         <td>${book.bookId}</td>
                         <td>${book.title}</td>
                         <td>${book.isbn}</td>
-                        <td>${book.author ? book.author.name : ''}</td>
-                        <td>${book.publisher ? book.publisher.name : ''}</td>
+                        <td>${book.authorName != null ? book.authorName : ''}</td>
+                        <td>${book.publisherName != null ? book.publisherName : ''}</td>
+                        <td>${book.categoryName != null ? book.categoryName : ''}</td>
                         <td>${book.price}</td>
                         <td>${book.discountedPrice != null ? book.discountedPrice : ''}</td>
                         <td>${book.stock}</td>
@@ -175,4 +188,5 @@ $(function() {
             });
         });
     });
+
 });

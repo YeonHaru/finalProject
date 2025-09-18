@@ -29,6 +29,7 @@
         <th>ISBN</th>
         <th>저자</th>
         <th>출판사</th>
+        <th>카테고리</th>
         <th>가격</th>
         <th>할인가</th>
         <th>재고</th>
@@ -42,10 +43,11 @@
             <td>${book.bookId}</td>
             <td>${book.title}</td>
             <td>${book.isbn}</td>
-            <td>${book.authorName}</td>
-            <td>${book.publisherName}</td>
+            <td>${book.authorName != null ? book.authorName : ''}</td>
+            <td>${book.publisherName != null ? book.publisherName : ''}</td>
+            <td>${book.categoryName != null ? book.categoryName : ''}</td>
             <td>${book.price}</td>
-            <td>${book.discountedPrice}</td>
+            <td>${book.discountedPrice != null ? book.discountedPrice : ''}</td>
             <td>${book.stock}</td>
             <td>${book.createdAt}</td>
             <td>
@@ -67,8 +69,7 @@
 </div>
 
 <!-- 모달 -->
-<!-- 모달 -->
-<div id="bookModal">
+<div id="bookModal" style="display:none;">
     <h3 id="modalTitle">도서 등록</h3>
     <form id="bookForm">
         <input type="hidden" name="bookId" id="bookId">
