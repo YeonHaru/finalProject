@@ -43,19 +43,20 @@
                 <tbody>
                 <c:forEach var="data" items="${qnas}">
                     <tr>
-                        <td class="py-2 px-3 text-light">${data.id}</td>
+                        <td class="py-2 px-3 text-light">${data.qnaId}</td>
                         <td class="py-2 px-3">
-                            <a href="${pageContext.request.contextPath}/qnaText?id=${data.id}" class="text-main">
+                            <a href="${pageContext.request.contextPath}/qnaText?id=${data.qnaId}" class="text-main">
                                     ${data.title}
                             </a>
                         </td>
                         <td class="py-2 text-center">${data.userId}</td>
                         <td class="py-2 text-center">
-                            <fmt:formatDate value="${data.qAt}" pattern="yyyy-MM-dd"/>
+                            <fmt:formatDate value="${data.QAt}" pattern="yyyy-MM-dd"/>
                         </td>
-                        <td class="py-2 text-center">${data.aId}</td>
+                        <td class="py-2 text-center">${data.AId}</td>
                     </tr>
                 </c:forEach>
+
                 </tbody>
             </table>
         </div>

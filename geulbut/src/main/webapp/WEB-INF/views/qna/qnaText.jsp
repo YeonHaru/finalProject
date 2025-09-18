@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <html>
 <head>
   <title>공지사항</title>
@@ -26,14 +28,31 @@
 
     <!-- 오른쪽 공지사항 콘텐츠 -->
     <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
-      <h2 class="mb-4">▣ 1:1 문의</h2>
-      <p>제목</p>
+      <h2 class="mb-4 qna-title">▣ 1:1 문의
+        <div>
+          <c:if test="${qna.userId == pageContext.request.userPrincipal.name}">
+            <!-- 수정 버튼 -->
+            <form action="${pageContext.request.contextPath}/qnaUpdate" method="get" style="display:inline;">
+              <input type="hidden" name="id" value="${qna.id}"/>
+              <button type="submit" class="btn btn-main">수정</button>
+            </form>
+
+            <!-- 삭제 버튼 -->
+            <form action="${pageContext.request.contextPath}/qnaDelete" method="post" style="display:inline;">
+              <input type="hidden" name="id" value="${qna.id}"/>
+              <button type="submit" class="btn btn-main">삭제</button>
+            </form>
+          </c:if>
+        </div>
+      </h2>
+
+      <p>제목 : ${qna.title}</p>
 
       <!-- 아이콘 + 텍스트 메타 정보 -->
       <div class="notice-meta px-3">
         <div class="meta-item">
           <i class="fa-solid fa-user"></i>
-          <span>홍길동</span>
+          <span>${qna.userId}</span>
         </div>
         <div class="meta-item">
           <i class="fa-solid fa-comment"></i>
@@ -45,15 +64,12 @@
         </div>
         <div class="meta-item time-item">
           <i class="fa-regular fa-clock"></i>
-          <span>2025.08.06 15:16</span>
+          <span><fmt:formatDate value="${qna.QAt}" pattern="yyyy-MM-dd HH:mm"/></span>
         </div>
       </div>
       <%--공지사항 글 내용--%>
       <div class="px-3 py-2 notice-text">
-        공지사항입니다.<br>
-        공지사항입니다.<br>
-        공지사항입니다.<br>
-        공지사항입니다.<br>
+        ${qna.QContent}
       </div>
       <%-- 댓글 구간 --%>
       <div class="comment-section mt-4">

@@ -20,17 +20,17 @@ public class QnaController {
 
     // QnA 목록
     @GetMapping("/qna")
-    public String qna(Model model) {
-
+    public String qnaList(Model model) {
+        model.addAttribute("qnas", qnaService.findAll());
         return "qna/qna";
     }
 
     // QnA 상세보기
     @GetMapping("/qnaText")
     public String qnaText(@RequestParam("id") Long id, Model model) {
-        QnaEntity qna = qnaService.findById(id);
+        QnaDto qna = qnaService.findById(id);  // 해당 글 가져오기
         model.addAttribute("qna", qna);
-        return "qna/qnaText";
+        return "qna/qnaText";  // /WEB-INF/views/qna/qnaText.jsp
     }
 
     // QnA 글쓰기 페이지
@@ -44,7 +44,43 @@ public class QnaController {
     public String submitQna(QnaDto qnaDto) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         qnaDto.setUserId(userId);
-        qnaService.saveQna(qnaDto);
+
+        if (qnaDto.getId() == null) {
+            // 새 글 작성
+            qnaService.saveQna(qnaDto);
+        } else {
+            // 기존 글 수정
+            qnaService.updateQna(qnaDto);
+        }
+
         return "redirect:/qna";
     }
+
+    // Qna 수정페이지 이동
+    @GetMapping("/qnaUpdate")
+    public String qnaUpdate(@RequestParam("id") Long id, Model model) {
+        QnaDto qna = qnaService.findById(id);  // 기존 글 가져오기
+        model.addAttribute("qna", qna);        // JSP에서 qna로 사용
+        return "qna/qnaWrite";                 // 수정 JSP
+    }
+
+    // 삭제 처리
+    @PostMapping("/qnaDelete")
+    public String deleteQna(@RequestParam("id") Long id) {
+        // 로그인한 사용자 정보 가져오기
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        QnaDto qna = qnaService.findById(id);
+
+        // 작성자와 로그인 사용자 일치 확인
+        if (!qna.getUserId().equals(userId)) {
+            throw new RuntimeException("본인이 작성한 글만 삭제할 수 있습니다.");
+        }
+
+        // 삭제
+        qnaService.deleteQna(id);
+
+        return "redirect:/qna";
+    }
+
 }
