@@ -5,6 +5,7 @@
 <head>
     <title>관리자 도서 관리</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/css/admin/admin-books.css">
     <script src="/js/admin/admin_books_list.js"></script> <!-- 외부 JS -->
 </head>
 <body>
@@ -20,7 +21,7 @@
 <button id="btnAddBook">도서 등록</button>
 
 <!-- 도서 목록 테이블 -->
-<table border="1" width="100%">
+<table id="booksTable">
     <thead>
     <tr>
         <th>책 ID</th>
@@ -29,6 +30,7 @@
         <th>저자</th>
         <th>출판사</th>
         <th>가격</th>
+        <th>할인가</th>
         <th>재고</th>
         <th>생성일</th>
         <th>작업</th>
@@ -43,6 +45,7 @@
             <td>${book.authorName}</td>
             <td>${book.publisherName}</td>
             <td>${book.price}</td>
+            <td>${book.discountedPrice}</td>
             <td>${book.stock}</td>
             <td>${book.createdAt}</td>
             <td>
@@ -64,8 +67,8 @@
 </div>
 
 <!-- 모달 -->
-<div id="bookModal"
-     style="display:none; position:fixed; top:20%; left:30%; background:#fff; padding:20px; border:1px solid #000;">
+<!-- 모달 -->
+<div id="bookModal">
     <h3 id="modalTitle">도서 등록</h3>
     <form id="bookForm">
         <input type="hidden" name="bookId" id="bookId">

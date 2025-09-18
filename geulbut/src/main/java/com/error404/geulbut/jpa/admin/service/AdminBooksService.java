@@ -12,6 +12,7 @@ import com.error404.geulbut.jpa.publishers.repository.PublishersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -72,19 +73,28 @@ public class AdminBooksService {
     }
 
     // 5️⃣ 도서 삭제
+//    es동기화 -> db에 플래그 저장 -> db에 실제 삭제
+    @Transactional
     public boolean deleteBook(Long bookId) {
-        if (booksRepository.existsById(bookId)) {
-            booksRepository.deleteById(bookId);
+        return booksRepository.findById(bookId).map(books -> {
+//            ES 동기화를 위해 삭제 플래그 표시
+            books.setEsDeleteFlag("Y");
+            booksRepository.save(books);
+
+//          db는 엘라스틱이 처리한다고 해서 삭제값은 제거했습니다
+
+
             return true;
-        }
-        return false;
+        }).orElse(false);
     }
 
     // 6️⃣ 검색 기능 (임시)
     public Page<Books> searchBooks(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        // TODO: 실제 검색 로직 구현
-        return booksRepository.findAll(pageable);
+        if (keyword == null || keyword.isEmpty()) {
+            return booksRepository.findAll(pageable);
+        }
+        return booksRepository.searchByKeyword(keyword, pageable);
     }
 
     // ==============================
@@ -181,8 +191,10 @@ public class AdminBooksService {
             book.setPublishedDate(LocalDate.parse(dto.getPublishedDate(), dateFormatter));
         }
 
-        book.setOrderCount(dto.getOrderCount());
-        book.setWishCount(dto.getWishCount());
+        book.setOrderCount(dto.getOrderCount() != null ? dto.getOrderCount() : 0);
+        book.setWishCount(dto.getWishCount() != null ? dto.getWishCount() : 0);
+        book.setDiscountedPrice(dto.getDiscountedPrice() != null ? dto.getDiscountedPrice() : 0);
+
 
         if(dto.getAuthorId() != null) book.setAuthor(getAuthorById(dto.getAuthorId()));
         if(dto.getPublisherId() != null) book.setPublisher(getPublisherById(dto.getPublisherId()));
@@ -248,6 +260,10 @@ public class AdminBooksService {
             dto.setCategoryId(book.getCategory().getCategoryId());
             dto.setCategoryName(book.getCategory().getName());
         }
+//        생성/수정일 세팅 추가
+        dto.setCreatedAt(book.getCreatedAt());
+        dto.setUpdatedAt(book.getUpdatedAt());
+        
         return dto;
     }
 }
