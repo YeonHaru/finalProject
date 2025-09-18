@@ -1,14 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user
-  Date: 25. 9. 9.
-  Time: 오전 10:21
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
 <html>
 <head>
-    <title>Title</title>
+    <title>공지사항</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/notice/notice2.css">
     <link rel="stylesheet" href="/css/header.css">
@@ -24,97 +22,67 @@
             <nav class="grid gap-2">
                 <a href="#" class="text-main">공지사항</a>
                 <a href="#" class="text-light">자주 묻는 질문</a>
-                <a href="${pageContext.request.contextPath}/qna?id=${data.no}" class="text-light">1:1 문의</a>
+                <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
             </nav>
         </aside>
 
         <!-- 오른쪽 공지사항 콘텐츠 -->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
-            <h2 class="mb-4 notice-title">▣ 공지사항</h2>
+            <h2 class="mb-4 notice-title">▣ 공지사항
+                <sec:authorize access="principal.username == 'admin001'">
+                    <a href="${pageContext.request.contextPath}/noticeWrite" class="btn btn-main">글쓰기</a>
+                </sec:authorize>
+            </h2>
 
             <table class="notice-table border" style="width: 100%;">
                 <thead class="bg-main">
                 <tr>
-                    <th class="py-2 px-3 ">번호</th>
-                    <th class="py-2 px-6 ">제목</th>
-                    <th class="py-2 px-3 ">글쓴이</th>
-                    <th class="py-2 px-3 ">날짜</th>
-                    <th class="py-2 px-3 ">조회</th>
+                    <th class="py-2 px-3">번호</th>
+                    <th class="py-2 px-6">제목</th>
+                    <th class="py-2 px-3">글쓴이</th>
+                    <th class="py-2 px-3">날짜</th>
+                    <th class="py-2 px-3">조회</th>
                 </tr>
                 </thead>
                 <tbody>
-                <%--            <c:forEach var="data" items="${notices}">--%>
-                <tr>
-                    <td class="py-2 px-3 text-light">${data.no}sdsd</td>
-                    <td class="py-2 px-3">
-                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
-                            ${data.title}aass
-                        </a>
-
-                    </td>
-                    <td class="py-2 text-center">${data.writer}zxc</td>
-                    <td class="py-2 text-center">${data.regDate}cxc</td>
-                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
-                </tr>
-
-                <tr>
-                    <td class="py-2 px-3 text-light">${data.no}sdsd</td>
-                    <td class="py-2 px-3">
-                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
-                            ${data.title}aass
-                        </a>
-
-                    </td>
-                    <td class="py-2 text-center">${data.writer}zxc</td>
-                    <td class="py-2 text-center">${data.regDate}cxc</td>
-                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-3 text-light">${data.no}sdsd</td>
-                    <td class="py-2 px-3">
-                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
-                            ${data.title}aass
-                        </a>
-
-                    </td>
-                    <td class="py-2 text-center">${data.writer}zxc</td>
-                    <td class="py-2 text-center">${data.regDate}cxc</td>
-                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-3 text-light">${data.no}sdsd</td>
-                    <td class="py-2 px-3">
-                        <a href="${pageContext.request.contextPath}/noticeText?id=${data.no}" class="text-main">
-                            ${data.title}aass
-                        </a>
-
-                    </td>
-                    <td class="py-2 text-center">${data.writer}zxc</td>
-                    <td class="py-2 text-center">${data.regDate}cxc</td>
-                    <td class="py-2 text-center">${data.viewCnt}adxc</td>
-                </tr>
-                <%--            </c:forEach>--%>
+                <c:forEach var="data" items="${notices}">
+                    <tr>
+                        <td class="py-2 px-3 text-light">${data.noticeId}</td>
+                        <td class="py-2 px-3">
+                            <a href="${pageContext.request.contextPath}/noticeText?id=${data.noticeId}" class="text-main">
+                                    ${data.title}
+                            </a>
+                        </td>
+                        <td class="py-2 text-center">${data.writer}</td>
+                        <td class="py-2 text-center"><fmt:formatDate value="${data.createdAt}" pattern="yyyy-MM-dd"/></td>
+                        <td class="py-2 text-center">${data.viewCount}</td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
-            <%--페이지네이션--%>
-            <div class="pagination">
-                <c:if test="${page > 1}">
-                    <a href="?page=${page-1}" class="prev">&laquo; 이전</a>
+
+            <!-- 페이징 버튼 -->
+            <div class="pagination mt-4 text-center">
+                <!-- 이전 버튼 -->
+                <c:if test="${currentPage > 1}">
+                    <a href="${pageContext.request.contextPath}/qna?page=${currentPage - 1}" class="btn btn-light">&laquo; 이전</a>
                 </c:if>
 
-                <c:forEach var="i" begin="1" end="${totalPage}">
+                <!-- 페이지 번호 버튼 -->
+                <c:forEach begin="1" end="${totalPage}" var="i">
                     <c:choose>
-                        <c:when test="${i == page}">
-                            <span class="current">${i}</span>
+                        <c:when test="${i == currentPage}">
+                            <span class="btn btn-main">${i}</span>
                         </c:when>
                         <c:otherwise>
-                            <a href="?page=${i}">${i}</a>
+                            <a href="${pageContext.request.contextPath}/qna?page=${i}" class="btn btn-light">${i}</a>
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
 
-                <c:if test="${page < totalPage}">
-                    <a href="?page=${page+1}" class="next">다음 &raquo;</a>
+                <!-- 다음 버튼 -->
+                <c:if test="${currentPage < totalPage}">
+                    <a href="${pageContext.request.contextPath}/qna?page=${currentPage + 1}" class="btn btn-light">다음 &raquo;</a>
                 </c:if>
             </div>
 
