@@ -1,0 +1,134 @@
+/* =========================
+   📌 마이페이지 전체 레이아웃
+========================= */
+.mypage-wrapper {
+    display: flex;
+    gap: 24px; /* 사이드바와 컨텐츠 간격 */
+}
+
+/* =========================
+   📌 왼쪽 사이드바
+========================= */
+.mypage-sidebar {
+    min-width: 220px;           /* 메뉴 고정 너비 */
+    background: #fff;           /* 흰색 배경 */
+    border: 1px solid #e9ecef;  /* 옅은 테두리 */
+    border-radius: 8px;
+    overflow: hidden;           /* 라운드 유지 */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+    padding: 14px 18px;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #48C9B0; /* 글벗 메인 컬러 */
+    color: #fff;
+    font-weight: 600;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #000;
+}
+
+/* =========================
+   📌 오른쪽 컨텐츠
+========================= */
+.mypage-content {
+    flex: 1;
+    background: #fff;
+    padding: 24px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 제목 */
+.mypage-content h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #48C9B0;
+}
+
+/* =========================
+   📌 테이블 (장바구니, 주문 내역)
+========================= */
+.table {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.table tbody tr:hover {
+    background: #fdfdfd;
+}
+
+.table tfoot td {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+/* =========================
+   📌 버튼
+========================= */
+.btn-outline-primary {
+    border-color: #48C9B0;
+    color: #48C9B0;
+}
+
+.btn-outline-primary:hover {
+    background-color: #48C9B0;
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #48C9B0;
+    border-color: #48C9B0;
+}
+
+.btn-primary:hover {
+    background-color: #3fb09a;
+    border-color: #3fb09a;
+}
+
+/* =========================
+   📌 위시리스트
+========================= */
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* =========================
+   📌 반응형
+========================= */
+@media (max-width: 768px) {
+    .mypage-wrapper {
+        flex-direction: column;
+    }
+
+    .mypage-sidebar {
+        min-width: 100%;
+        border-radius: 6px;
+    }
+}
