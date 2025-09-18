@@ -35,6 +35,13 @@ public class Users {
     private String email;                                       // 카카오는 null 가능
     private String phone;
 
+//    임시비밀번호 관련
+    private String tempPwYn;                                  // 임시비번 발급 여부
+    private String pwCode;                                  // 인증코드 6자리
+    private LocalDateTime pwCodeExpiresAt;       // 만료시각 예) +3분
+    private Integer pwCodeAttempts;                     // 시도횟수 (예 : 0~5회?)
+    private LocalDateTime pwCodeLastSentAt;     // 최근전송시각(재전송쿨타임)
+
 //    기본정보
     private LocalDate joinDate;
     private String role;

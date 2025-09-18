@@ -24,6 +24,16 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     Optional<Users> findByUserIdAndEmail(String userId, String email);
     Optional<Users> findByNameAndEmail(String name, String email);
     Optional<Users> findByPhone(String phone);
+    Optional<Users> findByEmailIgnoreCase(String email);        // 이메일 대소문자 무시
+
+
+    // 아디 또는 이름+이메일 조합으로 찾을때 쿼리문 추가
+    @Query("select u from Users u" +
+            "    where (upper(u.email)=upper(:email)) " +
+            "    and (u.userId=:userId or :userId is null)")
+    Optional<Users> findByEmailAndMaybeUserId(@Param("email") String email,
+                                                                        @Param("userId") String userId);
+
 
     // 회원 검색 (아이디, 이름, 이메일) - 관리자페이지에서 회원 검색용
     @Query("SELECT u FROM Users u " +

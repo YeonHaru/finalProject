@@ -1,3 +1,9 @@
+password-recovery:
+  code-ttl: 3m           # 3분 (단위 지원: ms, s, m, h ... 혹은 ISO-8601 'PT3M')
+  resend-cooldown: 60s   # 60초
+  max-attempts: 5
+  temp-pw-length: 10
+
 spring:
   security:
     oauth2:

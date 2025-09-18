@@ -73,7 +73,8 @@ public class SecurityConfig {
                                 "dustApi", "DustWeatherApi","/v/**", "/dust","weather","weatherApi",
                                 "admin/css/admin-header.css", "/signup",
                                 "/users/check-id","/users/check-email",
-                                "/find-id","/find-password"
+                                "/find-id","/find-password",
+                                "/find-password/**", "/search"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
