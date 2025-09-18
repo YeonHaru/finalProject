@@ -18,6 +18,10 @@ import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -72,14 +76,17 @@ public interface MapStruct {
 
     //    ElasticSearch
     SearchAllBooksDto toDto(SearchAllBooks searchAllBooks);
-
     SearchAllBooks toEntity(SearchAllBooksDto searchAllBooksDto);
 
     //    더티체킹: 수정시 사용
     void updateFromDto(SearchAllBooksDto searchAllBooksDto, @MappingTarget SearchAllBooks searchAllBooks);
 
+
     BooksDto toDto(Books books);
 
+    @Mapping(target = "author.authorId", source = "authorId")
+    @Mapping(target = "publisher.publisherId", source = "publisherId")
+    @Mapping(target = "category.categoryId", source = "categoryId")
     Books toEntity(BooksDto booksDto);
 
     void updateFromDto(BooksDto dto, @MappingTarget Books books);

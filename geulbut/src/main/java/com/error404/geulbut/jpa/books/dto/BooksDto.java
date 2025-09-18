@@ -32,5 +32,6 @@ public class BooksDto {
     private String isbn;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
+    //    ES_DELETE_FLAG
+    private String esDeleteFlag= "N";            // Y or N  디폴트 N
 }

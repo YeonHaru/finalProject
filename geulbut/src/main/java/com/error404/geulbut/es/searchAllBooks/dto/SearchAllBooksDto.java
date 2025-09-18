@@ -2,6 +2,8 @@ package com.error404.geulbut.es.searchAllBooks.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,5 +19,5 @@ public class SearchAllBooksDto {
     private String categoryName;
     private String publisherName;
     private String booksImgUrl;
-    private String hashtags;
+    private List<String> hashtags;
 }

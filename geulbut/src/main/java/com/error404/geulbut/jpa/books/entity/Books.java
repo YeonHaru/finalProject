@@ -62,6 +62,10 @@ public class Books extends BaseTimeEntity {
 
     private String isbn;
 
+    //    ES_DELETE_FLAG
+    private String esDeleteFlag;
+
+
 }
 
 
