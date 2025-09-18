@@ -1,11 +1,23 @@
 package com.error404.geulbut.jpa.users.controller;
 
+
 import com.error404.geulbut.common.ErrorMsg;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
-import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.service.UsersService;
+
+
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.SendEmailCodeRequest;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.SendSmsCodeRequest;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifySmsAndResetRequest;
+import com.error404.geulbut.jpa.users.service.PasswordRecoveryService;
+import jakarta.validation.Valid;
+
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +30,7 @@ public class LoginController {
 
     private final UsersService usersService;
     private final ErrorMsg errorMsg;
+    private final PasswordRecoveryService passwordRecoveryService;
 
 //    회원가입 페이지입니다.
     @GetMapping("/signup")
@@ -28,10 +41,14 @@ public class LoginController {
 
 //    회원가입 처리
     @PostMapping("/signup")
-    public String signupForm(
+    public String signupForm(@Valid
             @ModelAttribute UsersSignupDto usersSignupDto,
             BindingResult bindingResult,
             Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("usersSignupDto", usersSignupDto);
+            return "users/signUp/signup";
+        }
         try{
             usersService.signup(usersSignupDto);
             return "redirect:/login";                       // 성공 시 로그인 페이지로 이동?이 나을까
@@ -94,15 +111,76 @@ public class LoginController {
         return "users/find/findPassword";
     }
 
-    @PostMapping("/find-password")
-    public String resetPassword(@RequestParam String userId,
-                                @RequestParam String email,
-                                Model model) {
-        boolean success = usersService.resetPassword(userId, email);
-        if (success) {
-            model.addAttribute("resetPwMsg", "임시 비밀번호가 이메일로 발송되었습니다.");
-        } else {
-            model.addAttribute("resetPwError", "일치하는 계정을 찾을 수 없습니다.");
+
+//    이메일: 인증코드 전송 (AJAX, JSON)
+    @PostMapping("/find-password/email/code")
+    @ResponseBody
+    public ResponseEntity<?> sendEmailCode(@RequestBody @Valid
+                                               PasswordRecoveryDto.SendEmailCodeRequest req) {
+        try {
+            passwordRecoveryService.sendEmailCode(req);
+            return ResponseEntity.ok("OK");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            log.error("sendEmailCode error", e);
+            return ResponseEntity.internalServerError().body(errorMsg.getMessage("error.common.server"));
+        }
+    }
+
+//    이메일 : 코드검증 + 임시비번 발급 (폼 서브밋)
+    @PostMapping("/find-password/email/verify")
+    public String verifyEmail(@ModelAttribute @Valid VerifyEmailAndResetRequest req,
+                              BindingResult bindingResult,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("resetPwError", "입력값을 확인해 주세요.");
+            return "users/find/findPassword";
+        }
+        try {
+            passwordRecoveryService.verifyEmailAndReset(req);
+            model.addAttribute("resetPwMsg", "임시 비밀번호를 이메일로 발송했습니다.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("resetPwError", e.getMessage());
+        } catch (Exception e) {
+            log.error("verifyEmail error", e);
+            model.addAttribute("resetPwError", errorMsg.getMessage("error.common.server"));
+        }
+        return "users/find/findPassword";
+    }
+
+//    SMS : 인증코드 전송
+    @PostMapping("/find-password/sms/code")
+    @ResponseBody
+    public ResponseEntity<?> sendSmsCode(@RequestBody @Valid SendSmsCodeRequest req) {
+        try {
+            passwordRecoveryService.sendSmsCode(req);
+            return ResponseEntity.ok("OK");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            log.error("sendSmsCode error", e);
+            return ResponseEntity.internalServerError().body(errorMsg.getMessage("error.common.server"));
+        }
+    }
+
+//    SMS : 코드 검증 + 임시비번 발급(폼 서브밋)
+    @PostMapping("/find-password/sms/verify")
+    public String verifySms(@ModelAttribute @Valid VerifySmsAndResetRequest req,
+                            BindingResult bindingResult,
+                            Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("resetPwError", "입력값을 확인해 주세요.");
+            return "users/find/findPassword";
+        }
+        try {
+            passwordRecoveryService.verifySmsAndReset(req);
+            model.addAttribute("resetPwMsg", "임시 비밀번호를 문자로 발송했습니다.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("resetPwError", e.getMessage());
+        } catch (Exception e) {
+            log.error("verifySms error", e);
+            model.addAttribute("resetPwError", errorMsg.getMessage("error.common.server"));
         }
         return "users/find/findPassword";
     }
