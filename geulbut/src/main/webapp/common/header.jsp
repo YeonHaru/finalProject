@@ -62,13 +62,11 @@
         <!-- 검색 -->
         <div class="site-header__search" role="search">
             <form action="${pageContext.request.contextPath}/search" method="get" class="search-form">
-                <select id="type" name="type" class="search-select">
-                    <option value="all">통합검색</option>
-                    <option value="book">도서검색</option>
-                    <option value="publisher">출판사검색</option>
-                    <option value="author">작가검색</option>
+                <input type="hidden" name="type" value="all">
+                <select id="type" class="search-select" disabled>
+                    <option>통합검색</option>
                 </select>
-                <input id="q" name="q" type="text" placeholder="검색어를 입력하세요"/>
+                <input id="q" name="keyword" type="text" placeholder="검색어를 입력하세요"/>
                 <button type="submit" class="btn-search">검색</button>
             </form>
         </div>

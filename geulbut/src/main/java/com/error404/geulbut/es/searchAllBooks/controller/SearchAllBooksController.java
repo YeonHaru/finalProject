@@ -23,6 +23,6 @@ public class SearchAllBooksController {
         Page<SearchAllBooksDto> pages = searchAllBooksService.searchByTemplate(keyword, pageable);
         model.addAttribute("pages", pages);
         model.addAttribute("searches", pages.getContent());
-        return "search_all_books";
+        return "books/book_all";
     }
 }

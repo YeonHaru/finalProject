@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.util.List;
+
 @Document(indexName = "search-all-books")
 @Getter
 @Setter
@@ -25,5 +27,5 @@ public class SearchAllBooks {
     private String categoryName;
     private String publisherName;
     private String booksImgUrl;
-    private String hashtags;
+    private List<String> hashtags;
 }
