@@ -18,12 +18,21 @@ import java.util.List;
 public class QnaController {
     private final QnaService qnaService;
 
-    // QnA 목록
+    // QnA 목록 - 페이징 적용
     @GetMapping("/qna")
-    public String qnaList(Model model) {
-        model.addAttribute("qnas", qnaService.findAll());
+    public String qnaList(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+
+        var pageQnas = qnaService.getQnas(page, size); // Page<QnaDto>
+        model.addAttribute("qnas", pageQnas.getContent()); // 현재 페이지 글 목록
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPage", pageQnas.getTotalPages());
+
         return "qna/qna";
     }
+
 
     // QnA 상세보기
     @GetMapping("/qnaText")

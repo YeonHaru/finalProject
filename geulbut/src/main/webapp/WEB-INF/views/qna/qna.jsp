@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/qna/qna.css">
     <link rel="stylesheet" href="/css/header.css">
+
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
@@ -43,9 +44,9 @@
                 <tbody>
                 <c:forEach var="data" items="${qnas}">
                     <tr>
-                        <td class="py-2 px-3 text-light">${data.qnaId}</td>
+                        <td class="py-2 px-3 text-light">${data.id}</td>
                         <td class="py-2 px-3">
-                            <a href="${pageContext.request.contextPath}/qnaText?id=${data.qnaId}" class="text-main">
+                            <a href="${pageContext.request.contextPath}/qnaText?id=${data.id}" class="text-main">
                                     ${data.title}
                             </a>
                         </td>
@@ -56,9 +57,33 @@
                         <td class="py-2 text-center">${data.AId}</td>
                     </tr>
                 </c:forEach>
-
                 </tbody>
             </table>
+
+            <!-- 페이징 버튼 -->
+            <div class="pagination mt-4 text-center">
+                <!-- 이전 버튼 -->
+                <c:if test="${currentPage > 1}">
+                    <a href="${pageContext.request.contextPath}/qna?page=${currentPage - 1}" class="btn btn-light">&laquo; 이전</a>
+                </c:if>
+
+                <!-- 페이지 번호 버튼 -->
+                <c:forEach begin="1" end="${totalPage}" var="i">
+                    <c:choose>
+                        <c:when test="${i == currentPage}">
+                            <span class="btn btn-main">${i}</span>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/qna?page=${i}" class="btn btn-light">${i}</a>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+
+                <!-- 다음 버튼 -->
+                <c:if test="${currentPage < totalPage}">
+                    <a href="${pageContext.request.contextPath}/qna?page=${currentPage + 1}" class="btn btn-light">다음 &raquo;</a>
+                </c:if>
+            </div>
         </div>
     </div>
 </div>

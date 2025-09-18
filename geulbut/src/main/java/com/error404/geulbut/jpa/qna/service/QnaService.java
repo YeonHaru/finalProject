@@ -5,6 +5,10 @@ import com.error404.geulbut.jpa.qna.dto.QnaDto;
 import com.error404.geulbut.jpa.qna.entity.QnaEntity;
 import com.error404.geulbut.jpa.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -29,6 +33,21 @@ public class QnaService {
                 .build();
 
         qnaRepository.save(entity);
+    }
+    public Page<QnaDto> getQnas(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("qnaId").descending());
+        return qnaRepository.findAll(pageable)
+                .map(entity -> QnaDto.builder()
+                        .id(entity.getQnaId())
+                        .title(entity.getTitle())
+                        .qContent(entity.getQContent())
+                        .qAt(entity.getQAt())
+                        .aId(entity.getAId())
+                        .aContent(entity.getAContent())
+                        .aAt(entity.getAAt())
+                        .userId(entity.getUserId())
+                        .build()
+                );
     }
     // 전체 QnA 조회
     public List<QnaEntity> findAll() {
