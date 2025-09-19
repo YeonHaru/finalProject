@@ -76,7 +76,8 @@ public class SecurityConfig {
                                 "/find-id","/find-password",
                                 "/find-password/**", "/search",
                                 "/find-password/email/code",         // ⬅️ AJAX POST
-                                "/find-password/email/verify"
+                                "/find-password/email/verify",
+                                "/common/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
