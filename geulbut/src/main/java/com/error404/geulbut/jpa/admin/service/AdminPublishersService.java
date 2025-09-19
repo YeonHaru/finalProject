@@ -18,10 +18,10 @@ public class AdminPublishersService {
 
     private final PublishersRepository publishersRepository;
     private final MapStruct mapStruct;
-    private ErrorMsg errorMsg;
+    private final ErrorMsg errorMsg;
 
 
-//    전체조회
+    // 전체 조회 (페이징)
     public Page<PublishersDto> getAllPublishers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return publishersRepository.findAll(pageable)
@@ -35,4 +35,44 @@ public class AdminPublishersService {
         return mapStruct.toDto(publisher);
     }
 
+    //    출판사 등록
+    public PublishersDto savePublisher(PublishersDto publishersDto) {
+        Publishers publisher = mapStruct.toEntity(publishersDto);
+        Publishers saved = publishersRepository.save(publisher);
+        return mapStruct.toDto(saved);
+    }
+
+    // 출판사 수정
+    public PublishersDto updatePublisher(PublishersDto publishersDto) {
+        if (publishersDto.getPublisherId() == null) {
+            throw new IllegalArgumentException(errorMsg.getMessage("error.publishers.id.required"));
+        }
+
+        Long id = Long.parseLong(publishersDto.getPublisherId());
+        Publishers existing = publishersRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.publishers.notfound")));
+
+        mapStruct.updateFromDto(publishersDto, existing);
+        Publishers saved = publishersRepository.save(existing);
+        return mapStruct.toDto(saved);
+    }
+
+//    삭제
+    public boolean deletePublisher(Long publisherId) {
+        if (publishersRepository.existsById(publisherId)) {
+            publishersRepository.deleteById(publisherId);
+            return true;
+        }
+        return false;
+    }
+
+//    검색
+    public Page<PublishersDto> searchPublishers(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        if (search == null || search.isEmpty()) {
+            return getAllPublishers(page, size);
+        }
+        return publishersRepository.findAll(pageable)
+                .map(mapStruct::toDto);
+    }
 }
