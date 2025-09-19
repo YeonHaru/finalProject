@@ -41,7 +41,14 @@
 
             <!-- ✅ 내 정보 -->
             <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel">
-                <h2 class="mb-3 pb-2 border-bottom">내 정보</h2>
+                <!-- 여기만 교체 -->
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <h2 class="m-0">내 정보</h2>
+                    <a href="<c:url value='/users/mypage/withdraw'/>" class="btn btn-outline-danger btn-sm">
+                        회원 탈퇴
+                    </a>
+                </div>
+                <!-- 여기까지 교체 -->
 
                 <c:if test="${not empty user}">
                     <p>아이디: ${user.userId}</p>
@@ -56,6 +63,34 @@
                     </c:if>
                     <c:if test="${not empty successMsg}">
                         <div class="alert alert-success mt-3">${successMsg}</div>
+                    </c:if>
+<%--                    덕규 알람 메시지 추가--%>
+                    <c:if test="${forceChangePw}">
+                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                            <strong class="me-2">보안 안내</strong>
+                            임시 비밀번호로 로그인했습니다. 지금 바로 비밀번호를 변경해 주세요.
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                // 1) "내 정보" 탭 강제 활성화
+                                const infoTab = document.getElementById('v-pills-info-tab');
+                                if (infoTab) infoTab.click();
+
+                                // 2) 비밀번호 변경 섹션으로 스크롤 + 현재 비번 입력창 포커스
+                                const cur = document.getElementById('currentPw');
+                                if (cur) {
+                                    cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    cur.focus();
+                                }
+
+                                // 3) 시각 강조(선택)
+                                const form = document.querySelector('form[action$="/mypage/change-password"]');
+                                if (form) {
+                                    form.classList.add('border', 'border-warning', 'rounded-3');
+                                    setTimeout(() => form.classList.remove('border','border-warning','rounded-3'), 3000);
+                                }
+                            });
+                        </script>
                     </c:if>
 
                     <!-- ✅ 비밀번호 변경 폼 -->

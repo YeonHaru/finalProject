@@ -30,6 +30,12 @@
     <c:if test="${empty loginError and param.error ne null}">
         <div class="alert error">로그인에 실패했습니다. 아이디/비밀번호를 확인해주세요.</div>
     </c:if>
+    <%--  탈퇴 완료 안내 문구   --%>
+    <c:if test="${param.withdrawn ne null}">
+        <p class="notice" style="color: green; font-weight: bold;">
+            탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.
+        </p>
+    </c:if>
 
     <section class="grid-2">
         <article class="card" aria-labelledby="loginTitle">

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,7 +26,9 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     Optional<Users> findByNameAndEmail(String name, String email);
     Optional<Users> findByPhone(String phone);
     Optional<Users> findByEmailIgnoreCase(String email);        // 이메일 대소문자 무시
+    Optional<Users> findByUserIdAndStatus(String userId, Users.UserStatus status);
 
+    List<Users> findAllByStatus(Users.UserStatus status);
 
     // 아디 또는 이름+이메일 조합으로 찾을때 쿼리문 추가
     @Query("select u from Users u" +
