@@ -7,101 +7,42 @@
     <link rel="stylesheet" href="<c:url value='/css/00_common.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/find/find-password.css'/>">
 
-    <!-- CSRF(켰을 때만 사용됨; 꺼져 있으면 JS가 자동으로 생략) -->
-    <meta name="_csrf" content="${_csrf.token}"/>
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
-
-    <style>
-        /* 최소 스타일 (원하면 제거해도 됨) */
-        .findpw-card { max-width:520px; margin:40px auto; padding:24px; background:#fff; border:1px solid #eee; }
-        .findpw-title { margin:0 0 12px 0; }
-        .tabs { display:flex; gap:8px; margin-bottom:16px; }
-        .tab-btn { padding:8px 12px; border:1px solid #ddd; background:#f7f7f7; cursor:pointer; }
-        .tab-btn.active { background:#fff; border-bottom-color:#fff; font-weight:600; }
-        .tab-panel { display:none; }
-        .tab-panel.active { display:block; }
-        .row { margin:8px 0; }
-        .hint { font-size:12px; color:#888; }
-        .timer { font-size:12px; color:#d33; margin-left:6px; }
-        .actions { display:flex; gap:8px; margin-top:8px; }
-        .btn { padding:8px 12px; border:none; cursor:pointer; }
-        .btn.primary { background:#2e7d32; color:#fff; }
-        .btn.ghost { background:#eee; }
-        .btn[disabled] { opacity:.6; cursor:not-allowed; }
-        .msg { margin-top:12px; }
-        .msg.success { color:#237804; }
-        .msg.error { color:#c62828; }
-    </style>
+    <!-- CSRF 메타 (활성화된 경우에만) -->
+    <c:if test="${not empty _csrf}">
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    </c:if>
 </head>
 <body>
 <div class="findpw-card">
     <h1 class="findpw-title">비밀번호 찾기</h1>
 
-    <!-- 탭 -->
-    <div class="tabs">
-        <button type="button" class="tab-btn active" data-target="#tab-email">이메일로 찾기</button>
-        <button type="button" class="tab-btn" data-target="#tab-sms">휴대폰 문자로 찾기</button>
-    </div>
-
-    <!-- 이메일 탭 -->
+    <!-- ✅ SMS 탭/패널 제거 → 단일 이메일 패널만 유지 -->
     <div id="tab-email" class="tab-panel active">
 
-        <!-- 검증 폼(이메일/코드 모두 여기서 입력) -->
+        <!-- 이메일 검증 폼 -->
         <form id="emailVerifyForm" method="post" action="<c:url value='/find-password/email/verify'/>">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <c:if test="${not empty _csrf}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </c:if>
+
             <div class="row">
-                <label for="emailField">이메일</label><br/>
-                <input id="emailField" name="email" type="email" placeholder="example@domain.com"
-                       style="width:100%;" required>
-                <div class="hint">가입 시 등록한 이메일 주소</div>
-                <div class="actions" style="margin-top:6px;">
+                <label for="emailField">이메일</label>
+                <div class="input-group">
+                    <input id="emailField" name="email" type="email" placeholder="example@domain.com" required>
                     <button id="emailSendBtn" class="btn ghost" type="button" onclick="sendEmailCode()">인증코드 전송</button>
-                    <span id="emailTimer" class="timer"></span>
                 </div>
-                <div id="emailSendMsg" class="msg"></div>
+                <div class="hint-row">
+                    <span class="hint">가입 시 등록한 이메일 주소</span>
+                    <span id="emailTimer" class="timer" aria-live="polite"></span>
+                </div>
+                <div id="emailSendMsg" class="msg" aria-live="polite"></div>
             </div>
 
             <div class="row">
                 <label for="emailCodeField">인증코드</label><br/>
-                <input id="emailCodeField" name="code" type="text" maxlength="6" pattern="[0-9]{6}"
-                       placeholder="6자리 숫자" style="width:100%;" required>
-            </div>
-
-            <div class="actions">
-                <button class="btn primary" type="submit">인증 & 임시 비밀번호 발급</button>
-            </div>
-
-            <c:if test="${not empty resetPwMsg}">
-                <p class="msg success">${resetPwMsg}</p>
-            </c:if>
-            <c:if test="${not empty resetPwError}">
-                <p class="msg error">${resetPwError}</p>
-            </c:if>
-        </form>
-    </div>
-
-    <!-- SMS 탭 -->
-    <div id="tab-sms" class="tab-panel">
-
-        <!-- 검증 폼(휴대폰/코드 모두 여기서 입력) -->
-        <form id="smsVerifyForm" method="post" action="<c:url value='/find-password/sms/verify'/>">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <div class="row">
-                <label for="phoneField">휴대폰 번호</label><br/>
-                <input id="phoneField" name="phone" type="text" inputmode="numeric"
-                       placeholder="01012345678 (숫자만)" style="width:100%;" required
-                       pattern="01[016789][0-9]{7,8}">
-                <div class="hint">하이픈 없이 숫자만 입력</div>
-                <div class="actions" style="margin-top:6px;">
-                    <button id="smsSendBtn" class="btn ghost" type="button" onclick="sendSmsCode()">인증코드 전송</button>
-                    <span id="smsTimer" class="timer"></span>
-                </div>
-                <div id="smsSendMsg" class="msg"></div>
-            </div>
-
-            <div class="row">
-                <label for="smsCodeField">인증코드</label><br/>
-                <input id="smsCodeField" name="code" type="text" maxlength="6" pattern="[0-9]{6}"
+                <input id="emailCodeField" class="code-input" name="code" type="text" maxlength="6" pattern="[0-9]{6}"
+                       inputmode="numeric" autocomplete="one-time-code"
                        placeholder="6자리 숫자" style="width:100%;" required>
             </div>
 
@@ -122,23 +63,26 @@
         <button class="btn ghost" type="button" onclick="location.href='<c:url value="/find-id"/>'">아이디 찾기</button>
         <button class="btn ghost" type="button" onclick="location.href='<c:url value="/login"/>'">로그인</button>
     </div>
+
+    <!-- 임시 비밀번호 안내 박스 (이메일 검증 후 서비스가 temp 반환 시 표시) -->
+    <c:if test="${not empty resetPw}">
+        <hr style="margin:16px 0;">
+        <div class="msg success">임시 비밀번호가 발급되었습니다. 아래 비밀번호로 로그인해 주세요.</div>
+
+        <div class="temp-box">
+            <div class="temp-row">
+                <input id="issuedTempPw" class="temp-input" type="text" readonly value="${resetPw}">
+                <button type="button" class="btn ghost" onclick="copyTempPw()">복사</button>
+            </div>
+            <div class="hint" style="margin-top:6px;">보안을 위해 로그인 후 반드시 비밀번호를 변경해 주세요.</div>
+        </div>
+    </c:if>
 </div>
 
 <script>
-    /* --- 탭 전환 --- */
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelector(btn.dataset.target).classList.add('active');
-        });
-    });
-
-    /* --- 공통: CSRF 안전 처리 --- */
+    /* --- CSRF 안전 처리 --- */
     function csrf() {
         const t = document.querySelector('meta[name="_csrf"]')?.content || null;
-        // 스프링 기본 헤더명은 보통 X-CSRF-TOKEN
         const h = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN';
         return { token: t, header: h };
     }
@@ -147,9 +91,7 @@
     async function postJson(url, body) {
         const headers = { 'Content-Type': 'application/json' };
         const { token, header } = csrf();
-        // 토큰이 있을 때만 헤더 추가(없으면 생략 → Invalid name 방지)
-        if (token) headers[header] = token;
-
+        if (token) headers[header] = token; // 토큰 있을 때만 추가
         return fetch(url, {
             method: 'POST',
             headers,
@@ -157,7 +99,7 @@
         });
     }
 
-    /* --- 타이머/쿨타임 --- */
+    /* --- 타이머/쿨타임 (이메일 전송용) --- */
     function startTimer(spanEl, buttonEl, ttlSec = 180, cooldownSec = 60) {
         const startedAt = Date.now();
         clearInterval(spanEl._timer);
@@ -182,7 +124,7 @@
         }, 1000);
     }
 
-    /* --- 이메일 코드 전송 (검증 폼의 email 값을 사용) --- */
+    /* --- 이메일 코드 전송 --- */
     async function sendEmailCode() {
         const emailField = document.querySelector('#emailVerifyForm [name=email]');
         const email = emailField.value.trim();
@@ -205,27 +147,13 @@
         }
     }
 
-    /* --- SMS 코드 전송 (검증 폼의 phone 값을 사용) --- */
-    async function sendSmsCode() {
-        const phoneField = document.querySelector('#smsVerifyForm [name=phone]');
-        const phone = phoneField.value.replace(/\D/g,'');
-        const msg = document.getElementById('smsSendMsg');
-        const btn = document.getElementById('smsSendBtn');
-        const timer = document.getElementById('smsTimer');
-
-        msg.className = 'msg'; msg.textContent = '';
-        if (!phone) { msg.classList.add('error'); msg.textContent = '휴대폰 번호를 입력해주세요.'; return; }
-
-        const res = await postJson('<c:url value="/find-password/sms/code"/>', { phone });
-        const text = await res.text();
-        if (res.ok) {
-            msg.classList.add('success');
-            msg.textContent = '인증코드를 전송했습니다. 3분 내에 입력하세요.';
-            startTimer(timer, btn, 180, 60);
-        } else {
-            msg.classList.add('error');
-            msg.textContent = text || '전송에 실패했습니다.';
-        }
+    /* --- 임시비밀번호 복사 --- */
+    function copyTempPw(){
+        const el=document.getElementById('issuedTempPw');
+        if(!el) return;
+        el.select(); el.setSelectionRange(0,99999);
+        try{ navigator.clipboard.writeText(el.value); }catch(e){ document.execCommand('copy'); }
+        alert('복사되었습니다.');
     }
 </script>
 </body>

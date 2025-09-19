@@ -20,9 +20,13 @@ public class UsersDetailsService implements UserDetailsService {
         Users user = usersRepository.findById(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUserId())
-                .password(user.getPassword())
+        String hashed = "Y".equalsIgnoreCase(user.getTempPwYn())
+                ? user.getPasswordTemp()
+                : user.getPassword();
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUserId())
+                .password(hashed)
                 .roles(user.getRole()) // DB에는 "USER" 저장 → Security가 "ROLE_USER"로 매핑
                 .build();
     }

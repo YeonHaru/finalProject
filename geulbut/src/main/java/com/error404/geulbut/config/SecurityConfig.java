@@ -74,7 +74,9 @@ public class SecurityConfig {
                                 "admin/css/admin-header.css", "/signup",
                                 "/users/check-id","/users/check-email",
                                 "/find-id","/find-password",
-                                "/find-password/**", "/search"
+                                "/find-password/**", "/search",
+                                "/find-password/email/code",         // ⬅️ AJAX POST
+                                "/find-password/email/verify"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
