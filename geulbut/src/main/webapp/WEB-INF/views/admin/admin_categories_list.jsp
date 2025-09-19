@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>카테고리 관리</title>
-    <link rel="stylesheet" href="<c:url value='/css/admin/admin-categories.css'/>">
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
 </head>
 <body>
 <h2>카테고리 관리</h2>
