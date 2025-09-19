@@ -18,6 +18,7 @@ public class QnaDto {
     private String aId;
     private String aContent;
     private Date  aAt;
+    private Long viewCount;
     private String userId;
 }
 

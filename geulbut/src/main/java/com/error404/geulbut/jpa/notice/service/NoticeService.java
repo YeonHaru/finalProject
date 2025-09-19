@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -88,5 +89,19 @@ public class NoticeService {
     public void deleteNotice(Long id) {
         noticeRepository.deleteById(id);
     }
+
+    // ✅ 조회수 증가 후 단건 조회
+    @Transactional
+    public NoticeDto getNoticeAndIncreaseViewCount(Long id) {
+        // 1. 조회수 증가
+        noticeRepository.increaseViewCount(id);
+
+        // 2. 글 가져오기
+        NoticeEntity notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Notice not found"));
+
+        return toDto(notice);
+    }
+
 
 }

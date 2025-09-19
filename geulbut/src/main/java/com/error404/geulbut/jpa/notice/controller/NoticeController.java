@@ -30,7 +30,9 @@ public class NoticeController {
     // 공지 상세보기
     @GetMapping("/noticeText")
     public String noticeText(@RequestParam("id") Long id, Model model) {
-        NoticeDto notice = noticeService.findById(id);
+
+        // 조회수 증가 + 단건 조회
+        NoticeDto notice = noticeService.getNoticeAndIncreaseViewCount(id);
         model.addAttribute("notice", notice);
         return "notice/noticeText";
     }
