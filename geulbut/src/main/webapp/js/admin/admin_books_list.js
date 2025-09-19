@@ -1,10 +1,10 @@
-$(function() {
+$(function () {
 
     // =============================
     // 🔹 모달 select 옵션 로드
     // =============================
     function loadOptions(callback) {
-        $.get('/admin/books/options', function(res) {
+        $.get('/admin/books/options', function (res) {
             let authorSelect = $('#authorId');
             let publisherSelect = $('#publisherId');
             let categorySelect = $('#categoryId');
@@ -24,7 +24,7 @@ $(function() {
     // =============================
     // 🔹 모달 열기 (도서 등록)
     // =============================
-    $('#btnAddBook').click(function() {
+    $('#btnAddBook').click(function () {
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
@@ -35,23 +35,42 @@ $(function() {
     // =============================
     // 🔹 모달 닫기
     // =============================
-    $('#btnCloseModal').click(function() {
+// 🔹 닫기 버튼 2개 모두 동작 + 배경 클릭 + ESC 닫기
+    $('#btnCloseModal, #btnCancel').on('click', function () {
         $('#bookModal').hide();
     });
+
+    $('#bookModal').on('click', function (e) {
+        if (e.target.id === 'bookModal') $('#bookModal').hide();   // 배경 클릭 닫기
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape') $('#bookModal').hide();            // ESC 닫기
+    });
+
 
     // =============================
     // 🔹 등록 / 수정 submit
     // =============================
-    $('#bookForm').submit(function(e) {
+    $('#bookForm').submit(function (e) {
         e.preventDefault();
 
         let authorVal = $('#authorId').val();
         let publisherVal = $('#publisherId').val();
         let categoryVal = $('#categoryId').val();
 
-        if (!authorVal) { alert('저자를 선택해주세요.'); return; }
-        if (!publisherVal) { alert('출판사를 선택해주세요.'); return; }
-        if (!categoryVal) { alert('카테고리를 선택해주세요.'); return; }
+        if (!authorVal) {
+            alert('저자를 선택해주세요.');
+            return;
+        }
+        if (!publisherVal) {
+            alert('출판사를 선택해주세요.');
+            return;
+        }
+        if (!categoryVal) {
+            alert('카테고리를 선택해주세요.');
+            return;
+        }
 
         let bookId = $('#bookId').val();
         let method = bookId ? 'PUT' : 'POST';
@@ -69,20 +88,29 @@ $(function() {
             categoryId: parseInt(categoryVal)
         };
 
-        if (!data.title) { alert('제목을 입력해주세요.'); return; }
-        if (!data.isbn) { alert('ISBN을 입력해주세요.'); return; }
-        if (data.price < 0 || data.stock < 0) { alert('가격/재고는 0 이상이어야 합니다.'); return; }
+        if (!data.title) {
+            alert('제목을 입력해주세요.');
+            return;
+        }
+        if (!data.isbn) {
+            alert('ISBN을 입력해주세요.');
+            return;
+        }
+        if (data.price < 0 || data.stock < 0) {
+            alert('가격/재고는 0 이상이어야 합니다.');
+            return;
+        }
 
         $.ajax({
             url: url,
             method: method,
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function() {
+            success: function () {
                 alert('저장 완료');
                 location.reload();
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     alert('저장 실패: ' + xhr.responseJSON.message);
                 } else {
@@ -95,17 +123,17 @@ $(function() {
     // =============================
     // 🔹 삭제
     // =============================
-    $('#booksTableBody').on('click', '.btnDelete', function() {
+    $('#booksTableBody').on('click', '.btnDelete', function () {
         let bookId = $(this).closest('tr').data('id');
         if (confirm('정말 삭제하시겠습니까?')) {
             $.ajax({
                 url: '/admin/books/' + bookId,
                 method: 'DELETE',
-                success: function() {
+                success: function () {
                     alert('삭제 완료');
                     location.reload();
                 },
-                error: function() {
+                error: function () {
                     alert('삭제 실패');
                 }
             });
@@ -115,10 +143,10 @@ $(function() {
     // =============================
     // 🔹 수정 버튼 클릭
     // =============================
-    $('#booksTableBody').on('click', '.btnEdit', function() {
+    $('#booksTableBody').on('click', '.btnEdit', function () {
         let bookId = $(this).closest('tr').data('id');
 
-        $.get('/admin/books/' + bookId + '/edit-options', function(res) {
+        $.get('/admin/books/' + bookId + '/edit-options', function (res) {
             let book = res.book;
             let authors = res.authors;
             let publishers = res.publishers;
@@ -152,11 +180,11 @@ $(function() {
     // =============================
     // 🔹 검색 search
     // =============================
-    $('#searchForm').submit(function(e) {
+    $('#searchForm').submit(function (e) {
         e.preventDefault();
         let keyword = $(this).find('input[name="keyword"]').val().trim();
 
-        $.get('/admin/books/search', { keyword: keyword }, function(res) {
+        $.get('/admin/books/search', {keyword: keyword}, function (res) {
             let tbody = $('#booksTableBody');
             tbody.empty();
 
