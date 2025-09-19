@@ -1,0 +1,344 @@
+/* =========================================================
+   admin.css (통합)
+   - 공통 토큰/레이아웃/컴포넌트 + 페이지별(books/authors/publishers/users/categories)
+   - 스타일 태그 금지, 이 파일만 링크해서 사용
+========================================================= */
+
+/* ---------- 0. 토큰 / 리셋 (모든 페이지 공용) ---------- */
+:root{
+    --color-bg:#ECECEC; --color-surface:#fff;
+    --color-accent:#666; --color-accent-dark:#333;
+    --color-text:#333; --color-text-light:#888;
+    --color-border:rgba(0,0,0,.12);
+
+    --radius-sm:8px; --radius:12px; --radius-lg:16px;
+    --shadow-sm:0 2px 6px rgba(0,0,0,.08);
+    --shadow-md:0 8px 24px rgba(0,0,0,.12);
+
+    --space-0:0; --space-1:.25rem; --space-2:.5rem;
+    --space-3:1rem; --space-4:1.5rem; --space-5:2rem;
+
+    --admin-accent-dark:#0056b3;
+    --admin-btn-delete:#dc3545;
+    --admin-detail-bg:#f1f5f9;
+
+    --dur:.2s; --ease:ease;
+}
+*,*::before,*::after{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+    margin:0; background:var(--color-bg); color:var(--color-text);
+    font-family:"Montserrat","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+h1{ margin: var(--space-4) 0 var(--space-2) }
+.t-left{text-align:left} .t-right{text-align:right} .t-center{text-align:center}
+
+/* 페이지 컨테이너(각 관리자 페이지 루트에 .admin-xxx 클래스 존재 전제) */
+.admin-books .page,
+.admin-authors .page,
+.admin-publishers .page,
+.admin-users .page,
+.admin-categories .page{
+    width:min(92%,1280px); margin-inline:auto;
+}
+@media (min-width:1440px){
+    .admin-books .page,
+    .admin-authors .page,
+    .admin-publishers .page,
+    .admin-users .page,
+    .admin-categories .page{ width:min(90%,1360px) }
+}
+
+/* ---------- 1. 공용 컴포넌트 ---------- */
+
+/* 검색 */
+.search-wrapper{ display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:16px; width:100% }
+.search-form{
+    display:flex; align-items:stretch; width:100%; max-width:680px; height:44px;
+    border:1px solid var(--color-border); border-radius:var(--radius);
+    background:var(--color-surface); overflow:hidden; box-shadow:var(--shadow-sm);
+}
+.search-form select{
+    height:100%; padding:0 12px; font-size:.9rem; color:var(--color-text);
+    background:var(--color-bg); border:none; border-right:1px solid var(--color-border); cursor:pointer; appearance:none;
+}
+.search-form input[type="text"]{
+    flex:1; min-width:0; height:100%; padding:0 12px; font-size:.95rem;
+    color:var(--color-text); background:var(--color-surface); border:none;
+}
+.search-form input::placeholder{ color:var(--color-text-light) }
+.search-form input:focus-visible{ outline:none }
+.search-form .btn-search{
+    height:100%; padding:0 16px; font-size:.9rem; font-weight:600; color:#fff; cursor:pointer;
+    background:var(--color-accent-dark); border-left:1px solid var(--color-border);
+    transition:opacity var(--dur) var(--ease);
+}
+.search-form .btn-search:hover{ opacity:.92 }
+.search-form .btn-search:active{ opacity:.86 }
+
+/* 세부검색(회원조회에서 사용) */
+.advanced-search{
+    display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+    gap:8px 12px; width:100%; margin-top:8px;
+}
+.advanced-search label{ font-size:.85rem }
+.advanced-search input,.advanced-search select{
+    height:36px; padding:0 8px; font-size:.85rem; border-radius:var(--radius-sm);
+    border:1px solid var(--color-border);
+}
+
+/* 툴바/버튼 */
+.toolbar{ display:flex; justify-content:flex-end; gap:8px; margin: var(--space-2) 0 }
+.btn{
+    display:inline-block; min-width:60px; height:28px; padding:0 10px; font-size:.85rem;
+    font-weight:500; border:none; border-radius:var(--radius-sm); cursor:pointer;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.btn-accent{ background:var(--color-accent); color:#fff }
+.btn-accent:hover{ background:var(--admin-accent-dark) }
+.btn-delete{ background:var(--admin-btn-delete); color:#fff }
+.btn-delete:hover{ filter:brightness(.95) }
+
+/* 테이블 */
+.admin-table{
+    width:100%; border-collapse:collapse; table-layout:fixed;
+    background:var(--color-surface); box-shadow:var(--shadow-sm);
+    border-radius:var(--radius); overflow:hidden; margin-top:var(--space-4);
+}
+.admin-table thead th{ background:var(--color-bg); color:var(--color-accent-dark); font-weight:600 }
+.admin-table th,.admin-table td{
+    padding: var(--space-2) var(--space-3); text-align:center; border-bottom:1px solid var(--color-border);
+    font-size:.9rem; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* 표 데이터 줄임: 마지막 컬럼 버튼 영역은 줄임 해제(공통 규칙) */
+.admin-table td:last-child{
+    overflow:visible !important; text-overflow:clip !important; white-space:nowrap; padding-left:8px; padding-right:8px;
+}
+
+/* 테이블 내 select/버튼 겹침 방지 */
+.admin-table select,.admin-table .btn{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* 스크롤 래퍼 */
+.table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+@media (min-width:1280px){ .table-scroll{ overflow-x:hidden } }
+
+/* 페이지네이션 */
+.pagination{ display:flex; justify-content:center; gap:6px; margin: var(--space-2) 0 var(--space-4) }
+.pagination a{
+    padding:3px 8px; border:1px solid #ccc; border-radius:var(--radius-sm); text-decoration:none; color:inherit
+}
+.pagination a:hover{ background:#0056b3; color:#fff }
+.pagination a.active{ font-weight:700; background:#ddd }
+
+/* 통계(회원조회) */
+.stats{ display:flex; gap:24px; margin-bottom:16px; font-size:.95rem; font-weight:500 }
+.stats p{
+    margin:0; padding:4px 12px; background:var(--color-surface); border:1px solid var(--color-border);
+    border-radius:var(--radius-sm); box-shadow:var(--shadow-sm);
+}
+.stats span{ font-weight:700; color:var(--color-accent) }
+
+/* 상세 행(회원조회) */
+.detail-row .detail-content{
+    padding:10px 16px; background:var(--admin-detail-bg); border-top:1px solid #ddd;
+    font-size:.9rem; line-height:1.4em;
+}
+.detail-row .detail-content p{ margin:4px 0 }
+
+/* 모바일 대응(공통) */
+@media (max-width:767px){
+    .admin-table th,.admin-table td{ font-size:.8rem; padding: var(--space-1) var(--space-2) }
+    .btn{ padding:var(--space-0) var(--space-1); font-size:.75rem }
+    .search-wrapper .search-form,.advanced-search{ max-width:100%; flex-wrap:wrap }
+    .stats{ flex-direction:column; gap:8px }
+    .detail-row .detail-content{ font-size:.85rem; padding:8px }
+}
+
+/* ---------- 2. 페이지별: BOOKS ---------- */
+.admin-books-table{ table-layout:fixed; width:100%; min-width:980px }
+.admin-books-table col.col-id{ width:84px }
+.admin-books-table col.col-title{ width:auto; min-width:220px }
+.admin-books-table col.col-isbn{ width:130px }
+.admin-books-table col.col-author{ width:120px }
+.admin-books-table col.col-publisher{ width:120px }
+.admin-books-table col.col-category{ width:120px }
+.admin-books-table col.col-price{ width:90px }
+.admin-books-table col.col-discount{ width:90px }
+.admin-books-table col.col-stock{ width:70px }
+.admin-books-table col.col-created{ width:140px }
+.admin-books-table col.col-actions{ width:170px }
+.admin-books-table .t-left{text-align:left}
+.admin-books-table .t-right{text-align:right}
+.title-ellipsis{
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; line-height:1.3; max-height:calc(1.3em * 2)
+}
+.isbn-mono{ font-family:ui-monospace,Menlo,Consolas,monospace; letter-spacing:.02em; font-size:.9rem }
+.admin-books-table .btnEdit,.admin-books-table .btnDelete{
+    display:inline-block; min-width:60px; height:28px; line-height:28px; padding:0 10px; box-sizing:border-box; vertical-align:middle
+}
+.admin-books-table .btnDelete{ margin-left:8px }
+.admin-books-table .btnEdit{ background:var(--color-accent); color:#fff }
+.admin-books-table .btnEdit:hover{ background:var(--admin-accent-dark) }
+.admin-books-table .btnDelete{ background:var(--admin-btn-delete); color:#fff }
+#bookModal{
+    position:fixed; inset:0; display:none; background:rgba(0,0,0,.35);
+    overflow:auto; padding:6vh 0; z-index:1000;
+}
+#bookModal .modal__dialog{
+    width:min(92%,720px); margin:0 auto; background:#fff; border:1px solid var(--color-border);
+    border-radius:12px; box-shadow:var(--shadow-md); overflow:hidden;
+}
+#bookModal .modal__header{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--color-border)
+}
+#bookModal .modal__close{ width:32px; height:32px; border-radius:8px; background:#f3f3f3; cursor:pointer; border:none }
+#bookModal .modal__form{
+    display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; padding:14px
+}
+#bookModal .modal__form label{ display:flex; flex-direction:column; gap:4px; font-size:.9rem }
+#bookModal input,#bookModal select{
+    height:36px; padding:0 10px; border:1px solid var(--color-border); border-radius:8px; width:100%; min-width:0
+}
+#bookModal .modal__footer{
+    grid-column:1 / -1; display:flex; justify-content:flex-end; gap:8px; padding:10px 14px; border-top:1px solid var(--color-border)
+}
+@media (max-width:900px){ #bookModal .modal__form{ grid-template-columns:1fr } }
+
+/* ---------- 3. 페이지별: AUTHORS ---------- */
+.admin-authors-table{ table-layout:fixed; width:100%; min-width:980px }
+.admin-authors-table col.col-id{ width:84px }
+.admin-authors-table col.col-name{ width:200px }
+.admin-authors-table col.col-img{ width:120px }
+.admin-authors-table col.col-created{ width:140px }
+.admin-authors-table col.col-desc{ width:auto; min-width:220px }
+.admin-authors-table col.col-actions{ width:170px }
+.admin-authors-table .btnEdit,.admin-authors-table .btnDelete{
+    display:inline-block; min-width:60px; height:28px; line-height:28px; padding:0 10px; box-sizing:border-box; vertical-align:middle
+}
+.admin-authors-table .btnDelete{ margin-left:8px }
+.admin-authors-table .btnEdit{ background:var(--color-accent); color:#fff }
+.admin-authors-table .btnEdit:hover{ background:var(--admin-accent-dark) }
+.admin-authors-table .btnDelete{ background:var(--admin-btn-delete); color:#fff }
+.author-thumb{
+    width:50px; height:50px; object-fit:cover; border-radius:8px; border:1px solid var(--color-border); background:#f7f7f7
+}
+#authorModal{
+    position:fixed; inset:0; display:none; background:rgba(0,0,0,.35);
+    overflow:auto; padding:6vh 0; z-index:1000;
+}
+#authorModal .modal__dialog{
+    width:min(92%,720px); margin:0 auto; background:#fff; border:1px solid var(--color-border);
+    border-radius:12px; box-shadow:var(--shadow-md); overflow:hidden;
+}
+#authorModal .modal__header{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--color-border)
+}
+#authorModal .modal__close{ width:32px; height:32px; border-radius:8px; background:#f3f3f3; cursor:pointer; border:none }
+#authorModal .modal__form{
+    display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; padding:14px
+}
+#authorModal .modal__form label{ display:flex; flex-direction:column; gap:6px; font-size:.9rem }
+#authorModal input[type="text"],#authorModal textarea{
+    width:100%; min-width:0; border:1px solid var(--color-border); border-radius:8px; padding:8px 10px; font-size:.95rem; color:var(--color-text); background:#fff
+}
+#authorModal input[type="text"]{ height:36px }
+#authorModal textarea{ min-height:90px; resize:vertical }
+#authorModal #authorImgPreview{
+    display:block; width:200px; height:200px; object-fit:cover; border:1px solid var(--color-border); border-radius:8px; background:#f7f7f7
+}
+#authorModal .modal__footer{
+    grid-column:1 / -1; display:flex; justify-content:flex-end; gap:8px; padding:10px 14px; border-top:1px solid var(--color-border)
+}
+@media (max-width:900px){ #authorModal .modal__form{ grid-template-columns:1fr } }
+@media (max-width:1200px){
+    .admin-authors-table th.hide-lg,.admin-authors-table td.hide-lg{ display:none }
+}
+@media (max-width:992px){
+    .admin-authors-table col.col-name{ width:180px }
+    .admin-authors-table col.col-desc{ min-width:200px }
+}
+
+/* ---------- 4. 페이지별: PUBLISHERS ---------- */
+.admin-publishers-table{ table-layout:fixed; width:100%; min-width:980px }
+.admin-publishers-table col.col-id{ width:100px }
+.admin-publishers-table col.col-name{ width:220px }
+.admin-publishers-table col.col-desc{ width:auto; min-width:260px }
+.admin-publishers-table col.col-created{ width:160px }
+.admin-publishers-table col.col-actions{ width:170px }
+.admin-publishers-table .btn-edit,.admin-publishers-table .btn-delete{
+    display:inline-block; min-width:60px; height:28px; line-height:28px; padding:0 10px; box-sizing:border-box; vertical-align:middle
+}
+.admin-publishers-table .btn-delete{ margin-left:8px }
+#publisherModal{
+    position:fixed; inset:0; display:none; background:rgba(0,0,0,.35);
+    overflow:auto; padding:6vh 0; z-index:9999;
+}
+#publisherModal .modal__dialog{
+    width:min(92%,680px); margin:0 auto; background:#fff; border:1px solid var(--color-border);
+    border-radius:12px; box-shadow:var(--shadow-md); overflow:hidden;
+}
+#publisherModal .modal__header{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--color-border)
+}
+#publisherModal .modal__close{ width:32px; height:32px; border-radius:8px; background:#f3f3f3; cursor:pointer; border:none }
+#publisherModal .modal__form{
+    display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; padding:14px
+}
+#publisherModal .modal__form label{ display:flex; flex-direction:column; gap:6px; font-size:.9rem }
+#publisherModal input[type="text"],#publisherModal textarea{
+    width:100%; min-width:0; border:1px solid var(--color-border); border-radius:8px; padding:8px 10px; font-size:.95rem; background:#fff; color:var(--color-text)
+}
+#publisherModal input[type="text"]{ height:36px }
+#publisherModal textarea{ min-height:90px; resize:vertical }
+#publisherModal .modal__footer{
+    grid-column:1 / -1; display:flex; justify-content:flex-end; gap:8px; padding:10px 14px; border-top:1px solid var(--color-border)
+}
+@media (max-width:900px){ #publisherModal .modal__form{ grid-template-columns:1fr } }
+
+/* ---------- 5. 페이지별: USERS (usersInfo) ---------- */
+/* usersInfo는 공용 규칙을 대부분 사용하며, 필요한 보강만 */
+.admin-users .admin-table td:not(:last-child){
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;
+}
+
+/* ---------- 6. 페이지별: CATEGORIES ---------- */
+/* 기존 단순 테이블을 공용 admin-table 톤으로 흡수 */
+.admin-categories table{ width:100% }
+.admin-categories .search-box{ margin-bottom:15px }
+.admin-categories .search-box input[type="text"]{
+    padding:6px 10px; border:1px solid var(--color-border); border-radius:4px; width:200px; margin-right:5px; background:#fff
+}
+.admin-categories .search-box button{
+    padding:6px 12px; border:none; border-radius:4px; cursor:pointer; font-size:14px; color:#fff
+}
+#btnSearch{ background-color:#17a2b8 }
+#btnAddCategory{ background-color:#007bff }
+.admin-categories .btn-edit{ background-color:#28a745; color:#fff; padding:4px 8px; margin-right:5px }
+.admin-categories .btn-delete{ background-color:#dc3545; color:#fff; padding:4px 8px }
+.admin-categories .btn-edit:hover,.admin-categories .btn-delete:hover,.admin-categories .search-box button:hover{ opacity:.85 }
+
+/* 카테고리 페이징 */
+#pagination{ margin-top:10px; text-align:center }
+.page-btn{
+    padding:4px 10px; margin:0 2px; border:1px solid #ddd; border-radius:4px; cursor:pointer; background:#fff
+}
+.page-btn.active{ background:#007bff; color:#fff; border-color:#007bff }
+.page-btn:hover:not(.active){ background:#f0f0f0 }
+
+/* 카테고리 모달 */
+.modal{
+    position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:1000
+}
+.modal-content{
+    background:#fff; padding:20px; border-radius:8px; width:400px; max-width:90%;
+    box-shadow:0 4px 8px rgba(0,0,0,.2)
+}
+#modalTitle{ margin-bottom:10px; font-size:18px; font-weight:bold }
+.modal input[type="text"]{
+    width:100%; padding:6px; margin-bottom:10px; border:1px solid var(--color-border); border-radius:4px; box-sizing:border-box
+}
+#modalSaveBtn{ background:#28a745; color:#fff; padding:6px 12px; border:none; border-radius:4px; cursor:pointer }
+#modalCloseBtn{ background:#6c757d; color:#fff; padding:6px 12px; border:none; border-radius:4px; cursor:pointer; margin-left:5px }
+#modalSaveBtn:hover,#modalCloseBtn:hover{ opacity:.85 }

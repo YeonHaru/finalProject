@@ -11,7 +11,7 @@
     <!-- 공통/헤더 + 출판사 전용 CSS -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
-    <link rel="stylesheet" href="${ctx}/css/admin/admin-publishers.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
