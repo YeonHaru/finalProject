@@ -4,11 +4,13 @@ import com.error404.geulbut.jpa.wishlist.dto.WishlistDto;
 import com.error404.geulbut.jpa.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -35,18 +37,36 @@ public class WishlistController {
      * 위시리스트 추가 (POST /wishlist)
      */
     @PostMapping
-    public ResponseEntity<?> addwishlist(Authentication authentication,
+    public ResponseEntity<?> addWishlist(Authentication authentication,
                                          @RequestParam Long bookId) {
         String userId = authentication.getName();
-        wishlistService.addWishlist(userId, bookId);
-        return ResponseEntity.ok("ok");
+        log.info("[POST] 위시리스트 추가요청 - userID: {}, bookId: {}", userId, bookId);
+
+        try {
+            wishlistService.addWishlist(userId, bookId);
+            return ResponseEntity.ok(Map.of("status", "ok"));
+        } catch (Exception e) {
+            log.error("위시리스트 추가 실패 -userId: {}, bookId: {}", userId, bookId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
+        }
     }
     /** 📌 위시리스트 삭제 (DELETE /wishlist/{bookId}) */
     @DeleteMapping("/{bookId}")
     public ResponseEntity<?> removeWishlist(Authentication authentication,
                                             @PathVariable Long bookId) {
         String userId = authentication.getName();
-        wishlistService.removeWishlist(userId, bookId);
-        return ResponseEntity.ok("ok");
+        log.info("[DELETE] 위시리스트 삭제 요청 - userId: {}, bookId: {}", userId, bookId);
+
+        try{
+            wishlistService.removeWishlist(userId, bookId);
+            return ResponseEntity.ok(Map.of("status", "ok"));
+        } catch (Exception e) {
+            log.error("위시리스트 삭제 실패 - userId: {}, bookId: {}", userId, bookId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
+        }
+
+
     }
 }
