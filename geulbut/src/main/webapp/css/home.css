@@ -46,8 +46,6 @@ body {
 .section-title {
     position: relative;
     display: inline-block;
-    font-size: 27px;
-    font-weight: 800;
     font-size: 32px;
     font-weight: 600;
     color: #1f2937;
@@ -56,7 +54,6 @@ body {
 }
 
 
-/* 수정된 작은 재생/정지 버튼 */
 .play-button {
     width: 36px;
     height: 36px;
@@ -77,7 +74,6 @@ body {
 }
 
 .play-button::before {
-    color: #2f3239;
     color: #6b7280;
     font-size: 16px;
     line-height: 1;
@@ -111,7 +107,6 @@ body {
 }
 
 .play-button.paused:hover::after {
-    background: #262d39;
     background: #374151;
     box-shadow: 6px 0 0 #374151;
 }
@@ -187,7 +182,6 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, rgb(175, 193, 216) 0%, #284b7c 100%);
     background: linear-gradient(90deg, rgb(175, 187, 207) 0%, #284b7c 100%);
 }
 
@@ -535,7 +529,6 @@ body {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #40515c; /* 중간 정도 어두운 회색 */
     background: #4b5770; /* 중간 정도 어두운 회색 */
     color: #f9fafb;      /* 밝은 글자 */
     padding: 4px 12px;
@@ -647,7 +640,6 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #edcab3 0%, #e67842 100%);
     background: linear-gradient(90deg, #ecd7bc 0%, #f6ad8c 100%);
 }
 
@@ -669,22 +661,18 @@ body {
 }
 
 .trending-badge.hot {
-
     background: rgba(248, 79, 91, 0.89);
 }
 
-.trending-badge.rising {
-    background: rgb(250, 93, 93);
-}
-
 .trending-badge.viral {
-    background: rgba(246, 60, 60, 0.83);
 
     background: rgba(214, 34, 44, 0.77);
 }
+
 .trending-badge.rising {
     background: rgba(225, 88, 88, 0.84);
 }
+
 .trending-badge.viral {
     background: rgba(223, 63, 44, 0.79);
 }
@@ -716,7 +704,6 @@ body {
     right: 8px;
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, #f15757 0%, #ef7c3e 100%);
     background: linear-gradient(135deg, #d65f5f 0%, #fab386 100%);
     color: white;
     border-radius: 50%;
@@ -913,7 +900,7 @@ body {
     font-size: 11px;
     color: #c53030;
     font-weight: 600;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
 }
 
 
@@ -1085,7 +1072,7 @@ body {
 }
 
 .goods-badge.special {
-    background: #894fa8;
+    background: #9d52e6;
 }
 
 .goods-badge.new {
@@ -1094,7 +1081,6 @@ body {
 
 .goods-badge.hot {
     background: #7b3def;
-
 }
 
 .goods-badge.best {
@@ -1199,7 +1185,6 @@ body {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, #c5dac9 0%, #5aaa6c 100%);
-
 }
 
 .weekly-card:hover {
@@ -2066,7 +2051,6 @@ body {
 .slider-ad {
     position: relative;
     height: 160px;
-
 }
 
 .slider-track {
@@ -2137,7 +2121,6 @@ body {
     transform: translateY(-2px);
 }
 
-
 /* 화살표 네비게이션 버튼 */
 .slider-nav {
     position: absolute;
@@ -2172,7 +2155,6 @@ body {
 .slider-nav.next {
     right: 20px;
 }
-
 
 /* 기존 인디케이터 제거 */
 @keyframes slide {
@@ -2291,8 +2273,9 @@ body {
     color: white;
 }
 
-
-
+.status-badge.hot {
+    background: #c33a3a;
+}
 
 .status-badge.best {
     background: #10a371;
@@ -2505,10 +2488,6 @@ body {
 
 .new-book-promo {
     border-left: 4px solid #77cc85;
-}
-
-.audiobook-promo {
-    border-left: 4px solid #8198f8;
 }
 
 .promo-icon {
