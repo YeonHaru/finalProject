@@ -110,10 +110,12 @@
                                             ${book.authorName} | ${book.publisherName}<br>
                                         <c:choose>
                                             <c:when test="${not empty book.discountedPrice}">
-                                                <span class="text-muted"><del><fmt:formatNumber value="${book.price}"
-                                                                                                pattern="#,##0"/></del></span>
-                                                → <span class="text-danger fw-bold"><fmt:formatNumber
-                                                    value="${book.discountedPrice}" pattern="#,##0"/> 원</span>
+                                    <span class="text-muted">
+                                        <del><fmt:formatNumber value="${book.price}" pattern="#,##0"/></del>
+                                    </span>
+                                                → <span class="text-danger fw-bold">
+                                        <fmt:formatNumber value="${book.discountedPrice}" pattern="#,##0"/> 원
+                                    </span>
                                             </c:when>
                                             <c:otherwise>
                                                 <fmt:formatNumber value="${book.price}" pattern="#,##0"/> 원
@@ -122,15 +124,13 @@
                                     </div>
                                 </div>
 
+                                <!-- 액션 버튼 -->
                                 <div class="d-flex">
-                                    <!-- 장바구니 담기 버튼 -->
                                     <button type="button"
                                             class="btn btn-sm btn-outline-primary me-2"
                                             onclick="addToCart(${book.bookId}, this)">
                                         장바구니 담기
                                     </button>
-
-                                    <!-- 삭제 버튼 (AJAX) -->
                                     <button type="button"
                                             class="btn btn-sm btn-outline-danger ms-3"
                                             onclick="removeWishlist(${book.bookId}, this)">
@@ -143,65 +143,63 @@
                 </c:if>
             </div>
 
-
             <!-- ✅ 장바구니 -->
             <div class="tab-pane fade" id="v-pills-cart" role="tabpanel">
                 <h2 class="mb-3 pb-2 border-bottom">장바구니</h2>
 
                 <c:if test="${not empty cart}">
-                    <!-- 장바구니 폼 -->
-                    <form method="post" action="<c:url value='/cart/update'/>">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <table class="table table-striped align-middle">
-                            <thead>
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th>상품</th>
+                            <th style="width:120px;">수량</th>
+                            <th>가격</th>
+                            <th>합계</th>
+                            <th style="width:150px;">관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="item" items="${cart}">
                             <tr>
-                                <th>상품</th>
-                                <th style="width:120px;">수량</th>
-                                <th>가격</th>
-                                <th>합계</th>
-                                <th style="width:150px;">관리</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="item" items="${cart}">
-                                <tr>
-                                    <td>${item.title}</td>
-                                    <td>
-                                        <input type="number" name="qty_${item.bookId}"
-                                               value="${item.quantity}" min="1"
-                                               class="form-control form-control-sm"
-                                               onchange="updateCart(${item.bookId}, this.value)">
-                                    </td>
-                                    <td><fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원</td>
-                                    <td><fmt:formatNumber value="${item.totalPrice}" pattern="#,##0"/> 원</td>
-                                    <td>
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-danger"
-                                                onclick="removeCart(${item.bookId}, this)">
-                                            삭제
-                                        </button>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="text-end"><strong>총합</strong></td>
-                                <td><strong><fmt:formatNumber value="${cartTotal}" pattern="#,##0"/> 원</strong></td>
-                                <td class="text-end">
-                                    <button class="btn btn-primary">💳 결제하기</button>
+                                <td>${item.title}</td>
+                                <td>
+                                    <input type="number"
+                                           value="${item.quantity}" min="1"
+                                           class="form-control form-control-sm"
+                                           onchange="updateCart(${item.bookId}, this.value)">
+                                </td>
+                                <td><fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원</td>
+                                <td><fmt:formatNumber value="${item.totalPrice}" pattern="#,##0"/> 원</td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="removeCart(${item.bookId}, this)">
+                                        삭제
+                                    </button>
                                 </td>
                             </tr>
-                            </tfoot>
-                        </table>
-                    </form>
+                        </c:forEach>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td class="text-end"><strong>총합</strong></td>
+                            <td>
+                                <strong><fmt:formatNumber value="${cartTotal}" pattern="#,##0"/> 원</strong>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-primary" onclick="checkout()">💳 결제하기</button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </c:if>
 
                 <c:if test="${empty cart}">
-                    <p class="text-light">장바구니가 비어 있습니다.</p>
+                    <div class="alert alert-info">장바구니가 비어 있습니다.</div>
                 </c:if>
             </div>
+
 
             <!-- ✅ 주문 내역 -->
             <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
@@ -221,12 +219,17 @@
                         <c:forEach var="order" items="${orders}">
                             <tr>
                                 <td>${order.orderId}</td>
-                                <td>${order.orderDate}</td>
-                                <td>${order.productName}</td>
-                                <td><fmt:formatNumber value="${order.amount}" pattern="#,##0"/> 원</td>
+                                <td><fmt:formatDate value="${order.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
+                                <td>
+                                    <c:forEach var="item" items="${order.items}">
+                                        ${item.bookId} (수량: ${item.quantity})<br/>
+                                    </c:forEach>
+                                </td>
+                                <td><fmt:formatNumber value="${order.totalPrice}" pattern="#,##0"/> 원</td>
                                 <td>${order.status}</td>
                             </tr>
                         </c:forEach>
+
                         </tbody>
                     </table>
                 </c:if>
@@ -237,13 +240,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- CSRF 토큰 전역 변수 -->
-<script>
-    window.csrfToken = '${_csrf.token}';
-</script>
-
-<!-- 마이페이지 전용 JS -->
-<script src="/js/mypage/mypage.js"></script>
+<!-- 마이페이지 전용 JS (순서 공통 -> cart -> wishlist 고정) -->
+<!-- 공통 -->
+<script src="/js/mypage/mypage-common.js"></script>
+<!-- 장바구니 -->
+<script src="/js/mypage/cart.js"></script>
+<!-- 위시리스트 -->
+<script src="/js/mypage/wishlist.js"></script>
 
 <%-- 버튼 클릭시 이동 경로 --%>
 <%--<a href="/mypage?tab=wishlist"> 위시리스트</a>--%>
