@@ -2,6 +2,8 @@ package com.error404.geulbut.jpa.publishers.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,7 +11,8 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode(of = "publisherId")
 public class PublishersDto {
-    private String publisherId;
+    private Long publisherId;
     private String name;
     private String description;
+    private LocalDateTime createdAt;
 }

@@ -165,7 +165,7 @@
 
                         <li><a href="${ctx}/admin/books">도서 등록/수정/삭제</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/authors">작가 등록/수정/삭제</a></li>
-                        <li><a href="${pageContext.request.contextPath}/admin/books">출판사 등록/수정/삭제</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/publishers">출판사 등록/수정/삭제</a></li>
 
 
                     </ul>
