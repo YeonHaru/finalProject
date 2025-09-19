@@ -55,3 +55,21 @@ spring:
 #          구글 API 엔드포인트
           google:
             user-name-attribute: sub
+
+#       메일 SMTP
+  mail:
+    host: smtp.mailtrap.io
+    port: 2525
+    username: ${MAIL_USER}
+    password: ${MAIL_PASS}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+
+app:
+  mail:
+    from: no-reply@geulbut.example
+    from-name: 글벗

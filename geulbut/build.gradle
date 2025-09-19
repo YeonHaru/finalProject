@@ -66,6 +66,8 @@ dependencies {
 //    TODO :  외부 로그인 필수 - 덕규
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+//     TODO : 비밀번호찾기 실제 전송 의존성코드
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 //    TODO: es 라이브러리
 

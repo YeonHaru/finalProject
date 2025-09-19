@@ -1,10 +1,11 @@
 package com.error404.geulbut.jpa.users.service;
 
+import com.error404.geulbut.common.notify.EmailSender;
 import com.error404.geulbut.config.PasswordRecoveryProperties;
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.SendEmailCodeRequest;
-import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.SendSmsCodeRequest;
+
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
-import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifySmsAndResetRequest;
+
 import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,52 +27,7 @@ public class PasswordRecoveryService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordRecoveryProperties props;
-
-    /* ====================== SMS 경로 ====================== */
-
-    @Transactional
-    public void sendSmsCode(SendSmsCodeRequest req) {
-        final String phone = normalizePhone(req.getPhone());
-
-        Users u = usersRepository.findByPhone(phone)
-                .orElseThrow(() -> new IllegalArgumentException("해당 휴대폰으로 가입된 사용자가 없습니다."));
-
-        // 재전송 쿨타임 체크
-        if (u.getPwCodeLastSentAt() != null &&
-                Duration.between(u.getPwCodeLastSentAt(), now()).compareTo(props.getResendCooldown()) < 0) {
-            throw new IllegalArgumentException("코드 재전송은 잠시 후 다시 시도해 주세요.");
-        }
-
-        String code = sixDigits();
-        u.setPwCode(code);
-        u.setPwCodeExpiresAt(now().plus(props.getCodeTtl()));
-        u.setPwCodeAttempts(0);
-        u.setPwCodeLastSentAt(now());
-        usersRepository.save(u);
-
-        // 개발 단계: 콘솔로 전송(운영에서는 실제 SMS 연동 또는 삭제!)
-        log.info("[DEV SMS] to={} code={}", phone, code);
-    }
-
-    @Transactional
-    public void verifySmsAndReset(VerifySmsAndResetRequest req) {
-        final String phone = normalizePhone(req.getPhone());
-
-        Users u = usersRepository.findByPhone(phone)
-                .orElseThrow(() -> new IllegalArgumentException("가입 정보를 찾을 수 없습니다."));
-
-        validateAndConsumeCode(u, req.getCode(), props.getMaxAttempts());
-
-        // 임시 비밀번호 발급
-        String temp = tempPassword(props.getTempPwLength());
-        u.setPassword(passwordEncoder.encode(temp));
-        u.setTempPwYn("Y"); // 로그인 시 비번 변경 강제
-        clearCodeFields(u);
-        usersRepository.save(u);
-
-        // 개발 단계: 콘솔로 전송(운영에서는 실제 SMS 연동 또는 삭제!)
-        log.info("[DEV SMS] to={} tempPw={}", phone, temp);
-    }
+    private final EmailSender emailSender;
 
     /* ====================== EMAIL 경로 ====================== */
 
@@ -94,27 +50,27 @@ public class PasswordRecoveryService {
         u.setPwCodeLastSentAt(now());
         usersRepository.save(u);
 
-        // 개발 단계: 콘솔로 전송(운영에서는 실제 메일 연동 또는 삭제!)
-        log.info("[DEV MAIL] to={} subject='비번찾기 인증코드' code={}", email, code);
+//       발송
+        long ttlMin = props.getCodeTtl().toMinutes();
+        emailSender.sendCode(email, code, ttlMin);
+
     }
 
     @Transactional
-    public void verifyEmailAndReset(VerifyEmailAndResetRequest req) {
+    public String verifyEmailAndReset(VerifyEmailAndResetRequest req) {
         final String email = normalizeEmail(req.getEmail());
-
         Users u = usersRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입 정보를 찾을 수 없습니다."));
 
         validateAndConsumeCode(u, req.getCode(), props.getMaxAttempts());
 
         String temp = tempPassword(props.getTempPwLength());
-        u.setPassword(passwordEncoder.encode(temp));
-        u.setTempPwYn("Y");
-        clearCodeFields(u);
+        u.setPasswordTemp(passwordEncoder.encode(temp)); // ← PASSWORD_TEMP에 저장
+        u.setTempPwYn("Y");                               // ← 로그인 시 temp 사용
+        clearCodeFields(u);                               // 코드 일회성 소모
         usersRepository.save(u);
 
-        // 개발 단계: 콘솔로 전송(운영에서는 실제 메일 연동 또는 삭제!)
-        log.info("[DEV MAIL] to={} subject='임시비밀번호' tempPw={}", email, temp);
+        return temp; // ← 컨트롤러에서 JSP로 보여주기 위함
     }
 
     /* ====================== 내부 유틸 ====================== */
