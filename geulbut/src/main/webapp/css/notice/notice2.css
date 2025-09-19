@@ -54,6 +54,36 @@
     flex-wrap: nowrap;    /* 한 줄로 유지 */
     background:#ECECEC;
 }
+.pagination .btn {
+    display: inline-block;
+    margin: 0 0.25rem; /* gap-1 수준 */
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius); /* 공통 CSS 라운딩 */
+    font-size: 0.875rem;
+    line-height: 1.25;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 기본 비활성 버튼 */
+.pagination .btn-light {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.pagination .btn-light:hover {
+    background-color: var(--color-bg);
+}
+
+/* 현재 페이지 강조 */
+.pagination .btn-main {
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    font-weight: 600;
+    cursor: default;
+    border: 1px solid var(--color-accent-dark);
+}
 /* 공지사항 2:8 레이아웃 */
 .notice-layout {
     display: grid;
@@ -86,11 +116,31 @@ aside nav a:hover {
 
 /*오른쪽 공지사항 콘텐츠*/
 .notice-title {
+    display: flex;
+    justify-content: space-between; /* 양 끝으로 배치 */
+    align-items: center;           /* 세로 가운데 정렬 */
     font-weight: bold;        /* 강조 */
     padding-bottom: 0.75rem;   /* 밑줄과 텍스트 사이 간격 */
     border-bottom: 2px solid #333; /* 밑줄 색상/두께 */
     margin-bottom: 2rem;      /* 밑줄 아래 여백 */
 }
+.notice-title .btn-main {
+
+    background-color: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    padding: 0.3rem 0.7rem;       /* 패딩 약간 줄임 */
+    font-weight: bold;
+    font-size: 0.75rem;            /* 글자 크기 조절 */
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.notice-title .btn-main:hover {
+    background-color: var(--color-accent); /* 호버 시 배경 채우기 */
+    color: #fff;                            /* 글자 색 변경 */
+}
+
 /* 테이블 구분선: 셀에 적용 (연하게) */
 .notice-table {
     border-collapse: collapse; /* 필수: 셀 경계가 합쳐져서 선이 깨끗하게 보임 */

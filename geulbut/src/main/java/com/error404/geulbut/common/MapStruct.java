@@ -12,6 +12,7 @@ import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
 import com.error404.geulbut.jpa.hashtags.entity.Hashtags;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
+import com.error404.geulbut.jpa.users.dto.UserMypageDto;
 import com.error404.geulbut.jpa.users.dto.UsersLoginDto;
 import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
@@ -29,6 +30,7 @@ public interface MapStruct {
     //    jpa
 //    종일
 //    Authors <-> AuthorsDto
+    @Mapping(target = "createdAt", source = "createdAt")
     AuthorsDto toDto(Authors authors);
 
     Authors toEntity(AuthorsDto authorsDto);
@@ -91,4 +93,7 @@ public interface MapStruct {
 
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
 
+    // --- ✅ Mypage DTO 변환 추가 승화 ---
+    @Mapping(target = "joinDate", source = "joinDate", dateFormat = "yyyy-MM-dd")
+    UserMypageDto toMypageDto(Users users);
 }

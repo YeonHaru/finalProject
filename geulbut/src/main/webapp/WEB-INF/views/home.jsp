@@ -22,7 +22,7 @@
     <section class="editor-choice-section">
         <div class="section-header">
             <h2 class="section-title" id="section-title">편집장의 선택</h2>
-            <button class="play-button" aria-label="재생"></button>
+            <button class="play-button playing" aria-label="재생/정지"></button>
         </div>
 
         <!-- 편집장의 선택 컨텐츠 -->
@@ -658,7 +658,7 @@
     <section class="featured-books">
         <div class="featured-header">
             <div class="featured-title-area">
-                <div class="bookmark-icon">📚</div>
+                <div class="bookmark-icon">📑</div>
                 <div class="featured-title-text">
                     <h2 class="featured-main-title">이달의 주목도서</h2>
                     <p class="featured-subtitle">편집부가 엄선한 9월의 추천 도서</p>
@@ -934,10 +934,12 @@
     </section>
 
     <!-- 전폭 슬라이더 광고 배너 -->
-    <div class="slider-ad-container">
+    <!-- 큰 도서 광고창 -->
+    <section class="slider-ad-container">
         <div class="slider-ad">
-            <div class="slider-track">
-                <!-- 슬라이드 1: 가을 독서 이벤트 -->
+            <button class="slider-nav prev" onclick="prevBanner()">‹</button>
+            <button class="slider-nav next" onclick="nextBanner()">›</button>
+            <div class="slider-track" id="sliderTrack">
                 <div class="slider-item">
                     <div class="slider-content">
                         <h2 class="slider-title">🍂 가을 독서 페스티벌 🍂</h2>
@@ -945,8 +947,6 @@
                         <a href="/autumn-event" class="slider-button">지금 구매하기</a>
                     </div>
                 </div>
-
-                <!-- 슬라이드 2: 멤버십 혜택 -->
                 <div class="slider-item">
                     <div class="slider-content">
                         <h2 class="slider-title">✨ VIP 멤버십 특가 ✨</h2>
@@ -954,8 +954,6 @@
                         <a href="/membership" class="slider-button">멤버십 가입</a>
                     </div>
                 </div>
-
-                <!-- 슬라이드 3: 신간 출시 이벤트 -->
                 <div class="slider-item">
                     <div class="slider-content">
                         <h2 class="slider-title">🔥 이달의 신간 베스트 🔥</h2>
@@ -964,15 +962,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 슬라이더 인디케이터 -->
-            <div class="slider-indicators">
-                <div class="indicator active"></div>
-                <div class="indicator"></div>
-                <div class="indicator"></div>
-            </div>
         </div>
-    </div>
+    </section>
 
     <!-- 화제의 책 소식 섹션 -->
     <section class="hot-news-section">
@@ -1387,13 +1378,13 @@
 
         <!-- 하단 내비게이션 -->
         <div class="bottom-navigation">
-            <button class="slider-nav prev" id="prevBtn">‹ 이전</button>
+            <button class="slider-nav prev" id="prevBtn">‹이전</button>
             <div class="pagination-dots">
                 <span class="dot active" data-page="0"></span>
                 <span class="dot" data-page="1"></span>
                 <span class="dot" data-page="2"></span>
             </div>
-            <button class="slider-nav next" id="nextBtn">다음 ›</button>
+            <button class="slider-nav next" id="nextBtn">다음›</button>
         </div>
     </section>
 
@@ -1401,8 +1392,8 @@
     <section class="promotion-section">
         <div class="promotion-slider">
             <!-- 슬라이더 화살표 -->
-            <button class="promo-slider-btn prev" id="promoPrevBtn">‹</button>
-            <button class="promo-slider-btn next" id="promoNextBtn">›</button>
+            <button class="promo-slider-btn prev" id="promoPrevBtn">></button>
+            <button class="promo-slider-btn next" id="promoNextBtn">></button>
 
             <div class="promotion-container">
                 <!-- 첫 번째 페이지 -->
@@ -1511,7 +1502,7 @@
     <section class="weekly-special-section">
         <div class="special-header">
             <div class="special-title-area">
-                <span class="special-icon">⚡</span>
+                <span class="special-icon">🏷️</span>
                 <div class="special-title-text">
                     <h2 class="special-main-title">이 주의 특가</h2>
                     <p class="special-subtitle">% 최대 80% 할인</p>
@@ -1810,28 +1801,210 @@
             </div>
         </div>
     </section>
-
 </div>
-
 </section>
 </div>
-
-<script>
-    // DOM이 완전히 로드된 후 모든 기능 초기화
-    document.addEventListener('DOMContentLoaded', function() {
-
-        // 1. 편집장의 선택 자동 슬라이드 기능
-        let currentTabIndex = 0;
-        let autoSlideInterval = null;
-        let isPlaying = false;
-        const autoSlideDelay = 4000; // 4초마다 자동 전환
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            /*** === 편집장의 선택 (탭 자동 슬라이드) === ***/
+            let currentTabIndex = 0;
+            let autoSlideInterval = null;
+            let isPlaying = false;
+            const autoSlideDelay = 4000;
 
         const tabItems = document.querySelectorAll('.tab-item');
-        const playBtn = document.getElementById('playBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
+        const playButton = document.querySelector('.play-button');
 
-        // 모든 탭 컨텐츠 ID 추가
         const tabContents = [
+        'editor-choice-content',
+        'event-content',
+        'weekly-content',
+        'new-books-content',
+        'trending-content',
+        'goods-content',
+        'hotdeal-content'
+        ];
+
+        const tabTexts = [
+        '편집장의 선택',
+        '추천 이벤트',
+        '이 주의 책',
+        '신간 소개',
+        '화제의 책',
+        '이벤트 굿즈',
+        '지금 핫딜중'
+        ];
+
+        function showTabContent(tabIndex) {
+        tabItems.forEach(t => t.classList.remove('active'));
+        if (tabItems[tabIndex]) {
+        tabItems[tabIndex].classList.add('active');
+    }
+
+        tabContents.forEach(contentId => {
+        const content = document.getElementById(contentId);
+        if (content) {
+        content.style.display = 'none';
+        content.classList.remove('active');
+    }
+    });
+
+        const activeContent = document.getElementById(tabContents[tabIndex]);
+        if (activeContent) {
+        activeContent.style.display = 'block';
+        activeContent.classList.add('active');
+    }
+
+        const sectionTitle = document.getElementById('section-title');
+        if (sectionTitle) {
+        sectionTitle.textContent = tabTexts[tabIndex];
+    }
+
+        currentTabIndex = tabIndex;
+    }
+
+        function nextTabSlide() {
+        currentTabIndex = (currentTabIndex + 1) % tabContents.length;
+        showTabContent(currentTabIndex);
+    }
+
+        function prevTabSlide() {
+        currentTabIndex = (currentTabIndex - 1 + tabContents.length) % tabContents.length;
+        showTabContent(currentTabIndex);
+    }
+
+        function startAutoSlide() {
+        if (!isPlaying) {
+        isPlaying = true;
+        autoSlideInterval = setInterval(nextTabSlide, autoSlideDelay);
+        playButton.classList.remove('playing');
+        playButton.classList.add('paused');
+    }
+    }
+
+        function stopAutoSlide() {
+        if (isPlaying) {
+        isPlaying = false;
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+        playButton.classList.remove('paused');
+        playButton.classList.add('playing');
+    }
+    }
+
+        if (playButton) {
+        playButton.addEventListener('click', function() {
+        if (isPlaying) {
+        stopAutoSlide();
+    } else {
+        startAutoSlide();
+    }
+    });
+    }
+
+        if (tabItems.length > 0) {
+        tabItems.forEach((tab, index) => {
+        tab.addEventListener('click', function() {
+        if (isPlaying) {
+        stopAutoSlide();
+    }
+        showTabContent(index);
+    });
+    });
+    }
+
+        // === 탭용 전역 함수 등록 ===
+        window.nextTab = function() {
+        if (isPlaying) stopAutoSlide();
+        nextTabSlide();
+    };
+
+        window.prevTab = function() {
+        if (isPlaying) stopAutoSlide();
+        prevTabSlide();
+    };
+
+        showTabContent(0);
+        setTimeout(() => {
+        startAutoSlide();
+    }, 1000);
+
+
+        /*** === 큰 광고 배너 슬라이드 === ***/
+        let currentBannerSlide = 0;
+        const totalBannerSlides = 3;
+        let bannerInterval = null;
+        let userInteracting = false;
+
+        function updateBannerSlider() {
+        const sliderTrack = document.getElementById('sliderTrack');
+        if (sliderTrack) {
+        const translateX = -currentBannerSlide * 33.333;
+        sliderTrack.style.transform = `translateX(${translateX}%)`;
+    }
+    }
+
+        function nextBannerSlide() {
+        currentBannerSlide = (currentBannerSlide + 1) % totalBannerSlides;
+        updateBannerSlider();
+    }
+
+        function prevBannerSlide() {
+        currentBannerSlide = (currentBannerSlide - 1 + totalBannerSlides) % totalBannerSlides;
+        updateBannerSlider();
+    }
+
+        function startBannerAutoSlide() {
+        bannerInterval = setInterval(() => {
+        if (!userInteracting) {
+        nextBannerSlide();
+    }
+    }, 4000);
+    }
+
+        function stopBannerAutoSlide() {
+        if (bannerInterval) {
+        clearInterval(bannerInterval);
+        bannerInterval = null;
+    }
+    }
+
+        function resetBannerAutoSlide() {
+        stopBannerAutoSlide();
+        userInteracting = false;
+        setTimeout(() => {
+        startBannerAutoSlide();
+    }, 3000);
+    }
+
+        // 전역 등록 (HTML 버튼에서 호출 가능)
+        window.nextBanner = function() {
+        userInteracting = true;
+        stopBannerAutoSlide();
+        nextBannerSlide();
+        resetBannerAutoSlide();
+    }
+
+        window.prevBanner = function() {
+        userInteracting = true;
+        stopBannerAutoSlide();
+        prevBannerSlide();
+        resetBannerAutoSlide();
+    }
+
+        // 배너 자동 시작
+        setTimeout(() => {
+        startBannerAutoSlide();
+    }, 2000);
+
+        console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
+    });
+
+
+            const tabItems = document.querySelectorAll('.tab-item');
+            const playButton = document.querySelector('.play-button');
+
+            const tabContents = [
             'editor-choice-content',
             'event-content',
             'weekly-content',
@@ -1839,108 +2012,166 @@
             'trending-content',
             'goods-content',
             'hotdeal-content'
-        ];
-
-        function showTabContent(tabIndex) {
-            // 모든 탭에서 active 클래스 제거
-            tabItems.forEach(t => t.classList.remove('active'));
-
-            // 현재 탭에 active 클래스 추가
-            if (tabItems[tabIndex]) {
-                tabItems[tabIndex].classList.add('active');
-            }
-
-            // 탭 내용 전환
-            const sectionTitle = document.getElementById('section-title');
-            const tabTexts = [
-                '편집장의 선택',
-                '추천 이벤트',
-                '이 주의 책',
-                '신간 소개',
-                '화제의 책',
-                '이벤트 굿즈',
-                '지금 핫딜중'
             ];
 
-            // 모든 탭 컨텐츠 숨기기
+            const tabTexts = [
+            '편집장의 선택',
+            '추천 이벤트',
+            '이 주의 책',
+            '신간 소개',
+            '화제의 책',
+            '이벤트 굿즈',
+            '지금 핫딜중'
+            ];
+
+            function showTabContent(tabIndex) {
+            tabItems.forEach(t => t.classList.remove('active'));
+            if (tabItems[tabIndex]) {
+            tabItems[tabIndex].classList.add('active');
+        }
+
             tabContents.forEach(contentId => {
-                const content = document.getElementById(contentId);
-                if (content) content.style.display = 'none';
-            });
+            const content = document.getElementById(contentId);
+            if (content) {
+            content.style.display = 'none';
+            content.classList.remove('active');
+        }
+        });
 
-            // 선택된 탭 컨텐츠 표시
             const activeContent = document.getElementById(tabContents[tabIndex]);
-            if (activeContent) activeContent.style.display = 'block';
+            if (activeContent) {
+            activeContent.style.display = 'block';
+            activeContent.classList.add('active');
+        }
 
-            // 섹션 제목 업데이트
+            const sectionTitle = document.getElementById('section-title');
             if (sectionTitle) {
-                sectionTitle.textContent = tabTexts[tabIndex];
-            }
+            sectionTitle.textContent = tabTexts[tabIndex];
+        }
 
             currentTabIndex = tabIndex;
         }
 
-        function nextSlide() {
-            // 자동 슬라이드는 처음 5개 탭만 순환 (굿즈, 핫딜 제외)
-            currentTabIndex = (currentTabIndex + 1) % 5;
+            function nextTabSlide() {
+            currentTabIndex = (currentTabIndex + 1) % tabContents.length;
             showTabContent(currentTabIndex);
         }
 
-        function startAutoSlide() {
+            function startAutoSlide() {
             if (!isPlaying) {
-                isPlaying = true;
-                autoSlideInterval = setInterval(nextSlide, autoSlideDelay);
-                if (playBtn) playBtn.style.display = 'none';
-                if (pauseBtn) pauseBtn.style.display = 'flex';
-            }
+            isPlaying = true;
+            autoSlideInterval = setInterval(nextTabSlide, autoSlideDelay);
+            playButton.classList.remove('playing');
+            playButton.classList.add('paused');
+        }
         }
 
-        function stopAutoSlide() {
+            function stopAutoSlide() {
             if (isPlaying) {
-                isPlaying = false;
-                clearInterval(autoSlideInterval);
-                autoSlideInterval = null;
-                if (playBtn) playBtn.style.display = 'flex';
-                if (pauseBtn) pauseBtn.style.display = 'none';
-            }
+            isPlaying = false;
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = null;
+            playButton.classList.remove('paused');
+            playButton.classList.add('playing');
+        }
         }
 
-        // 재생 버튼 클릭 이벤트
-        if (playBtn) {
-            playBtn.addEventListener('click', function() {
-                startAutoSlide();
-            });
+            if (playButton) {
+            playButton.addEventListener('click', function() {
+            if (isPlaying) {
+            stopAutoSlide();
+        } else {
+            startAutoSlide();
+        }
+        });
         }
 
-        // 멈춤 버튼 클릭 이벤트
-        if (pauseBtn) {
-            pauseBtn.addEventListener('click', function() {
-                stopAutoSlide();
-            });
-        }
-
-        // 탭 메뉴 클릭 이벤트
-        if (tabItems.length > 0) {
+            if (tabItems.length > 0) {
             tabItems.forEach((tab, index) => {
-                tab.addEventListener('click', function() {
-                    // 자동 슬라이드 중이면 정지
-                    if (isPlaying) {
-                        stopAutoSlide();
-                    }
-
-                    // 클릭된 탭으로 이동
-                    showTabContent(index);
-                });
-            });
+            tab.addEventListener('click', function() {
+            if (isPlaying) {
+            stopAutoSlide();
+        }
+            showTabContent(index);
+        });
+        });
         }
 
-        // 초기 설정: 첫 번째 탭 표시
-        showTabContent(0);
+            showTabContent(0);
+            setTimeout(() => {
+            startAutoSlide();
+        }, 1000);
 
-        // 나머지 이벤트 핸들러들은 동일...
-        console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
-    });
 
-</script>
+            /*** === 큰 광고 배너 슬라이드 === ***/
+            let currentBannerSlide = 0;
+            const totalBannerSlides = 3;
+            let bannerInterval = null;
+            let userInteracting = false;
+
+            function updateBannerSlider() {
+            const sliderTrack = document.getElementById('sliderTrack');
+            if (sliderTrack) {
+            const translateX = -currentBannerSlide * 33.333;
+            sliderTrack.style.transform = `translateX(${translateX}%)`;
+        }
+        }
+
+            function nextBannerSlide() {
+            currentBannerSlide = (currentBannerSlide + 1) % totalBannerSlides;
+            updateBannerSlider();
+        }
+
+            function prevBannerSlide() {
+            currentBannerSlide = (currentBannerSlide - 1 + totalBannerSlides) % totalBannerSlides;
+            updateBannerSlider();
+        }
+
+            function startBannerAutoSlide() {
+            bannerInterval = setInterval(() => {
+            if (!userInteracting) {
+            nextBannerSlide();
+        }
+        }, 4000);
+        }
+
+            function stopBannerAutoSlide() {
+            if (bannerInterval) {
+            clearInterval(bannerInterval);
+            bannerInterval = null;
+        }
+        }
+
+            function resetBannerAutoSlide() {
+            stopBannerAutoSlide();
+            userInteracting = false;
+            setTimeout(() => {
+            startBannerAutoSlide();
+        }, 3000);
+        }
+
+            // 전역 등록 (HTML 버튼에서 호출 가능)
+            window.nextBanner = function() {
+            userInteracting = true;
+            stopBannerAutoSlide();
+            nextBannerSlide();
+            resetBannerAutoSlide();
+        }
+
+            window.prevBanner = function() {
+            userInteracting = true;
+            stopBannerAutoSlide();
+            prevBannerSlide();
+            resetBannerAutoSlide();
+        }
+
+            // 배너 자동 시작
+            setTimeout(() => {
+            startBannerAutoSlide();
+        }, 2000);
+
+            console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
+
+    </script>
 </body>
 </html>

@@ -162,7 +162,12 @@
                 <div class="admin-group">
                     <div class="group-title">📚 책 관리</div>
                     <ul>
+
                         <li><a href="${ctx}/admin/books">도서 등록/수정/삭제</a></li>
+
+                        <li><a href="${pageContext.request.contextPath}/admin/books">도서 등록/수정/삭제</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/authors">작가 등록/수정/삭제</a></li>
+
                     </ul>
                 </div>
                 <div class="admin-group">

@@ -272,4 +272,34 @@ public class UsersService {
     private String generateTempPassword() {
         return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 10);
     }
+
+    // --- ✅ 단순 조회 추가 9/15 승화---
+    public Users getUserById(String userId) {
+        return usersRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.user.notfound")));
+    }
+    // --- 5. 사용자 정보 업데이트 승화 ---
+    @Transactional
+    public Users updateUser(Users user) {
+        if (user == null || user.getUserId() == null) {
+            throw new IllegalArgumentException(errorMsg.getMessage("error.user.request.null"));
+        }
+        return usersRepository.save(user);
+    }
+
+    // --- 6. 비밀번호 변경 승화 ---
+    @Transactional
+    public void changePassword(String userId, String currentPw, String newPw, String confirmPw) {
+        Users user = getUserById(userId);
+
+        if (!passwordEncoder.matches(currentPw, user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        if (!newPw.equals(confirmPw)) {
+            throw new IllegalArgumentException("새 비밀번호가 서로 다릅니다.");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPw));
+        usersRepository.save(user);
+    }
 }

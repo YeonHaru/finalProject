@@ -5,8 +5,13 @@ import com.error404.geulbut.jpa.qna.dto.QnaDto;
 import com.error404.geulbut.jpa.qna.entity.QnaEntity;
 import com.error404.geulbut.jpa.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -29,15 +34,59 @@ public class QnaService {
 
         qnaRepository.save(entity);
     }
+    public Page<QnaDto> getQnas(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("qnaId").descending());
+        return qnaRepository.findAll(pageable)
+                .map(entity -> QnaDto.builder()
+                        .id(entity.getQnaId())
+                        .title(entity.getTitle())
+                        .qContent(entity.getQContent())
+                        .qAt(entity.getQAt())
+                        .aId(entity.getAId())
+                        .aContent(entity.getAContent())
+                        .aAt(entity.getAAt())
+                        .userId(entity.getUserId())
+                        .build()
+                );
+    }
     // 전체 QnA 조회
     public List<QnaEntity> findAll() {
         return qnaRepository.findAll();
     }
 
     // 특정 QnA 조회
-    public QnaEntity findById(Long id) {
-        return qnaRepository.findById(id).orElse(null);
+    public QnaDto findById(Long id) {
+        QnaEntity entity = qnaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 글을 찾을 수 없습니다."));
+        return QnaDto.builder()
+                .id(entity.getQnaId())
+                .title(entity.getTitle())
+                .qContent(entity.getQContent())
+                .qAt(entity.getQAt())      // Date 타입 그대로
+                .aId(entity.getAId())
+                .aContent(entity.getAContent())
+                .aAt(entity.getAAt())      // Date 타입 그대로
+                .userId(entity.getUserId())
+                .build();
     }
+    // 특정 Qna 수정
+    public void updateQna(QnaDto qnaDto) {
+        QnaEntity entity = qnaRepository.findById(qnaDto.getId())
+                .orElseThrow(() -> new RuntimeException("글 없음"));
+        entity.setTitle(qnaDto.getTitle());
+        entity.setQContent(qnaDto.getQContent());
+        entity.setUpdatedAt(new Date());
+        qnaRepository.save(entity);
+    }
+    // 삭제
+    public void deleteQna(Long id) {
+        QnaEntity entity = qnaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("글을 찾을 수 없습니다."));
+        qnaRepository.delete(entity);
+    }
+
+
+
 }
 
 
