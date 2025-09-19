@@ -5,6 +5,7 @@ import com.error404.geulbut.jpa.carts.dto.CartDto;
 import com.error404.geulbut.jpa.carts.service.CartService;
 import com.error404.geulbut.jpa.users.dto.UserMypageDto;
 import com.error404.geulbut.jpa.users.entity.Users;
+import com.error404.geulbut.jpa.users.repository.UsersRepository;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import com.error404.geulbut.jpa.wishlist.dto.WishlistDto;
 import com.error404.geulbut.jpa.wishlist.service.WishlistService;
@@ -15,10 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -97,4 +95,15 @@ public class MypageController {
         }
         return null;
     }
+
+//    덕규 추가 : 임시비번로그인 사용자 -> 바로 비번변경할수있게
+    @GetMapping("/password/change")
+    public String showChangePassword(Model model) {
+        String loginUserId = getLoginUserId();
+        if (loginUserId == null) return "redirect:/login";
+
+        model.addAttribute("forceChangePw", true);
+        return mypage(model);
+    }
+
 }

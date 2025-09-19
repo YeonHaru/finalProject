@@ -76,10 +76,18 @@ public class UsersService {
     public boolean resetPassword (String userId, String email) {
         if (userId == null || userId.isBlank() || email == null || email.isBlank())
             return false;
+
         return usersRepository.findByUserIdAndEmail(userId, email)
                 .map (u ->{
                     String tempPw = generateTempPassword();
-                    u.setPassword(passwordEncoder.encode(tempPw));
+
+                    u.setPasswordTemp(passwordEncoder.encode(tempPw));
+                    u.setTempPwYn("Y");
+                    u.setPwCode(null);
+                    u.setPwCodeAttempts(0);
+                    u.setPwCodeExpiresAt(null);
+                    u.setPwCodeLastSentAt(null);
+
                     usersRepository.save(u);
 //                    TODO : 메일 발송 서비스에서 tempPw 전송
                     log.info("임시 비밀번호 발급 userId={}, temp={}", userId, tempPw);
@@ -292,14 +300,32 @@ public class UsersService {
     public void changePassword(String userId, String currentPw, String newPw, String confirmPw) {
         Users user = getUserById(userId);
 
-        if (!passwordEncoder.matches(currentPw, user.getPassword())) {
+//        ==================
+//        임시비번 관련 로직 추가 : 임시비번으로는 비밀번호 변경 에러가 납니다 : 덕규
+//        ==================
+        boolean isTemp = "Y".equalsIgnoreCase(user.getTempPwYn())
+                                    && user.getPasswordTemp() !=null;
+//        1) 현재 비밀번호 매칭(임시비번 로그인 여부에 따라 분기)
+        boolean matches = isTemp
+                ? passwordEncoder.matches(currentPw, user.getPasswordTemp())
+                : passwordEncoder.matches(currentPw, user.getPassword());
+
+
+        if (!matches) {
             throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
+//        2) 새 비밀번호 확인
         if (!newPw.equals(confirmPw)) {
             throw new IllegalArgumentException("새 비밀번호가 서로 다릅니다.");
         }
-
+//        3) 정식 비밀번호로 교체
         user.setPassword(passwordEncoder.encode(newPw));
-        usersRepository.save(user);
+
+//        4) 임시비번 사용 종료 처리
+        if(isTemp) {
+            user.setTempPwYn("N");
+            user.setPasswordTemp(null);
+        }
+            usersRepository.save(user);
     }
 }

@@ -2,6 +2,7 @@ package com.error404.geulbut.config;
 
 import com.error404.geulbut.jpa.users.service.CustomOAuth2UserService;
 import com.error404.geulbut.jpa.users.service.SocialAuthService;
+import com.error404.geulbut.security.TempPasswordRedirectSuccessHandler;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -26,7 +30,11 @@ public class SecurityConfig {
 //    비밀번호 인코더 등록 9/11
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        var pe = PasswordEncoderFactories.createDelegatingPasswordEncoder(); // 기본 {bcrypt}
+        if (pe instanceof DelegatingPasswordEncoder dpe) {
+            dpe.setDefaultPasswordEncoderForMatches(new BCryptPasswordEncoder()); // 레거시 $2a$ 대응
+        }
+        return pe;
     }
 
 //    개발 중 임시 전체 오픈 스위치(true = 전체허용, false = 원래보안)
@@ -35,7 +43,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http,
-                                    CustomOAuth2UserService customOAuth2UserService, SocialAuthService socialAuthService) throws Exception {
+                                    CustomOAuth2UserService customOAuth2UserService, SocialAuthService socialAuthService, TempPasswordRedirectSuccessHandler tempPasswordRedirectSuccessHandler) throws Exception {
         // 👆 Bean 메서드 파라미터 주입 방식으로 변경
 
         if (DEV_BYPASS) {
@@ -78,15 +86,17 @@ public class SecurityConfig {
                                 "/find-password/email/code",         // ⬅️ AJAX POST
                                 "/find-password/email/verify",
                                 "/common/**"
+
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form->form
                         .loginPage("/login")
+                        .successHandler(tempPasswordRedirectSuccessHandler)
                         .loginProcessingUrl("/loginProc")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", false)
+//                        .defaultSuccessUrl("/", false)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
