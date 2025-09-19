@@ -55,7 +55,7 @@ public class AdminPublishersService {
         return mapStruct.toDto(saved);
     }
 
-//    삭제
+    //    삭제
     public boolean deletePublisher(Long publisherId) {
         if (publishersRepository.existsById(publisherId)) {
             publishersRepository.deleteById(publisherId);
