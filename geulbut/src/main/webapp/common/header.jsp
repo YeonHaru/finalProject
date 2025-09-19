@@ -164,9 +164,9 @@
                     <ul>
 
                         <li><a href="${ctx}/admin/books">도서 등록/수정/삭제</a></li>
-
-                        <li><a href="${pageContext.request.contextPath}/admin/books">도서 등록/수정/삭제</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/authors">작가 등록/수정/삭제</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/books">출판사 등록/수정/삭제</a></li>
+
 
                     </ul>
                 </div>
@@ -194,5 +194,5 @@
         <sec:authorize access="isAuthenticated()">true</sec:authorize>
     <sec:authorize access="!isAuthenticated()">false</sec:authorize>;
 </script>
-<script src="<c:url value='/common/js/header.js'/>"></script>
+<script src="<c:url value='/common/js/header.js'/>" charset="UTF-8"></script>
 <script src="<c:url value='/js/api/DustWeatherApi.js'/>"></script>
