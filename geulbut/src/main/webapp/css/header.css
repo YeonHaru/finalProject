@@ -47,6 +47,7 @@
     display: flex;
     justify-content: flex-end;
     position: relative;
+    margin-top: 40px;
 }
 
 .site-header__nav--right {
@@ -194,6 +195,7 @@
         z-index: 1001;
         position: relative;
         transition: transform 0.3s ease;
+        top: calc(100% + 12px);
     }
 
     /* 햄버거 라인 스타일 */
@@ -224,8 +226,8 @@
     /* 우측 네비게이션: 햄버거 버튼 바로 아래에 위치 */
     .site-header__nav--right {
         position: absolute;
-        top: calc(100% + 4px);    /* 햄버거 버튼 바로 아래 4px 간격 */
-        right: 0;                 /* 컨테이너 오른쪽 끝 정렬 */
+        top: calc(100% + 8px);     /* 햄버거 버튼 바로 아래 */
+        right: 16px;
         background: var(--color-surface);
         border-radius: 12px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -234,16 +236,15 @@
         overflow: hidden;
 
         /* 초기 상태: 숨김 */
-        transform: translateY(-10px) scale(0.95);
-        transform-origin: top right;
+        max-height: 0;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        transition: all 0.3s ease;
     }
 
     /* 메뉴 열린 상태 */
     .site-header__nav--right.open {
-        transform: translateY(0) scale(1);
+        max-height: 500px; /* 충분히 큰 값으로 */
         opacity: 1;
         visibility: visible;
     }
@@ -316,7 +317,31 @@
         font-size: 0.9rem;
         padding: 6px 12px;
     }
-}
+
+    .site-header__inner {
+        justify-content: space-between;  /* 자연스러운 3분할 */
+    }
+
+    .site-header__nav--left {
+        flex: 0 0 28px;                  /* 좌측 고정 너비 */
+    }
+
+    .site-header__logo {
+        flex: 1;                         /* 중앙 영역 차지 */
+        display: flex;
+        justify-content: center;
+        margin: 0 12px;
+    }
+
+    .site-header__nav-container {
+        position: absolute;
+        top: 50px;                   /* 관리자 버튼 아래 */
+        right: 16px;                 /* 우측 정렬 */
+        margin-top: 0;
+        z-index: 1002;
+    }
+
+    }
 
 /* 더 작은 모바일 화면 (480px 이하) */
 @media (max-width: 480px) {
@@ -326,7 +351,7 @@
 
     .site-header__nav--right {
         right: 0;                 /* 컨테이너 오른쪽 끝 정렬 유지 */
-        top: calc(100% + 4px);    /* 햄버거 버튼 바로 아래 */
+        top: calc(100% + 8px);    /* 햄버거 버튼 바로 아래 */
         min-width: 180px;
     }
 
@@ -368,6 +393,11 @@
         border-radius: 4px;
         z-index: 9999;
         box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    }
+
+    .site-header__nav-container {
+        top: 45px;                   /* 작은 화면에서는 조금 더 가깝게 */
+        right: 12px;
     }
 
 }
