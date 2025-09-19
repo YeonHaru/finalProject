@@ -39,6 +39,7 @@ public interface MapStruct {
     void updateFromDto(AuthorsDto authorsDto, @MappingTarget Authors authors);
 
     //    Categories <-> CategoriesDto
+    @Mapping(target = "createdAt", source = "createdAt")
     CategoriesDto toDto(Categories categories);
 
     Categories toEntity(CategoriesDto categoriesDto);
