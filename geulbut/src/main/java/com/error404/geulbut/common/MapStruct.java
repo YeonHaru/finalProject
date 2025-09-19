@@ -53,6 +53,7 @@ public interface MapStruct {
     void updateFromDto(HashtagsDto hashtagsDto, @MappingTarget Hashtags hashtags);
 
     //    Publishers <-> PublishersDto
+    @Mapping(target = "createdAt", source = "createdAt")
     PublishersDto toDto(Publishers publishers);
 
     Publishers toEntity(PublishersDto publishersDto);

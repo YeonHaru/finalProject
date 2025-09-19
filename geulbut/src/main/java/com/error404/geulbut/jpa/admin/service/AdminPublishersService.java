@@ -6,11 +6,10 @@ import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import com.error404.geulbut.jpa.publishers.repository.PublishersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +47,7 @@ public class AdminPublishersService {
             throw new IllegalArgumentException(errorMsg.getMessage("error.publishers.id.required"));
         }
 
-        Long id = Long.parseLong(publishersDto.getPublisherId());
-        Publishers existing = publishersRepository.findById(id)
+        Publishers existing = publishersRepository.findById(publishersDto.getPublisherId())
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.publishers.notfound")));
 
         mapStruct.updateFromDto(publishersDto, existing);
@@ -66,13 +64,24 @@ public class AdminPublishersService {
         return false;
     }
 
-//    검색
+    // 검색
     public Page<PublishersDto> searchPublishers(String search, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
         if (search == null || search.isEmpty()) {
             return getAllPublishers(page, size);
         }
-        return publishersRepository.findAll(pageable)
+
+        Long id = null;
+        try {
+            id = Long.parseLong(search);
+        } catch (NumberFormatException ignored) {
+            // 숫자가 아니면 id는 null
+        }
+
+        return publishersRepository.searchByIdOrName(id, search.toLowerCase(), pageable)
                 .map(mapStruct::toDto);
     }
+
+
 }
