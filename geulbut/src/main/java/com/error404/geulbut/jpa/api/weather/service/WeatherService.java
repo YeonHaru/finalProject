@@ -73,7 +73,7 @@ public class WeatherService {
             String result = restTemplate.getForObject(uri, String.class);
 
             if (result == null || result.trim().startsWith("<")) {
-                System.err.println("Weather API HTML 응답 발생! URL 확인 필요: " + uri);
+
                 return Collections.emptyList();
             }
 
@@ -86,7 +86,7 @@ public class WeatherService {
                         .path("items")
                         .path("item");
             } catch (JsonParseException e) {
-                System.err.println("Weather API JSON 파싱 실패! 응답 내용: " + result);
+
                 e.printStackTrace();
                 return Collections.emptyList();
             }
@@ -138,6 +138,16 @@ public class WeatherService {
             String ny = entry.getValue()[1];
 
             List<WeatherDto> list = getShortWeather(nx, ny, baseDate, baseTime);
+
+            // list가 비어있으면 이전 forecastTime 순회
+            if(list.isEmpty()) {
+                for(int i = forecastTimes.length - 1; i >= 0; i--){
+                    String prevTime = String.format("%02d00", forecastTimes[i]);
+                    if(prevTime.equals(baseTime)) continue; // 현재 시간 제외
+                    list = getShortWeather(nx, ny, baseDate, prevTime);
+                    if(!list.isEmpty()) break;
+                }
+            }
 
             // 각 항목을 별도로 가장 근접한 fcstTime으로 선택
             String tmp = findClosestCategory(list, baseTime, "TMP");

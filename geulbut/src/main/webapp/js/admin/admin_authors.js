@@ -4,6 +4,21 @@ $(function() {
     const $modalAuthorId = $('#modalAuthorId');
     const $modalAuthorName = $('#modalAuthorName');
     const $modalAuthorDescription = $('#modalAuthorDescription');
+    const $modalAuthorImgUrl = $('#modalAuthorImgUrl');
+
+    // 이미지 미리보기
+    const $modalAuthorImgPreview = $('<img>', {
+        id: 'modalAuthorImgPreview',
+        src: '',
+        alt: '작가 이미지',
+        style: 'max-width:200px; max-height:200px; display:block; margin-top:5px;'
+    });
+    $modalAuthorImgUrl.after($modalAuthorImgPreview);
+
+    $modalAuthorImgUrl.on('input', function() {
+        const url = $(this).val().trim();
+        $modalAuthorImgPreview.attr('src', url);
+    });
 
     // 모달 열기 (등록)
     $('#btnAdd').click(function() {
@@ -11,6 +26,8 @@ $(function() {
         $modalAuthorId.val('');
         $modalAuthorName.val('');
         $modalAuthorDescription.val('');
+        $modalAuthorImgUrl.val('');
+        $modalAuthorImgPreview.attr('src', '');
         $modal.show();
     });
 
@@ -24,6 +41,7 @@ $(function() {
         const authorId = $modalAuthorId.val();
         const name = $modalAuthorName.val().trim();
         const description = $modalAuthorDescription.val().trim();
+        const imgUrl = $modalAuthorImgUrl.val().trim();
 
         if (!name) {
             alert('작가명을 입력해주세요.');
@@ -32,7 +50,7 @@ $(function() {
 
         const url = authorId ? `/admin/authors/${authorId}` : `/admin/authors`;
         const method = authorId ? 'PUT' : 'POST';
-        const data = { name, description };
+        const data = { name, description, imgUrl };
 
         $.ajax({
             url: url,
@@ -61,6 +79,12 @@ $(function() {
         $modalAuthorId.val(authorId);
         $modalAuthorName.val(name);
         $modalAuthorDescription.val(description);
+
+        // 기존 imgUrl 가져오기
+        const imgUrl = $tr.data('imgurl') || '';
+        $modalAuthorImgUrl.val(imgUrl);
+        $modalAuthorImgPreview.attr('src', imgUrl);
+
         $modal.show();
     });
 
@@ -95,5 +119,4 @@ $(function() {
         const keyword = $('#searchKeyword').val().trim();
         location.href = `/admin/authors?page=${page}&keyword=${encodeURIComponent(keyword)}`;
     });
-
 });
