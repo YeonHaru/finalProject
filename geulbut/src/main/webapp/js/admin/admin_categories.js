@@ -1,52 +1,48 @@
+// /js/admin/admin_categories.js
 $(function() {
     const $modal = $('#categoryModal');
     const $modalTitle = $('#modalTitle');
+    const $tbody = $('#categoriesTableBody');
 
-    function showMessage(msg) { alert(msg); }
+    const showMessage = (msg) => alert(msg);
 
-    // 모달 열기 (등록)
-    $('#btnAddCategory').click(function() {
+    // 모달 열기(등록)
+    $('#btnAddCategory').on('click', function() {
         $modal.show();
         $modalTitle.text('카테고리 등록');
         $('#modalCategoryId').val('');
         $('#modalCategoryName').val('');
+        $('#modalCategoryName').focus();
     });
 
     // 모달 닫기
-    $('#modalCloseBtn').click(function() { $modal.hide(); });
+    $('#modalCloseBtn').on('click', function() { $modal.hide(); });
 
-    // 저장 버튼
-    $('#modalSaveBtn').click(function() {
+    // 저장
+    $('#modalSaveBtn').on('click', function() {
         const id = $('#modalCategoryId').val();
-        const data = { name: $('#modalCategoryName').val() };
+        const data = { name: $('#modalCategoryName').val().trim() };
 
         if (!data.name) { showMessage('카테고리 이름을 입력하세요.'); return; }
 
-        if (id) { // 수정
-            $.ajax({
-                url: `/admin/categories/${id}`,
-                method: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function() { showMessage('수정 완료'); location.reload(); },
-                error: function() { showMessage('수정 실패'); }
-            });
-        } else { // 등록
-            $.ajax({
-                url: `/admin/categories`,
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function() { showMessage('등록 완료'); location.reload(); },
-                error: function() { showMessage('등록 실패'); }
-            });
+        const ajaxOpt = {
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: () => { showMessage(id ? '수정 완료' : '등록 완료'); location.reload(); },
+            error: () => { showMessage(id ? '수정 실패' : '등록 실패'); }
+        };
+
+        if (id) {
+            $.ajax({ url: `/admin/categories/${id}`, method: 'PUT',  ...ajaxOpt });
+        } else {
+            $.ajax({ url: '/admin/categories',        method: 'POST', ...ajaxOpt });
         }
     });
 
-    // 수정 버튼
-    $('.btn-edit').click(function() {
+    // 수정(위임) — 동적 행 대응
+    $tbody.on('click', '.btn-edit', function() {
         const $row = $(this).closest('tr');
-        const id = $row.data('id');
+        const id   = $row.data('id');
         const name = $row.find('.category-name').text();
 
         $('#modalCategoryId').val(id);
@@ -55,29 +51,33 @@ $(function() {
         $modal.show();
     });
 
-    // 삭제 버튼
-    $('.btn-delete').click(function() {
+    // 삭제(위임)
+    $tbody.on('click', '.btn-delete', function() {
         if (!confirm('정말 삭제하시겠습니까?')) return;
         const id = $(this).closest('tr').data('id');
 
         $.ajax({
             url: `/admin/categories/${id}`,
             method: 'DELETE',
-            success: function() { showMessage('삭제 완료'); location.reload(); },
-            error: function() { showMessage('삭제 실패'); }
+            success: () => { showMessage('삭제 완료'); location.reload(); },
+            error:   () => { showMessage('삭제 실패'); }
         });
     });
 
     // 검색
-    $('#btnSearch').click(function() {
+    $('#btnSearch').on('click', function() {
         const keyword = $('#searchKeyword').val();
         window.location.href = `/admin/categories?keyword=${encodeURIComponent(keyword)}`;
     });
 
-    // 페이징
-    $('.page-btn').click(function() {
+    // 페이징(기존 유지)
+    $('#pagination').on('click', '.page-btn', function() {
         const page = $(this).data('page');
         const keyword = $('#searchKeyword').val();
         window.location.href = `/admin/categories?page=${page}&keyword=${encodeURIComponent(keyword)}`;
     });
+
+    // 모달 접근성(배경 클릭/ESC 닫기)
+    $modal.on('click', function(e){ if (e.target.id === 'categoryModal') $modal.hide(); });
+    $(document).on('keydown', function(e){ if (e.key === 'Escape') $modal.hide(); });
 });
