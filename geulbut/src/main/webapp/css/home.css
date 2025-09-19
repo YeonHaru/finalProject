@@ -53,7 +53,6 @@ body {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-
 .play-button {
     width: 36px;
     height: 36px;
@@ -671,10 +670,6 @@ body {
 
 .trending-badge.rising {
     background: rgba(225, 88, 88, 0.84);
-}
-
-.trending-badge.viral {
-    background: rgba(223, 63, 44, 0.79);
 }
 
 .trending-image {
@@ -2161,6 +2156,7 @@ body {
     transform: translateY(-2px);
 }
 
+
 /* 화살표 네비게이션 버튼 */
 .slider-nav {
     position: absolute;
@@ -2511,15 +2507,11 @@ body {
 }
 
 .md-promo {
-    border-left: 4px solid rgba(113, 74, 202, 0.78);
+    border-left: 4px solid #c3aef1;
 }
 
 .new-book-promo {
-    border-left: 4px solid #0d9f6f;
-}
-
-.audiobook-promo {
-    border-left: 4px solid #262ab6;
+ border-left: 4px solid #f1d171;
 }
 
 .md-promo {
@@ -2528,6 +2520,10 @@ body {
 
 .new-book-promo {
     border-left: 4px solid #77cc85;
+}
+
+.audiobook-promo {
+    border-left: 4px solid #8198f8;
 }
 
 .promo-icon {
