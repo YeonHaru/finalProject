@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.util.Date;
@@ -30,6 +31,7 @@ public class QnaService {
                 .qAt(new Date())
                 .createdAt(new Date())
                 .updatedAt(new Date())
+                .viewCount(0L) // 초기 조회수 0
                 .build();
 
         qnaRepository.save(entity);
@@ -46,6 +48,8 @@ public class QnaService {
                         .aContent(entity.getAContent())
                         .aAt(entity.getAAt())
                         .userId(entity.getUserId())
+                        .viewCount(entity.getViewCount())
+
                         .build()
                 );
     }
@@ -67,8 +71,38 @@ public class QnaService {
                 .aContent(entity.getAContent())
                 .aAt(entity.getAAt())      // Date 타입 그대로
                 .userId(entity.getUserId())
+                .viewCount(entity.getViewCount())
                 .build();
     }
+    // 조회수 증가 후 단건 조회
+    @Transactional
+    public QnaDto getQnaAndIncreaseViewCount(Long id) {
+        // 1. 조회수 증가
+        QnaEntity entity = qnaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 글을 찾을 수 없습니다."));
+
+        if (entity.getViewCount() == null) {
+            entity.setViewCount(0L);
+        }
+        entity.setViewCount(entity.getViewCount() + 1);
+
+        // 2. 글 저장
+        qnaRepository.save(entity);
+
+        // 3. DTO 반환
+        return QnaDto.builder()
+                .id(entity.getQnaId())
+                .title(entity.getTitle())
+                .qContent(entity.getQContent())
+                .qAt(entity.getQAt())
+                .aId(entity.getAId())
+                .aContent(entity.getAContent())
+                .aAt(entity.getAAt())
+                .userId(entity.getUserId())
+                .viewCount(entity.getViewCount())
+                .build();
+    }
+
     // 특정 Qna 수정
     public void updateQna(QnaDto qnaDto) {
         QnaEntity entity = qnaRepository.findById(qnaDto.getId())

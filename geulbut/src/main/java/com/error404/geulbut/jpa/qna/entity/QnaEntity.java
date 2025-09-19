@@ -42,6 +42,9 @@ public class QnaEntity {
 
     @Column(name = "UPDATED_AT")
     private Date updatedAt;
+    // ✅ 조회수 추가
+    @Column(name = "Q_VIEW_COUNT")
+    private Long viewCount;
 
     @Column(name = "USER_ID", length = 50, nullable = false)
     private String userId;
