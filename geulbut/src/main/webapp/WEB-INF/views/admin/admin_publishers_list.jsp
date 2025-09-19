@@ -114,7 +114,7 @@
         </form>
     </div>
 </div>
-
+<!-- js -->
 <script src="${ctx}/js/admin/admin_publishers.js?v=1"></script>
 </body>
 </html>
