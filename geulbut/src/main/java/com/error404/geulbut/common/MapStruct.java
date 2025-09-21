@@ -4,6 +4,8 @@ import com.error404.geulbut.es.searchAllBooks.dto.SearchAllBooksDto;
 import com.error404.geulbut.es.searchAllBooks.entity.SearchAllBooks;
 import com.error404.geulbut.jpa.authors.dto.AuthorsDto;
 import com.error404.geulbut.jpa.authors.entity.Authors;
+import com.error404.geulbut.jpa.bookhashtags.dto.BookHashtagsDto;
+import com.error404.geulbut.jpa.bookhashtags.entity.BookHashtags;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
@@ -116,5 +118,11 @@ public interface MapStruct {
 
     OrderItemDto toDto(OrderItem entity);
 
+    // BookHashtags <-> BookHashtagsDto
+    BookHashtagsDto toDto(BookHashtags bookHashtags);
+
+    BookHashtags toEntity(BookHashtagsDto dto);
+
+    void updateFromDto(BookHashtagsDto dto, @MappingTarget BookHashtags entity);
 
 }

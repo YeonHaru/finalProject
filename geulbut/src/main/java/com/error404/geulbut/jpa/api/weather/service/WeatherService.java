@@ -28,6 +28,11 @@ public class WeatherService {
     @Value("${kdhc.weather.key}")
     private String weatherKey;
 
+    // 🔹 캐시 저장소
+    private final Map<String, List<Map<String, String>>> weatherCache = new HashMap<>();
+    private String lastBaseDate;
+    private String lastBaseTime;
+
     /**
      * 전국 주요 17개 지역 nx/ny 좌표
      */
@@ -73,7 +78,6 @@ public class WeatherService {
             String result = restTemplate.getForObject(uri, String.class);
 
             if (result == null || result.trim().startsWith("<")) {
-
                 return Collections.emptyList();
             }
 
@@ -86,7 +90,6 @@ public class WeatherService {
                         .path("items")
                         .path("item");
             } catch (JsonParseException e) {
-
                 e.printStackTrace();
                 return Collections.emptyList();
             }
@@ -114,8 +117,6 @@ public class WeatherService {
 
     /**
      * 전국 주요 지역 날씨 요약
-     * TMP + 날씨 상태(PTY + SKY)를 합쳐서 반환
-     * 결과 예시: 서울: 25°C 맑음, 부산: 23°C 비
      */
     public List<Map<String, String>> getWeatherSummaryList(String baseDate) {
         if (baseDate == null || baseDate.isEmpty()) {
@@ -130,6 +131,13 @@ public class WeatherService {
         }
         String baseTime = String.format("%02d00", targetTime);
 
+        String cacheKey = baseDate + "_" + baseTime;
+
+        // 🔹 캐시 확인
+        if (cacheKey.equals(lastBaseDate + "_" + lastBaseTime) && weatherCache.containsKey(cacheKey)) {
+            return weatherCache.get(cacheKey);
+        }
+
         List<Map<String, String>> summaryList = new ArrayList<>();
 
         for (Map.Entry<String, String[]> entry : REGION_COORDS.entrySet()) {
@@ -140,12 +148,12 @@ public class WeatherService {
             List<WeatherDto> list = getShortWeather(nx, ny, baseDate, baseTime);
 
             // list가 비어있으면 이전 forecastTime 순회
-            if(list.isEmpty()) {
-                for(int i = forecastTimes.length - 1; i >= 0; i--){
+            if (list.isEmpty()) {
+                for (int i = forecastTimes.length - 1; i >= 0; i--) {
                     String prevTime = String.format("%02d00", forecastTimes[i]);
-                    if(prevTime.equals(baseTime)) continue; // 현재 시간 제외
+                    if (prevTime.equals(baseTime)) continue; // 현재 시간 제외
                     list = getShortWeather(nx, ny, baseDate, prevTime);
-                    if(!list.isEmpty()) break;
+                    if (!list.isEmpty()) break;
                 }
             }
 
@@ -160,7 +168,19 @@ public class WeatherService {
             Map<String, String> map = new LinkedHashMap<>();
             map.put("districtName", region);
             map.put("weather", value);
+            map.put("forecastTime", baseTime); // 추가: 이 데이터가 기준이 된 시간
             summaryList.add(map);
+        }
+//      9/19일 15:12분 추가
+//        api데이터가 전부 알수없음으로 내려오면 캐싱안함
+//        데이터가 한곳이라도 찍히면 그 데이터는 캐싱됨 (새로고침을 해도 캐싱된 데이터가 찍히게 수정함)
+        // 🔹 캐시에 저장 (정상 데이터가 있는 경우에만)
+        boolean onlyUnknown = summaryList.stream()
+                .allMatch(map -> map.get("weather").contains("알수없음"));
+        if (!onlyUnknown) {
+            weatherCache.put(cacheKey, summaryList);
+            lastBaseDate = baseDate;
+            lastBaseTime = baseTime;
         }
 
         return summaryList;
@@ -188,7 +208,6 @@ public class WeatherService {
 
     /**
      * PTY + SKY → 날씨 문자열 변환
-     * PTY: 강수형태, SKY: 하늘상태
      */
     private String parseWeather(String pty, String sky) {
         if (pty != null) {
