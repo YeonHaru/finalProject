@@ -3,8 +3,11 @@ package com.error404.geulbut.jpa.users.controller;
 import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.jpa.carts.dto.CartDto;
 import com.error404.geulbut.jpa.carts.service.CartService;
+import com.error404.geulbut.jpa.orders.dto.OrdersDto;
+import com.error404.geulbut.jpa.orders.service.OrdersService;
 import com.error404.geulbut.jpa.users.dto.UserMypageDto;
 import com.error404.geulbut.jpa.users.entity.Users;
+import com.error404.geulbut.jpa.users.repository.UsersRepository;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import com.error404.geulbut.jpa.wishlist.dto.WishlistDto;
 import com.error404.geulbut.jpa.wishlist.service.WishlistService;
@@ -15,10 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,11 +27,12 @@ import java.util.List;
 @RequestMapping("/mypage")
 public class MypageController {
 
-    private final UsersService usersService;       // 사용자 서비스
-    private final WishlistService wishlistService; // 위시리스트 서비스
+    private final UsersService usersService;
+    private final WishlistService wishlistService;
     private final CartService cartService;
-    private final MapStruct mapStruct;             // Entity ↔ DTO 변환 매퍼
-    private final PasswordEncoder passwordEncoder; // BCryptPasswordEncoder
+    private final MapStruct mapStruct;
+    private final PasswordEncoder passwordEncoder;
+    private final OrdersService ordersService;
 
     /** 📌 마이페이지 메인 */
     @GetMapping
@@ -41,29 +42,30 @@ public class MypageController {
             return "redirect:/login";
         }
 
-        // 🔹 사용자 정보
+        //  사용자 정보
         Users user = usersService.getUserById(loginUserId);
         if (user != null) {
             UserMypageDto dto = mapStruct.toMypageDto(user);
             model.addAttribute("user", dto);
         }
 
-        // 🔹 위시리스트 (DB 연동)
+        //  위시리스트
         List<WishlistDto> wishlist = wishlistService.getWishlist(loginUserId);
         model.addAttribute("wishlist", wishlist);
 
-        // 🔹 장바구니 (임시 데이터 → 나중에 CartService로 대체)
+        //  장바구니
         List<CartDto> cartList = cartService.getCartList(loginUserId);
         long  cartTotal = cartList.stream()
                 .mapToLong(CartDto::getTotalPrice)
                 .sum();
-
         model.addAttribute("cart", cartList);
         model.addAttribute("cartTotal", cartTotal);
-        // 🔹 주문 내역 (임시 데이터 → 나중에 OrderService로 대체)
-        model.addAttribute("orders", List.of());
 
-        return "users/mypage/mypage";  // ✅ JSP 경로 통일
+        //  주문 내역
+        List<OrdersDto> orders = ordersService.getUserOrders(loginUserId);
+        model.addAttribute("orders", orders);
+
+        return "users/mypage/mypage";
     }
 
     /** 📌 비밀번호 변경 */
@@ -97,4 +99,15 @@ public class MypageController {
         }
         return null;
     }
+
+//    덕규 추가 : 임시비번로그인 사용자 -> 바로 비번변경할수있게
+    @GetMapping("/password/change")
+    public String showChangePassword(Model model) {
+        String loginUserId = getLoginUserId();
+        if (loginUserId == null) return "redirect:/login";
+
+        model.addAttribute("forceChangePw", true);
+        return mypage(model);
+    }
+
 }

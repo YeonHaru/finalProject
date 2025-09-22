@@ -4,11 +4,14 @@ package com.error404.geulbut.jpa.books.entity;
 import com.error404.geulbut.common.BaseTimeEntity;
 import com.error404.geulbut.jpa.authors.entity.Authors;
 import com.error404.geulbut.jpa.categories.entity.Categories;
+import com.error404.geulbut.jpa.hashtags.entity.Hashtags;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -64,8 +67,6 @@ public class Books extends BaseTimeEntity {
 
     //    ES_DELETE_FLAG
     private String esDeleteFlag;
-
-
 }
 
 

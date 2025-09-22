@@ -64,6 +64,7 @@ public class Users {
 //    생성/수정 시간
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 
 //    유저 상태(enum)
     public enum UserStatus {

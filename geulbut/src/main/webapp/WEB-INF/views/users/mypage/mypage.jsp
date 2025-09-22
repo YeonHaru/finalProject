@@ -41,7 +41,14 @@
 
             <!-- ✅ 내 정보 -->
             <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel">
-                <h2 class="mb-3 pb-2 border-bottom">내 정보</h2>
+                <!-- 여기만 교체 -->
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <h2 class="m-0">내 정보</h2>
+                    <a href="<c:url value='/users/mypage/withdraw'/>" class="btn btn-outline-danger btn-sm">
+                        회원 탈퇴
+                    </a>
+                </div>
+                <!-- 여기까지 교체 -->
 
                 <c:if test="${not empty user}">
                     <p>아이디: ${user.userId}</p>
@@ -56,6 +63,34 @@
                     </c:if>
                     <c:if test="${not empty successMsg}">
                         <div class="alert alert-success mt-3">${successMsg}</div>
+                    </c:if>
+<%--                    덕규 알람 메시지 추가--%>
+                    <c:if test="${forceChangePw}">
+                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                            <strong class="me-2">보안 안내</strong>
+                            임시 비밀번호로 로그인했습니다. 지금 바로 비밀번호를 변경해 주세요.
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                // 1) "내 정보" 탭 강제 활성화
+                                const infoTab = document.getElementById('v-pills-info-tab');
+                                if (infoTab) infoTab.click();
+
+                                // 2) 비밀번호 변경 섹션으로 스크롤 + 현재 비번 입력창 포커스
+                                const cur = document.getElementById('currentPw');
+                                if (cur) {
+                                    cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    cur.focus();
+                                }
+
+                                // 3) 시각 강조(선택)
+                                const form = document.querySelector('form[action$="/mypage/change-password"]');
+                                if (form) {
+                                    form.classList.add('border', 'border-warning', 'rounded-3');
+                                    setTimeout(() => form.classList.remove('border','border-warning','rounded-3'), 3000);
+                                }
+                            });
+                        </script>
                     </c:if>
 
                     <!-- ✅ 비밀번호 변경 폼 -->
@@ -201,9 +236,14 @@
             </div>
 
 
-            <!-- ✅ 주문 내역 -->
+            <!-- 주문 내역 -->
             <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
                 <h2 class="mb-3 pb-2 border-bottom">주문 내역</h2>
+
+                <c:if test="${empty orders}">
+                    <div class="alert alert-info">주문 내역이 없습니다.</div>
+                </c:if>
+
                 <c:if test="${not empty orders}">
                     <table class="table table-striped align-middle">
                         <thead>
@@ -219,17 +259,16 @@
                         <c:forEach var="order" items="${orders}">
                             <tr>
                                 <td>${order.orderId}</td>
-                                <td><fmt:formatDate value="${order.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
+                                <td>${order.createdAt}</td>
                                 <td>
                                     <c:forEach var="item" items="${order.items}">
-                                        ${item.bookId} (수량: ${item.quantity})<br/>
+                                        ${item.title} x ${item.quantity}<br/>
                                     </c:forEach>
                                 </td>
                                 <td><fmt:formatNumber value="${order.totalPrice}" pattern="#,##0"/> 원</td>
                                 <td>${order.status}</td>
                             </tr>
                         </c:forEach>
-
                         </tbody>
                     </table>
                 </c:if>
@@ -240,9 +279,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- 마이페이지 전용 JS (순서 공통 -> cart -> wishlist 고정) -->
+<script>
+    window.csrfToken = "${_csrf.token}";
+    window.currentUserId = "${user.userId}";
+</script>
 <!-- 공통 -->
 <script src="/js/mypage/mypage-common.js"></script>
+<%-- 주문 내역--%>
+<script src="/js/mypage/orders.js"></script>
 <!-- 장바구니 -->
 <script src="/js/mypage/cart.js"></script>
 <!-- 위시리스트 -->

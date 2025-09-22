@@ -7,6 +7,7 @@ import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.repository.UsersRepository;
+import org.hibernate.engine.spi.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.error404.geulbut.jpa.users.entity.Users.UserStatus;
 
 import java.util.Optional;
 
@@ -31,6 +34,7 @@ class UsersServiceTest {
     @Mock ErrorMsg errorMsg;
 
     @InjectMocks UsersService usersService;
+    @InjectMocks UsersWithdrawService withdrawService;
 
 
     @BeforeEach
@@ -301,5 +305,92 @@ class UsersServiceTest {
 //    ===========================================================
 //    TODO : 로그인 / 회원가입 관련 성공 혹은 실패 단위 테스트 진행 한 것 9/11 17:00
 //    ===========================================================
+@Test
+void testPasswordMatches() {
+    // 1) DB에서 복사해온 해시
+    String dbHash = "$2a$10$jDNqWI5wDukZ9SM9WsBYmeysUUC/ie8k1etuVW0CvoZyquiAKB4.."; // 실제 DB의 해시 문자열 붙여넣기
 
+    // 2) 로그인 시도하려는 평문 비번 (네가 새로 설정했던 비번)
+    String rawPassword = "1234567890";
+
+    // 3) BCryptPasswordEncoder로 매칭 확인
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    boolean matches = encoder.matches(rawPassword, dbHash);
+
+    System.out.println("매칭 결과: " + matches);
+
+    // 4) AssertJ로도 검증
+    assertThat(matches).isTrue(); // 일치해야 한다고 기대
+}
+    @Test
+    void genHashAndPrintSql() {
+        // 1) 여기 원하는 새 비번 넣기 (임시로: Test!1234)
+        String RAW = "Test!1234";
+
+        // 2) BCrypt로 해시 생성 (앱이 BCrypt 쓰는 게 확실하므로 동일하게)
+        BCryptPasswordEncoder enc = new BCryptPasswordEncoder(); // strength 기본 10
+        String newHash = enc.encode(RAW);
+
+        // 3) 확인용 매칭 (true 나와야 정상)
+        boolean ok = enc.matches(RAW, newHash);
+
+        // 4) 콘솔 출력 (복사-붙여넣기 쉽게)
+        System.out.println("=== 새 비번 RAW  ===: " + RAW);
+        System.out.println("=== 생성된 HASH ===: " + newHash);
+        System.out.println("=== matches?    ===: " + ok);
+        System.out.println();
+        System.out.println("-- 아래 SQL을 DB에서 실행하세요 --");
+        System.out.println("UPDATE users");
+        System.out.println("   SET password = '" + newHash + "',");
+        System.out.println("       password_temp = NULL,");
+        System.out.println("       temp_pw_yn = 'N'");
+        System.out.println(" WHERE user_id = 'user002';");
+    }
+
+    @Test
+    void withdraw_active_user_success() {
+        Users u = new Users();
+        u.setUserId("user002");
+        u.setPassword("ENC");
+        u.setStatus(Users.UserStatus.ACTIVE);
+
+        given(usersRepository.findById("user002")).willReturn(Optional.of(u));
+        given(usersRepository.save(any(Users.class))).willAnswer(inv -> inv.getArgument(0));
+
+        // when
+        withdrawService.withdraw("user002");
+
+        // then
+        assertThat(u.getStatus()).isEqualTo(UserStatus.DELETED);
+        assertThat(u.getEmail()).startsWith("withdrawn_user002@");
+        assertThat(u.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    void withdraw_nonexistent_user_fail() {
+        // given
+        given(usersRepository.findById("ghost")).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> withdrawService.withdraw("ghost"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("사용자를 찾을 수 없습니다");
+    }
+
+    @Test
+    void withdraw_already_deleted_user_is_idempotent() {
+        // given
+        Users u = new Users();
+        u.setUserId("user002");
+        u.setStatus(UserStatus.DELETED);
+
+        given(usersRepository.findById("user002")).willReturn(Optional.of(u));
+
+        // when
+        withdrawService.withdraw("user002");
+
+        // then: 상태 유지 (로그만 남고 아무 일 없음)
+        assertThat(u.getStatus()).isEqualTo(UserStatus.DELETED);
+    }
 }
