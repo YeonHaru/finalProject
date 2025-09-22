@@ -1,7 +1,6 @@
 package com.error404.geulbut.jpa.admin.controller;
 
 import com.error404.geulbut.common.ErrorMsg;
-import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.jpa.admin.service.AdminBooksService;
 import com.error404.geulbut.jpa.authors.dto.AuthorsDto;
 import com.error404.geulbut.jpa.books.dto.BooksDto;

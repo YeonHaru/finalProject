@@ -1,6 +1,5 @@
 package com.error404.geulbut.config;
 
-import org.apache.http.protocol.HTTP;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

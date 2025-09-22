@@ -2,8 +2,6 @@ package com.error404.geulbut.jpa.users.dto;
 
 import lombok.*;
 
-import java.time.LocalDate;
-
 // DTO 클래스
 @Getter
 @Setter

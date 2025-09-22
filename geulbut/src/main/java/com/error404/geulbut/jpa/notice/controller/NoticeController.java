@@ -2,18 +2,25 @@ package com.error404.geulbut.jpa.notice.controller;
 
 import com.error404.geulbut.jpa.notice.dto.NoticeDto;
 import com.error404.geulbut.jpa.notice.service.NoticeService;
+import com.error404.geulbut.jpa.noticecomment.dto.NoticeCommentDto;
+import com.error404.geulbut.jpa.noticecomment.service.NoticeCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class NoticeController {
 
     private final NoticeService noticeService;
+    private final NoticeCommentService noticeCommentService;
 
     // 공지 목록 - 페이징
     @GetMapping("/notice")
@@ -34,6 +41,9 @@ public class NoticeController {
         // 조회수 증가 + 단건 조회
         NoticeDto notice = noticeService.getNoticeAndIncreaseViewCount(id);
         model.addAttribute("notice", notice);
+
+        List<NoticeCommentDto> comments = noticeCommentService.getCommentsByNotice(id);
+        model.addAttribute("comments", comments);
         return "notice/noticeText";
     }
 
@@ -97,5 +107,14 @@ public class NoticeController {
 
         noticeService.deleteNotice(id);
         return "redirect:/notice";
+    }
+    @PostMapping("/noticeComment")
+    public String addComment(NoticeCommentDto dto) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        dto.setUserId(userId);
+
+        noticeCommentService.saveComment(dto);
+
+        return "redirect:/noticeText?id=" + dto.getNoticeId();
     }
 }
