@@ -27,9 +27,9 @@ body{
     backdrop-filter:saturate(140%) blur(6px);border-bottom:1px solid var(--line)}
 .ht-brand{width:28px;height:28px;border-radius:50%;
     background:linear-gradient(180deg,#1d1d1d,#616161)}
-.ht-brand-title{color:var(--brand);font-weight:700}
+.ht-brand-title{color:var(--brand);font-weight:700;margin-top: 5rem}
 .ht-nav{display:flex;gap:18px}
-.ht-nav__link{color:#666;text-decoration:none;font-size:14px}
+.ht-nav__link{color:#666;text-decoration:none;font-size:14px;margin-top: 5rem}
 .ht-nav__link:hover{color:#333}
 .ht-nav__link.is-active{color:#111;font-weight:600}
 

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
 
     <!-- 외부 CSS (절대 style 태그 금지) -->
+    <link rel="stylesheet" href="<%=ctx%>/css/00_common.css" />
     <link rel="stylesheet" href="<%=ctx%>/css/book/hashtags-mono.css" />
 </head>
 <body>
@@ -24,8 +25,9 @@
 <header class="ht-topbar" role="banner">
     <div class="ht-container d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
-            <span class="ht-brand" aria-hidden="true"></span>
-            <strong class="ht-brand-title">Book Hashtags</strong>
+<%--            <span class="ht-brand" aria-hidden="true"></span>--%>
+    <img src="${ctx}/images/logo.png" alt="글벗">
+    <strong class="ht-brand-title">Book Hashtags</strong>
         </div>
         <nav class="ht-nav" aria-label="Global">
             <a class="ht-nav__link" href="<%=ctx%>/">Home</a>
