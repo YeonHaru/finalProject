@@ -37,5 +37,19 @@ public class BookHashtagsService {
                 .collect(Collectors.toList());
     }
 
+    //    책 제목으로 해시태그 조회
+    public List<BookHashtagsDto> getByBookTitle(String bookTitle) {
+        return bookHashtagsRepository.findByBook_TitleContaining(bookTitle)
+                .stream()
+                .map(mapStruct::toDto)
+                .collect(Collectors.toList());
+    }
 
+//    해시태그 이름으로 책 조회
+    public List<BookHashtagsDto> getByHashtagName(String hashtagName) {
+        return bookHashtagsRepository.findByHashtag_NameContaining(hashtagName)
+                .stream()
+                .map(mapStruct::toDto)
+                .collect(Collectors.toList());
+    }
 }

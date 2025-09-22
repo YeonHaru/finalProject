@@ -8,22 +8,21 @@
 
 <h1>Book Hashtags 조회</h1>
 
-<!-- 검색 폼 -->
-<form action="/book-hashtags" method="get">
-    <label for="bookId">책 ID 조회:</label>
-    <input type="number" id="bookId" name="bookId" value="${bookId}"/>
+<form action="/book-hashtags/search" method="get">
+    <label>책 검색:</label>
+    <input type="text" name="bookQuery" value="${queryBook}" />
+    <button type="submit">검색</button>
 
-    <label for="hashtagId">해시태그 ID 조회:</label>
-    <input type="number" id="hashtagId" name="hashtagId" value="${hashtagId}"/>
-
+    <label>해시태그 검색:</label>
+    <input type="text" name="hashtagQuery" value="${queryHashtag}" />
     <button type="submit">검색</button>
 </form>
 
 <hr/>
 
 <!-- 책 기준 해시태그 목록 -->
-<h2>책 ID: ${bookId} 기준 해시태그 목록</h2>
-<c:if test="${not empty bookHashtagsByBook}">
+<h2>책 검색 결과</h2>
+<c:if test="${not empty bookSearchResult}">
     <table border="1">
         <thead>
         <tr>
@@ -35,7 +34,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="bh" items="${bookHashtagsByBook}">
+        <c:forEach var="bh" items="${bookSearchResult}">
             <tr>
                 <td>${bh.book.bookId}</td>
                 <td>${bh.book.title}</td>
@@ -47,13 +46,13 @@
         </tbody>
     </table>
 </c:if>
-<c:if test="${empty bookHashtagsByBook}">
-    <p>해당 책에 연결된 해시태그가 없습니다.</p>
+<c:if test="${empty bookSearchResult}">
+    <p>검색된 책이 없습니다.</p>
 </c:if>
 
 <!-- 해시태그 기준 책 목록 -->
-<h2>해시태그 ID: ${hashtagId} 기준 책 목록</h2>
-<c:if test="${not empty bookHashtagsByHashtag}">
+<h2>해시태그 검색 결과</h2>
+<c:if test="${not empty hashtagSearchResult}">
     <table border="1">
         <thead>
         <tr>
@@ -65,7 +64,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="bh" items="${bookHashtagsByHashtag}">
+        <c:forEach var="bh" items="${hashtagSearchResult}">
             <tr>
                 <td>${bh.hashtag.hashtagId}</td>
                 <td>${bh.hashtag.name}</td>
@@ -77,8 +76,8 @@
         </tbody>
     </table>
 </c:if>
-<c:if test="${empty bookHashtagsByHashtag}">
-    <p>해당 해시태그에 연결된 책이 없습니다.</p>
+<c:if test="${empty hashtagSearchResult}">
+    <p>검색된 해시태그가 없습니다.</p>
 </c:if>
 
 </body>
