@@ -33,9 +33,18 @@ public class AdminBooksController {
     @GetMapping
     public String listBooksPage(Model model,
                                 @RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size) {
-        Page<BooksDto> dtoPage = adminBooksService.getAllBooks(page, size);
+                                @RequestParam(defaultValue = "10") int size,
+                                @RequestParam(required = false) String keyword) {
+
+        Page<BooksDto> dtoPage;
+        if (keyword != null && !keyword.isEmpty()) {
+            dtoPage = adminBooksService.searchBooks(keyword, page, size);
+        } else {
+            dtoPage = adminBooksService.getAllBooks(page, size);
+        }
+
         model.addAttribute("booksPage", dtoPage);
+        model.addAttribute("keyword", keyword); // JSP에서 input value로 유지
         return "admin/admin_books_list";
     }
 
