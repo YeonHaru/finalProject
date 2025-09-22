@@ -37,9 +37,9 @@ public class QnaController {
     // QnA 상세보기
     @GetMapping("/qnaText")
     public String qnaText(@RequestParam("id") Long id, Model model) {
-        QnaDto qna = qnaService.findById(id);  // 해당 글 가져오기
+        QnaDto qna = qnaService.getQnaAndIncreaseViewCount(id);
         model.addAttribute("qna", qna);
-        return "qna/qnaText";  // /WEB-INF/views/qna/qnaText.jsp
+        return "qna/qnaText";
     }
 
     // QnA 글쓰기 페이지

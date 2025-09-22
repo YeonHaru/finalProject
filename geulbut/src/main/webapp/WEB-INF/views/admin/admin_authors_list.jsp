@@ -1,96 +1,149 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+
+<html lang="ko">
 <head>
-    <title>작가 관리</title>
-    <link rel="stylesheet" href="<c:url value='/css/admin/admin-authors.css'/>">
+    <!-- FINGERPRINT authors v1 -->
+    <meta charset="UTF-8" />
+    <title>관리자 - 작가 관리</title>
+
+    <!-- 공통 CSS + 작가 관리 전용 -->
+    <link rel="stylesheet" href="${ctx}/css/00_common.css" />
+    <link rel="stylesheet" href="${ctx}/css/header.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
-<h2>작가 관리</h2>
 
-<!-- 검색 -->
-<input type="text" id="searchKeyword" placeholder="작가명 검색" value="${keyword != null ? keyword : ''}">
-<button id="btnSearch">검색</button>
-<button id="btnAdd">작가 등록</button>
+<body class="bg-main text-main admin-authors">
+<jsp:include page="/common/header.jsp" />
 
-<!-- 작가 목록 테이블 -->
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>이름</th>
-        <th>작가 이미지</th>
-        <th>생성일</th>
-        <th>설명</th>
-        <th>작업</th>
-    </tr>
-    </thead>
-    <tbody id="authorsTableBody">
-    <c:forEach var="author" items="${authorsPage.content}">
-        <tr data-id="${author.authorId}" data-imgurl="${author.imgUrl}">
-            <td>${author.authorId}</td>
-            <td class="author-name">${author.name}</td>
-            <td>
-                <c:if test="${not empty author.imgUrl}">
-                    <img src="${author.imgUrl}" alt="작가 이미지" style="max-width:50px; max-height:50px;">
-                </c:if>
-            </td>
-            <td>${author.createdAt}</td>
-            <td class="author-description">${author.description}</td>
-            <td>
-                <button class="btn btn-edit">수정</button>
-                <button class="btn btn-delete">삭제</button>
-            </td>
-        </tr>
-    </c:forEach>
-    </tbody>
-</table>
+<div class="page">
+    <h1 class="mt-4 mb-4">작가 관리</h1>
 
-<!-- 페이징 버튼 -->
-<div id="pagination">
+    <!-- 검색 -->
+    <div class="search-wrapper">
+        <form id="authorSearchForm" method="get" action="${ctx}/admin/authors" class="search-form">
+            <input type="text" name="keyword" id="keyword" value="${param.keyword}" placeholder="작가명 검색" />
+            <button type="submit" class="btn-search">검색</button>
+        </form>
+    </div>
+
+    <!-- 상단 툴바 -->
+    <div class="toolbar">
+        <button type="button" class="btn btn-accent" id="btnAddAuthor">작가 등록</button>
+    </div>
+
+    <!-- 작가 목록 테이블 -->
+    <div class="table-scroll">
+        <table class="admin-table admin-authors-table" id="authorsTable">
+            <colgroup>
+                <col class="col-id" />
+                <col class="col-name" />
+                <col class="col-img" />
+                <col class="col-created" />
+                <col class="col-desc" />
+                <col class="col-actions" />
+            </colgroup>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>이름</th>
+                <th>이미지</th>
+                <th>생성일</th>
+                <th>설명</th>
+                <th>작업</th>
+            </tr>
+            </thead>
+            <tbody id="authorsTableBody">
+            <c:forEach var="author" items="${authorsPage.content}">
+                <tr class="data-row"
+                    data-id="${author.authorId}"
+                    data-name="${author.name}"
+                    data-description="${author.description}"
+                    data-imgurl="${author.imgUrl}"
+                    data-createdat="${author.createdAt}">
+                    <td>${author.authorId}</td>
+                    <td class="t-left author-name">${author.name}</td>
+                    <td>
+                        <c:if test="${not empty author.imgUrl}">
+                            <img src="${author.imgUrl}" class="author-thumb" alt="작가 이미지">
+                        </c:if>
+                    </td>
+                    <td class="created-at-cell">${author.createdAt}</td>
+                    <td class="t-left author-description">${author.description}</td>
+                    <td>
+                        <button type="button" class="btn btn-accent btnEdit">수정</button>
+                        <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 페이지네이션 -->
     <c:if test="${authorsPage.totalPages > 0}">
-        <c:if test="${!authorsPage.first}">
-            <button class="page-btn" data-page="${authorsPage.number - 1}">이전</button>
-        </c:if>
-
-        <c:forEach begin="0" end="${authorsPage.totalPages - 1}" var="i">
-            <button class="page-btn ${i == authorsPage.number ? 'active' : ''}" data-page="${i}">${i + 1}</button>
-        </c:forEach>
-
-        <c:if test="${!authorsPage.last}">
-            <button class="page-btn" data-page="${authorsPage.number + 1}">다음</button>
-        </c:if>
+        <div class="pagination mt-2">
+            <c:forEach begin="0" end="${authorsPage.totalPages - 1}" var="i">
+                <c:url var="pageUrl" value="${ctx}/admin/authors">
+                    <c:param name="keyword" value="${param.keyword}" />
+                    <c:param name="page" value="${i}" />
+                </c:url>
+                <a href="${pageUrl}" class="${i == authorsPage.number ? 'active' : ''}">${i + 1}</a>
+            </c:forEach>
+        </div>
     </c:if>
 </div>
 
+
 <!-- 모달 -->
-<div id="authorModal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalTitle">작가 등록</h3>
-        <input type="hidden" id="modalAuthorId">
-        <div>
-            <label>이름: </label>
-            <input type="text" id="modalAuthorName">
+<div id="authorModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
+    <div class="modal__dialog" role="document">
+        <div class="modal__header">
+            <h3 id="modalTitle">작가 등록</h3>
+            <button type="button" class="modal__close" id="btnCloseModal" aria-label="닫기">×</button>
         </div>
-        <div>
-            <label>설명: </label>
-            <textarea id="modalAuthorDescription" rows="3"></textarea>
-        </div>
-        <div>
-            <label>이미지 URL: </label>
-            <input type="text" id="modalAuthorImgUrl" placeholder="https://example.com/image.jpg">
-        </div>
-        <div>
-            <label>미리보기:</label>
-            <br>
-            <img id="modalAuthorImgPreview" src="" alt="작가 이미지" style="max-width: 200px; max-height: 200px;">
-        </div>
-        <button id="modalSaveBtn">저장</button>
-        <button id="modalCloseBtn">닫기</button>
+
+        <form id="authorForm" class="modal__form">
+            <input type="hidden" id="modalAuthorId">
+
+            <!-- 이름 -->
+            <label>이름
+                <input type="text" id="modalAuthorName" placeholder="작가명을 입력하세요" required />
+            </label>
+
+            <!-- 이미지 URL -->
+            <label>이미지 URL
+                <input type="text" id="modalAuthorImgUrl" placeholder="https://example.com/image.jpg" />
+            </label>
+
+            <!-- 생성일(읽기전용, 수정시만 채움) -->
+            <label>생성일
+                <input type="text" id="modalAuthorCreatedAt" placeholder="수정 시 자동 채움" readonly />
+            </label>
+
+            <!-- 설명(2열 꽉 채우기 위해 grid-span) -->
+            <label style="grid-column:1 / -1;">설명
+                <textarea id="modalAuthorDescription" rows="4" placeholder="간단한 소개나 메모를 입력하세요"></textarea>
+            </label>
+
+            <!-- 이미지 미리보기 -->
+            <div style="grid-column:1 / -1;">
+                <span style="display:block; margin-bottom:4px; font-size:.9rem;">미리보기</span>
+                <img id="modalAuthorImgPreview" src="" alt="작가 이미지" />
+            </div>
+
+            <div class="modal__footer">
+                <button type="submit" class="btn btn-accent" id="modalSaveBtn">저장</button>
+                <button type="button" class="btn" id="modalCloseBtn2">닫기</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="<c:url value='/js/admin/admin_authors.js'/>"></script>
+<script src="${ctx}/js/admin/admin_authors.js?v=1"></script>
 </body>
 </html>

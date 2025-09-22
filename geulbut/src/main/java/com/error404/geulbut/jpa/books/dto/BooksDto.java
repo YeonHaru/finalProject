@@ -1,9 +1,12 @@
 package com.error404.geulbut.jpa.books.dto;
 
+import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,4 +37,7 @@ public class BooksDto {
     private LocalDateTime updatedAt;
     //    ES_DELETE_FLAG
     private String esDeleteFlag= "N";            // Y or N  디폴트 N
+
+    // 해시태그 필드 추가
+    private List<HashtagsDto> hashtags = new ArrayList<>();
 }

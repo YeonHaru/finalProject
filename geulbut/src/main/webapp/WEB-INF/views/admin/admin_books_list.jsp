@@ -12,7 +12,7 @@
     <!-- 공통/헤더 + 도서관리 전용 CSS (usersInfo.css는 더이상 참조하지 않습니다) -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
-    <link rel="stylesheet" href="${ctx}/css/admin/admin-books.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>

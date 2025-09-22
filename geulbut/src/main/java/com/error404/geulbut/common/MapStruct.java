@@ -4,6 +4,8 @@ import com.error404.geulbut.es.searchAllBooks.dto.SearchAllBooksDto;
 import com.error404.geulbut.es.searchAllBooks.entity.SearchAllBooks;
 import com.error404.geulbut.jpa.authors.dto.AuthorsDto;
 import com.error404.geulbut.jpa.authors.entity.Authors;
+import com.error404.geulbut.jpa.bookhashtags.dto.BookHashtagsDto;
+import com.error404.geulbut.jpa.bookhashtags.entity.BookHashtags;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
@@ -41,6 +43,7 @@ public interface MapStruct {
     void updateFromDto(AuthorsDto authorsDto, @MappingTarget Authors authors);
 
     //    Categories <-> CategoriesDto
+    @Mapping(target = "createdAt", source = "createdAt")
     CategoriesDto toDto(Categories categories);
 
     Categories toEntity(CategoriesDto categoriesDto);
@@ -55,6 +58,7 @@ public interface MapStruct {
     void updateFromDto(HashtagsDto hashtagsDto, @MappingTarget Hashtags hashtags);
 
     //    Publishers <-> PublishersDto
+    @Mapping(target = "createdAt", source = "createdAt")
     PublishersDto toDto(Publishers publishers);
 
     Publishers toEntity(PublishersDto publishersDto);
@@ -123,4 +127,14 @@ public interface MapStruct {
     @Mapping(target = "title", source = "book.title")
     @Mapping(target = "price", source = "book.price")
     OrderItemDto toDto(OrderItem entity);
+
+
+    // BookHashtags <-> BookHashtagsDto
+    BookHashtagsDto toDto(BookHashtags bookHashtags);
+
+    BookHashtags toEntity(BookHashtagsDto dto);
+
+    void updateFromDto(BookHashtagsDto dto, @MappingTarget BookHashtags entity);
+
+
 }

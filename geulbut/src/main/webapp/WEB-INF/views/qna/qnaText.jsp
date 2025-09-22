@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
@@ -52,7 +53,7 @@
       <div class="notice-meta px-3">
         <div class="meta-item">
           <i class="fa-solid fa-user"></i>
-          <span>${qna.userId}</span>
+          <span>${qna.userId} </span>
         </div>
         <div class="meta-item">
           <i class="fa-solid fa-comment"></i>
@@ -60,7 +61,7 @@
         </div>
         <div class="meta-item">
           <i class="fa-solid fa-eye"></i>
-          <span>1,219</span>
+          <span><c:out value="${qna.viewCount}"/></span>
         </div>
         <div class="meta-item time-item">
           <i class="fa-regular fa-clock"></i>
