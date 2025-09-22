@@ -131,4 +131,10 @@ public class CustomPrincipal implements UserDetails, OAuth2User, OidcUser, Seria
                 userInfo
         );
     }
+
+    public boolean isLocal() {
+        Object p = attributes != null ? attributes.get("provider") : null;
+        if (p instanceof String s) return "LOCAL".equalsIgnoreCase(s);
+        return false;
+    }
 }

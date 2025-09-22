@@ -23,7 +23,7 @@ public class UsersSignupDto {
     private String phone;
 
 //    선택입력
-    private char gender;
+    private Character gender;
     private LocalDate birthday;
     private String address;
 

@@ -1,9 +1,12 @@
 package com.error404.geulbut.jpa.users.entity;
 
+import com.error404.geulbut.common.Char1Converter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 
 import java.time.LocalDate;
@@ -23,7 +26,10 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @DynamicUpdate
 @EqualsAndHashCode(of = "userId", callSuper = false)
+
 public class Users {
+
+    public enum AuthProvider { LOCAL, GOOGLE, NAVER, KAKAO}
 
     @Id
     @Column(name = "USER_ID", length = 50, nullable = false)        // 컬럼 어노테이션 쓸 이유가없다.
@@ -35,6 +41,10 @@ public class Users {
     private String email;                                       // 카카오는 null 가능
     private String phone;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PROVIDER", length = 16, nullable = false)
+    private AuthProvider provider;                         // 가입경로
+
 //    임시비밀번호 관련
     private String tempPwYn;                                  // 임시비번 발급 여부
     private String pwCode;                                  // 인증코드 6자리
@@ -45,15 +55,21 @@ public class Users {
 //    기본정보
     private LocalDate joinDate;
     private String role;
-    private char gender;
+    @Convert(converter = Char1Converter.class)
+    @Column(name = "GENDER", columnDefinition = "CHAR(1)")
+    private Character  gender;
     //    회원가입할때 대소문자 상관없이 생일란 찾음
     private LocalDate birthdate;
     private String address;
 
 //    포인트 & 등급
     private Long point;
-    private char postNotifyAgree;
-    private char promoAgree;
+    @Convert(converter = Char1Converter.class)
+    @Column(name = "POST_NOTIFY_AGREE", columnDefinition = "CHAR(1)")
+    private Character postNotifyAgree;
+    @Convert(converter = Char1Converter.class)
+    @Column(name = "PROMO_AGREE", columnDefinition = "CHAR(1)")
+    private Character  promoAgree;
     private String grade;                   // 브론즈/실버/골드
     private Long totalPurchase;
 
@@ -79,14 +95,12 @@ public class Users {
     }
 
 //    동의 관련
-    @PrePersist
-    public void onCreate() {
-//        동의 기본값
-        if (promoAgree != 'Y' && promoAgree != 'N') promoAgree = 'N';
-        if (postNotifyAgree != 'Y' && postNotifyAgree != 'N') postNotifyAgree = 'N';
-
-//        성별 기본값
-        if(gender != 'M' && gender != 'F') gender = 'U';
+@PrePersist
+public void onCreate() {
+    // 대소문자 보정
+         if (promoAgree == null || (promoAgree != 'Y' && promoAgree != 'N')) promoAgree = 'N';
+         if (postNotifyAgree == null || (postNotifyAgree != 'Y' && postNotifyAgree != 'N')) postNotifyAgree = 'N';
+         if (gender == null || (gender != 'M' && gender != 'F')) gender = 'U';
 
 //        기본 등급/포인트/역할
         if(grade == null) grade = "BRONZE";
@@ -101,6 +115,9 @@ public class Users {
 
 //        유저상태 기본값
         if (status == null) status = UserStatus.ACTIVE;
+
+        //    폼 가입 사용자의 기본값
+        if (provider == null) provider = AuthProvider.LOCAL;
     }
 
 

@@ -37,6 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String displayName = extractDisplayName(provider, attributes);
         attrs.put("displayName", (displayName != null && !displayName.isBlank()) ? displayName : "사용자");
         attrs.putIfAbsent("userId", usersOAuthUpsertDto.toUserIdKey());
+        attrs.put("provider", provider.toUpperCase());
 
         var auths = List.of(new SimpleGrantedAuthority("ROLE_" + saved.getRole()));
 

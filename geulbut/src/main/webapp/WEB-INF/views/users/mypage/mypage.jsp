@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -95,26 +96,35 @@
 
                     <!-- ✅ 비밀번호 변경 폼 -->
                     <h3 class="mt-4 mb-3">비밀번호 변경</h3>
-                    <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
-                        <!-- CSRF 토큰 (Spring Security 켜져있으면 필수) -->
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <c:choose>
+                        <c:when test="${canChangePassword}">
+                            <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
+                                <!-- CSRF 토큰 (Spring Security 켜져있으면 필수) -->
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
-                        <div class="col-12">
-                            <label for="currentPw" class="form-label">현재 비밀번호</label>
-                            <input type="password" id="currentPw" name="currentPw" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="newPw" class="form-label">새 비밀번호</label>
-                            <input type="password" id="newPw" name="newPw" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
-                            <input type="password" id="confirmPw" name="confirmPw" class="form-control" required>
-                        </div>
-                        <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-primary">비밀번호 변경</button>
-                        </div>
-                    </form>
+                                <div class="col-12">
+                                    <label for="currentPw" class="form-label">현재 비밀번호</label>
+                                    <input type="password" id="currentPw" name="currentPw" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="newPw" class="form-label">새 비밀번호</label>
+                                    <input type="password" id="newPw" name="newPw" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
+                                    <input type="password" id="confirmPw" name="confirmPw" class="form-control" required>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+                                </div>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="alert alert-info">
+                                소셜 로그인(구글/네이버/카카오) 사용자는 비밀번호 변경 기능을 사용할 수 없습니다.
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </c:if>
             </div>
 
