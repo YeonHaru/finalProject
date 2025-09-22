@@ -10,6 +10,10 @@ import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
 import com.error404.geulbut.jpa.categories.entity.Categories;
 import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
 import com.error404.geulbut.jpa.hashtags.entity.Hashtags;
+import com.error404.geulbut.jpa.orderitem.dto.OrderItemDto;
+import com.error404.geulbut.jpa.orderitem.entity.OrderItem;
+import com.error404.geulbut.jpa.orders.dto.OrdersDto;
+import com.error404.geulbut.jpa.orders.entity.Orders;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import com.error404.geulbut.jpa.users.dto.UserMypageDto;
@@ -35,6 +39,7 @@ public interface MapStruct {
     void updateFromDto(AuthorsDto authorsDto, @MappingTarget Authors authors);
 
     //    Categories <-> CategoriesDto
+    @Mapping(target = "createdAt", source = "createdAt")
     CategoriesDto toDto(Categories categories);
 
     Categories toEntity(CategoriesDto categoriesDto);
@@ -49,6 +54,7 @@ public interface MapStruct {
     void updateFromDto(HashtagsDto hashtagsDto, @MappingTarget Hashtags hashtags);
 
     //    Publishers <-> PublishersDto
+    @Mapping(target = "createdAt", source = "createdAt")
     PublishersDto toDto(Publishers publishers);
 
     Publishers toEntity(PublishersDto publishersDto);
@@ -89,7 +95,26 @@ public interface MapStruct {
 
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
 
-    // --- ✅ Mypage DTO 변환 추가 승화 ---
+    //  Mypage DTO 변환 승화
     @Mapping(target = "joinDate", source = "joinDate", dateFormat = "yyyy-MM-dd")
     UserMypageDto toMypageDto(Users users);
+
+    //  Orders 매핑 승화
+    @Mapping(target = "orderId", ignore = true)
+    @Mapping(target = "memo", ignore = true)
+    @Mapping(target = "recipient", ignore = true)
+    @Mapping(target = "status", constant = "PENDING")
+    Orders toEntity(OrdersDto dto);
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    OrdersDto toDto(Orders entity);
+
+    // OrderItem 매핑
+    @Mapping(target = "orderedItemId", ignore = true)
+    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "book", ignore = true)
+    OrderItem toEntity(OrderItemDto dto);
+
+    OrderItemDto toDto(OrderItem entity);
+
+
 }

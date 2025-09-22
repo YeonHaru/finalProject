@@ -55,3 +55,23 @@ spring:
 #          구글 API 엔드포인트
           google:
             user-name-attribute: sub
+
+#       메일 SMTP
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zmfpdltus012@gmail.com
+    password: bluy tgxv azky wykf
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+      mail.transport.protocol: smtp
+
+app:
+  mail:
+    from: geulbut@gmail.com
+    from-name: 글벗

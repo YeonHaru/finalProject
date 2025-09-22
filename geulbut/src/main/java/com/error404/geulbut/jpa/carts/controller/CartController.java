@@ -1,5 +1,6 @@
 package com.error404.geulbut.jpa.carts.controller;
 
+import com.error404.geulbut.jpa.carts.dto.CartSummaryDto;
 import com.error404.geulbut.jpa.carts.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,13 +26,15 @@ public class CartController {
                                        @RequestParam Long bookId,
                                        @RequestParam(defaultValue = "1") int quantity) {
         String userId = authentication.getName();
+        log.info("📌 [POST] 장바구니 추가 요청 - userId: {}, bookId: {}, quantity: {}", userId, bookId, quantity);
+
         try {
             cartService.addToCart(userId, bookId, quantity);
             return ResponseEntity.ok(Map.of("status", "ok"));
         } catch (Exception e) {
-            log.error("장바구니 담기 실패", e);
+            log.info("❌ 장바구니 추가 실패 - userId: {}, bookId: {}", userId, bookId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("status", "FAIL", "message", e.getMessage()));
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
         }
     }
 
@@ -43,12 +46,20 @@ public class CartController {
                                             @PathVariable Long bookId,
                                             @RequestParam int quantity) {
         String userId = authentication.getName();
+        log.info("📌 [PUT] 장바구니 수량 변경 요청 - userId: {}, bookId: {}, quantity: {}", userId, bookId, quantity);
+
         if (quantity <= 0) {
             return ResponseEntity.status((HttpStatus.BAD_REQUEST))
-                    .body(Map.of("status", "FAIL", "message", "수량은 1 이상이어야 합니다."));
+                    .body(Map.of("status", "fail", "message", "수량은 1 이상이어야 합니다."));
         }
-        cartService.updateQuantity(userId, bookId, quantity);
-        return ResponseEntity.ok(Map.of("status", "ok"));
+        try {
+            cartService.updateQuantity(userId, bookId, quantity);
+            return ResponseEntity.ok(Map.of("status", "ok"));
+        } catch (Exception e) {
+            log.error("❌ 장바구니 수량 변경 실패 - userId: {}, bookId: {}", userId, bookId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
+        }
     }
 
     /**
@@ -58,8 +69,16 @@ public class CartController {
     public ResponseEntity<?> removeFromCart(Authentication authentication,
                                             @PathVariable Long bookId) {
         String userId = authentication.getName();
-        cartService.removeFromCart(userId, bookId);
-        return ResponseEntity.ok(Map.of("status", "ok"));
+        log.info("📌 [DELETE] 장바구니 삭제 요청 - userId: {}, bookId: {}", userId, bookId);
+
+        try {
+            cartService.removeFromCart(userId, bookId);
+            return ResponseEntity.ok(Map.of("status", "ok"));
+        } catch (Exception e) {
+            log.error("❌ 장바구니 삭제 실패 - userId: {}, bookId: {}", userId, bookId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
+        }
     }
 
     /**
@@ -68,6 +87,16 @@ public class CartController {
     @GetMapping
     public ResponseEntity<?> getCart(Authentication authentication) {
         String userId = authentication.getName();
-        return ResponseEntity.ok(cartService.getCartSummary(userId));
+        log.info("📌 [GET] 장바구니 조회 요청 - userId: {}", userId);
+
+        try {
+            CartSummaryDto cartSummary = cartService.getCartSummary(userId);
+            log.info("➡️ 장바구니 조회 결과: {}건", cartSummary.getItems().size());
+            return ResponseEntity.ok(cartSummary);
+        } catch (Exception e) {
+            log.error("❌ 장바구니 조회 실패 - userId: {}", userId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
+        }
     }
 }

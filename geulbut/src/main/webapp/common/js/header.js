@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) mobileMenu.classList.remove('open');
+            if (window.innerWidth > 768) {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('active');
+            }
         });
     }
 
@@ -34,12 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('click', (e) => {
             if (!adminBtn.contains(e.target) && !adminPanel.contains(e.target)) {
                 adminPanel.classList.remove('open');
+                adminBtn.classList.remove('active');
             }
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') adminPanel.classList.remove('open');
+            if (e.key === 'Escape') {
+                adminPanel.classList.remove('open');
+                adminBtn.classList.remove('active');
+            }
         });
     }
-
 });

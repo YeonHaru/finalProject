@@ -8,7 +8,7 @@
 <head>
     <title>관리자 - 회원조회</title>
     <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="/css/admin/admin-usersInfo.css">
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
     <link rel="stylesheet" href="/css/header.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 외부 JS 분리 -->
