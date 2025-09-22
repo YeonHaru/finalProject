@@ -1,6 +1,8 @@
 package com.error404.geulbut.jpa.users.service;
 
+import com.error404.geulbut.common.security.CustomPrincipal;
 import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
+import com.error404.geulbut.jpa.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,54 +22,46 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final SocialAuthService socialAuthService;
+    private final UsersService usersService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest){
         OAuth2User raw = super.loadUser(userRequest);
         Map<String, Object> attributes = raw.getAttributes();
-        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // google/naver/kakao
+        String provider = userRequest.getClientRegistration().getRegistrationId(); // google/naver/kakao
 
-//        1) DTO 만들고 업서트
-        UsersOAuthUpsertDto dto = socialAuthService.buildUpsertDto(registrationId, attributes);
-        socialAuthService.upsertUser(dto);
+        UsersOAuthUpsertDto usersOAuthUpsertDto = socialAuthService.buildUpsertDto(provider, attributes);
+        Users saved = usersService.upsertFromOAuth(usersOAuthUpsertDto);
 
-//        2) 사람이 볼 이름 추출해서 어트리뷰트에 심기
-        String displayName = extractDisplayName(registrationId, attributes);
-        Map<String,Object> attrs = new LinkedHashMap<>(attributes);
+        Map<String, Object> attrs = new LinkedHashMap<>(attributes);
+        String displayName = extractDisplayName(provider, attributes);
         attrs.put("displayName", (displayName != null && !displayName.isBlank()) ? displayName : "사용자");
-        attrs.putIfAbsent("userId", dto.toUserIdKey());
+        attrs.putIfAbsent("userId", usersOAuthUpsertDto.toUserIdKey());
 
-//        3) 기본 nameAttributeKey는 그대로(= sub/id), 권한은 ROLE 접두사 권장
-        String nameAttrKey = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
-        return new DefaultOAuth2User(
-//   "ROLE" IN ('USER','ADMIN','MANAGER') db 제약조건안에 보면 3개중 USER 사용해야함
-                List.of(new SimpleGrantedAuthority("USER")),
-                attrs,
-                nameAttrKey
-        );
+        var auths = List.of(new SimpleGrantedAuthority("ROLE_" + saved.getRole()));
+
+        return CustomPrincipal.fromUsers(saved, attrs, auths);
+
     }
 
-    private String extractDisplayName(String rid, Map<String, Object> attributes){
-        switch (rid){
+    private String extractDisplayName(String provider, Map<String, Object> attributes){
+        switch (provider){
             case "google":
-                return (String) attributes.get("name");
+                return asString(attributes.get("name"));
 
             case "naver": {
                 Object resp = attributes.get("response");
-                if (resp instanceof Map) {
-                    Object name = ((Map<?, ?>) resp).get("name");
-                    return name != null ? String.valueOf(name) : null;
+                if (resp instanceof Map<?, ?> map) {
+                    return asString(map.get("name"));
                 }
                 return null;
             }
             case "kakao": {
                 Object acc = attributes.get("kakao_account");
-                if (acc instanceof Map) {
-                    Object prof = ((Map<?, ?>) acc).get("profile");
-                    if (prof instanceof Map) {
-                        Object nick = ((Map<?, ?>) prof).get("nickname");
-                        return nick != null ? String.valueOf(nick) : null;
+                if (acc instanceof Map<?, ?> accMap) {
+                    Object prof = accMap.get("profile");
+                    if (prof instanceof Map<?, ?> profMap) {
+                        return asString(profMap.get("nickname"));
                     }
                 }
                 return null;
@@ -76,7 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 return null;
         }
     }
-    private String str(Object o){
-        return (o == null) ? null : o.toString();
+    private String asString(Object o){
+        return (o == null) ? null : String.valueOf(o);
     }
 }

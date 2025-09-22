@@ -1,7 +1,10 @@
 package com.error404.geulbut.config;
 
+import com.error404.geulbut.common.security.CustomPrincipal;
+import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.service.CustomOAuth2UserService;
 import com.error404.geulbut.jpa.users.service.SocialAuthService;
+import com.error404.geulbut.jpa.users.service.UsersService;
 import com.error404.geulbut.security.TempPasswordRedirectSuccessHandler;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -19,6 +23,8 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -42,8 +48,13 @@ public class SecurityConfig {
 
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http,
-                                    CustomOAuth2UserService customOAuth2UserService, SocialAuthService socialAuthService, TempPasswordRedirectSuccessHandler tempPasswordRedirectSuccessHandler) throws Exception {
+    SecurityFilterChain filterChain(
+                                    HttpSecurity http,
+                                    CustomOAuth2UserService customOAuth2UserService,
+                                    SocialAuthService socialAuthService,
+                                    TempPasswordRedirectSuccessHandler tempPasswordRedirectSuccessHandler,
+                                    UsersService usersService
+                                    ) throws Exception {
         // 👆 Bean 메서드 파라미터 주입 방식으로 변경
 
         if (DEV_BYPASS) {
@@ -102,11 +113,11 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth->oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", false)
+                        .successHandler(tempPasswordRedirectSuccessHandler)
                         .failureUrl("/login?error")
                         .userInfoEndpoint(userInfo -> userInfo
 //                                구글 경로 추가
-                                .oidcUserService(googleOidcUserService(socialAuthService))
+                                .oidcUserService(googleOidcUserService(socialAuthService, usersService))
 //                                네이버/카카오(일반OAuth2) 경로 나눠놨음
                                 .userService(customOAuth2UserService)  //  여기서 파라미터로 받은 서비스 사용
                         )
@@ -122,14 +133,21 @@ public class SecurityConfig {
 
         return http.build();
     }
-    public OAuth2UserService<OidcUserRequest, OidcUser> googleOidcUserService(SocialAuthService socialAuthService) {
+    public OAuth2UserService<OidcUserRequest, OidcUser> googleOidcUserService(SocialAuthService socialAuthService,
+                                                                              UsersService usersService
+    ) {
         OidcUserService delegate = new OidcUserService();
         return userRequest -> {
             OidcUser oidcUser = delegate.loadUser(userRequest);
-            socialAuthService.upsertUser(
-                    socialAuthService.buildUpsertDto("google", oidcUser.getClaims())
-            );
-            return oidcUser;
+
+//            1) 표준 DTO 변환 -> 업서트
+            var dto = socialAuthService.buildUpsertDto("google", oidcUser.getClaims());
+            Users saved = usersService.upsertFromOAuth(dto);
+//              2) 권한
+            var auths = List.of(new SimpleGrantedAuthority(saved.getRole()));
+
+//              3) CustomPrincipal 로 감싸서 반환
+            return CustomPrincipal.fromUsers(saved, oidcUser.getClaims(), auths);
         };
     }
 }
