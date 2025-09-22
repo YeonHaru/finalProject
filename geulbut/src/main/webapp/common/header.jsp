@@ -167,6 +167,8 @@
                         <li><a href="${pageContext.request.contextPath}/admin/authors">작가 등록/수정/삭제</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/publishers">출판사 등록/수정/삭제</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/categories">카테고리 등록/수정/삭제</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/hashtags">해시태그 등록/수정/삭제</a></li>
+
 
 
                     </ul>
