@@ -89,6 +89,11 @@ public interface MapStruct {
     //    더티체킹: 수정시 사용
     void updateFromDto(SearchAllBooksDto searchAllBooksDto, @MappingTarget SearchAllBooks searchAllBooks);
 
+    //    String -> AuthProvider 매핑 (대소문자/공백 방어)
+    default Users.AuthProvider toProvider(String provider) {
+        if (provider == null) return null;
+        return Users.AuthProvider.valueOf(provider.trim().toUpperCase());
+    }
 
     BooksDto toDto(Books books);
 

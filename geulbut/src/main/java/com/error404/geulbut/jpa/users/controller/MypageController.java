@@ -47,6 +47,7 @@ public class MypageController {
         if (user != null) {
             UserMypageDto dto = mapStruct.toMypageDto(user);
             model.addAttribute("user", dto);
+            model.addAttribute("canChangePasword", user.getProvider() == Users.AuthProvider.LOCAL);
         }
 
         //  위시리스트
