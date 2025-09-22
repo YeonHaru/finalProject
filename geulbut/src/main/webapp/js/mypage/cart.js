@@ -1,39 +1,3 @@
-// ✅ 장바구니 수량 변경
-function updateCart(bookId, quantity) {
-    fetch(`/cart/${bookId}?quantity=${quantity}`, {
-        method: 'PUT',
-        headers: { 'X-CSRF-TOKEN': window.csrfToken }
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'ok') {
-                refreshCart();          // 테이블 전체 리렌더링
-            } else {
-                alert('수량 변경 실패 ❌ ' + data.message);
-            }
-        })
-        .catch(err => console.error(err));
-}
-
-// ✅ 장바구니 삭제
-function removeCart(bookId) {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-    fetch(`/cart/${bookId}`, {
-        method: 'DELETE',
-        headers: { 'X-CSRF-TOKEN': window.csrfToken }
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'ok') {
-                refreshCart(); // ✅ 항상 최신 데이터 반영
-            } else {
-                alert('삭제 실패 ❌ ' + data.message);
-            }
-        })
-        .catch(err => console.error(err));
-}
-
 /// 📌 장바구니 탭 리렌더링 (SPA 방식)
 function refreshCart() {
     const cartContainer = document.querySelector('#v-pills-cart');
@@ -95,7 +59,7 @@ function refreshCart() {
                         <tr>
                             <td colspan="2"></td>
                             <td class="text-end"><strong>총합</strong></td>
-                            <td> <strong><span>${cartSummary.total.toLocaleString()} 원</span></strong></td>
+                            <td><strong><span>${cartSummary.totalPrice.toLocaleString()} 원</span></strong></td>
                             <td class="text-end">
                                 <button class="btn btn-primary" onclick="checkout()">💳 결제하기</button>
                             </td>
@@ -113,9 +77,8 @@ function refreshCart() {
 
 // ✅ 전역 결제하기 함수
 function checkout() {
-    const userId = "${user.userId}"; // JSP에서 세션 사용자 넣어주기
     const totalPrice = parseInt(
-        document.querySelector("#v-pills-cart tfoot strong").innerText.replace(/[^0-9]/g, "")
+        document.querySelector("#v-pills-cart tfoot span").innerText.replace(/[^0-9]/g, "")
     );
 
     const items = [];
@@ -123,14 +86,15 @@ function checkout() {
         const bookId = row.querySelector("input").getAttribute("onchange").match(/\d+/)[0];
         const quantity = parseInt(row.querySelector("input").value);
         const price = parseInt(row.querySelector("td:nth-child(3)").innerText.replace(/[^0-9]/g, ""));
-        items.push({ bookId, quantity, price });
+        items.push({ bookId: parseInt(bookId), quantity, price });
+
     });
 
     fetch('/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            userId,
+            userId: window.currentUserId,
             totalPrice,
             paymentMethod: 'CARD',
             address: '서울시 강남구 역삼동',
@@ -140,7 +104,6 @@ function checkout() {
         .then(res => res.json())
         .then(order => {
             console.log("주문 완료:", order);
-            // 주문 내역 탭으로 이동
             const ordersTab = document.querySelector('#v-pills-orders-tab');
             const tab = new bootstrap.Tab(ordersTab);
             tab.show();
@@ -148,8 +111,3 @@ function checkout() {
         })
         .catch(err => console.error("주문 실패:", err));
 }
-
-
-
-
-
