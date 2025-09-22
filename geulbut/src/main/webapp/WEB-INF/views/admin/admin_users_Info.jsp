@@ -28,7 +28,9 @@
             <!-- 검색 버튼 -->
             <button type="submit" class="btn-search">검색</button>
             <!-- 세부 검색 토글 -->
-            <button type="button" id="toggleAdvancedSearch" class="btn-search" style="background:#ccc; color:#000;">조건검색 ▼</button>
+            <button type="button" id="toggleAdvancedSearch" class="btn-search" style="background:#ccc; color:#000;">
+                조건검색 ▼
+            </button>
         </form>
 
         <!-- 세부검색 -->
@@ -37,6 +39,7 @@
             <input type="date" id="startDate" name="startDate" value="${startDate}">
             <span>~</span>
             <input type="date" id="endDate" name="endDate" value="${endDate}">
+
             <label for="roleFilter">권한:</label>
             <select id="roleFilter" name="roleFilter">
                 <option value="">전체</option>
@@ -44,11 +47,14 @@
                 <option value="ADMIN" ${roleFilter == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
                 <option value="MANAGER" ${roleFilter == 'MANAGER' ? 'selected' : ''}>MANAGER</option>
             </select>
+
             <label for="statusFilter">계정 상태:</label>
             <select id="statusFilter" name="statusFilter">
                 <option value="">전체</option>
                 <option value="ACTIVE" ${statusFilter == 'ACTIVE' ? 'selected' : ''}>활성</option>
                 <option value="INACTIVE" ${statusFilter == 'INACTIVE' ? 'selected' : ''}>비활성</option>
+                <option value="DELETED" ${statusFilter == 'DELETED' ? 'selected' : ''}>삭제</option>
+                <option value="SUSPENDED" ${statusFilter == 'SUSPENDED' ? 'selected' : ''}>정지</option>
             </select>
         </div>
     </div>
@@ -94,6 +100,8 @@
                     <select class="status-select" data-userid="${user.userId}">
                         <option value="ACTIVE" ${user.status == 'ACTIVE' ? 'selected' : ''}>활성</option>
                         <option value="INACTIVE" ${user.status == 'INACTIVE' ? 'selected' : ''}>비활성</option>
+                        <option value="DELETED" ${user.status == 'DELETED' ? 'selected' : ''}>삭제</option>
+                        <option value="SUSPENDED" ${user.status == 'SUSPENDED' ? 'selected' : ''}>정지</option>
                     </select>
                 </td>
                 <td>
@@ -127,7 +135,8 @@
                 <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}">◀ 이전</a>
             </c:if>
             <c:forEach begin="0" end="${usersPage.totalPages - 1}" var="i">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${i}&size=${usersPage.size}" class="${i == usersPage.number ? 'active' : ''}">${i + 1}</a>
+                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${i}&size=${usersPage.size}"
+                   class="${i == usersPage.number ? 'active' : ''}">${i + 1}</a>
             </c:forEach>
             <c:if test="${usersPage.number < usersPage.totalPages - 1}">
                 <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}">다음 ▶</a>
