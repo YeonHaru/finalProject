@@ -25,6 +25,8 @@ import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -101,14 +103,19 @@ public interface MapStruct {
     @Mapping(target = "joinDate", source = "joinDate", dateFormat = "yyyy-MM-dd")
     UserMypageDto toMypageDto(Users users);
 
-    //  Orders 매핑 승화
+    // Orders 매핑
     @Mapping(target = "orderId", ignore = true)
     @Mapping(target = "memo", ignore = true)
     @Mapping(target = "recipient", ignore = true)
-    @Mapping(target = "status", constant = "PENDING")
+    @Mapping(target = "status", expression = "java(dto.getStatus() != null ? dto.getStatus() : \"PENDING\")")
     Orders toEntity(OrdersDto dto);
+
     @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "items", source = "items")
     OrdersDto toDto(Orders entity);
+
+//    주문내역쪽 리스트 매핑
+    List<OrderItemDto> toOrderItemDtos(List<OrderItem> items);
 
     // OrderItem 매핑
     @Mapping(target = "orderedItemId", ignore = true)
@@ -116,7 +123,11 @@ public interface MapStruct {
     @Mapping(target = "book", ignore = true)
     OrderItem toEntity(OrderItemDto dto);
 
+    @Mapping(target = "bookId", source = "book.bookId")
+    @Mapping(target = "title", source = "book.title")
+    @Mapping(target = "price", source = "book.price")
     OrderItemDto toDto(OrderItem entity);
+
 
     // BookHashtags <-> BookHashtagsDto
     BookHashtagsDto toDto(BookHashtags bookHashtags);
@@ -124,5 +135,6 @@ public interface MapStruct {
     BookHashtags toEntity(BookHashtagsDto dto);
 
     void updateFromDto(BookHashtagsDto dto, @MappingTarget BookHashtags entity);
+
 
 }

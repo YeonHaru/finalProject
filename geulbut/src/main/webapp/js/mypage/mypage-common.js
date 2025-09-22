@@ -1,5 +1,3 @@
-// 📌 전역 CSRF 토큰 설정 (서버에서 JSP로 주입된 값을 JS에서 전역으로 사용 가능하게 함)
-window.csrfToken = '${_csrf.token}';
 
 // 📌 페이지 로드가 완료되면 실행
 document.addEventListener("DOMContentLoaded", function () {

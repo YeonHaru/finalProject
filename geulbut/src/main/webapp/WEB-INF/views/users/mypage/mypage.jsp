@@ -236,9 +236,14 @@
             </div>
 
 
-            <!-- ✅ 주문 내역 -->
+            <!-- 주문 내역 -->
             <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
                 <h2 class="mb-3 pb-2 border-bottom">주문 내역</h2>
+
+                <c:if test="${empty orders}">
+                    <div class="alert alert-info">주문 내역이 없습니다.</div>
+                </c:if>
+
                 <c:if test="${not empty orders}">
                     <table class="table table-striped align-middle">
                         <thead>
@@ -254,17 +259,16 @@
                         <c:forEach var="order" items="${orders}">
                             <tr>
                                 <td>${order.orderId}</td>
-                                <td><fmt:formatDate value="${order.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
+                                <td>${order.createdAt}</td>
                                 <td>
                                     <c:forEach var="item" items="${order.items}">
-                                        ${item.bookId} (수량: ${item.quantity})<br/>
+                                        ${item.title} x ${item.quantity}<br/>
                                     </c:forEach>
                                 </td>
                                 <td><fmt:formatNumber value="${order.totalPrice}" pattern="#,##0"/> 원</td>
                                 <td>${order.status}</td>
                             </tr>
                         </c:forEach>
-
                         </tbody>
                     </table>
                 </c:if>
@@ -275,9 +279,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- 마이페이지 전용 JS (순서 공통 -> cart -> wishlist 고정) -->
+<script>
+    window.csrfToken = "${_csrf.token}";
+    window.currentUserId = "${user.userId}";
+</script>
 <!-- 공통 -->
 <script src="/js/mypage/mypage-common.js"></script>
+<%-- 주문 내역--%>
+<script src="/js/mypage/orders.js"></script>
 <!-- 장바구니 -->
 <script src="/js/mypage/cart.js"></script>
 <!-- 위시리스트 -->
