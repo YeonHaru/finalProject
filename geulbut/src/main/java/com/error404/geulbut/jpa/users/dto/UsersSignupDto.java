@@ -2,7 +2,6 @@
 
 package com.error404.geulbut.jpa.users.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDate;

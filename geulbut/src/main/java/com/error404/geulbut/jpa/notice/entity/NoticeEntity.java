@@ -1,7 +1,6 @@
 package com.error404.geulbut.jpa.notice.entity;
 
 import com.error404.geulbut.jpa.users.entity.Users;
-import com.error404.geulbut.jpa.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -2,6 +2,7 @@ package com.error404.geulbut.jpa.qna.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.Date;
 
 @Entity

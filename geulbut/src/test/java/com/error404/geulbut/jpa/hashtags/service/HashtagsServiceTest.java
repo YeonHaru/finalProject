@@ -1,7 +1,6 @@
 package com.error404.geulbut.jpa.hashtags.service;
 
 import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
-import com.error404.geulbut.jpa.hashtags.entity.Hashtags;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Log4j2
 @SpringBootTest

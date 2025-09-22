@@ -74,29 +74,45 @@
             </div>
 
             <!-- 댓글 구간 (기존 구조 그대로 유지) -->
-            <div class="comment-section mt-4">
-                <div>
-                    <p class="comment-title">Comments</p>
-                </div>
-
-                <div class="comment-input mb-4">
-                    <textarea class="comment-textarea" placeholder="댓글을 작성하세요..." rows="3"></textarea>
-                    <button class="btn-comment">등록</button>
-                </div>
-
-                <div class="comment-list">
-                    <div class="comment-item">
-                        <span class="comment-author">홍길동</span>
-                        <span class="comment-date">2025-09-11 11:00</span>
-                        <p class="comment-text">첫 번째 댓글입니다.</p>
-                    </div>
-                    <div class="comment-item">
-                        <span class="comment-author">김철수</span>
-                        <span class="comment-date">2025-09-11 11:15</span>
-                        <p class="comment-text">두 번째 댓글입니다.</p>
-                    </div>
-                </div>
+            <div class="comment-input mb-4">
+                <form action="${pageContext.request.contextPath}/noticeComment" method="post">
+                    <input type="hidden" name="noticeId" value="${notice.noticeId}" />
+                    <textarea class="comment-textarea" name="content" placeholder="댓글을 작성하세요..." rows="3"></textarea>
+                    <button type="submit" class="mt-3 btn-comment" style="float: right;">등록</button>
+                </form>
             </div>
+            <%--댓글 리스트--%>
+            <div class="comment-list">
+                <c:forEach var="comment" items="${comments}">
+                    <div class="comment-item">
+                        <span class="comment-author">${comment.userId}</span>
+                        <span class="comment-date">
+                <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
+            </span>
+                        <p class="comment-text">${comment.content}</p>
+
+                        <!-- 댓글 작성자와 로그인 사용자 일치 시 수정/삭제 버튼 표시 -->
+                        <sec:authorize access="principal.username == '${comment.userId}'">
+                            <div style="margin-top:0.5rem;">
+                                <!-- 수정 버튼 -->
+                                <form action="${pageContext.request.contextPath}/noticeCommentUpdate" method="get" style="display:inline;">
+                                    <input type="hidden" name="commentId" value="${comment.commentId}" />
+                                    <button type="submit" class="btn btn-main btn-sm">수정</button>
+                                </form>
+
+                                <!-- 삭제 버튼 -->
+                                <form action="${pageContext.request.contextPath}/noticeCommentDelete" method="post" style="display:inline;">
+                                    <input type="hidden" name="commentId" value="${comment.commentId}" />
+                                    <button type="submit" class="btn btn-main btn-sm">삭제</button>
+                                </form>
+                            </div>
+                        </sec:authorize>
+
+                    </div>
+                </c:forEach>
+            </div>
+
+
 
         </div>
     </div>

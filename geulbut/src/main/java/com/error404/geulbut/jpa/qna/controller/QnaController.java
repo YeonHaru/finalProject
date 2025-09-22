@@ -1,8 +1,9 @@
 package com.error404.geulbut.jpa.qna.controller;
 
 import com.error404.geulbut.jpa.qna.dto.QnaDto;
-import com.error404.geulbut.jpa.qna.entity.QnaEntity;
 import com.error404.geulbut.jpa.qna.service.QnaService;
+import com.error404.geulbut.jpa.qnacomment.dto.QnaCommentDto;
+import com.error404.geulbut.jpa.qnacomment.service.QnaCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QnaController {
     private final QnaService qnaService;
+    private final QnaCommentService qnaCommentService;
 
     // QnA 목록 - 페이징 적용
     @GetMapping("/qna")
@@ -37,8 +39,14 @@ public class QnaController {
     // QnA 상세보기
     @GetMapping("/qnaText")
     public String qnaText(@RequestParam("id") Long id, Model model) {
+        // 글 조회 + 조회수 증가
         QnaDto qna = qnaService.getQnaAndIncreaseViewCount(id);
         model.addAttribute("qna", qna);
+
+        // 댓글 조회
+        List<QnaCommentDto> comments = qnaCommentService.getCommentsByQna(id);
+        model.addAttribute("comments", comments);
+
         return "qna/qnaText";
     }
 
