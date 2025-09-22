@@ -342,3 +342,25 @@ h1{ margin: var(--space-4) 0 var(--space-2) }
 #modalSaveBtn{ background:#28a745; color:#fff; padding:6px 12px; border:none; border-radius:4px; cursor:pointer }
 #modalCloseBtn{ background:#6c757d; color:#fff; padding:6px 12px; border:none; border-radius:4px; cursor:pointer; margin-left:5px }
 #modalSaveBtn:hover,#modalCloseBtn:hover{ opacity:.85 }
+
+#bookModal .modal__dialog,
+#authorModal .modal__dialog,
+#publisherModal .modal__dialog,
+.modal-content {
+    width: min(92%, 900px);
+    margin: 0 auto;
+    top: 50%;
+    transform: translateY(-50%);
+    position: fixed; /* relative → fixed */
+    left: 50%;
+    transform: translate(-50%, -50%); /* 수평 + 수직 중앙 */
+}
+#bookModal table {
+    width:100%;
+    table-layout:auto; /* 고정폭 → 내용에 맞게 조정 */
+}
+
+#bookModal th, #bookModal td {
+    padding:8px 12px;
+    white-space:normal; /* 줄바꿈 가능 */
+}

@@ -2,14 +2,18 @@ package com.error404.geulbut.jpa.admin.controller;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.admin.service.AdminCategoriesService;
+import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
 import com.error404.geulbut.jpa.categories.repository.CategoriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -71,5 +75,11 @@ public class AdminCategoriesController {
     @ResponseBody
     public boolean deleteCategory(@PathVariable Long categoryId) {
         return adminCategoriesService.deleteCategory(categoryId);
+    }
+
+    // 카테고리에 속한 책들 조회
+    @GetMapping("/{id}/books")
+    public ResponseEntity<List<BooksDto>> getBooksByCategory(@PathVariable Long id) {
+        return ResponseEntity.ok(adminCategoriesService.getBooksByCategory(id));
     }
 }
