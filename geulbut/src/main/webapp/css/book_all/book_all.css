@@ -1,0 +1,68 @@
+/* 페이지 전용 최소 보완 — 00_common.css 유틸 우선 사용 */
+
+.srch-item {
+    display: grid;
+    grid-template-columns: 32px 200px 1fr; /* 체크박스 | 썸네일 | 설명 */
+    gap: var(--gap-3);
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .srch-item { grid-template-columns: 24px 120px 1fr; }
+}
+
+.srch-item:hover { box-shadow: var(--shadow-md); }
+
+.srch-col-check { align-items: center; justify-content: center; }
+
+.srch-thumb {
+    width: 200px;              /* 위 grid 두 번째 컬럼과 맞춤 */
+    height: 266px;             /* 3:4 비율(200 x 266) */
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #f6f7f9;
+    display: block;
+}
+.srch-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;         /* 핵심! 가로/세로 안 맞아도 꽉 채움 */
+    object-position: center;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .srch-thumb { width: 120px; height: 160px; }
+}
+
+.srch-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.srch-title a { color: var(--color-text); }
+.srch-title a:hover { text-decoration: underline; }
+
+/* 배지/칩 — 전역 색을 이용한 중립 톤 */
+.chip {
+    display: inline-flex; align-items: center;
+    height: 22px; padding: 0 8px;
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-text-light);
+    font-size: 12px; font-weight: 600;
+    border: 1px solid var(--color-border);
+}
+.chip--soft { background: #fff7ed; color: var(--color-accent-dark); border-color: #ffedd5; }
+.chip--tag { background: #f1f5f9; color: #334155; }
+
+.strike { text-decoration: line-through; color: var(--color-text-light); }
+.accent-strong { color: var(--color-accent-dark); font-weight: 700; }
+
+/* 반응형 보완 */
+@media (max-width: 768px) {
+    .srch-item { grid-template-columns: 24px 96px 1fr; }
+    .srch-thumb { width: 96px; height: 140px; }
+}
