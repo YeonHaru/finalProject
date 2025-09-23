@@ -32,7 +32,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent" id="btnAddPublisher">출판사 등록</button>
+        <button type="button" class="btn btn-accent btn--glass" id="btnAddPublisher">출판사 등록</button>
     </div>
 
     <!-- 출판사 목록 -->
@@ -65,8 +65,8 @@
                     <td class="t-left publisher-description">${publisher.description}</td>
                     <td class="created-at-cell">${publisher.createdAt}</td>
                     <td>
-                        <button type="button" class="btn btn-accent btn-edit">수정</button>
-                        <button type="button" class="btn btn-delete">삭제</button>
+                        <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                        <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                     </td>
                 </tr>
             </c:forEach>

@@ -12,7 +12,11 @@
     <!-- 공통 CSS + 작가 관리 전용 -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
+
+   
+
+
 </head>
 
 <body class="bg-main text-main admin-authors">
@@ -31,7 +35,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent" id="btnAddAuthor">작가 등록</button>
+        <button type="button" class="btn btn-accent btn--glass" id="btnAddAuthor">작가 등록</button>
     </div>
 
     <!-- 작가 목록 테이블 -->
@@ -73,8 +77,8 @@
                     <td class="created-at-cell">${author.createdAt}</td>
                     <td class="t-left author-description">${author.description}</td>
                     <td>
-                        <button type="button" class="btn btn-accent btnEdit">수정</button>
-                        <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                        <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                        <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                     </td>
                 </tr>
             </c:forEach>
