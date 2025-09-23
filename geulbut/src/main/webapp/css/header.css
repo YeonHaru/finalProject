@@ -217,8 +217,8 @@
     gap: 24px;              /* 간격 넉넉히 */
 }
 
-/* ========= 모바일 반응형 (768px 이하) ========= */
-@media (max-width: 768px) {
+/* ========= 모바일 반응형 (1024px 이하 - 태블릿 포함) ========= */
+@media (max-width: 1024px) {
 
     .site-header__inner {
         flex-direction: column;      /* 세로 배치로 변경 */
@@ -284,7 +284,7 @@
         order: 4;
     }
 
-    /* 햄버거 버튼 표시 */
+    /* 햄버거 버튼 표시 - 원래 디자인으로 복원 */
     .site-header__hamburger {
         display: flex;
         flex-direction: column;
@@ -295,9 +295,12 @@
         border: none;
         cursor: pointer;
         padding: 0;
-        z-index: 1001;
-        position: relative;
+        z-index: 9999 !important;
+        position: fixed !important;
+        right: 16px;
+        top: 60px;
         transition: transform 0.3s ease;
+        pointer-events: auto !important;
     }
 
     /* 햄버거 라인 스타일 */
@@ -487,7 +490,7 @@
         padding: 3px 6px;
         background-color: rgba(255,255,255,0.9);
         border-radius: 4px;
-        z-index: 9999;
+        z-index: 1001;                /* 햄버거보다 낮은 z-index */
         box-shadow: 0 0 3px rgba(0,0,0,0.3);
     }
 

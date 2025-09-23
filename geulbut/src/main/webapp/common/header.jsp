@@ -8,6 +8,46 @@
 <!-- CSS -->
 <link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
 
+<!-- CSS -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+<!-- 추가 스타일 -->
+<!-- CSS -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+<!-- 추가 스타일 -->
+<!-- CSS -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+<!-- 추가 스타일 -->
+<style>
+    .site-header__nav--left { order: 1 !important; }
+    .site-header__logo { order: 2 !important; }
+    .site-header__nav--right { order: 3 !important; }
+    .site-header__greeting {
+        order: 4 !important;
+        flex: 0 0 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        margin: -8PX 0 4px 0 !important;    /* 위쪽 간격 제거 (4px → 0) */
+    }
+    .site-header__search {
+        order: 5 !important;
+        margin-top: 2px !important;
+    }
+    .site-header__nav--bottom { order: 6 !important; }
+
+    .greeting-message {
+        font-size: 0.8rem !important;
+        padding: 3px 12px !important;
+        background: rgba(64, 71, 78, 0.07) !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(125, 133, 140, 0.17) !important;
+        color: #5d666c !important;
+    }
+</style>
+
+<header class="site-header">
 <header class="site-header">
     <div class="container site-header__inner">
         <!-- 좌측 네비(비움) -->
