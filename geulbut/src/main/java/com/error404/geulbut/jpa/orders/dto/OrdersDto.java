@@ -21,5 +21,9 @@ public class OrdersDto {
     private String paymentMethod;
 
     private List<OrderItemDto> items;
+
+    private String recipient;
+    private String phone;
+    private String memo;              // 3개 필요해서 추가했습니다.
 }
 
