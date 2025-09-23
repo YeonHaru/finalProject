@@ -4,10 +4,13 @@ import com.error404.geulbut.jpa.orders.dto.OrdersDto;
 import com.error404.geulbut.jpa.orders.service.OrdersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -47,13 +50,30 @@ public class OrdersController {
         return ordersService.getUserOrders(userId);
     }
 
-//    주문 상태 변경( pending -> paid -> shipped)
+//    주문 상태 변경
     @PatchMapping("/{orderId}/status")
     public OrdersDto updateOrderStatus(@PathVariable Long orderId,
                                        @RequestParam String status,
                                        Authentication authentication){
         String userId = authentication.getName();
-        log.info("[PATCH] 주문 상태 변경 - uesrId: {}, status: {}", userId, orderId, status);
+        log.info("[PATCH] 주문 상태 변경 - uesrId: {}, orderId: {}, status: {}", userId, orderId, status);
         return ordersService.updateOrderStatus(orderId, status);
+    }
+
+//    주문 삭제
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long orderId,
+                            Authentication authentication){
+        String userId = authentication.getName();
+        log.info("[DELETE] 주문 삭제 - userId: {}, orderID: {}", userId, orderId);
+
+        try {
+            ordersService.deleteOrder(orderId, userId);
+            return ResponseEntity.ok(Map.of("status", "ok", "message", "주문이 삭제되었습니다."));
+        } catch (Exception e) {
+            log.error("❌ 주문 삭제 실패 - userId: {}, orderId: {}", userId, orderId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "fail", "message", e.getMessage()));
+        }
     }
 }

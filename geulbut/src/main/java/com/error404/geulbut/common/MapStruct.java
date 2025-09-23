@@ -8,6 +8,8 @@ import com.error404.geulbut.jpa.bookhashtags.dto.BookHashtagsDto;
 import com.error404.geulbut.jpa.bookhashtags.entity.BookHashtags;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
+import com.error404.geulbut.jpa.carts.dto.CartDto;
+import com.error404.geulbut.jpa.carts.entity.Cart;
 import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
 import com.error404.geulbut.jpa.categories.entity.Categories;
 import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
@@ -110,7 +112,10 @@ public interface MapStruct {
     @Mapping(target = "status", expression = "java(dto.getStatus() != null ? dto.getStatus() : \"PENDING\")")
     Orders toEntity(OrdersDto dto);
 
-    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(
+            target = "createdAt",
+            expression = "java(entity.getCreatedAt() == null ? null : entity.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))"
+    )
     @Mapping(target = "items", source = "items")
     OrdersDto toDto(Orders entity);
 
@@ -126,7 +131,24 @@ public interface MapStruct {
     @Mapping(target = "bookId", source = "book.bookId")
     @Mapping(target = "title", source = "book.title")
     @Mapping(target = "price", source = "book.price")
+    @Mapping(target = "imageUrl", source = "book.imgUrl")
     OrderItemDto toDto(OrderItem entity);
+
+//    cart
+    @Mapping(target = "bookId", source = "book.bookId")
+    @Mapping(target = "title", source = "book.title")
+    @Mapping(target = "price", source = "book.price")
+    @Mapping(target = "discountedPrice", source = "book.discountedPrice")
+    @Mapping(target = "imgUrl", source = "book.imgUrl")
+    @Mapping(
+            target = "totalPrice",
+            expression = "java(java.util.Objects.requireNonNullElse(cart.getBook().getDiscountedPrice(), cart.getBook().getPrice()) * cart.getQuantity())"
+    )
+    CartDto toDto(Cart cart);
+
+    Cart toEntity(CartDto dto);
+
+    List<CartDto> toCartDtos(List<Cart> carts);
 
 
     // BookHashtags <-> BookHashtagsDto

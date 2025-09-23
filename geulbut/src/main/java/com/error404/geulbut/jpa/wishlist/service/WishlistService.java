@@ -2,6 +2,7 @@ package com.error404.geulbut.jpa.wishlist.service;
 
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
+import com.error404.geulbut.jpa.carts.service.CartService;
 import com.error404.geulbut.jpa.wishlist.dto.WishlistDto;
 import com.error404.geulbut.jpa.wishlist.entity.Wishlist;
 import com.error404.geulbut.jpa.wishlist.repository.WishlistRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final BooksRepository booksRepository;
+    private final CartService cartService;
 
     /** 📌 위시리스트 조회 (BOOK, AUTHOR, PUBLISHER JOIN 포함) */
     public List<WishlistDto> getWishlist(String userId) {
@@ -47,6 +49,20 @@ public class WishlistService {
 
             wishlistRepository.save(wishlist);
         }
+    }
+
+    /** 📌 위시리스트 → 장바구니 이동 */
+    @Transactional
+    public void moveToCart(String userId, Long bookId, int quantity) {
+        // 1. 장바구니에 담기
+        //    CartService의 addToCart() 호출 필요 (DI로 주입)
+        cartService.addToCart(userId, bookId, quantity);
+
+        // 2. 위시리스트에서 제거
+        wishlistRepository.deleteByUserIdAndBook_BookId(userId, bookId);
+
+        log.info("📌 위시리스트 → 장바구니 이동 완료 - userId: {}, bookId: {}, quantity: {}",
+                userId, bookId, quantity);
     }
 
     /** 📌 위시리스트 삭제 */

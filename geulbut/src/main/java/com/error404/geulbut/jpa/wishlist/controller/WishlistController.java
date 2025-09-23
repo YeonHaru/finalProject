@@ -51,6 +51,16 @@ public class WishlistController {
                     .body(Map.of("status", "fail", "message", e.getMessage()));
         }
     }
+
+    @PostMapping("/move-to-cart")
+    public ResponseEntity<?> moveToCart(Authentication authentication,
+                                        @RequestParam Long bookId,
+                                        @RequestParam(defaultValue = "1") int quantity) {
+        String userId = authentication.getName();
+        wishlistService.moveToCart(userId, bookId, quantity);
+        return ResponseEntity.ok(Map.of("status", "ok", "message", "장바구니로 이동 완료"));
+    }
+
     /** 📌 위시리스트 삭제 (DELETE /wishlist/{bookId}) */
     @DeleteMapping("/{bookId}")
     public ResponseEntity<?> removeWishlist(Authentication authentication,
