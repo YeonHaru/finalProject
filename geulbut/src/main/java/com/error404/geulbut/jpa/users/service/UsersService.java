@@ -346,4 +346,42 @@ public class UsersService {
         }
             usersRepository.save(user);
     }
+    // 누적 금액 증가 + 등급 재산정
+    @Transactional
+    public Users addPurchaseAndRegrade(String userId, long amount) {
+        if (amount <= 0) return getUserById(userId);
+        Users user = getUserById(userId);
+        long cur = (user.getTotalPurchase() == null ? 0L : user.getTotalPurchase());
+        long updated = cur + amount;
+        user.setTotalPurchase(updated);
+
+        String newGrade = computeGrade(updated);
+        if (newGrade != null && !newGrade.equals(user.getGrade())) {
+            user.setGrade(newGrade);
+        }
+        return usersRepository.save(user);
+    }
+    // 누적금액 감소 + 등급 재산정 (취소/환불)
+    @Transactional
+    public Users refundAndRegrade(String userId, long amount) {
+        if (amount <= 0) return getUserById(userId);
+
+        Users user = getUserById(userId);
+        long cur = (user.getTotalPurchase() == null ? 0L : user.getTotalPurchase());
+        long updated = cur - amount;
+        if (updated < 0) updated = 0;
+        user.setTotalPurchase(updated);
+
+        String newGrade = computeGrade(updated);
+        if (newGrade != null && !newGrade.equals(user.getGrade())) {
+            user.setGrade(newGrade);
+        }
+        return usersRepository.save(user);
+    }
+    // 등급 정책 (3단계 // 브론즈-0만원, 실버-10만원, 골드-30만원) 임의대로했어요
+    private String computeGrade(long total) {
+        if (total >= 300_000L) return "GOLD";
+        if (total >= 100_000L) return "SILVER";
+        return "BRONZE";
+    }
 }
