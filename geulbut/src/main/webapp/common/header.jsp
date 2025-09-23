@@ -13,12 +13,15 @@
         <!-- 좌측 네비(비움) -->
         <nav class="site-header__nav site-header__nav--left" aria-label="Primary"></nav>
 
+
         <!-- 가운데 로고 -->
         <h1 class="site-header__logo">
             <a href="${ctx}/" title="홈으로">
                 <img src="${ctx}/images/logo.png" alt="글벗">
             </a>
         </h1>
+
+
 
         <!-- 우측 계정 메뉴 -->
         <nav class="site-header__nav site-header__nav--right" aria-label="Account">
@@ -110,7 +113,6 @@
                         <c:set var="displayName" value="${userName}" scope="session"/>
                     </c:if>
 
-                    <li><a href="#"><span>안녕하세요, ${fn:escapeXml(userName)} 님!</span></a></li>
                     <li><a href="${ctx}/mypage">마이페이지</a></li>
                     <li><a href="${ctx}/logout">로그아웃</a></li>
                     <li><a href="${ctx}/notice">공지사항</a></li>
@@ -125,10 +127,19 @@
             </ul>
         </nav>
 
+
         <!-- 모바일 햄버거 -->
         <button class="site-header__hamburger" aria-label="메뉴 열기">
             <span></span><span></span><span></span>
         </button>
+
+        <!-- 인사말 영역 (검색창 위쪽) -->
+        <div class="site-header__greeting">
+            <sec:authorize access="isAuthenticated()">
+                <!-- 기존 사용자명 계산 로직은 그대로 -->
+                <span class="greeting-message">안녕하세요, ${fn:escapeXml(userName)} 님!</span>
+            </sec:authorize>
+        </div>
 
 
         <!-- 검색 -->

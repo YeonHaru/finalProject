@@ -7,7 +7,7 @@
     border-bottom: 1px solid var(--color-border);
 }
 
-/* 헤더 구조: 1행(좌/로고/우) — 2행(검색) — 3행(하단메뉴) */
+/* 헤더 구조: 1행(좌/로고/우) — 2행(인사말) — 3행(검색) — 4행(하단메뉴) */
 .site-header__inner {
     display: flex;
     align-items: center;
@@ -33,6 +33,7 @@
     justify-content: center;      /* 가운데 정렬 */
     align-items: center;
     min-width: 120px;             /* 너무 좁아지지 않게 */
+    background-color: transparent; /* 빨간색 제거 */
 }
 
 .site-header__logo img {
@@ -51,9 +52,40 @@
     min-height: 40px;             /* 로그인 전에도 동일한 높이 유지 */
 }
 
+/* ===== 인사말 영역 (로고와 검색창 사이) ===== */
+.site-header__greeting {
+    order: 2.5;                   /* 로고/메뉴 다음, 검색 전 */
+    flex: 0 0 100%;               /* 전체 너비 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 6px 0 6px 0;          /* 위아래 여백 줄임 */
+    clear: both;                  /* 겹침 방지 */
+}
+
+.greeting-message {
+    color: var(--color-accent-dark);
+    font-size: 0.8rem;            /* 크기 줄임 */
+    font-weight: 400;             /* 두께 줄임 */
+    padding: 4px 12px;            /* 패딩 줄임 */
+    background: rgba(59, 130, 246, 0.06);
+    border-radius: 15px;          /* 둥글기 줄임 */
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    line-height: 1.2;             /* 줄 높이 조정 */
+}
+
+.greeting-message:hover {
+    background: rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
 /* 네비게이션 컨테이너 (햄버거 + 우측 메뉴) */
 .site-header__nav-container {
-    order: 2;
+    order: 0;
     flex: 1 1 0;                  /* 좌측과 동일한 비율 */
     min-width: 0;
     display: flex;
@@ -91,40 +123,13 @@
     display: none;
 }
 
-/* ===== 인사말 영역 (검색창 위쪽) ===== */
-.site-header__greeting {
-    order: 2.5;                   /* 로고/메뉴 다음, 검색 전 */
-    flex: 0 0 100%;               /* 전체 너비 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 8px 0 4px 0;          /* 위아래 여백 */
-}
-
-.greeting-message {
-    color: var(--color-accent-dark);
-    font-size: 0.95rem;
-    font-weight: 500;
-    padding: 6px 16px;
-    background: rgba(var(--color-accent-rgb, 59, 130, 246), 0.08);
-    border-radius: var(--radius-full, 9999px);
-    border: 1px solid rgba(var(--color-accent-rgb, 59, 130, 246), 0.15);
-    transition: all 0.3s ease;
-}
-
-.greeting-message:hover {
-    background: rgba(var(--color-accent-rgb, 59, 130, 246), 0.12);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* ===== 검색: 인사말 다음 줄 ===== */
+/* ===== 검색: 세 번째 줄 전체 차지 ===== */
 .site-header__search {
-    order: 3;                     /* 인사말 다음 */
+    order: 5;                     /* 인사말 다음 */
     flex: 0 0 100%;               /* 가로 전체 */
     display: flex;
     justify-content: center;
-    margin-top: 4px;              /* 인사말과 간격 줄임 */
+    margin-top: 2px;              /* 인사말과 간격 더 줄임 */
 }
 
 /* 검색 폼 (select + input + button) */
@@ -201,7 +206,7 @@
 
 /* 하단 메뉴 (검색창 밑) */
 .site-header__nav--bottom {
-    order: 4;               /* 인사말, 검색 다음 줄 */
+    order: 6;               /* 인사말, 검색 다음 줄 */
     flex: 0 0 100%;         /* 전체 너비 */
     display: flex;
     justify-content: center;
@@ -215,39 +220,68 @@
 /* ========= 모바일 반응형 (768px 이하) ========= */
 @media (max-width: 768px) {
 
-    /* 모바일에서는 기존 레이아웃 유지하되 로고만 중앙 정렬 */
-    .site-header__logo {
-        order: 1;                    /* 가운데 */
-        flex: 1;                     /* 중앙 영역 차지 */
-        justify-content: center;
-        margin: 0 12px;
-    }
-
     .site-header__inner {
-        justify-content: space-between;  /* 자연스러운 3분할 */
+        flex-direction: column;      /* 세로 배치로 변경 */
+        align-items: stretch;        /* 전체 너비 사용 */
     }
 
+    /* 모바일에서 첫 번째 줄: 햄버거 + 로고 + 빈공간 */
     .site-header__nav--left {
-        order: 0;                    /* 왼쪽 */
-        flex: 0 0 28px;              /* 좌측 고정 너비 */
+        order: 0;                    /* 첫 번째 */
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: flex-start;
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1002;
+    }
+
+    .site-header__logo {
+        order: 1;                    /* 두 번째 */
+        flex: 0 0 auto;
+        justify-content: center;
+        margin: 0;
+        padding: 10px 0;
+        width: 100%;
+        text-align: center;
     }
 
     .site-header__nav--right {
-        order: 2;                    /* 오른쪽 */
-        flex: 0 0 28px;              /* 우측도 고정 너비 */
-        margin-top: 0;               /* 마진 초기화 */
-        align-self: auto;            /* 정렬 초기화 */
+        order: 2;                    /* 세 번째 */
+        flex: 0 0 auto;
+        margin-top: 0;
+        align-self: auto;
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1002;
     }
 
-    /* 모바일에서 인사말 스타일 조정 */
+    /* 모바일에서 인사말은 로고 바로 다음에 */
     .site-header__greeting {
-        order: 2.5;
-        margin: 12px 0 8px 0;        /* 모바일에서 여백 조정 */
+        order: 1.5;                  /* 로고 바로 다음 */
+        margin: 0 0 8px 0;           /* 로고와 붙이고 아래만 여백 */
+        width: 100%;
+        flex: 0 0 auto;
     }
 
     .greeting-message {
-        font-size: 0.9rem;           /* 모바일에서 글자 크기 조정 */
-        padding: 5px 12px;
+        font-size: 0.75rem;          /* 모바일에서 글자 크기 더 작게 */
+        padding: 3px 10px;           /* 패딩도 더 작게 */
+    }
+
+    /* 검색창은 인사말 다음 */
+    .site-header__search {
+        order: 3;
+        margin-top: 0;
+    }
+
+    /* 하단 메뉴는 마지막 */
+    .site-header__nav--bottom {
+        order: 4;
     }
 
     /* 햄버거 버튼 표시 */
@@ -291,18 +325,26 @@
         transform: rotate(-45deg) translate(6px, -6px);
     }
 
-    /* 우측 네비게이션: 햄버거 버튼 바로 아래에 위치 */
+    /* 우측 네비게이션: 드롭다운 메뉴 */
     .site-header__nav--right {
         position: absolute;
-        top: calc(100% + 8px);     /* 햄버거 버튼 바로 아래 */
         right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1002;
+    }
+
+    /* 우측 네비게이션 드롭다운 */
+    .site-header__nav--right .site-header__menu--mobile {
+        position: absolute;
+        top: calc(100% + 8px);     /* 햄버거 버튼 바로 아래 */
+        right: 0;
         background: var(--color-surface);
         border-radius: 12px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         min-width: 200px;
         z-index: 999;
         overflow: hidden;
-        flex: none; /* 모바일에서 flex 해제 */
 
         /* 초기 상태: 숨김 */
         max-height: 0;
@@ -312,7 +354,7 @@
     }
 
     /* 메뉴 열린 상태 */
-    .site-header__nav--right.open {
+    .site-header__nav--right.open .site-header__menu--mobile {
         max-height: 500px; /* 충분히 큰 값으로 */
         opacity: 1;
         visibility: visible;
@@ -452,57 +494,5 @@
     .site-header__nav-container {
         top: 45px;                   /* 작은 화면에서는 조금 더 가깝게 */
         right: 12px;
-    }
-}
-/* ========= 인사말 영역 추가 ========= */
-.site-header__greeting {
-    order: 2.5;
-    flex: 0 0 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 12px 0 8px 0;
-    width: 100%;
-}
-
-.greeting-message {
-    color: var(--color-accent-dark);
-    font-size: 0.95rem;
-    font-weight: 500;
-    padding: 8px 20px;
-    background: rgba(59, 130, 246, 0.08);
-    border-radius: 25px;
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    transition: all 0.3s ease;
-    text-align: center;
-    display: inline-block;
-}
-
-.greeting-message:hover {
-    background: rgba(59, 130, 246, 0.12);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* 검색창 순서 조정 */
-.site-header__search {
-    order: 3;
-    margin-top: 4px;
-}
-
-/* 하단 메뉴 순서 조정 */
-.site-header__nav--bottom {
-    order: 4;
-}
-
-/* 모바일에서 인사말 조정 */
-@media (max-width: 768px) {
-    .site-header__greeting {
-        margin: 8px 0 6px 0;
-    }
-
-    .site-header__greeting .greeting-message {
-        font-size: 0.9rem;
-        padding: 6px 16px;
     }
 }
