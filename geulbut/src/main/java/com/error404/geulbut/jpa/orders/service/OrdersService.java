@@ -31,6 +31,7 @@ public class OrdersService {
         order.setPaymentMethod(dto.getPaymentMethod());
         order.setAddress(dto.getAddress());
         order.setStatus(STATUS_PENDING);             // PENDING -> STATUS_PENDING (덕규:문자열 대신 상수)
+        order.setStatus("PAID");
 
         dto.getItems().forEach(itemDto -> {
             Long bookId = itemDto.getBookId();
@@ -70,8 +71,10 @@ public class OrdersService {
                 .toList();
     }
 
+
 //    주문 상태 변경 (예: PENDING -> PAID -> SHIPPED/CANCELLED)
     @Transactional // 추가:덕규
+
     public OrdersDto updateOrderStatus(Long orderId, String newStatus) {
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없음. id=" + orderId));
@@ -97,6 +100,22 @@ public class OrdersService {
         return mapStruct.toDto(updateOrder);
     }
 
+
     private static long nz(Long v) { return v == null ? 0L : v; }
     private static String nvl(String s) { return (s == null) ? "" : s; }
+
+//    주문 삭제
+    @Transactional
+    public void deleteOrder(Long orderId, String userId){
+        Orders order = ordersRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+
+        // 🔐 보안: 자기 주문만 삭제 가능
+        if (!order.getUserId().equals(userId)) {
+            throw new RuntimeException("본인 주문만 삭제할 수 있습니다.");
+        }
+
+        ordersRepository.delete(order);
+    }
+
 }

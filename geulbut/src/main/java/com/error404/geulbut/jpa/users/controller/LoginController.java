@@ -25,33 +25,33 @@ public class LoginController {
     private final ErrorMsg errorMsg;
     private final PasswordRecoveryService passwordRecoveryService;
 
-//    회원가입 페이지입니다.
+    //    회원가입 페이지입니다.
     @GetMapping("/signup")
     public String signupForm(Model model) {
         model.addAttribute("usersSignupDto", new UsersSignupDto());
         return "users/signUp/signup";
     }
 
-//    회원가입 처리
+    //    회원가입 처리
     @PostMapping("/signup")
     public String signupForm(@Valid
-            @ModelAttribute UsersSignupDto usersSignupDto,
-            BindingResult bindingResult,
-            Model model){
-        if(bindingResult.hasErrors()){
+                             @ModelAttribute UsersSignupDto usersSignupDto,
+                             BindingResult bindingResult,
+                             Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("usersSignupDto", usersSignupDto);
             return "users/signUp/signup";
         }
-        try{
+        try {
             usersService.signup(usersSignupDto);
             return "redirect:/login";                       // 성공 시 로그인 페이지로 이동?이 나을까
 
-        }   catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             model.addAttribute("signupError", e.getMessage());
             model.addAttribute("usersSignupDto", usersSignupDto);
             return "users/signUp/signup";
 
-        }   catch (Exception e){
+        } catch (Exception e) {
 //            예기치 못한 오류 -> 공통 메시지를 활용 할 것
             model.addAttribute("signupError", errorMsg.getMessage("error.common.server"));
             model.addAttribute("usersSignupDto", usersSignupDto);
@@ -67,29 +67,32 @@ public class LoginController {
         return "users/login/login";
     }
 
-//    회원가입 유효성 검사 (AJAX용 API)
+    //    회원가입 유효성 검사 (AJAX용 API)
     @GetMapping("/users/check-id")
     @ResponseBody
     public boolean checkUserId(@RequestParam String userId) {
         return usersService.isUserIdAvailable(userId);
     }
+
     @GetMapping("/users/check-email")
     @ResponseBody
     public boolean checkEmail(@RequestParam String email) {
         return usersService.isEmailAvailable(email);
     }
-//    아디찾기
+
+    //    아디찾기
     @GetMapping("/find-id")
-    public String findIdForm(){
+    public String findIdForm() {
         return "users/find/findId";
     }
+
     @PostMapping("/find-id")
     public String findId(@RequestParam String name,
-                                @RequestParam String email,
-                                Model model) {
+                         @RequestParam String email,
+                         Model model) {
         usersService.findUserId(name, email)
                 .ifPresentOrElse(
-                        r ->{
+                        r -> {
                             model.addAttribute("foundUserId", r.getMaskedUserId());
                             model.addAttribute("isSocial", r.isSocial());
                             model.addAttribute("provider", r.getProvider()); //카카오구글네이버
@@ -98,18 +101,19 @@ public class LoginController {
                 );
         return "users/find/findId";
     }
-//    비번찾기
+
+    //    비번찾기
     @GetMapping("/find-password")
     public String findPasswordForm() {
         return "users/find/findPassword";
     }
 
 
-//    이메일: 인증코드 전송 (AJAX, JSON)
+    //    이메일: 인증코드 전송 (AJAX, JSON)
     @PostMapping("/find-password/email/code")
     @ResponseBody
     public ResponseEntity<?> sendEmailCode(@RequestBody @Valid
-                                               PasswordRecoveryDto.SendEmailCodeRequest req) {
+                                           PasswordRecoveryDto.SendEmailCodeRequest req) {
         try {
             passwordRecoveryService.sendEmailCode(req);
             return ResponseEntity.ok("OK");
@@ -121,7 +125,7 @@ public class LoginController {
         }
     }
 
-//    이메일 : 코드검증 + 임시비번 발급 (폼 서브밋)
+    //    이메일 : 코드검증 + 임시비번 발급 (폼 서브밋)
     @PostMapping("/find-password/email/verify")
     public String verifyEmail(@ModelAttribute @Valid VerifyEmailAndResetRequest req,
                               BindingResult bindingResult,

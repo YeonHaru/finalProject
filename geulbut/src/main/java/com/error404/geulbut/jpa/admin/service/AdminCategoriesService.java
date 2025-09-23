@@ -2,6 +2,9 @@ package com.error404.geulbut.jpa.admin.service;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.common.MapStruct;
+import com.error404.geulbut.jpa.books.dto.BooksDto;
+import com.error404.geulbut.jpa.books.entity.Books;
+import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
 import com.error404.geulbut.jpa.categories.entity.Categories;
 import com.error404.geulbut.jpa.categories.repository.CategoriesRepository;
@@ -12,6 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AdminCategoriesService {
@@ -19,6 +25,7 @@ public class AdminCategoriesService {
     private final CategoriesRepository categoriesRepository;
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
+    private final BooksRepository booksRepository;
 
     // 전체 조회 (페이징)
     public Page<CategoriesDto> getAllCategories(int page, int size) {
@@ -69,5 +76,13 @@ public class AdminCategoriesService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return categoriesRepository.findByNameContainingIgnoreCase(keyword, pageable)
                 .map(mapStruct::toDto);
+    }
+
+    // 카테고리에 속한 책들 조회
+    public List<BooksDto> getBooksByCategory(Long categoryId) {
+        List<Books> books = booksRepository.findByCategory_CategoryId(categoryId);
+        return books.stream()
+                .map(mapStruct::toDto)
+                .collect(Collectors.toList());
     }
 }

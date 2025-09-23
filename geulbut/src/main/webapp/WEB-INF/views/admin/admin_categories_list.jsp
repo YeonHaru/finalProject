@@ -24,7 +24,7 @@
 <div class="page">
     <h1 class="mt-4 mb-4">카테고리 관리</h1>
 
-    <!-- 검색 (카테고리 전용: admin.css에서 .admin-categories .search-box 스타일 적용) -->
+    <!-- 검색 -->
     <div class="search-box">
         <input type="text" id="searchKeyword" placeholder="카테고리 이름 검색"
                value="${param.keyword != null ? param.keyword : ''}">
@@ -32,16 +32,9 @@
         <button id="btnAddCategory">카테고리 등록</button>
     </div>
 
-    <!-- 목록 -->
+    <!-- 카테고리 목록 -->
     <div class="table-scroll">
         <table class="admin-table admin-categories-table" id="categoriesTable">
-            <colgroup>
-                <col style="width:100px" />   <!-- ID -->
-                <col style="width:auto" />    <!-- 이름 -->
-                <col style="width:160px" />   <!-- 생성일 -->
-                <col style="width:170px" />   <!-- 작업 -->
-            </colgroup>
-
             <thead>
             <tr>
                 <th>ID</th>
@@ -50,11 +43,10 @@
                 <th>작업</th>
             </tr>
             </thead>
-
             <tbody id="categoriesTableBody">
             <c:forEach var="category" items="${categoriesPage.content}">
                 <tr data-id="${category.categoryId}">
-                    <td>${category.categoryId}</td>
+                    <td class="category-id t-center" style="cursor:pointer;">${category.categoryId}</td>
                     <td class="category-name t-left" title="${category.name}">${category.name}</td>
                     <td>${category.createdAt}</td>
                     <td>
@@ -71,7 +63,7 @@
         </table>
     </div>
 
-    <!-- 페이징(기존 JS 유지: #pagination .page-btn) -->
+    <!-- 페이징 -->
     <div id="pagination" class="mt-2">
         <c:if test="${categoriesPage.totalPages > 0}">
             <c:if test="${!categoriesPage.first}">
@@ -89,8 +81,8 @@
     </div>
 </div>
 
-<!-- 모달 -->
-<div id="categoryModal" class="modal" style="display:none;" aria-hidden="true" role="dialog" aria-modal="true">
+<!-- 카테고리 등록/수정 모달 -->
+<div id="categoryModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-content" role="document">
         <h2 id="modalTitle" class="mb-2">카테고리 등록</h2>
         <input type="hidden" id="modalCategoryId" />
@@ -100,6 +92,26 @@
         </div>
         <button id="modalSaveBtn">저장</button>
         <button id="modalCloseBtn">닫기</button>
+    </div>
+</div>
+
+<!-- 책 목록 모달 -->
+<div id="booksModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-content" role="document">
+        <h2 id="booksModalTitle" class="mb-2">카테고리 속 책 목록</h2>
+        <table class="admin-table admin-books-table" id="booksTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>제목</th>
+                <th>저자</th>
+                <th>출판사</th>
+                <th>가격</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button id="booksModalCloseBtn">닫기</button>
     </div>
 </div>
 

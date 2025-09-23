@@ -12,7 +12,7 @@ import java.util.Optional;
  * - JpaRepository<Cart, Long> : Cart 엔티티 기본 CRUD 기능 제공
  * - CartQueryRepositoryCustom : QueryDSL 기반의 커스텀 조회 기능 제공 (DTO 매핑 등)
  */
-public interface CartRepository extends JpaRepository<Cart, Long>, CartQueryRepositoryCustom {
+public interface CartRepository extends JpaRepository<Cart, Long> {
 
     Optional<Cart> findByUserIdAndBook_BookId(String userId, Long bookId);
     List<Cart> findByUserId(String userId);

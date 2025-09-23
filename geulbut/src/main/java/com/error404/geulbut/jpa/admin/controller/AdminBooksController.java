@@ -32,9 +32,18 @@ public class AdminBooksController {
     @GetMapping
     public String listBooksPage(Model model,
                                 @RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size) {
-        Page<BooksDto> dtoPage = adminBooksService.getAllBooks(page, size);
+                                @RequestParam(defaultValue = "10") int size,
+                                @RequestParam(required = false) String keyword) {
+
+        Page<BooksDto> dtoPage;
+        if (keyword != null && !keyword.isEmpty()) {
+            dtoPage = adminBooksService.searchBooks(keyword, page, size);
+        } else {
+            dtoPage = adminBooksService.getAllBooks(page, size);
+        }
+
         model.addAttribute("booksPage", dtoPage);
+        model.addAttribute("keyword", keyword); // JSP에서 input value로 유지
         return "admin/admin_books_list";
     }
 
@@ -148,5 +157,18 @@ public class AdminBooksController {
         private List<AuthorsDto> authors;
         private List<PublishersDto> publishers;
         private List<CategoriesDto> categories;
+    }
+
+//    해시태그에 사용할 도서 전체 검색기능입니다.
+    @GetMapping("/all")
+    @ResponseBody
+    public List<BooksDto> getAllBooksNoPage(@RequestParam(required = false) String keyword) {
+        if (keyword != null && !keyword.isEmpty()) {
+            // 검색 서비스 호출
+            return adminBooksService.searchBooks(keyword, 0, 50) // 필요시 사이즈 조절
+                    .getContent();
+        } else {
+            return adminBooksService.getAllBooksDto();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.error404.geulbut.jpa.carts.controller;
 
-import com.error404.geulbut.jpa.carts.dto.CartSummaryDto;
+import com.error404.geulbut.jpa.carts.dto.CartDto;
 import com.error404.geulbut.jpa.carts.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -42,25 +43,41 @@ public class CartController {
      * 📌 장바구니 수량 변경 (PUT /cart/{bookId})
      */
     @PutMapping("/{bookId}")
-    public ResponseEntity<?> updateQuantity(Authentication authentication,
+    public ResponseEntity<?> updateCartItem(Authentication authentication,
                                             @PathVariable Long bookId,
                                             @RequestParam int quantity) {
         String userId = authentication.getName();
         log.info("📌 [PUT] 장바구니 수량 변경 요청 - userId: {}, bookId: {}, quantity: {}", userId, bookId, quantity);
 
         if (quantity <= 0) {
-            return ResponseEntity.status((HttpStatus.BAD_REQUEST))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("status", "fail", "message", "수량은 1 이상이어야 합니다."));
         }
         try {
-            cartService.updateQuantity(userId, bookId, quantity);
-            return ResponseEntity.ok(Map.of("status", "ok"));
+            // ✅ 장바구니 업데이트
+            var cart = cartService.updateCartItem(userId, bookId, quantity);
+
+            // ✅ 개별 합계 (할인 적용 여부 포함)
+            long itemTotal = cart.getQuantity() *
+                    (cart.getBook().getDiscountedPrice() != null
+                            ? cart.getBook().getDiscountedPrice()
+                            : cart.getBook().getPrice());
+
+            // ✅ 전체 합계
+            long cartTotal = cartService.getCartTotal(userId);
+
+            return ResponseEntity.ok(Map.of(
+                    "status", "ok",
+                    "itemTotal", itemTotal,
+                    "cartTotal", cartTotal
+            ));
         } catch (Exception e) {
             log.error("❌ 장바구니 수량 변경 실패 - userId: {}, bookId: {}", userId, bookId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("status", "fail", "message", e.getMessage()));
         }
     }
+
 
     /**
      * 📌 장바구니 삭제 (DELETE /cart/{bookId})
@@ -90,9 +107,18 @@ public class CartController {
         log.info("📌 [GET] 장바구니 조회 요청 - userId: {}", userId);
 
         try {
-            CartSummaryDto cartSummary = cartService.getCartSummary(userId);
-            log.info("➡️ 장바구니 조회 결과: {}건", cartSummary.getItems().size());
-            return ResponseEntity.ok(cartSummary);
+            List<CartDto> cartList = cartService.getCartList(userId);
+
+            long cartTotal = cartList.stream()
+                            .mapToLong(CartDto::getTotalPrice)
+                            .sum();
+            log.info("➡️ 장바구니 조회 결과: {}건", cartList.size());
+
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "items", cartList,
+                    "cartTotal", cartTotal
+            ));
         } catch (Exception e) {
             log.error("❌ 장바구니 조회 실패 - userId: {}", userId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

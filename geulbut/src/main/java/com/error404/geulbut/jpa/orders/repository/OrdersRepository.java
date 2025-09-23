@@ -23,6 +23,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             "JOIN FETCH o.items i " +
             "JOIN FETCH i.book b " +
             "WHERE o.userId = :userId " +
+            "AND o.status <> 'PENDING' " +
             "ORDER BY o.createdAt DESC")
     List<Orders> findWithItemsAndBooksByUserId(@Param("userId") String userId);
 
