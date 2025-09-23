@@ -1,5 +1,6 @@
 // admin_authors_list.js (최소 수정 안정화 버전)
 console.log('[authors] JS loaded?', new Date().toISOString());
+
 $(document).on('click', '#btnAddAuthor', () => console.log('[authors] Add clicked'));
 $(document).on('click', '.btnEdit',      () => console.log('[authors] Edit clicked'));
 
@@ -27,7 +28,6 @@ $(function () {
 
     // ====== 공통: 모달 열고 닫기 ======
     function openModal() {
-        // jQuery .show() 우선, 혹시 CSS 충돌 시 display 강제
         $modal.show().css('display', 'block').attr('aria-hidden', 'false');
     }
     function closeModal() {
@@ -44,20 +44,20 @@ $(function () {
     // 닫기 버튼 2종 모두
     $('#btnCloseModal, #modalCloseBtn2').off('click').on('click', closeModal);
 
-    // ====== 등록 모달 열기 (위임 바인딩) ======
+    // ====== 등록 모달 열기 ======
     $(document).off('click.openAuthorCreate', '#btnAddAuthor, #btnAdd')
         .on('click.openAuthorCreate', '#btnAddAuthor, #btnAdd', function () {
             $modalTitle.text('작가 등록');
             $id.val('');
             $name.val('');
             $img.val('');
-            $created.val('');     // 등록 시 빈 값
+            $created.val('');
             $desc.val('');
             $preview.attr('src', '');
             openModal();
         });
 
-    // ====== 수정 모달 열기 (위임 바인딩 + 클래스명 일치: .btnEdit) ======
+    // ====== 수정 모달 열기 ======
     $(document).off('click.openAuthorEdit', '.btnEdit')
         .on('click.openAuthorEdit', '.btnEdit', function () {
             const $tr = $(this).closest('tr');
@@ -114,7 +114,7 @@ $(function () {
         });
     });
 
-    // ====== 삭제 (위임 바인딩 + 클래스명 일치: .btnDelete) ======
+    // ====== 삭제 ======
     $(document).off('click.authorDelete', '.btnDelete')
         .on('click.authorDelete', '.btnDelete', function () {
             const id = $(this).closest('tr').data('id');
@@ -129,6 +129,6 @@ $(function () {
             });
         });
 
-    // ====== 검색/페이징 (기존 유지) ======
+    // ====== 검색/페이징 유지 ======
     $('#authorSearchForm').on('submit', function () {/* 기본 submit 유지 */});
 });
