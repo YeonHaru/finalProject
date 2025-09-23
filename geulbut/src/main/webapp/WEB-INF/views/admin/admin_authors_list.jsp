@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+
+
 </head>
 
 <body class="bg-main text-main admin-authors">
@@ -98,7 +100,6 @@
     </c:if>
 </div>
 
-
 <!-- 모달 -->
 <div id="authorModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
     <div class="modal__dialog" role="document">
@@ -144,6 +145,8 @@
     </div>
 </div>
 
-<script src="${ctx}/js/admin/admin_authors.js?v=1"></script>
+<!-- jQuery 및 admin_authors_list.js 포함 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="${ctx}/js/admin/admin_authors.js"></script>
 </body>
 </html>

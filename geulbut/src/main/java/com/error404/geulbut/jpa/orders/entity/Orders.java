@@ -35,6 +35,24 @@ public class Orders extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
+    // 상태 상수 & 편의 메서드 -> 헬퍼 ( 덕규 )
+    public static final String STATUS_CREATED = "CREATED";
+    public static final String STATUS_PAID = "PAID";
+    public static final String STATUS_CANCELLED = "CANCELLED";
+    public static final String STATUS_SHIPPED   = "SHIPPED";
+    public static final String STATUS_PENDING   = "PENDING";
+
+    public boolean isPaid() {return STATUS_PAID.equalsIgnoreCase(this.status);}
+    public void markPaid() {this.status = STATUS_PAID;}
+    public void cancel() {this.status = STATUS_CANCELLED;}
+
+    @PrePersist
+    public void prePersist() {
+        if (this.status == null || this.status.isBlank()) {
+            this.status = STATUS_CREATED;   // 기본값
+        }
+    }
+
     // 편의 메서드
     public void addItem(OrderItem item) {
         items.add(item);

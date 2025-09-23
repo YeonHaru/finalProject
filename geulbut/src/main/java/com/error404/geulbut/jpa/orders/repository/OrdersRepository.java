@@ -23,6 +23,16 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             "JOIN FETCH o.items i " +
             "JOIN FETCH i.book b " +
             "WHERE o.userId = :userId " +
+            "AND o.status <> 'PENDING' " +
             "ORDER BY o.createdAt DESC")
     List<Orders> findWithItemsAndBooksByUserId(@Param("userId") String userId);
+
+    //  이 합계 쿼리문은 배치/점검용 (덕규)
+    @Query("""
+  select coalesce(sum(o.totalPrice), 0)
+  from Orders o
+  where o.userId = :userId and o.status = :status
+""")
+    Long sumTotalByUserAndStatus(@Param("userId") String userId,
+                                 @Param("status") String status);
 }

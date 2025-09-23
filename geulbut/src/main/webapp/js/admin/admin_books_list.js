@@ -29,6 +29,7 @@ $(function () {
         $('#bookForm')[0].reset();
         $('#bookId').val('');
         $('#imgPreview').attr('src', '').hide();
+        $('#discountedPrice').val(0);
 
         loadOptions();
         $('#bookModal').show();
@@ -73,7 +74,7 @@ $(function () {
             isbn: $('#isbn').val().trim(),
             price: parseInt($('#price').val()) || 0,
             stock: parseInt($('#stock').val()) || 0,
-            discountedPrice: null,
+            discountedPrice: parseInt($('#discountedPrice').val()) || 0,
             authorId: parseInt(authorVal),
             publisherId: parseInt(publisherVal),
             categoryId: parseInt(categoryVal),
@@ -139,6 +140,7 @@ $(function () {
             $('#isbn').val(book.isbn);
             $('#price').val(book.price);
             $('#stock').val(book.stock);
+            $('#discountedPrice').val(book.discountedPrice || 0);
             $('#imgUrl').val(book.imgUrl || '');
             $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
 
@@ -202,8 +204,8 @@ $(function () {
                         <td>${book.stock}</td>
                         <td>${book.createdAt}</td>
                         <td>
-                            <button class="btnEdit">수정</button>
-                            <button class="btnDelete">삭제</button>
+                            <button type="button" class="btn btn-accent btnEdit">수정</button>
+                            <button type="button" class="btn btn-delete btnDelete">삭제</button>
                         </td>
                     </tr>
                 `;
