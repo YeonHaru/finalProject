@@ -7,7 +7,6 @@ import com.error404.geulbut.jpa.orders.dto.OrdersDto;
 import com.error404.geulbut.jpa.orders.service.OrdersService;
 import com.error404.geulbut.jpa.users.dto.UserMypageDto;
 import com.error404.geulbut.jpa.users.entity.Users;
-import com.error404.geulbut.jpa.users.repository.UsersRepository;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import com.error404.geulbut.jpa.wishlist.dto.WishlistDto;
 import com.error404.geulbut.jpa.wishlist.service.WishlistService;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +29,6 @@ public class MypageController {
     private final WishlistService wishlistService;
     private final CartService cartService;
     private final MapStruct mapStruct;
-    private final PasswordEncoder passwordEncoder;
     private final OrdersService ordersService;
 
     /** 📌 마이페이지 메인 */
@@ -47,7 +44,7 @@ public class MypageController {
         if (user != null) {
             UserMypageDto dto = mapStruct.toMypageDto(user);
             model.addAttribute("user", dto);
-            model.addAttribute("canChangePasword", user.getProvider() == Users.AuthProvider.LOCAL);
+            model.addAttribute("canChangePassword", user.getProvider() == Users.AuthProvider.LOCAL);
         }
 
         //  위시리스트
@@ -65,6 +62,34 @@ public class MypageController {
         //  주문 내역
         List<OrdersDto> orders = ordersService.getUserOrders(loginUserId);
         model.addAttribute("orders", orders);
+
+        //  사용자 누적금액, 등급 내역
+        long total = user.getTotalPurchase() == null ? 0L : user.getTotalPurchase();
+        long nextSilver = 100_000L;
+        long nextGold = 300_000L;
+
+        String nextTier = (total < nextSilver) ? "SILVER" : (total < nextGold ? "GOLD" : null);
+        long toNext     = (nextTier == null) ? 0L : (nextTier.equals("SILVER") ? (nextSilver - total) : (nextGold - total));
+
+        //  진행률 (현재 티어 기준)
+        int progressPct;
+        if (total >= nextGold) {
+            progressPct = 100;
+        } else if (total >= nextSilver) {
+            long num = (total - nextSilver) * 100;
+            long den = (nextGold - nextSilver);
+            long v = Math.min(100L, Math.max(0L, num / den));
+            progressPct = (int) v;
+        } else {
+            long num = total * 100;
+            long den = nextSilver;
+            long v = Math.min(100L, Math.max(0L, num / den));
+            progressPct = (int) v;
+        }
+        model.addAttribute("totalPurchase", total);
+        model.addAttribute("nextTier", nextTier);
+        model.addAttribute("amountToNext", toNext);
+        model.addAttribute("progressPct", progressPct);
 
         return "users/mypage/mypage";
     }

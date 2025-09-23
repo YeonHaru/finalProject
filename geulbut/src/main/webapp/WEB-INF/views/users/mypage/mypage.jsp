@@ -65,6 +65,40 @@
                     <c:if test="${not empty successMsg}">
                         <div class="alert alert-success mt-3">${successMsg}</div>
                     </c:if>
+                    <%-- 덕규 알람 메시지 추가--%>
+                    <!-- ✅ 등급/누적금액 요약 -->
+                    <div class="card mb-3">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <div>
+                                    누적 구매 금액:
+                                    <strong><fmt:formatNumber value="${totalPurchase}" pattern="#,##0"/> 원</strong>
+                                </div>
+
+                                <c:choose>
+                                    <c:when test="${empty nextTier}">
+                                        <div class="text-success">축하합니다! 최고 등급(GOLD)입니다 🎉</div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div>
+                                            다음 등급(<strong>${nextTier}</strong>)까지
+                                            <strong><fmt:formatNumber value="${amountToNext}" pattern="#,##0"/> 원</strong> 남았어요.
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+
+                            <div class="flex-grow-1 ms-4" style="min-width:240px;">
+                                <div class="progress" style="height:10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width:${progressPct}%;" aria-valuenow="${progressPct}"
+                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <small class="text-muted">${progressPct}%</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <%--                    덕규 알람 메시지 추가--%>
                     <c:if test="${forceChangePw}">
                         <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">

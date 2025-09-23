@@ -61,17 +61,25 @@ public class AdminBooksService {
 
     // 도서 등록
     public BooksDto saveBook(BooksDto dto) {
+        // null 체크 및 기본값 적용
+        if (dto.getDiscountedPrice() == null) {
+            dto.setDiscountedPrice(0L);
+        }
+        if (dto.getOrderCount() == null) {
+            dto.setOrderCount(0L);
+        }
+        if (dto.getWishCount() == null) {
+            dto.setWishCount(0L);
+        }
+
         if (dto.getIsbn() != null && booksRepository.existsByIsbn(dto.getIsbn())) {
             throw new IllegalArgumentException(errorMsg.getMessage("error.books.isbn.duplicate"));
         }
 
         Books book = mapStruct.toEntity(dto);
-        // Author/Category/Publisher 엔티티 세팅
         setRelations(book);
-        // DB 저장
         Books saved = booksRepository.save(book);
 
-        // 저장 후 DTO 변환 및 이름 세팅
         BooksDto savedDto = mapStruct.toDto(saved);
         setNames(savedDto, saved);
         return savedDto;
@@ -79,11 +87,20 @@ public class AdminBooksService {
 
     // 도서 수정
     public BooksDto updateBook(BooksDto dto) {
+        if (dto.getDiscountedPrice() == null) {
+            dto.setDiscountedPrice(0L);
+        }
+        if (dto.getOrderCount() == null) {
+            dto.setOrderCount(0L);
+        }
+        if (dto.getWishCount() == null) {
+            dto.setWishCount(0L);
+        }
+
         Books existingBook = booksRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
 
         mapStruct.updateFromDto(dto, existingBook);
-        // 관계 엔티티 세팅
         setRelations(existingBook);
         Books saved = booksRepository.save(existingBook);
 

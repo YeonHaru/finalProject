@@ -32,7 +32,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent" id="btnAddBook">도서 등록</button>
+        <button type="button" class="btn btn-accent btn--glass" id="btnAddBook">도서 등록</button>
     </div>
 
     <!-- 도서 목록 테이블 -->
@@ -103,8 +103,8 @@
                         </td>
                         <td>${book.createdAt}</td>
                         <td>
-                            <button type="button" class="btn btn-accent btnEdit">수정</button>
-                            <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                            <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                            <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                         </td>
                     </tr>
                 </c:if>
@@ -136,6 +136,12 @@
 
         <form id="bookForm" class="modal__form">
             <input type="hidden" name="bookId" id="bookId"/>
+
+            <!-- 추가된 hidden 필드 -->
+            <input type="hidden" name="discountedPrice" id="discountedPrice" value="0"/>
+            <input type="hidden" name="orderCount" id="orderCount" value="0"/>
+            <input type="hidden" name="wishCount" id="wishCount" value="0"/>
+
             <div class="form-grid">
                 <label>제목 <input type="text" name="title" id="title" required/></label>
                 <label>ISBN <input type="text" name="isbn" id="isbn" required/></label>

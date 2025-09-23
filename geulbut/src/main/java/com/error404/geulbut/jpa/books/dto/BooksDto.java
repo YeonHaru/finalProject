@@ -24,7 +24,7 @@ public class BooksDto {
     private String nation;
     private String publishedDate;
     private Long price;
-    private Long discountedPrice;
+    private Long discountedPrice = 0L;
     private Long stock;
     private Long orderCount;
     private Long wishCount;
