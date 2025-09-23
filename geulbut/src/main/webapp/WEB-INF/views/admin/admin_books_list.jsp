@@ -32,7 +32,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent" id="btnAddBook">도서 등록</button>
+        <button type="button" class="btn btn-accent btn--glass" id="btnAddBook">도서 등록</button>
     </div>
 
     <!-- 도서 목록 테이블 -->
@@ -103,8 +103,8 @@
                         </td>
                         <td>${book.createdAt}</td>
                         <td>
-                            <button type="button" class="btn btn-accent btnEdit">수정</button>
-                            <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                            <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                            <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                         </td>
                     </tr>
                 </c:if>
