@@ -122,9 +122,6 @@ public interface MapStruct {
             expression = "java(entity.getCreatedAt() == null ? null : entity.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))"
     )
     @Mapping(target = "items", source = "items")
-    @Mapping(target = "recipient", source = "recipient")   // 추가
-    @Mapping(target = "phone", source = "phone")           // 추가
-    @Mapping(target = "memo", source = "memo")             // 추가
     OrdersDto toDto(Orders entity);
 
 //    주문내역쪽 리스트 매핑

@@ -144,5 +144,8 @@
         </div>
     </c:if>
 </div>
+
+<p class="ht-footnote">© Geulbut Admin Users Info</p>
+
 </body>
 </html>
