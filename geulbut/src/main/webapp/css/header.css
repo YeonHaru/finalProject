@@ -7,52 +7,59 @@
     border-bottom: 1px solid var(--color-border);
 }
 
-/* 1행: 좌/로고/우 — 2행: 검색(항상 아래줄) */
+/* 헤더 구조: 1행(좌/로고/우) — 2행(검색) — 3행(하단메뉴) */
 .site-header__inner {
     display: flex;
     align-items: center;
     padding: 10px 16px;
     gap: 12px;
-    flex-wrap: wrap;              /* 줄바꿈 허용: 2행에 검색 */
+    flex-wrap: wrap;              /* 줄바꿈 허용 */
     position: relative;           /* 모바일 메뉴 위치 기준점 */
 }
 
-/* ===== 로고(가운데 정렬: flex로 자연스럽게) ===== */
+/* ===== 좌측 네비 (비어있지만 공간 차지로 균형 맞춤) ===== */
+.site-header__nav--left {
+    order: 0;                     /* 첫 번째 줄 */
+    flex: 1 1 0;                  /* 우측과 동일한 비율로 공간 확보 */
+    min-width: 0;
+    min-height: 40px;             /* 로그인 전에도 공간을 차지하도록 */
+}
+
+/* ===== 로고(첫 번째 줄 중앙) ===== */
 .site-header__logo {
-    order: 0;
-    flex: 0 0 auto;               /* 로고는 내용만큼 */
+    order: 1;                     /* 첫 번째 줄 */
+    flex: 0 0 auto;               /* 로고는 내용만큼만 */
     display: flex;
-    justify-content: center;      /* 로고 컨텐츠 중앙 */
+    justify-content: center;      /* 가운데 정렬 */
     align-items: center;
     min-width: 120px;             /* 너무 좁아지지 않게 */
 }
+
 .site-header__logo img {
     height: 40px;                 /* 필요시 조절 */
     width: auto;
     display: block;
 }
 
-/* 좌/우 네비 — 좌우를 동일 가중치로 늘려서 로고가 정확히 중앙에 오도록 */
-.site-header__nav--left {
-    order: 0;
-    flex: 1 1 0;                  /* 좌/우가 같은 비율로 영역 확보 */
+/* ===== 우측 네비 ===== */
+.site-header__nav--right {
+    order: 2;                     /* 첫 번째 줄 */
+    flex: 1 1 0;                  /* 좌측과 동일한 비율 */
     min-width: 0;
+    display: flex;
+    justify-content: flex-end;
+    min-height: 40px;             /* 로그인 전에도 동일한 높이 유지 */
 }
 
 /* 네비게이션 컨테이너 (햄버거 + 우측 메뉴) */
 .site-header__nav-container {
-    order: 0;
+    order: 2;
     flex: 1 1 0;                  /* 좌측과 동일한 비율 */
     min-width: 0;
     display: flex;
     justify-content: flex-end;
     position: relative;
     margin-top: 40px;
-}
-
-.site-header__nav--right {
-    display: flex;
-    justify-content: flex-end;
 }
 
 /* 메뉴 공통 */
@@ -84,13 +91,40 @@
     display: none;
 }
 
-/* ===== 검색: 항상 두 번째 줄 전체 차지 ===== */
+/* ===== 인사말 영역 (검색창 위쪽) ===== */
+.site-header__greeting {
+    order: 2.5;                   /* 로고/메뉴 다음, 검색 전 */
+    flex: 0 0 100%;               /* 전체 너비 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 8px 0 4px 0;          /* 위아래 여백 */
+}
+
+.greeting-message {
+    color: var(--color-accent-dark);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    background: rgba(var(--color-accent-rgb, 59, 130, 246), 0.08);
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid rgba(var(--color-accent-rgb, 59, 130, 246), 0.15);
+    transition: all 0.3s ease;
+}
+
+.greeting-message:hover {
+    background: rgba(var(--color-accent-rgb, 59, 130, 246), 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ===== 검색: 인사말 다음 줄 ===== */
 .site-header__search {
-    order: 2;                     /* 2행으로 */
+    order: 3;                     /* 인사말 다음 */
     flex: 0 0 100%;               /* 가로 전체 */
     display: flex;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: 4px;              /* 인사말과 간격 줄임 */
 }
 
 /* 검색 폼 (select + input + button) */
@@ -167,7 +201,7 @@
 
 /* 하단 메뉴 (검색창 밑) */
 .site-header__nav--bottom {
-    order: 3;               /* 검색 다음 줄 */
+    order: 4;               /* 인사말, 검색 다음 줄 */
     flex: 0 0 100%;         /* 전체 너비 */
     display: flex;
     justify-content: center;
@@ -180,6 +214,41 @@
 
 /* ========= 모바일 반응형 (768px 이하) ========= */
 @media (max-width: 768px) {
+
+    /* 모바일에서는 기존 레이아웃 유지하되 로고만 중앙 정렬 */
+    .site-header__logo {
+        order: 1;                    /* 가운데 */
+        flex: 1;                     /* 중앙 영역 차지 */
+        justify-content: center;
+        margin: 0 12px;
+    }
+
+    .site-header__inner {
+        justify-content: space-between;  /* 자연스러운 3분할 */
+    }
+
+    .site-header__nav--left {
+        order: 0;                    /* 왼쪽 */
+        flex: 0 0 28px;              /* 좌측 고정 너비 */
+    }
+
+    .site-header__nav--right {
+        order: 2;                    /* 오른쪽 */
+        flex: 0 0 28px;              /* 우측도 고정 너비 */
+        margin-top: 0;               /* 마진 초기화 */
+        align-self: auto;            /* 정렬 초기화 */
+    }
+
+    /* 모바일에서 인사말 스타일 조정 */
+    .site-header__greeting {
+        order: 2.5;
+        margin: 12px 0 8px 0;        /* 모바일에서 여백 조정 */
+    }
+
+    .greeting-message {
+        font-size: 0.9rem;           /* 모바일에서 글자 크기 조정 */
+        padding: 5px 12px;
+    }
 
     /* 햄버거 버튼 표시 */
     .site-header__hamburger {
@@ -195,7 +264,6 @@
         z-index: 1001;
         position: relative;
         transition: transform 0.3s ease;
-        top: calc(100% + 12px);
     }
 
     /* 햄버거 라인 스타일 */
@@ -234,6 +302,7 @@
         min-width: 200px;
         z-index: 999;
         overflow: hidden;
+        flex: none; /* 모바일에서 flex 해제 */
 
         /* 초기 상태: 숨김 */
         max-height: 0;
@@ -318,21 +387,6 @@
         padding: 6px 12px;
     }
 
-    .site-header__inner {
-        justify-content: space-between;  /* 자연스러운 3분할 */
-    }
-
-    .site-header__nav--left {
-        flex: 0 0 28px;                  /* 좌측 고정 너비 */
-    }
-
-    .site-header__logo {
-        flex: 1;                         /* 중앙 영역 차지 */
-        display: flex;
-        justify-content: center;
-        margin: 0 12px;
-    }
-
     .site-header__nav-container {
         position: absolute;
         top: 50px;                   /* 관리자 버튼 아래 */
@@ -340,8 +394,7 @@
         margin-top: 0;
         z-index: 1002;
     }
-
-    }
+}
 
 /* 더 작은 모바일 화면 (480px 이하) */
 @media (max-width: 480px) {
@@ -383,6 +436,7 @@
         font-size: 0.8rem;
         padding: 4px 8px;
     }
+
     #weather-dust-header {
         position: fixed;
         top: 5px;
@@ -399,5 +453,56 @@
         top: 45px;                   /* 작은 화면에서는 조금 더 가깝게 */
         right: 12px;
     }
+}
+/* ========= 인사말 영역 추가 ========= */
+.site-header__greeting {
+    order: 2.5;
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 12px 0 8px 0;
+    width: 100%;
+}
 
+.greeting-message {
+    color: var(--color-accent-dark);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 8px 20px;
+    background: rgba(59, 130, 246, 0.08);
+    border-radius: 25px;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-block;
+}
+
+.greeting-message:hover {
+    background: rgba(59, 130, 246, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 검색창 순서 조정 */
+.site-header__search {
+    order: 3;
+    margin-top: 4px;
+}
+
+/* 하단 메뉴 순서 조정 */
+.site-header__nav--bottom {
+    order: 4;
+}
+
+/* 모바일에서 인사말 조정 */
+@media (max-width: 768px) {
+    .site-header__greeting {
+        margin: 8px 0 6px 0;
+    }
+
+    .site-header__greeting .greeting-message {
+        font-size: 0.9rem;
+        padding: 6px 16px;
+    }
 }
