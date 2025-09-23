@@ -29,18 +29,10 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     //  이 합계 쿼리문은 배치/점검용 (덕규)
     @Query("""
-              select coalesce(sum(o.totalPrice), 0)
-              from Orders o
-              where o.userId = :userId and o.status = :status
-            """)
+  select coalesce(sum(o.totalPrice), 0)
+  from Orders o
+  where o.userId = :userId and o.status = :status
+""")
     Long sumTotalByUserAndStatus(@Param("userId") String userId,
                                  @Param("status") String status);
-
-//    관리자 전용 주문 전체 조회 - 강대성
-    @Query("SELECT DISTINCT o FROM Orders o " +
-            "JOIN FETCH o.items i " +
-            "JOIN FETCH i.book b " +
-            "WHERE o.status <> 'PENDING' " +
-            "ORDER BY o.createdAt DESC")
-    List<Orders> findAllWithItemsAndBooks();
 }

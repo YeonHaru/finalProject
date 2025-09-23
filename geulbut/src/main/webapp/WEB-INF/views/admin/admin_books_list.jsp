@@ -17,7 +17,7 @@
 </head>
 
 <body class="bg-main text-main admin-books">
-<jsp:include page="/common/header.jsp"/>
+<jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
     <h1 class="mt-4 mb-4">도서 관리</h1>
@@ -126,6 +126,8 @@
     </div>
 </div>
 
+<p class="ht-footnote">© Geulbut Admin Books List</p>
+
 <!-- 도서 등록/수정 모달 -->
 <div id="bookModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
     <div class="modal__dialog" role="document">
@@ -171,5 +173,7 @@
 </div>
 
 <script src="${ctx}/js/admin/admin_books_list.js"></script>
+<!-- 관리자 헤더 드롭다운 스크립트 -->
+<script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>

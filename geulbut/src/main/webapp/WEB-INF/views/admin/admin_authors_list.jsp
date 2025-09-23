@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
 </head>
 <body class="bg-main text-main admin-authors">
-<jsp:include page="/common/header.jsp" />
+<jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
     <h1 class="mt-4 mb-4">작가 관리</h1>
@@ -71,7 +71,7 @@
 
     <!-- 페이지네이션 -->
     <c:if test="${authorsPage.totalPages > 0}">
-        <div class="pagination mt-2">
+        <div id="pagination" class="pagination">
             <c:forEach begin="0" end="${authorsPage.totalPages - 1}" var="i">
                 <c:url var="pageUrl" value="${ctx}/admin/authors">
                     <c:param name="keyword" value="${param.keyword}" />
@@ -82,6 +82,8 @@
         </div>
     </c:if>
 </div>
+
+<p class="ht-footnote">© Geulbut Admin Authors List</p>
 
 <!-- 작가 등록/수정 모달 -->
 <div id="authorModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
@@ -124,5 +126,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="${ctx}/js/admin/admin_authors.js"></script>
+<!-- 관리자 헤더 드롭다운 스크립트 -->
+<script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>
