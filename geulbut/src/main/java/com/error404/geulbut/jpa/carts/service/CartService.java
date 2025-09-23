@@ -1,9 +1,9 @@
 package com.error404.geulbut.jpa.carts.service;
 
+import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import com.error404.geulbut.jpa.carts.dto.CartDto;
-import com.error404.geulbut.jpa.carts.dto.CartSummaryDto;
 import com.error404.geulbut.jpa.carts.entity.Cart;
 import com.error404.geulbut.jpa.carts.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +19,22 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final BooksRepository booksRepository;
+    private final MapStruct mapStruct;
 
-    /** 📌 장바구니 전체 조회 (DTO 반환)
-     *   - QueryDSL 구현체(CartRepositoryImpl)에서 DTO 매핑 후 가져옴
-     *   - userId 기준으로 사용자의 장바구니 목록 + 책 정보 조회*/
+    @Transactional(readOnly = true)
     public List<CartDto> getCartList(String userId) {
-        return cartRepository.findCartWithBookInfo(userId);
+        List<Cart> carts = cartRepository.findByUserId(userId);
+        return mapStruct.toCartDtos(carts);
     }
 
-    // 새로운 getCartSummary 추가
-    public CartSummaryDto getCartSummary(String userId) {
+
+    // 장바구니 합계
+    @Transactional(readOnly = true)
+    public long getCartTotal(String userId) {
         List<CartDto> cartList = getCartList(userId);
-        long totalPrice = cartList.stream()
+        return cartList.stream()
                 .mapToLong(CartDto::getTotalPrice)
                 .sum();
-        return new CartSummaryDto(cartList, totalPrice);
     }
 
     /** 📌 장바구니 추가 */
@@ -61,17 +62,15 @@ public class CartService {
         }
     }
 
-    /** 📌 장바구니 수량 수정
-     * - 특정 책의 수량을 새 값으로 덮어쓰기
-     * - JPA dirty checking → 트랜잭션 종료 시 자동 UPDATE*/
+    // 장바구니 수량 금액 합계 수정
     @Transactional
-    public void updateQuantity(String userId, Long bookId, int quantity) {
+    public Cart updateCartItem(String userId, Long bookId, int quantity) {
         Cart cart = cartRepository.findByUserIdAndBook_BookId(userId, bookId)
-                .orElseThrow(() -> new IllegalArgumentException("장바구니에 해당 상품이 없습니다."));
-
-        cart.setQuantity(quantity);  // 새 수량으로 갱신
-        // save() 불필요 (JPA dirty checking)
+                .orElseThrow(() -> new RuntimeException("장바구니 항목을 찾을 수 없습니다."));
+        cart.setQuantity(quantity);
+        return cart;
     }
+
 
     /** 📌 장바구니 삭제 */
     @Transactional
