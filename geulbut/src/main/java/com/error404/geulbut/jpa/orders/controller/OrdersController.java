@@ -126,10 +126,6 @@ public class OrdersController {
     private String normalizeStatus(String s) {
         return s == null ? null : s.trim().toUpperCase();
 
-        String userId = authentication.getName();
-        log.info("[PATCH] 주문 상태 변경 - uesrId: {}, orderId: {}, status: {}", userId, orderId, status);
-        return ordersService.updateOrderStatus(orderId, status);
-
     }
 
 //    주문 삭제
