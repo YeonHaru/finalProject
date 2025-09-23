@@ -193,4 +193,15 @@ public class AdminBooksService {
         map.put("categories", getAllCategoriesDto());
         return map;
     }
+//   해시태그jsp에 사용하기 위해서 전체조회를 추가합니다.
+    public List<BooksDto> getAllBooksDto() {
+        return booksRepository.findAll(Sort.by("createdAt").descending())
+                .stream()
+                .map(book -> {
+                    BooksDto dto = mapStruct.toDto(book);
+                    setNames(dto, book);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 }
