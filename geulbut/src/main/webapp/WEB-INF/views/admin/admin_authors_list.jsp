@@ -1,24 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
 <html lang="ko">
 <head>
-    <!-- FINGERPRINT authors v1 -->
     <meta charset="UTF-8" />
     <title>관리자 - 작가 관리</title>
 
-    <!-- 공통 CSS + 작가 관리 전용 -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
-
-   
-
-
 </head>
-
 <body class="bg-main text-main admin-authors">
 <jsp:include page="/common/header.jsp" />
 
@@ -42,21 +34,12 @@
     <div class="table-scroll">
         <table class="admin-table admin-authors-table" id="authorsTable">
             <colgroup>
-                <col class="col-id" />
-                <col class="col-name" />
-                <col class="col-img" />
-                <col class="col-created" />
-                <col class="col-desc" />
-                <col class="col-actions" />
+                <col class="col-id" /><col class="col-name" /><col class="col-img" />
+                <col class="col-created" /><col class="col-desc" /><col class="col-actions" />
             </colgroup>
             <thead>
             <tr>
-                <th>ID</th>
-                <th>이름</th>
-                <th>이미지</th>
-                <th>생성일</th>
-                <th>설명</th>
-                <th>작업</th>
+                <th>ID</th><th>이름</th><th>이미지</th><th>생성일</th><th>설명</th><th>작업</th>
             </tr>
             </thead>
             <tbody id="authorsTableBody">
@@ -100,43 +83,24 @@
     </c:if>
 </div>
 
-<!-- 모달 -->
+<!-- 작가 등록/수정 모달 -->
 <div id="authorModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
     <div class="modal__dialog" role="document">
         <div class="modal__header">
             <h3 id="modalTitle">작가 등록</h3>
-            <button type="button" class="modal__close" id="btnCloseModal" aria-label="닫기">×</button>
+            <button type="button" class="modal__close" id="btnCloseModal">×</button>
         </div>
 
         <form id="authorForm" class="modal__form">
             <input type="hidden" id="modalAuthorId">
-
-            <!-- 이름 -->
-            <label>이름
-                <input type="text" id="modalAuthorName" placeholder="작가명을 입력하세요" required />
-            </label>
-
-            <!-- 이미지 URL -->
-            <label>이미지 URL
-                <input type="text" id="modalAuthorImgUrl" placeholder="https://example.com/image.jpg" />
-            </label>
-
-            <!-- 생성일(읽기전용, 수정시만 채움) -->
-            <label>생성일
-                <input type="text" id="modalAuthorCreatedAt" placeholder="수정 시 자동 채움" readonly />
-            </label>
-
-            <!-- 설명(2열 꽉 채우기 위해 grid-span) -->
-            <label style="grid-column:1 / -1;">설명
-                <textarea id="modalAuthorDescription" rows="4" placeholder="간단한 소개나 메모를 입력하세요"></textarea>
-            </label>
-
-            <!-- 이미지 미리보기 -->
+            <label>이름<input type="text" id="modalAuthorName" placeholder="작가명을 입력하세요" required /></label>
+            <label>이미지 URL<input type="text" id="modalAuthorImgUrl" placeholder="https://example.com/image.jpg" /></label>
+            <label>생성일<input type="text" id="modalAuthorCreatedAt" placeholder="수정 시 자동 채움" readonly /></label>
+            <label style="grid-column:1 / -1;">설명<textarea id="modalAuthorDescription" rows="4" placeholder="간단한 소개나 메모를 입력하세요"></textarea></label>
             <div style="grid-column:1 / -1;">
                 <span style="display:block; margin-bottom:4px; font-size:.9rem;">미리보기</span>
                 <img id="modalAuthorImgPreview" src="" alt="작가 이미지" />
             </div>
-
             <div class="modal__footer">
                 <button type="submit" class="btn btn-accent" id="modalSaveBtn">저장</button>
                 <button type="button" class="btn" id="modalCloseBtn2">닫기</button>
@@ -145,7 +109,19 @@
     </div>
 </div>
 
-<!-- jQuery 및 admin_authors_list.js 포함 -->
+<!-- 책 목록 전용 모달 -->
+<div id="authorBooksModal" aria-hidden="true" role="dialog">
+    <div class="modal__dialog">
+        <div class="modal__header">
+            <h3>작가 책 목록</h3>
+            <button type="button" class="modal__close" id="btnCloseBooksModal">×</button>
+        </div>
+        <div class="modal__content">
+            <ul id="booksList"></ul>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="${ctx}/js/admin/admin_authors.js"></script>
 </body>

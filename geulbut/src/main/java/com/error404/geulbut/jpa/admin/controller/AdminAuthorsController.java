@@ -3,12 +3,16 @@ package com.error404.geulbut.jpa.admin.controller;
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.admin.service.AdminAuthorsService;
 import com.error404.geulbut.jpa.authors.dto.AuthorsDto;
+import com.error404.geulbut.jpa.books.dto.BooksDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -70,5 +74,17 @@ public class AdminAuthorsController {
     @ResponseBody
     public boolean deleteAuthor(@PathVariable Long authorId) {
         return adminAuthorsService.deleteAuthor(authorId);
+    }
+
+//    작가별 책 목록 조회
+    @GetMapping("/{authorId}/books")
+    @ResponseBody
+    public ResponseEntity<?> getBooksByAuthorId(@PathVariable Long authorId) {
+        try {
+            List<BooksDto> books = adminAuthorsService.getBooksByAuthor(authorId);
+            return ResponseEntity.ok(books);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
