@@ -26,7 +26,7 @@ public class OrdersService {
         order.setTotalPrice(dto.getTotalPrice());
         order.setPaymentMethod(dto.getPaymentMethod());
         order.setAddress(dto.getAddress());
-        order.setStatus("PENDING");
+        order.setStatus("PAID");
 
         dto.getItems().forEach(itemDto -> {
             Long bookId = itemDto.getBookId();
@@ -66,7 +66,7 @@ public class OrdersService {
                 .toList();
     }
 
-//    주문 상태 변경 (예: PENDING -> PAID -> SHIPPED)
+//    주문 상태 변경
 
     public OrdersDto updateOrderStatus(Long orderId, String newStatus) {
         Orders order = ordersRepository.findById(orderId)
@@ -76,5 +76,19 @@ public class OrdersService {
         Orders updateOrder = ordersRepository.save(order);
 
         return mapStruct.toDto(updateOrder);
+    }
+
+//    주문 삭제
+    @Transactional
+    public void deleteOrder(Long orderId, String userId){
+        Orders order = ordersRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+
+        // 🔐 보안: 자기 주문만 삭제 가능
+        if (!order.getUserId().equals(userId)) {
+            throw new RuntimeException("본인 주문만 삭제할 수 있습니다.");
+        }
+
+        ordersRepository.delete(order);
     }
 }
