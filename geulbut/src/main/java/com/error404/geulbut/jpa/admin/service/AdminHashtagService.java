@@ -3,6 +3,7 @@ package com.error404.geulbut.jpa.admin.service;
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.jpa.bookhashtags.entity.BookHashtags;
+import com.error404.geulbut.jpa.bookhashtags.entity.BookHashtagsId;
 import com.error404.geulbut.jpa.bookhashtags.repository.BookHashtagsRepository;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
@@ -30,15 +31,34 @@ public class AdminHashtagService {
     // 전체조회(페이징)
     public Page<HashtagsDto> getAllHashtags(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
         return hashtagsRepository.findAll(pageable)
-                .map(mapStruct::toDto);
+                .map(hashtag -> {
+                    HashtagsDto dto = mapStruct.toDto(hashtag);
+
+                    // 연결된 도서 조회
+                    List<BookHashtags> bhList = bookHashtagsRepository.findAllByHashtag_HashtagId(dto.getHashtagId());
+                    List<BooksDto> books = bhList.stream()
+                            .map(bh -> mapStruct.toDto(bh.getBook()))
+                            .toList();
+
+                    dto.setBooks(books);
+                    return dto;
+                });
     }
 
     // 단일 조회
     public HashtagsDto getHashtagById(Long hashtagId) {
         Hashtags hashtags = hashtagsRepository.findById(hashtagId)
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.hashtag.notfound")));
-        return mapStruct.toDto(hashtags);
+
+        HashtagsDto dto = mapStruct.toDto(hashtags);
+
+        // 연결된 도서 조회
+        List<BookHashtags> bhList = bookHashtagsRepository.findAllByHashtag_HashtagId(dto.getHashtagId());
+        dto.setBooks(bhList.stream().map(bh -> mapStruct.toDto(bh.getBook())).toList());
+
+        return dto;
     }
 
     // 등록
@@ -83,7 +103,13 @@ public class AdminHashtagService {
         try {
             Long id = Long.parseLong(keyword);
             hashtagsRepository.findById(id)
-                    .ifPresent(hashtag -> results.add(mapStruct.toDto(hashtag)));
+                    .ifPresent(hashtag -> {
+                        HashtagsDto dto = mapStruct.toDto(hashtag);
+                        // 연결된 도서 조회
+                        List<BookHashtags> bhList = bookHashtagsRepository.findAllByHashtag_HashtagId(dto.getHashtagId());
+                        dto.setBooks(bhList.stream().map(bh -> mapStruct.toDto(bh.getBook())).toList());
+                        results.add(dto);
+                    });
         } catch (NumberFormatException ignored) {
         }
 
@@ -92,7 +118,10 @@ public class AdminHashtagService {
                 .getContent()
                 .forEach(h -> {
                     if (results.stream().noneMatch(r -> r.getHashtagId().equals(h.getHashtagId()))) {
-                        results.add(mapStruct.toDto(h));
+                        HashtagsDto dto = mapStruct.toDto(h);
+                        List<BookHashtags> bhList = bookHashtagsRepository.findAllByHashtag_HashtagId(dto.getHashtagId());
+                        dto.setBooks(bhList.stream().map(bh -> mapStruct.toDto(bh.getBook())).toList());
+                        results.add(dto);
                     }
                 });
 
@@ -119,4 +148,27 @@ public class AdminHashtagService {
                 })
                 .toList();
     }
+
+    // 책에 해시태그 연결
+    @Transactional
+    public void addHashtagToBook(Long bookId, Long hashtagId) {
+        // 이미 존재하는 연결인지 확인
+        if (bookHashtagsRepository.existsById(new BookHashtagsId(bookId, hashtagId))) return;
+
+        Books book = new Books();
+        book.setBookId(bookId);
+
+        Hashtags hashtag = new Hashtags();
+        hashtag.setHashtagId(hashtagId);
+
+        BookHashtags bh = new BookHashtags(book, hashtag);
+        bookHashtagsRepository.save(bh);
+    }
+
+    // 책에서 해시태그 연결 제거
+    @Transactional
+    public void removeHashtagFromBook(Long bookId, Long hashtagId) {
+        bookHashtagsRepository.deleteByBook_BookIdAndHashtag_HashtagId(bookId, hashtagId);
+    }
+
 }

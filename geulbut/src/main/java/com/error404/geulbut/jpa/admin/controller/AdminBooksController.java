@@ -158,4 +158,17 @@ public class AdminBooksController {
         private List<PublishersDto> publishers;
         private List<CategoriesDto> categories;
     }
+
+//    해시태그에 사용할 도서 전체 검색기능입니다.
+    @GetMapping("/all")
+    @ResponseBody
+    public List<BooksDto> getAllBooksNoPage(@RequestParam(required = false) String keyword) {
+        if (keyword != null && !keyword.isEmpty()) {
+            // 검색 서비스 호출
+            return adminBooksService.searchBooks(keyword, 0, 50) // 필요시 사이즈 조절
+                    .getContent();
+        } else {
+            return adminBooksService.getAllBooksDto();
+        }
+    }
 }
