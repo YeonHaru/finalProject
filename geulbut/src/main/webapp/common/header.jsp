@@ -111,12 +111,12 @@
                     </c:if>
 
                     <%-- ▼ 추가: 헤더에서 사용할 orderId를 안전하게 추출 --%>
-                    <c:set var="orderIdHeader"
+                    <c:set var="currentOrderId"
                            value="${not empty param.orderId
-                     ? param.orderId
-                     : (not empty delivery and not empty delivery.order and not empty delivery.order.orderId
-                         ? delivery.order.orderId
-                         : sessionScope.lastOrderId)}"/>
+                 ? param.orderId
+                 : (not empty delivery and not empty delivery.ordersDto and not empty delivery.ordersDto.orderId
+                      ? delivery.ordersDto.orderId
+                      : sessionScope.lastOrderId)}"/>
 
                     <li><a href="#"><span>안녕하세요, ${fn:escapeXml(userName)} 님!</span></a></li>
                     <li><a href="${ctx}/mypage">마이페이지</a></li>

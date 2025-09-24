@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,17 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<c:url value='/css/00_common.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/orders/deliveryInfo.css'/>">
-    
 </head>
 <body>
-
-
 <main class="page page--track" aria-labelledby="pageTitle">
     <h1 id="pageTitle" class="sr-only">배송조회</h1>
 
-
+    <!-- 뷰모델 바인딩 -->
     <c:set var="o" value="${delivery.ordersDto}"/>
-    <!-- enum toString()이 'READY' / 'IN_TRANSIT' / 'DELIVERED'로 비교 가능 -->
     <c:set var="vStatus" value="${delivery.viewDeliveryStatus}"/>
 
     <!-- DEBUG -->
@@ -62,24 +59,23 @@
                 <div class="kv">
                     <span class="k">예상도착</span>
                     <span class="v">
-                        <c:choose>
-
-                            <c:when test="${vStatus == 'DELIVERED' && not empty o.deliveredAtFormatted}">
-                                ${o.deliveredAtFormatted}
-                            </c:when>
-                            <c:when test="${vStatus == 'IN_TRANSIT'}">
-                                출고 후 1~2일 내 도착 예상
-                            </c:when>
-                            <c:when test="${vStatus == 'READY'}">
-                                준비중 (결제 완료 기준)
-                            </c:when>
-                            <c:otherwise>—</c:otherwise>
-                        </c:choose>
-                    </span>
+            <c:choose>
+                <c:when test="${vStatus == 'DELIVERED' && not empty o.deliveredAtFormatted}">
+                    ${o.deliveredAtFormatted}
+                </c:when>
+                <c:when test="${vStatus == 'IN_TRANSIT'}">
+                    출고 후 1~2일 내 도착 예상
+                </c:when>
+                <c:when test="${vStatus == 'READY'}">
+                    준비중 (결제 완료 기준)
+                </c:when>
+                <c:otherwise>—</c:otherwise>
+            </c:choose>
+          </span>
                 </div>
             </div>
 
-            <!-- 상세 토글(선택 정보) -->
+            <!-- 상세 토글 -->
             <button class="detail-toggle" aria-expanded="false" aria-controls="detail-ready">상세보기</button>
             <div id="detail-ready" class="detail" hidden>
                 <ul class="detail-list">
@@ -156,20 +152,32 @@
         </article>
     </section>
 
-    <!-- 패널: 배송완료 -->
+    <!-- 패널: 배송완료 (현재 주문 + 지난 내역을 한 블록에서 열기) -->
     <section class="panel ${vStatus == 'DELIVERED' ? 'is-active' : ''}"
              role="tabpanel" id="panel-delivered" aria-labelledby="tab-delivered"
     ${vStatus == 'DELIVERED' ? '' : 'hidden'}>
+
         <article class="card">
             <header class="card__header">
                 <h2 class="card__title">배송완료</h2>
                 <span class="status status--done">Delivered</span>
             </header>
 
+            <!-- 요약 정보(항상 보임) -->
             <div class="grid grid--2">
                 <div class="kv">
                     <span class="k">도착시간</span>
-                    <span class="v">${empty o.deliveredAtFormatted ? '—' : o.deliveredAtFormatted}</span>
+                    <span class="v">
+          <c:choose>
+              <c:when test="${not empty o.deliveredAtFormatted}">
+                  ${o.deliveredAtFormatted}
+              </c:when>
+              <c:when test="${not empty o.deliveredAt}">
+                  <fmt:formatDate value="${o.deliveredAt}" pattern="yyyy-MM-dd (E) HH:mm"/>
+              </c:when>
+              <c:otherwise>—</c:otherwise>
+          </c:choose>
+        </span>
                 </div>
                 <div class="kv">
                     <span class="k">수령인</span>
@@ -181,17 +189,93 @@
                 </div>
             </div>
 
-            <button class="detail-toggle" aria-expanded="false" aria-controls="detail-delivered">수령 상세</button>
+            <!-- ✅ 이 버튼 하나로 "현재 주문 상세 + 지난 배송완료 내역" 둘 다 펼침 -->
+            <button class="detail-toggle" aria-expanded="false" aria-controls="detail-delivered">
+                상세보기
+            </button>
+
             <div id="detail-delivered" class="detail" hidden>
+                <!-- 현재 주문 상세 -->
+                <h3 class="sub-title">현재 주문 상세 (주문 #${o.orderId})</h3>
                 <ul class="detail-list">
                     <li>송장번호: ${empty o.invoiceNo ? '—' : o.invoiceNo}</li>
                     <li>택배사: ${empty o.courierName ? '—' : o.courierName}</li>
+                    <li>결제수단: ${empty o.paymentMethod ? '—' : o.paymentMethod}</li>
+                    <li>수취인: ${empty o.recipient ? '—' : o.recipient}</li>
+                    <li>배송지: ${empty o.address ? '—' : o.address}</li>
                 </ul>
+
+                <!-- 현재 주문 상품 목록 -->
+                <c:if test="${not empty o.items}">
+                    <ul class="order-items">
+                        <c:forEach var="it" items="${o.items}">
+                            <li class="order-item">
+                                <div class="oi-wrap">
+                                    <c:if test="${not empty it.imageUrl}">
+                                        <img src="${it.imageUrl}" alt="${it.title}" class="oi-thumb"/>
+                                    </c:if>
+                                    <div class="oi-info">
+                                        <div class="oi-title">${it.title}</div>
+                                        <div class="oi-meta">
+                                            수량: ${it.quantity}
+                                            · 단가: <fmt:formatNumber value="${it.price}" type="number"/>원
+                                            · 소계: <fmt:formatNumber value="${it.price * it.quantity}" type="number"/>원
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+
+                <!-- 지난 배송완료 내역 -->
+                <h3 class="sub-title">지난 배송완료 내역</h3>
+                <c:choose>
+                    <c:when test="${not empty history}">
+                        <ul class="history-list compact">
+                            <c:forEach var="h" items="${history}">
+                                <c:url var="detailUrl" value="/orders/${h.orderId}/delivery"/>
+                                <li class="history-row">
+                                    <a class="row-link" href="${detailUrl}">
+                                        <span class="h-col no">#${h.orderId}</span>
+                                        <span class="h-col date">
+                    <c:choose>
+                        <c:when test="${not empty h.deliveredAtFormatted}">${h.deliveredAtFormatted}</c:when>
+                        <c:when test="${not empty h.deliveredAt}">
+                            <fmt:formatDate value="${h.deliveredAt}" pattern="yyyy-MM-dd (E) HH:mm"/>
+                        </c:when>
+                        <c:otherwise>—</c:otherwise>
+                    </c:choose>
+                  </span>
+                                        <span class="h-col sum"><fmt:formatNumber value="${h.totalPrice}" type="number"/>원</span>
+                                        <span class="h-col items">
+                    <c:choose>
+                        <c:when test="${not empty h.items}">
+                            <c:set var="cnt" value="${fn:length(h.items)}"/>
+                            <c:set var="first" value="${h.items[0]}"/>
+                            ${first.title}<c:if test="${cnt > 1}"> 외 ${cnt - 1}건</c:if>
+                        </c:when>
+                        <c:otherwise>—</c:otherwise>
+                    </c:choose>
+                  </span>
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="muted">표시할 배송완료 내역이 없습니다.</p>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </article>
     </section>
+
+
+
 </main>
 
+<!-- JS: 탭/토글 -->
 <script>
     (function(){
         const tabs = document.querySelectorAll('.tab');
@@ -227,6 +311,7 @@
                 const expanded = btn.getAttribute('aria-expanded') === 'true';
                 btn.setAttribute('aria-expanded', String(!expanded));
                 panel.hidden = expanded;
+                btn.textContent = expanded ? '상세보기' : '접기';
             });
         });
     })();

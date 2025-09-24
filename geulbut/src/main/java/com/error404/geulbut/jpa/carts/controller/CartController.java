@@ -19,6 +19,8 @@ import java.util.Map;
 public class CartController {
     private final CartService cartService;
 
+
+
     /**
      * 📌 장바구니 담기 (POST /cart)
      */
@@ -49,10 +51,19 @@ public class CartController {
         String userId = authentication.getName();
         log.info("📌 [PUT] 장바구니 수량 변경 요청 - userId: {}, bookId: {}, quantity: {}", userId, bookId, quantity);
 
+//        ==========================================
+        // 변경 : 수량 0 이하면 삭제 처리로 전환 -- 덕규
         if (quantity <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("status", "fail", "message", "수량은 1 이상이어야 합니다."));
+            cartService.removeFromCart(userId, bookId);
+            long cartTotal = cartService.getCartTotal(userId);
+            return ResponseEntity.ok(Map.of(
+                    "status", "ok",
+                    "removed", true,
+                    "itemTotal", 0,
+                    "cartTotal", cartTotal
+            ));
         }
+//        =========================================
         try {
             // ✅ 장바구니 업데이트
             var cart = cartService.updateCartItem(userId, bookId, quantity);
@@ -88,9 +99,16 @@ public class CartController {
         String userId = authentication.getName();
         log.info("📌 [DELETE] 장바구니 삭제 요청 - userId: {}, bookId: {}", userId, bookId);
 
+//        ====================================================
         try {
             cartService.removeFromCart(userId, bookId);
-            return ResponseEntity.ok(Map.of("status", "ok"));
+            long cartTotal = cartService.getCartTotal(userId);
+            return ResponseEntity.ok(Map.of(
+                    "status", "ok",
+                    "cartTotal", cartTotal
+            ));
+
+//            =================================================덕규
         } catch (Exception e) {
             log.error("❌ 장바구니 삭제 실패 - userId: {}, bookId: {}", userId, bookId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -115,7 +133,7 @@ public class CartController {
             log.info("➡️ 장바구니 조회 결과: {}건", cartList.size());
 
             return ResponseEntity.ok(Map.of(
-                    "status", "success",
+                    "status", "ok",
                     "items", cartList,
                     "cartTotal", cartTotal
             ));

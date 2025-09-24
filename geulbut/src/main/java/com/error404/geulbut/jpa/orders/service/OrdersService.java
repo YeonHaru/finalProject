@@ -8,9 +8,11 @@ import com.error404.geulbut.jpa.orders.entity.Orders;
 import com.error404.geulbut.jpa.orders.repository.OrdersRepository;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import static com.error404.geulbut.jpa.orders.entity.Orders.STATUS_PENDING;
 import static com.error404.geulbut.jpa.orders.entity.Orders.STATUS_PAID;
@@ -31,7 +33,18 @@ public class OrdersService {
         order.setPaymentMethod(dto.getPaymentMethod());
         order.setAddress(dto.getAddress());
         order.setStatus(STATUS_PENDING);             // PENDING -> STATUS_PENDING (덕규:문자열 대신 상수)
-        order.setStatus("PAID");
+//        order.setStatus("PAID"); 주석으로 잠시 막아놓음!--덕규
+
+//        아이템 NPE 방어 로직
+        var items = dto.getItems();
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("주문 아이템이 비어있습니다.");
+        }
+        // items NPE 방어 (엔티티에서 미초기화시)
+        if (order.getItems() == null) {
+            order.setItems(new java.util.ArrayList<>());
+        }
+
 
         dto.getItems().forEach(itemDto -> {
             Long bookId = itemDto.getBookId();
@@ -162,6 +175,23 @@ private ViewDeliveryStatus resolveViewStatus(OrdersDto o) {
         return ViewDeliveryStatus.IN_TRANSIT;
     }
         return ViewDeliveryStatus.READY;
+    }
+    @Transactional(readOnly = true)
+    public List<OrdersDto> getDeliveredHistory(String userId, int limit, Long excludeOrderId) {
+        var page = ordersRepository.findDeliveredWithItemsAndBooksByUserId(
+                userId, PageRequest.of(0, Math.max(1, limit))
+        );
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm");
+
+        return page.getContent().stream()
+                .filter(o -> excludeOrderId == null || !o.getOrderId().equals(excludeOrderId)) // 현재 주문 제외
+                .map(mapStruct::toDto)
+                .peek(d -> {
+                    if (d.getDeliveredAt() != null && (d.getDeliveredAtFormatted() == null || d.getDeliveredAtFormatted().isBlank())) {
+                        d.setDeliveredAtFormatted(d.getDeliveredAt().format(fmt)); // 표시용 문자열 세팅
+                    }
+                })
+                .toList();
     }
 }
 
