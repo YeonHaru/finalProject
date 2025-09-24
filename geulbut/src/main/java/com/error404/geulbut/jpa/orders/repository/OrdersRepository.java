@@ -35,4 +35,11 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 """)
     Long sumTotalByUserAndStatus(@Param("userId") String userId,
                                  @Param("status") String status);
+
+    // 관리자 조회용
+    @Query("SELECT DISTINCT o FROM Orders o " +
+            "JOIN FETCH o.items i " +
+            "JOIN FETCH i.book b " +
+            "ORDER BY o.createdAt DESC")
+    List<Orders> findAllWithItemsAndBooks();
 }
