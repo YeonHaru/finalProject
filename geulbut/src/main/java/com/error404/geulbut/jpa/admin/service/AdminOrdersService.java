@@ -34,13 +34,37 @@ public class AdminOrdersService {
                 });
     }
 
-    // 단일 주문 조회
+    // 단일 주문 조회(DTO 반환)
     public OrdersDto getOrderById(Long orderId) {
-        Orders order = ordersRepository.findWithItemsAndBooksByOrderId(orderId)
-                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.orders.notfound")));
+        Orders order = getOrderByIdEntity(orderId);
+        return mapToDto(order);
+    }
 
+    // 단일 주문 조회(엔티티 반환, Controller용)
+    public Orders getOrderByIdEntity(Long orderId) {
+        return ordersRepository.findWithItemsAndBooksByOrderId(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.orders.notfound")));
+    }
+
+    // Orders -> OrdersDto 변환(추가 정보 포함)
+    public OrdersDto mapToDto(Orders order) {
         OrdersDto dto = mapStruct.toDto(order);
-        dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
+
+        if (order.getUser() != null) {
+            dto.setUserName(order.getUser().getName());
+            dto.setAddress(order.getUser().getAddress());
+            dto.setPhone(order.getUser().getPhone());
+        }
+
+        dto.setRecipient(order.getRecipient());
+        dto.setPaymentMethod(order.getPaymentMethod());
+        dto.setMemo(order.getMemo());
+
+        // 추가: 결제/배송/주문번호 정보
+        dto.setPaidAt(order.getPaidAt());
+        dto.setDeliveredAt(order.getDeliveredAt());
+        dto.setMerchantUid(order.getMerchantUid());
+
         return dto;
     }
 
@@ -48,11 +72,7 @@ public class AdminOrdersService {
     public List<OrdersDto> getOrdersByStatus(String status) {
         return ordersRepository.findAllWithItemsAndBooks().stream()
                 .filter(o -> o.getStatus().equalsIgnoreCase(status))
-                .map(order -> {
-                    OrdersDto dto = mapStruct.toDto(order);
-                    dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
-                    return dto;
-                })
+                .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
@@ -60,11 +80,7 @@ public class AdminOrdersService {
     public List<OrdersDto> getAllOrdersWithItems() {
         return ordersRepository.findAllWithItemsAndBooks()
                 .stream()
-                .map(order -> {
-                    OrdersDto dto = mapStruct.toDto(order);
-                    dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
-                    return dto;
-                })
+                .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
@@ -75,8 +91,6 @@ public class AdminOrdersService {
         order.setStatus(newStatus);
         Orders saved = ordersRepository.save(order);
 
-        OrdersDto dto = mapStruct.toDto(saved);
-        dto.setUserName(saved.getUser() != null ? saved.getUser().getName() : null);
-        return dto;
+        return mapToDto(saved);
     }
 }

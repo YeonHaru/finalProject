@@ -38,6 +38,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     // 관리자 조회용
     @Query("SELECT DISTINCT o FROM Orders o " +
+            "JOIN FETCH o.user u " +
             "JOIN FETCH o.items i " +
             "JOIN FETCH i.book b " +
             "ORDER BY o.createdAt DESC")
