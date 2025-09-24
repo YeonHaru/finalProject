@@ -33,8 +33,16 @@ public class Orders extends BaseTimeEntity {
     private String recipient;
     private String address;
 
+
+//    결제 관련 필드
+    @Column(name = "MERCHANT_UID", length = 100, unique = true)
+    private String merchantUid;
+    @Column(name = "PAID_AT")
+    private LocalDateTime paidAt;
+
     private LocalDateTime deliveredAt;
-    private String  merchantUid;
+  
+
 
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
