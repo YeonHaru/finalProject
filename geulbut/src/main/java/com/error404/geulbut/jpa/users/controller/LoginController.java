@@ -3,6 +3,18 @@ package com.error404.geulbut.jpa.users.controller;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.SendSmsCodeRequest;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifySmsAndResetRequest;
+import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
+import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
+import com.error404.geulbut.jpa.users.service.UsersService;
+
+
+
+import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
+
+
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.service.UsersService;
@@ -15,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Log4j2
 @Controller
@@ -37,13 +50,15 @@ public class LoginController {
     public String signupForm(@Valid
                              @ModelAttribute UsersSignupDto usersSignupDto,
                              BindingResult bindingResult,
-                             Model model) {
+                             Model model,
+                             RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("usersSignupDto", usersSignupDto);
             return "users/signUp/signup";
         }
         try {
             usersService.signup(usersSignupDto);
+            ra.addFlashAttribute("signupDone", true);
             return "redirect:/login";                       // 성공 시 로그인 페이지로 이동?이 나을까
 
         } catch (IllegalArgumentException e) {

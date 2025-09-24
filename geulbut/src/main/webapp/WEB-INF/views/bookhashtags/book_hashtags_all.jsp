@@ -22,19 +22,8 @@
 </head>
 <body>
 <!-- 상단바 -->
-<header class="ht-topbar" role="banner">
-    <div class="ht-container d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-2">
-<%--            <span class="ht-brand" aria-hidden="true"></span>--%>
-    <img src="${ctx}/images/logo.png" alt="글벗">
-    <strong class="ht-brand-title">Book Hashtags</strong>
-        </div>
-        <nav class="ht-nav" aria-label="Global">
-            <a class="ht-nav__link" href="<%=ctx%>/">Home</a>
-            <a class="ht-nav__link is-active" href="#">Hashtags</a>
-        </nav>
-    </div>
-</header>
+<jsp:include page="/common/admin_page_header.jsp" />
+
 
 <main id="ht-app" class="ht-container" role="main">
     <!-- breadcrumb -->
@@ -160,5 +149,7 @@
 
 <!-- 외부 JS (최소 침습, 기존 서버 검색 유지) -->
 <script src="<%=ctx%>/js/book/hashtags-mono.js" defer></script>
+<!-- 관리자 헤더 드롭다운 스크립트 -->
+<script src="<%=ctx%>/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>

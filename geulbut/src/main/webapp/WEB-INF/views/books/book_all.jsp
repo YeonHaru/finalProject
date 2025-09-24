@@ -57,7 +57,6 @@
                     <!-- 정보 -->
                     <div class="srch-info">
                         <div class="row gap-1 mb-1 text-light">
-                            <span class="chip">국내도서</span>
                             <c:if test="${not empty data.categoryName}">
                                 <span class="text-light">${data.categoryName}</span>
                             </c:if>

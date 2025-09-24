@@ -8,9 +8,11 @@ import com.error404.geulbut.jpa.orders.entity.Orders;
 import com.error404.geulbut.jpa.orders.repository.OrdersRepository;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import static com.error404.geulbut.jpa.orders.entity.Orders.STATUS_PENDING;
 import static com.error404.geulbut.jpa.orders.entity.Orders.STATUS_PAID;
@@ -31,7 +33,18 @@ public class OrdersService {
         order.setPaymentMethod(dto.getPaymentMethod());
         order.setAddress(dto.getAddress());
         order.setStatus(STATUS_PENDING);             // PENDING -> STATUS_PENDING (덕규:문자열 대신 상수)
-        order.setStatus("PAID");
+//        order.setStatus("PAID"); 주석으로 잠시 막아놓음!--덕규
+
+//        아이템 NPE 방어 로직
+        var items = dto.getItems();
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("주문 아이템이 비어있습니다.");
+        }
+        // items NPE 방어 (엔티티에서 미초기화시)
+        if (order.getItems() == null) {
+            order.setItems(new java.util.ArrayList<>());
+        }
+
 
         dto.getItems().forEach(itemDto -> {
             Long bookId = itemDto.getBookId();
@@ -51,13 +64,13 @@ public class OrdersService {
         });
 
         Orders savedOrder = ordersRepository.save(order);
-        Orders reloadedOrder= ordersRepository.findWithItemsAndBooksByOrderId(savedOrder.getOrderId())
+        Orders reloadedOrder = ordersRepository.findWithItemsAndBooksByOrderId(savedOrder.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 재조회 실패 id=" + savedOrder.getOrderId()));
         return mapStruct.toDto(reloadedOrder);
     }
 
     @Transactional(readOnly = true)
-    public OrdersDto getOrder(Long orderId){
+    public OrdersDto getOrder(Long orderId) {
         Orders order = ordersRepository.findWithItemsAndBooksByOrderId(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다. id=" + orderId));
         return mapStruct.toDto(order);
@@ -72,7 +85,7 @@ public class OrdersService {
     }
 
 
-//    주문 상태 변경 (예: PENDING -> PAID -> SHIPPED/CANCELLED)
+    //    주문 상태 변경 (예: PENDING -> PAID -> SHIPPED/CANCELLED)
     @Transactional // 추가:덕규
 
     public OrdersDto updateOrderStatus(Long orderId, String newStatus) {
@@ -80,6 +93,13 @@ public class OrdersService {
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없음. id=" + orderId));
 
         String oldStatus = nvl(order.getStatus());
+
+//     배송완료 시각 기록 (DB에 DELIVERED_AT 하나만 추가하는 최소 설계)
+        if ("DELIVERED".equalsIgnoreCase(newStatus)) {
+            if (order.getDeliveredAt() == null) {
+                order.setDeliveredAt(java.time.LocalDateTime.now());
+            }
+        }
 
         // 1) 상태 저장
         order.setStatus(newStatus);
@@ -101,12 +121,17 @@ public class OrdersService {
     }
 
 
-    private static long nz(Long v) { return v == null ? 0L : v; }
-    private static String nvl(String s) { return (s == null) ? "" : s; }
+    private static long nz(Long v) {
+        return v == null ? 0L : v;
+    }
 
-//    주문 삭제
+    private static String nvl(String s) {
+        return (s == null) ? "" : s;
+    }
+
+    //    주문 삭제
     @Transactional
-    public void deleteOrder(Long orderId, String userId){
+    public void deleteOrder(Long orderId, String userId) {
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
 
@@ -118,4 +143,57 @@ public class OrdersService {
         ordersRepository.delete(order);
     }
 
+    //    배송조회 페이지 구현
+    public enum ViewDeliveryStatus {READY, IN_TRANSIT, DELIVERED}
+
+    public static class DeliveryView {
+        private final ViewDeliveryStatus viewDeliveryStatus;
+        private final OrdersDto ordersDto;
+
+        public DeliveryView(ViewDeliveryStatus viewDeliveryStatus, OrdersDto ordersDto) {
+            this.viewDeliveryStatus = viewDeliveryStatus;
+            this.ordersDto = ordersDto;
+        }
+        public ViewDeliveryStatus getViewDeliveryStatus() {return viewDeliveryStatus;}
+        public OrdersDto getOrdersDto() {return ordersDto;}
+
+        public String getViewDeliveryStatusName() {
+            return viewDeliveryStatus == null ? "" : viewDeliveryStatus.name();
+        }
 }
+@Transactional(readOnly = true)
+public DeliveryView buildDeliveryView (Long orderId) {
+    OrdersDto ordersDto = getOrder(orderId);
+    ViewDeliveryStatus vs = resolveViewStatus(ordersDto);
+    return new DeliveryView(vs, ordersDto);
+    }
+private ViewDeliveryStatus resolveViewStatus(OrdersDto o) {
+    if ("DELIVERED".equalsIgnoreCase(o.getStatus()) || o.getDeliveredAt() != null) {
+        return ViewDeliveryStatus.DELIVERED;
+    }
+    if ("SHIPPED".equalsIgnoreCase(o.getStatus())) {
+        return ViewDeliveryStatus.IN_TRANSIT;
+    }
+        return ViewDeliveryStatus.READY;
+    }
+    @Transactional(readOnly = true)
+    public List<OrdersDto> getDeliveredHistory(String userId, int limit, Long excludeOrderId) {
+        var page = ordersRepository.findDeliveredWithItemsAndBooksByUserId(
+                userId, PageRequest.of(0, Math.max(1, limit))
+        );
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm");
+
+        return page.getContent().stream()
+                .filter(o -> excludeOrderId == null || !o.getOrderId().equals(excludeOrderId)) // 현재 주문 제외
+                .map(mapStruct::toDto)
+                .peek(d -> {
+                    if (d.getDeliveredAt() != null && (d.getDeliveredAtFormatted() == null || d.getDeliveredAtFormatted().isBlank())) {
+                        d.setDeliveredAtFormatted(d.getDeliveredAt().format(fmt)); // 표시용 문자열 세팅
+                    }
+                })
+                .toList();
+    }
+}
+
+
+
