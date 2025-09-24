@@ -40,7 +40,7 @@ public class OrdersDto {
                 : deliveredAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm"));
     }
 
-    private String recipient;
+
 
 }
 
