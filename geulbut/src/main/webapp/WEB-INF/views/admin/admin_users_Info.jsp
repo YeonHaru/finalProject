@@ -13,9 +13,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 외부 JS 분리 -->
     <script src="/js/admin/admin_users_Info.js"></script>
+    <script src="/js/theme.js"></script>
 </head>
 <body>
-<jsp:include page="/common/header.jsp"></jsp:include>
+<jsp:include page="/common/admin_page_header.jsp"></jsp:include>
 
 <div class="page">
     <h1 class="mt-4 mb-4">회원 관리</h1>
@@ -132,17 +133,22 @@
     <c:if test="${usersPage.totalPages > 0}">
         <div class="pagination mt-2">
             <c:if test="${usersPage.number > 0}">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}">◀ 이전</a>
+                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}">◀
+                    이전</a>
             </c:if>
             <c:forEach begin="0" end="${usersPage.totalPages - 1}" var="i">
                 <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${i}&size=${usersPage.size}"
                    class="${i == usersPage.number ? 'active' : ''}">${i + 1}</a>
             </c:forEach>
             <c:if test="${usersPage.number < usersPage.totalPages - 1}">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}">다음 ▶</a>
+                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}">다음
+                    ▶</a>
             </c:if>
         </div>
     </c:if>
 </div>
+
+<p class="ht-footnote">© Geulbut Admin Users Info</p>
+
 </body>
 </html>

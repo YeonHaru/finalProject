@@ -154,6 +154,7 @@
             <span></span><span></span><span></span>
         </button>
 
+
         <!-- 검색 -->
         <div class="site-header__search" role="search">
             <form action="${ctx}/search" method="get" class="search-form">
@@ -201,6 +202,7 @@
                     <div class="group-title">👥 회원 관리</div>
                     <ul>
                         <li><a href="${ctx}/admin/users-info">회원 조회 & 권한변경</a></li>
+                        <li><a href="${ctx}/admin/orders">전체 배송 조회</a></li>
                     </ul>
                 </div>
                 <div class="admin-group">

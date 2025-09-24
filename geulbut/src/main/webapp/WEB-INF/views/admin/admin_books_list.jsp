@@ -17,7 +17,7 @@
 </head>
 
 <body class="bg-main text-main admin-books">
-<jsp:include page="/common/header.jsp"/>
+<jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
     <h1 class="mt-4 mb-4">도서 관리</h1>
@@ -32,7 +32,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent" id="btnAddBook">도서 등록</button>
+        <button type="button" class="btn btn-accent btn--glass" id="btnAddBook">도서 등록</button>
     </div>
 
     <!-- 도서 목록 테이블 -->
@@ -103,8 +103,8 @@
                         </td>
                         <td>${book.createdAt}</td>
                         <td>
-                            <button type="button" class="btn btn-accent btnEdit">수정</button>
-                            <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                            <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                            <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                         </td>
                     </tr>
                 </c:if>
@@ -126,6 +126,8 @@
     </div>
 </div>
 
+<p class="ht-footnote">© Geulbut Admin Books List</p>
+
 <!-- 도서 등록/수정 모달 -->
 <div id="bookModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
     <div class="modal__dialog" role="document">
@@ -136,6 +138,12 @@
 
         <form id="bookForm" class="modal__form">
             <input type="hidden" name="bookId" id="bookId"/>
+
+            <!-- 추가된 hidden 필드 -->
+            <input type="hidden" name="discountedPrice" id="discountedPrice" value="0"/>
+            <input type="hidden" name="orderCount" id="orderCount" value="0"/>
+            <input type="hidden" name="wishCount" id="wishCount" value="0"/>
+
             <div class="form-grid">
                 <label>제목 <input type="text" name="title" id="title" required/></label>
                 <label>ISBN <input type="text" name="isbn" id="isbn" required/></label>
@@ -165,5 +173,7 @@
 </div>
 
 <script src="${ctx}/js/admin/admin_books_list.js"></script>
+<!-- 관리자 헤더 드롭다운 스크립트 -->
+<script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>

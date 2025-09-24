@@ -15,6 +15,7 @@ import java.util.List;
 public class OrdersDto {
     private Long orderId;
     private String userId;
+    private String userName;  // 추가
     private String status;
     private Long totalPrice;
     private String  createdAt;
@@ -22,6 +23,7 @@ public class OrdersDto {
     private String paymentMethod;
 
     private List<OrderItemDto> items;
+
 
     private LocalDateTime paidAt;
     private LocalDateTime deliveredAt;
@@ -37,5 +39,8 @@ public class OrdersDto {
         return deliveredAt == null ? null
                 : deliveredAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm"));
     }
+
+    private String recipient;
+
 }
 
