@@ -1,9 +1,9 @@
 package com.error404.geulbut.jpa.admin.controller;
 
-
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.admin.service.AdminOrdersService;
 import com.error404.geulbut.jpa.orders.dto.OrdersDto;
+import com.error404.geulbut.jpa.orders.entity.Orders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +23,7 @@ public class AdminOrdersController {
     private final AdminOrdersService adminOrdersService;
     private final ErrorMsg errorMsg;
 
-    //    주문 목록 페이지(페이징+필터)
+    // 주문 목록 페이지(페이징+필터)
     @GetMapping
     public String listOrdersPage(Model model,
                                  @RequestParam(defaultValue = "0") int page,
@@ -35,6 +35,7 @@ public class AdminOrdersController {
 
         if ((status == null || status.isEmpty()) && (userId == null || userId.isEmpty())) {
             ordersPage = adminOrdersService.getAllOrders(page, size);
+            model.addAttribute("ordersPage", ordersPage);
         } else {
             List<OrdersDto> filteredOrders = adminOrdersService.getAllOrdersWithItems()
                     .stream()
@@ -42,36 +43,37 @@ public class AdminOrdersController {
                             (userId == null || userId.isEmpty() || o.getUserId().equalsIgnoreCase(userId)))
                     .collect(Collectors.toList());
             model.addAttribute("ordersList", filteredOrders);
-            model.addAttribute("status", status);
-            model.addAttribute("userId", userId);
-            return "admin/admin_orders_list";
         }
 
-        model.addAttribute("ordersPage", ordersPage);
         model.addAttribute("status", status);
         model.addAttribute("userId", userId);
         return "admin/admin_orders_list";
     }
 
-    //    단일 주문 조회
+    // 단일 주문 조회
     @GetMapping("/{orderId}")
     @ResponseBody
     public OrdersDto getOrderById(@PathVariable Long orderId) {
-        return adminOrdersService.getOrderById(orderId);
+        // 엔티티 가져오기
+        Orders order = adminOrdersService.getOrderByIdEntity(orderId);
+
+        // DTO 변환
+        OrdersDto dto = adminOrdersService.mapToDto(order);
+
+        return dto;
     }
 
-    //    전체 주문 조회(items + books 포함)
+    // 전체 주문 조회(items + books 포함)
     @GetMapping("/all")
     @ResponseBody
     public List<OrdersDto> getAllOrdersWithItems() {
         return adminOrdersService.getAllOrdersWithItems();
     }
 
-//    상태 변경
+    // 주문 상태 변경
     @PostMapping("/{orderId}/status")
     @ResponseBody
     public OrdersDto changeStatus(@PathVariable Long orderId, @RequestParam String status) {
         return adminOrdersService.updateOrderStatus(orderId, status);
     }
-
 }
