@@ -28,6 +28,9 @@ $(function () {
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
+        $('#imgPreview').attr('src', '').hide();
+        $('#discountedPrice').val(0);
+
         loadOptions();
         $('#bookModal').show();
     });
@@ -35,19 +38,17 @@ $(function () {
     // =============================
     // 🔹 모달 닫기
     // =============================
-// 🔹 닫기 버튼 2개 모두 동작 + 배경 클릭 + ESC 닫기
     $('#btnCloseModal, #btnCancel').on('click', function () {
         $('#bookModal').hide();
     });
 
     $('#bookModal').on('click', function (e) {
-        if (e.target.id === 'bookModal') $('#bookModal').hide();   // 배경 클릭 닫기
+        if (e.target.id === 'bookModal') $('#bookModal').hide();
     });
 
     $(document).on('keydown', function (e) {
-        if (e.key === 'Escape') $('#bookModal').hide();            // ESC 닫기
+        if (e.key === 'Escape') $('#bookModal').hide();
     });
-
 
     // =============================
     // 🔹 등록 / 수정 submit
@@ -59,18 +60,9 @@ $(function () {
         let publisherVal = $('#publisherId').val();
         let categoryVal = $('#categoryId').val();
 
-        if (!authorVal) {
-            alert('저자를 선택해주세요.');
-            return;
-        }
-        if (!publisherVal) {
-            alert('출판사를 선택해주세요.');
-            return;
-        }
-        if (!categoryVal) {
-            alert('카테고리를 선택해주세요.');
-            return;
-        }
+        if (!authorVal) { alert('저자를 선택해주세요.'); return; }
+        if (!publisherVal) { alert('출판사를 선택해주세요.'); return; }
+        if (!categoryVal) { alert('카테고리를 선택해주세요.'); return; }
 
         let bookId = $('#bookId').val();
         let method = bookId ? 'PUT' : 'POST';
@@ -82,24 +74,16 @@ $(function () {
             isbn: $('#isbn').val().trim(),
             price: parseInt($('#price').val()) || 0,
             stock: parseInt($('#stock').val()) || 0,
-            discountedPrice: null,
+            discountedPrice: parseInt($('#discountedPrice').val()) || 0,
             authorId: parseInt(authorVal),
             publisherId: parseInt(publisherVal),
-            categoryId: parseInt(categoryVal)
+            categoryId: parseInt(categoryVal),
+            imgUrl: $('#imgUrl').val().trim()
         };
 
-        if (!data.title) {
-            alert('제목을 입력해주세요.');
-            return;
-        }
-        if (!data.isbn) {
-            alert('ISBN을 입력해주세요.');
-            return;
-        }
-        if (data.price < 0 || data.stock < 0) {
-            alert('가격/재고는 0 이상이어야 합니다.');
-            return;
-        }
+        if (!data.title) { alert('제목을 입력해주세요.'); return; }
+        if (!data.isbn) { alert('ISBN을 입력해주세요.'); return; }
+        if (data.price < 0 || data.stock < 0) { alert('가격/재고는 0 이상이어야 합니다.'); return; }
 
         $.ajax({
             url: url,
@@ -133,9 +117,7 @@ $(function () {
                     alert('삭제 완료');
                     location.reload();
                 },
-                error: function () {
-                    alert('삭제 실패');
-                }
+                error: function () { alert('삭제 실패'); }
             });
         }
     });
@@ -158,8 +140,10 @@ $(function () {
             $('#isbn').val(book.isbn);
             $('#price').val(book.price);
             $('#stock').val(book.stock);
+            $('#discountedPrice').val(book.discountedPrice || 0);
+            $('#imgUrl').val(book.imgUrl || '');
+            $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
 
-            // select 옵션 초기화 후 세팅
             let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
             let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
             let categorySelect = $('#categoryId').empty().append('<option value="">선택</option>');
@@ -168,7 +152,6 @@ $(function () {
             publishers.forEach(p => publisherSelect.append(`<option value="${p.publisherId}">${p.name}</option>`));
             categories.forEach(c => categorySelect.append(`<option value="${c.categoryId}">${c.name}</option>`));
 
-            // 선택값 세팅
             $('#authorId').val(book.authorId || '');
             $('#publisherId').val(book.publisherId || '');
             $('#categoryId').val(book.categoryId || '');
@@ -178,9 +161,21 @@ $(function () {
     });
 
     // =============================
-    // 🔹 검색 search
+    // 🔹 이미지 미리보기 업데이트
     // =============================
-    $('#searchForm').submit(function (e) {
+    $('#imgUrl').on('input', function () {
+        let url = $(this).val().trim();
+        if (url) {
+            $('#imgPreview').attr('src', url).show();
+        } else {
+            $('#imgPreview').hide();
+        }
+    });
+
+    // =============================
+    // 🔹 검색 search + 페이징 갱신
+    // =============================
+    $('#bookSearchForm').submit(function (e) {
         e.preventDefault();
         let keyword = $(this).find('input[name="keyword"]').val().trim();
 
@@ -189,7 +184,8 @@ $(function () {
             tbody.empty();
 
             if (res.content.length === 0) {
-                tbody.append('<tr><td colspan="11">검색 결과가 없습니다.</td></tr>');
+                tbody.append('<tr><td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
+                $('.pagination').empty();
                 return;
             }
 
@@ -197,23 +193,32 @@ $(function () {
                 let row = `
                     <tr data-id="${book.bookId}">
                         <td>${book.bookId}</td>
-                        <td>${book.title}</td>
-                        <td>${book.isbn}</td>
-                        <td>${book.authorName != null ? book.authorName : ''}</td>
-                        <td>${book.publisherName != null ? book.publisherName : ''}</td>
-                        <td>${book.categoryName != null ? book.categoryName : ''}</td>
-                        <td>${book.price}</td>
-                        <td>${book.discountedPrice != null ? book.discountedPrice : ''}</td>
+                        <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
+                        <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb"/>` : ''}</td>
+                        <td><span class="isbn-mono">${book.isbn}</span></td>
+                        <td>${book.authorName ?? ''}</td>
+                        <td>${book.publisherName ?? ''}</td>
+                        <td>${book.categoryName ?? ''}</td>
+                        <td class="t-right">${book.price}</td>
+                        <td class="t-right">${book.discountedPrice ?? ''}</td>
                         <td>${book.stock}</td>
                         <td>${book.createdAt}</td>
                         <td>
-                            <button class="btnEdit">수정</button>
-                            <button class="btnDelete">삭제</button>
+                            <button type="button" class="btn btn-accent btnEdit">수정</button>
+                            <button type="button" class="btn btn-delete btnDelete">삭제</button>
                         </td>
                     </tr>
                 `;
                 tbody.append(row);
             });
+
+            // 🔹 페이징 다시 생성
+            let pagination = $('.pagination');
+            pagination.empty();
+            for (let i = 0; i < res.totalPages; i++) {
+                let active = i === res.number ? 'active' : '';
+                pagination.append(`<a href="?page=${i}&keyword=${keyword}" class="${active}">${i + 1}</a>`);
+            }
         });
     });
 

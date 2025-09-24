@@ -24,7 +24,7 @@ public class BooksDto {
     private String nation;
     private String publishedDate;
     private Long price;
-    private Long discountedPrice;
+    private Long discountedPrice = 0L;
     private Long stock;
     private Long orderCount;
     private Long wishCount;
@@ -37,6 +37,8 @@ public class BooksDto {
     //    ES_DELETE_FLAG
     private String esDeleteFlag= "N";            // Y or N  디폴트 N
 
-    // 해시태그 필드 추가
-    private List<HashtagsDto> hashtags = new ArrayList<>();
+    // 해시태그 추가
+    private List<String> hashtags;
+
+
 }

@@ -20,6 +20,8 @@
         </c:if>
 
         <form class="signup-form" action="<c:url value='/signup'/>" method="post" id="signupForm">
+            <!-- CSRF -->
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="input-group">
                 <input id="userId" type="text" name="userId" placeholder="아이디" value="${usersSignupDto.userId}"/>
                 <span id="userIdMsg" class="help-msg"></span>
@@ -53,22 +55,24 @@
 
             <div class="form-row">
                 <label class="select-label">성별:
+                    <c:set var="g" value="${usersSignupDto.gender}" />
                     <select name="gender">
-                        <option value="M">남</option>
-                        <option value="F">여</option>
+                        <option value="M" ${fn:toUpperCase(g) eq 'M' ? 'selected="selected"' : ''}>남</option>
+                        <option value="F" ${fn:toUpperCase(g) eq 'F' ? 'selected="selected"' : ''}>여</option>
                     </select>
                 </label>
                 <div class="checkbox-group">
-                    <%--        히든 추가            --%>
-                        <input type="hidden" name="postNotifyAgree" value="N"/>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="postNotifyAgree" value="Y" ${usersSignupDto.postNotifyAgree=='Y' ? 'checked' : ''}/> 알림 수신
-                        </label>
+                    <input type="hidden" name="_postNotifyAgree" value="on"/>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="postNotifyAgree" value="true"
+                        ${usersSignupDto.postNotifyAgree ? 'checked' : ''}/> 알림 수신
+                    </label>
 
-                        <input type="hidden" name="promoAgree" value="N"/>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="promoAgree" value="Y" ${usersSignupDto.promoAgree=='Y' ? 'checked' : ''}/> 프로모션 수신
-                        </label>
+                    <input type="hidden" name="_promoAgree" value="on"/>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="promoAgree" value="true"
+                        ${usersSignupDto.promoAgree ? 'checked' : ''}/> 프로모션 수신
+                    </label>
                 </div>
             </div>
 

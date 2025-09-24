@@ -140,6 +140,9 @@ public class UsersService {
 //        비밀번호 해시
         users.setPassword(passwordEncoder.encode(usersSignupDto.getPassword()));
 
+//        폼 가입은 무조건 LOCAL
+        users.setProvider(Users.AuthProvider.LOCAL);
+
 //        기본값 보정(null 인 경우에만)
         //   "ROLE" IN ('USER','ADMIN','MANAGER') db 제약조건안에 보면 3개중 USER 사용해야함
         if (users.getRole() == null) users.setRole("USER");
@@ -231,6 +234,15 @@ public class UsersService {
                 applyNewDefaults(u);
                 return u;
             });
+
+//          provider 세팅 항상 최신 값 유지
+            if (usersOAuthUpsertDto.getProvider() != null) {
+                String p = usersOAuthUpsertDto.getProvider().trim().toUpperCase();
+                try{
+                    entity.setProvider(Users.AuthProvider.valueOf(p));
+                } catch (IllegalArgumentException ignore){}
+            }
+
 //            부분 업데이트 널 무시 -> 맵 스트럭쳐 사용
             mapStruct.updateFromOAuth(usersOAuthUpsertDto, entity);
             return usersRepository.save(entity);
@@ -300,6 +312,12 @@ public class UsersService {
     public void changePassword(String userId, String currentPw, String newPw, String confirmPw) {
         Users user = getUserById(userId);
 
+//        소셜 로그인 사용자는 불가 하도록
+        if (user.getProvider() != Users.AuthProvider.LOCAL) {
+            throw new IllegalArgumentException("소셜 로그인(구글/네이버/카카오) 사용자는 비밀번호를 변경할 수 없습니다.");
+        }
+
+
 //        ==================
 //        임시비번 관련 로직 추가 : 임시비번으로는 비밀번호 변경 에러가 납니다 : 덕규
 //        ==================
@@ -327,5 +345,43 @@ public class UsersService {
             user.setPasswordTemp(null);
         }
             usersRepository.save(user);
+    }
+    // 누적 금액 증가 + 등급 재산정
+    @Transactional
+    public Users addPurchaseAndRegrade(String userId, long amount) {
+        if (amount <= 0) return getUserById(userId);
+        Users user = getUserById(userId);
+        long cur = (user.getTotalPurchase() == null ? 0L : user.getTotalPurchase());
+        long updated = cur + amount;
+        user.setTotalPurchase(updated);
+
+        String newGrade = computeGrade(updated);
+        if (newGrade != null && !newGrade.equals(user.getGrade())) {
+            user.setGrade(newGrade);
+        }
+        return usersRepository.save(user);
+    }
+    // 누적금액 감소 + 등급 재산정 (취소/환불)
+    @Transactional
+    public Users refundAndRegrade(String userId, long amount) {
+        if (amount <= 0) return getUserById(userId);
+
+        Users user = getUserById(userId);
+        long cur = (user.getTotalPurchase() == null ? 0L : user.getTotalPurchase());
+        long updated = cur - amount;
+        if (updated < 0) updated = 0;
+        user.setTotalPurchase(updated);
+
+        String newGrade = computeGrade(updated);
+        if (newGrade != null && !newGrade.equals(user.getGrade())) {
+            user.setGrade(newGrade);
+        }
+        return usersRepository.save(user);
+    }
+    // 등급 정책 (3단계 // 브론즈-0만원, 실버-10만원, 골드-30만원) 임의대로했어요
+    private String computeGrade(long total) {
+        if (total >= 300_000L) return "GOLD";
+        if (total >= 100_000L) return "SILVER";
+        return "BRONZE";
     }
 }

@@ -17,7 +17,7 @@
 </head>
 
 <body class="bg-main text-main admin-publishers">
-<jsp:include page="/common/header.jsp" />
+<jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
     <h1 class="mt-4 mb-4">출판사 관리</h1>
@@ -32,7 +32,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent" id="btnAddPublisher">출판사 등록</button>
+        <button type="button" class="btn btn-accent btn--glass" id="btnAddPublisher">출판사 등록</button>
     </div>
 
     <!-- 출판사 목록 -->
@@ -65,8 +65,8 @@
                     <td class="t-left publisher-description">${publisher.description}</td>
                     <td class="created-at-cell">${publisher.createdAt}</td>
                     <td>
-                        <button type="button" class="btn btn-accent btn-edit">수정</button>
-                        <button type="button" class="btn btn-delete">삭제</button>
+                        <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                        <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                     </td>
                 </tr>
             </c:forEach>
@@ -76,7 +76,7 @@
 
     <!-- 페이지네이션 -->
     <c:if test="${publishersPage.totalPages > 0}">
-        <div class="pagination mt-2">
+        <div id="pagination" class="pagination">
             <c:forEach begin="0" end="${publishersPage.totalPages - 1}" var="i">
                 <c:url var="pageUrl" value="${ctx}/admin/publishers">
                     <c:param name="keyword" value="${param.keyword}" />
@@ -87,6 +87,9 @@
         </div>
     </c:if>
 </div>
+
+<p class="ht-footnote">© Geulbut Admin Publishers List</p>
+
 
 <!-- 모달: 도서/작가와 동일한 구조/클래스 -->
 <div id="publisherModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
@@ -116,5 +119,7 @@
 </div>
 <!-- js -->
 <script src="${ctx}/js/admin/admin_publishers.js?v=1"></script>
+<!-- 관리자 헤더 드롭다운 스크립트 -->
+<script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>

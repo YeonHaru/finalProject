@@ -4,6 +4,7 @@ import com.error404.geulbut.jpa.orderitem.dto.OrderItemDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
@@ -12,14 +13,34 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class OrdersDto {
-    private Long orderId;                 // 주문 ID
-    private String userId;                  // 주문자 ID
-    private String status;                // 주문 상태
-    private Long totalPrice;              // 총 금액
-    private LocalDateTime createdAt;
-    private String address;               // 배송지
-    private String paymentMethod;         // 결제 수단
+    private Long orderId;
+    private String userId;
+    private String userName;  // 추가
+    private String status;
+    private Long totalPrice;
+    private String  createdAt;
+    private String address;
+    private String paymentMethod;
 
-    private List<OrderItemDto> items;     // 주문 상세 목록
+    private List<OrderItemDto> items;
+
+
+    private LocalDateTime paidAt;
+    private LocalDateTime deliveredAt;
+
+    //  배송 관련 추가
+    private String invoiceNo;       // 송장번호
+    private String courierName;     // 택배사
+    private String courierManName;  // 기사명
+    private String courierManPhone; // 기사 연락처
+    private String recipient;       // 수취인
+
+    public String getDeliveredAtFormatted() {
+        return deliveredAt == null ? null
+                : deliveredAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm"));
+    }
+
+
+
 }
 
