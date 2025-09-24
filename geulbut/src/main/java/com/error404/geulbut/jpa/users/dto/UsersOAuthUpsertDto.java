@@ -23,7 +23,7 @@ public class UsersOAuthUpsertDto {
     private String imgUrl;
 
     //  선택 값
-    private Character gender;
+    private Character  gender;
     private LocalDate birthday;
 
     //  Users.userId 생성 규칙

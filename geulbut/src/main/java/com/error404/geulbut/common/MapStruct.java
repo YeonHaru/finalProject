@@ -8,6 +8,8 @@ import com.error404.geulbut.jpa.bookhashtags.dto.BookHashtagsDto;
 import com.error404.geulbut.jpa.bookhashtags.entity.BookHashtags;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
+import com.error404.geulbut.jpa.carts.dto.CartDto;
+import com.error404.geulbut.jpa.carts.entity.Cart;
 import com.error404.geulbut.jpa.categories.dto.CategoriesDto;
 import com.error404.geulbut.jpa.categories.entity.Categories;
 import com.error404.geulbut.jpa.hashtags.dto.HashtagsDto;
@@ -26,6 +28,7 @@ import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -89,15 +92,40 @@ public interface MapStruct {
     //    더티체킹: 수정시 사용
     void updateFromDto(SearchAllBooksDto searchAllBooksDto, @MappingTarget SearchAllBooks searchAllBooks);
 
+    //    String -> AuthProvider 매핑 (대소문자/공백 방어)
+    default Users.AuthProvider toProvider(String provider) {
+        if (provider == null) return null;
+        return Users.AuthProvider.valueOf(provider.trim().toUpperCase());
+    }
 
+//  Books <-> BooksDto
+    @Mapping(target = "authorId", source = "author.authorId")
+    @Mapping(target = "authorName", source = "author.name")
+    @Mapping(target = "publisherId", source = "publisher.publisherId")
+    @Mapping(target = "publisherName", source = "publisher.name")
+    @Mapping(target = "categoryId", source = "category.categoryId")
+    @Mapping(target = "categoryName", source = "category.name")
+    @Mapping(target = "hashtags", source = "hashtags", qualifiedByName = "mapHashtagsToNames")
     BooksDto toDto(Books books);
+
+    @Named("mapHashtagsToNames")
+    default List<String> mapHashtagsToNames(Set<Hashtags> hashtags) {
+        if (hashtags == null || hashtags.isEmpty()) return List.of();
+        return hashtags.stream()
+                .map(Hashtags::getName)
+                .sorted()
+                .toList();
+    }
 
     @Mapping(target = "author.authorId", source = "authorId")
     @Mapping(target = "publisher.publisherId", source = "publisherId")
     @Mapping(target = "category.categoryId", source = "categoryId")
+    @Mapping(target = "hashtags", ignore = true)
     Books toEntity(BooksDto booksDto);
 
+    @Mapping(target = "hashtags", ignore = true)
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
+
 
     //  Mypage DTO 변환 승화
     @Mapping(target = "joinDate", source = "joinDate", dateFormat = "yyyy-MM-dd")
@@ -110,8 +138,12 @@ public interface MapStruct {
     @Mapping(target = "status", expression = "java(dto.getStatus() != null ? dto.getStatus() : \"PENDING\")")
     Orders toEntity(OrdersDto dto);
 
-    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(
+            target = "createdAt",
+            expression = "java(entity.getCreatedAt() == null ? null : entity.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))"
+    )
     @Mapping(target = "items", source = "items")
+    @Mapping(target = "userName", expression = "java(entity.getUser() != null ? entity.getUser().getName() : null)")
     OrdersDto toDto(Orders entity);
 
 //    주문내역쪽 리스트 매핑
@@ -126,7 +158,24 @@ public interface MapStruct {
     @Mapping(target = "bookId", source = "book.bookId")
     @Mapping(target = "title", source = "book.title")
     @Mapping(target = "price", source = "book.price")
+    @Mapping(target = "imageUrl", source = "book.imgUrl")
     OrderItemDto toDto(OrderItem entity);
+
+//    cart
+    @Mapping(target = "bookId", source = "book.bookId")
+    @Mapping(target = "title", source = "book.title")
+    @Mapping(target = "price", source = "book.price")
+    @Mapping(target = "discountedPrice", source = "book.discountedPrice")
+    @Mapping(target = "imgUrl", source = "book.imgUrl")
+    @Mapping(
+            target = "totalPrice",
+            expression = "java(java.util.Objects.requireNonNullElse(cart.getBook().getDiscountedPrice(), cart.getBook().getPrice()) * cart.getQuantity())"
+    )
+    CartDto toDto(Cart cart);
+
+    Cart toEntity(CartDto dto);
+
+    List<CartDto> toCartDtos(List<Cart> carts);
 
 
     // BookHashtags <-> BookHashtagsDto

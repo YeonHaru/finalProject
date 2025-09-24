@@ -81,4 +81,18 @@ public class AdminHashtagController {
             throw new RuntimeException("도서를 불러오는 중 오류 발생", e);
         }
     }
+
+    // 해시태그를 책에 연결 (AJAX)
+    @PostMapping("/{hashtagId}/books/{bookId}")
+    @ResponseBody
+    public void addBookToHashtag(@PathVariable Long hashtagId, @PathVariable Long bookId) {
+        adminHashtagService.addHashtagToBook(bookId, hashtagId);
+    }
+
+    // 책에서 해시태그 연결 제거 (AJAX)
+    @DeleteMapping("/{hashtagId}/books/{bookId}")
+    @ResponseBody
+    public void removeBookFromHashtag(@PathVariable Long hashtagId, @PathVariable Long bookId) {
+        adminHashtagService.removeHashtagFromBook(bookId, hashtagId);
+    }
 }

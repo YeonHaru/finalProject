@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -64,7 +65,41 @@
                     <c:if test="${not empty successMsg}">
                         <div class="alert alert-success mt-3">${successMsg}</div>
                     </c:if>
-<%--                    덕규 알람 메시지 추가--%>
+                    <%-- 덕규 알람 메시지 추가--%>
+                    <!-- ✅ 등급/누적금액 요약 -->
+                    <div class="card mb-3">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div>
+                                <div>
+                                    누적 구매 금액:
+                                    <strong><fmt:formatNumber value="${totalPurchase}" pattern="#,##0"/> 원</strong>
+                                </div>
+
+                                <c:choose>
+                                    <c:when test="${empty nextTier}">
+                                        <div class="text-success">축하합니다! 최고 등급(GOLD)입니다</div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div>
+                                            다음 등급(<strong>${nextTier}</strong>)까지
+                                            <strong><fmt:formatNumber value="${amountToNext}" pattern="#,##0"/> 원</strong> 남았어요.
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+
+                            <div class="flex-grow-1 ms-4" style="min-width:240px;">
+                                <div class="progress" style="height:10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width:${progressPct}%;" aria-valuenow="${progressPct}"
+                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <small class="text-muted">${progressPct}%</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <%--                    덕규 알람 메시지 추가--%>
                     <c:if test="${forceChangePw}">
                         <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
                             <strong class="me-2">보안 안내</strong>
@@ -79,7 +114,7 @@
                                 // 2) 비밀번호 변경 섹션으로 스크롤 + 현재 비번 입력창 포커스
                                 const cur = document.getElementById('currentPw');
                                 if (cur) {
-                                    cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    cur.scrollIntoView({behavior: 'smooth', block: 'center'});
                                     cur.focus();
                                 }
 
@@ -87,7 +122,7 @@
                                 const form = document.querySelector('form[action$="/mypage/change-password"]');
                                 if (form) {
                                     form.classList.add('border', 'border-warning', 'rounded-3');
-                                    setTimeout(() => form.classList.remove('border','border-warning','rounded-3'), 3000);
+                                    setTimeout(() => form.classList.remove('border', 'border-warning', 'rounded-3'), 3000);
                                 }
                             });
                         </script>
@@ -95,26 +130,35 @@
 
                     <!-- ✅ 비밀번호 변경 폼 -->
                     <h3 class="mt-4 mb-3">비밀번호 변경</h3>
-                    <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
-                        <!-- CSRF 토큰 (Spring Security 켜져있으면 필수) -->
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <c:choose>
+                        <c:when test="${canChangePassword}">
+                            <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
+                                <!-- CSRF 토큰 (Spring Security 켜져있으면 필수) -->
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
-                        <div class="col-12">
-                            <label for="currentPw" class="form-label">현재 비밀번호</label>
-                            <input type="password" id="currentPw" name="currentPw" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="newPw" class="form-label">새 비밀번호</label>
-                            <input type="password" id="newPw" name="newPw" class="form-control" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
-                            <input type="password" id="confirmPw" name="confirmPw" class="form-control" required>
-                        </div>
-                        <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-primary">비밀번호 변경</button>
-                        </div>
-                    </form>
+                                <div class="col-12">
+                                    <label for="currentPw" class="form-label">현재 비밀번호</label>
+                                    <input type="password" id="currentPw" name="currentPw" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="newPw" class="form-label">새 비밀번호</label>
+                                    <input type="password" id="newPw" name="newPw" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
+                                    <input type="password" id="confirmPw" name="confirmPw" class="form-control" required>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+                                </div>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="alert alert-info">
+                                소셜 로그인(구글/네이버/카카오) 사용자는 비밀번호 변경 기능을 사용할 수 없습니다.
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </c:if>
             </div>
 
@@ -182,56 +226,69 @@
             <div class="tab-pane fade" id="v-pills-cart" role="tabpanel">
                 <h2 class="mb-3 pb-2 border-bottom">장바구니</h2>
 
+                <c:if test="${empty cart}">
+                    <div class="alert alert-info">장바구니가 비어 있습니다.</div>
+                </c:if>
+
                 <c:if test="${not empty cart}">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                        <tr>
-                            <th>상품</th>
-                            <th style="width:120px;">수량</th>
-                            <th>가격</th>
-                            <th>합계</th>
-                            <th style="width:150px;">관리</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                    <div class="list-group">
                         <c:forEach var="item" items="${cart}">
-                            <tr>
-                                <td>${item.title}</td>
-                                <td>
-                                    <input type="number"
-                                           value="${item.quantity}" min="1"
-                                           class="form-control form-control-sm"
-                                           onchange="updateCart(${item.bookId}, this.value)">
-                                </td>
-                                <td><fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원</td>
-                                <td><fmt:formatNumber value="${item.totalPrice}" pattern="#,##0"/> 원</td>
-                                <td>
+                            <div class="list-group-item d-flex">
+                                <!-- ✅ 책 이미지 -->
+                                <div class="me-3">
+                                    <img src="${item.imgUrl}" alt="${item.title}"
+                                         style="width:70px; height:100px; object-fit:cover;">
+                                </div>
+
+                                <!-- ✅ 책 정보 -->
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${item.title}</h6>
+                                    <p class="mb-1 text-muted small">
+                                        수량:
+                                        <input type="number"
+                                               value="${item.quantity}" min="1"
+                                               class="form-control form-control-sm d-inline-block"
+                                               style="width:70px;"
+                                               onchange="updateCart(${item.bookId}, this.value)">
+                                    </p>
+                                    <p class="mb-1">
+                                        <c:choose>
+                                            <c:when test="${not empty item.discountedPrice}">
+                                <span class="text-muted">
+                                    <del><fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원</del>
+                                </span>
+                                                → <span class="fw-bold text-danger">
+                                    <fmt:formatNumber value="${item.discountedPrice}" pattern="#,##0"/> 원
+                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </p>
+
+                                    <p class="fw-bold text-accent-dark">
+                                        가격: <fmt:formatNumber value="${item.totalPrice}" pattern="#,##0"/> 원
+                                    </p>
+
+                                    <!-- ✅ 삭제 버튼 -->
                                     <button type="button"
                                             class="btn btn-sm btn-outline-danger"
                                             onclick="removeCart(${item.bookId}, this)">
                                         삭제
                                     </button>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         </c:forEach>
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td class="text-end"><strong>총합</strong></td>
-                            <td>
-                                <strong><fmt:formatNumber value="${cartTotal}" pattern="#,##0"/> 원</strong>
-                            </td>
-                            <td class="text-end">
-                                <button class="btn btn-primary" onclick="checkout()">💳 결제하기</button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </c:if>
+                    </div>
 
-                <c:if test="${empty cart}">
-                    <div class="alert alert-info">장바구니가 비어 있습니다.</div>
+                    <!-- ✅ 총합 영역 -->
+                    <div class="mt-3 text-end">
+                        <h5>
+                            총합: <fmt:formatNumber value="${cartTotal}" pattern="#,##0"/> 원
+                        </h5>
+                        <button class="btn btn-primary" onclick="checkout()">💳 결제하기</button>
+                    </div>
                 </c:if>
             </div>
 
@@ -245,32 +302,78 @@
                 </c:if>
 
                 <c:if test="${not empty orders}">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                        <tr>
-                            <th>주문번호</th>
-                            <th>주문일</th>
-                            <th>상품</th>
-                            <th>금액</th>
-                            <th>상태</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                    <div class="orders-list">
                         <c:forEach var="order" items="${orders}">
-                            <tr>
-                                <td>${order.orderId}</td>
-                                <td>${order.createdAt}</td>
-                                <td>
+                            <div class="card mb-3 shadow-sm">
+                                <div class="card-body">
+
+                                    <!-- ✅ 상품 이미지들 -->
+                                    <div class="d-flex overflow-auto mb-2" style="gap:8px;">
+                                        <c:forEach var="item" items="${order.items}">
+                                            <img src="${item.imageUrl}" alt="${item.title}"
+                                                 style="width:60px; height:85px; object-fit:cover; border-radius:4px;">
+                                        </c:forEach>
+                                    </div>
+
+                                    <!-- ✅ 상품명 + 수량 -->
                                     <c:forEach var="item" items="${order.items}">
-                                        ${item.title} x ${item.quantity}<br/>
+                                        <div>
+                                            <strong>${item.title}</strong>
+                                            <span class="text-muted">x ${item.quantity}</span>
+                                        </div>
                                     </c:forEach>
-                                </td>
-                                <td><fmt:formatNumber value="${order.totalPrice}" pattern="#,##0"/> 원</td>
-                                <td>${order.status}</td>
-                            </tr>
+
+                                    <!-- ✅ 금액 -->
+                                    <div class="fw-bold text-primary mt-2">
+                                        <fmt:formatNumber value="${order.totalPrice}" pattern="#,##0"/> 원
+                                    </div>
+
+                                    <!-- ✅ 주문일 -->
+                                    <div class="text-muted small">
+                                        주문일: ${order.createdAt}
+                                    </div>
+
+                                    <!-- ✅ 상태 + 버튼 -->
+                                    <div class="mt-2">
+                                        <c:choose>
+                                            <c:when test="${order.status == 'PAID'}">
+                                                <span class="badge bg-primary">결제 완료</span>
+                                                <button class="btn btn-sm btn-outline-danger ms-2"
+                                                        onclick="updateOrderStatus(${order.orderId}, 'CANCELLED')">
+                                                    취소
+                                                </button>
+                                            </c:when>
+
+                                            <c:when test="${order.status == 'SHIPPED'}">
+                                                <span class="badge bg-info text-dark">배송중</span>
+                                            </c:when>
+
+                                            <c:when test="${order.status == 'DELIVERED'}">
+                                                <span class="badge bg-success">배송완료</span>
+                                                <button class="btn btn-sm btn-outline-warning ms-2"
+                                                        onclick="updateOrderStatus(${order.orderId}, 'REFUND_REQUEST')">
+                                                    환불 신청
+                                                </button>
+                                            </c:when>
+
+                                            <c:when test="${order.status == 'CANCELLED'}">
+                                                <span class="badge bg-secondary">취소됨</span>
+                                            </c:when>
+
+                                            <c:when test="${order.status == 'REFUND_REQUEST'}">
+                                                <span class="badge bg-warning text-dark">환불 신청 중</span>
+                                            </c:when>
+
+                                            <c:when test="${order.status == 'REFUNDED'}">
+                                                <span class="badge bg-dark">환불 완료</span>
+                                            </c:when>
+                                        </c:choose>
+                                    </div>
+
+                                </div>
+                            </div>
                         </c:forEach>
-                        </tbody>
-                    </table>
+                    </div>
                 </c:if>
             </div>
         </div>

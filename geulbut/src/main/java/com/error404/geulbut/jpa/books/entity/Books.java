@@ -8,6 +8,9 @@ import com.error404.geulbut.jpa.hashtags.entity.Hashtags;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -64,6 +67,18 @@ public class Books extends BaseTimeEntity {
     private String description;
 
     private String isbn;
+    
+
+//  hashtags-books 다대다 관계 관련 - 종일
+    @ManyToMany
+    @BatchSize(size = 100)
+    @Fetch(FetchMode.SUBSELECT)
+    @JoinTable(
+            name="BOOK_HASHTAGS",
+            joinColumns = @JoinColumn(name="BOOK_ID"),
+            inverseJoinColumns = @JoinColumn(name="HASHTAG_ID")
+    )
+    private Set<Hashtags> hashtags = new HashSet<>();
 
     //    ES_DELETE_FLAG
     private String esDeleteFlag;
