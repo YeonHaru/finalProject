@@ -69,10 +69,12 @@
             </div>
 
             <!-- 공지사항 글 내용 -->
-            <div class="px-3 py-2 notice-text">
-                <c:out value="${notice.content}" escapeXml="false" />
+            <div class="px-4 py-4 notice-text">
+                ${notice.content}
             </div>
-
+            <div>
+                <p class="comment-title">Comments</p>
+            </div>
             <!-- 댓글 구간 (기존 구조 그대로 유지) -->
             <div class="comment-input mb-4">
                 <form action="${pageContext.request.contextPath}/noticeComment" method="post">

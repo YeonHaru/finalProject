@@ -3,12 +3,10 @@ package com.error404.geulbut.jpa.users.controller;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto;
-<<<<<<< HEAD
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.SendSmsCodeRequest;
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifySmsAndResetRequest;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
-=======
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.service.UsersService;
 
@@ -17,7 +15,6 @@ import com.error404.geulbut.jpa.users.service.UsersService;
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndResetRequest;
 
 
->>>>>>> ee95966a6e7b40c342b7cce9007acfa7a2375d87
 import com.error404.geulbut.jpa.users.service.PasswordRecoveryService;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import jakarta.validation.Valid;
