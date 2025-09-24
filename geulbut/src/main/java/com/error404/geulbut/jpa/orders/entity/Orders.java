@@ -5,6 +5,7 @@ import com.error404.geulbut.jpa.orderitem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class Orders extends BaseTimeEntity {
     private String paymentMethod;
     private String recipient;
     private String address;
+
+    private LocalDateTime deliveredAt;
 
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,5 +60,9 @@ public class Orders extends BaseTimeEntity {
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
+    }
+
+    public void markDelivered() {
+        if (this.deliveredAt == null) this.deliveredAt = LocalDateTime.now();
     }
 }

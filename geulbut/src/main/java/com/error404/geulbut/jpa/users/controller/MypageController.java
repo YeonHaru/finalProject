@@ -10,6 +10,7 @@ import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import com.error404.geulbut.jpa.wishlist.dto.WishlistDto;
 import com.error404.geulbut.jpa.wishlist.service.WishlistService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,7 +35,8 @@ public class MypageController {
 
     /** 📌 마이페이지 메인 */
     @GetMapping
-    public String mypage(Model model) {
+    public String mypage(Model model,
+                         HttpServletRequest request) {
         String loginUserId = getLoginUserId();
         if (loginUserId == null) {
             return "redirect:/login";
@@ -62,6 +65,19 @@ public class MypageController {
         //  주문 내역
         List<OrdersDto> orders = ordersService.getUserOrders(loginUserId);
         model.addAttribute("orders", orders);
+
+        //  덕규 : 라스트오더아이디 세션 자동채우기(세션에 없을때만)
+        var session = request.getSession();
+        Object last = session.getAttribute("lastOrderId");
+        if (last == null && orders != null && !orders.isEmpty()) {
+            Long latestId = orders.stream()
+                    .max(Comparator.comparing(OrdersDto::getOrderId))
+                    .map(OrdersDto::getOrderId)
+                    .orElse(null);
+            if (latestId != null) {
+                session.setAttribute("lastOrderId", latestId);
+            }
+        }
 
         //  사용자 누적금액, 등급 내역
         long total = user.getTotalPurchase() == null ? 0L : user.getTotalPurchase();
@@ -99,7 +115,8 @@ public class MypageController {
     public String changePassword(@RequestParam String currentPw,
                                  @RequestParam String newPw,
                                  @RequestParam String confirmPw,
-                                 Model model) {
+                                 Model model,
+                                 HttpServletRequest request) {
         String loginUserId = getLoginUserId();
         if (loginUserId == null) return "redirect:/login";
 
@@ -111,7 +128,7 @@ public class MypageController {
         }
 
         // 다시 mypage 데이터를 채워서 forward
-        return mypage(model);
+        return mypage(model, request);
     }
 
     /** 📌 로그인 사용자 아이디 가져오기 */
@@ -128,12 +145,12 @@ public class MypageController {
 
 //    덕규 추가 : 임시비번로그인 사용자 -> 바로 비번변경할수있게
     @GetMapping("/password/change")
-    public String showChangePassword(Model model) {
+    public String showChangePassword(Model model, HttpServletRequest request) {
         String loginUserId = getLoginUserId();
         if (loginUserId == null) return "redirect:/login";
 
         model.addAttribute("forceChangePw", true);
-        return mypage(model);
+        return mypage(model, request);
     }
 
 }
