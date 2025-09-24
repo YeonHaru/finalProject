@@ -17,6 +17,19 @@
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
+<div class="theme-switcher">
+    <button data-theme="light">라이트</button>
+    <button data-theme="dark">다크</button>
+    <button data-theme="blue">블루</button>
+    <button data-theme="red">레드</button>
+    <button data-theme="green">그린</button>
+    <button data-theme="pink">핑크</button>
+    <button data-theme="mint">민트</button>
+    <button data-theme="lilac">라일락</button>
+    <button data-theme="peach">피치</button>
+
+</div>
+
 <div class="page">
     <!-- 편집장의 선택 섹션 -->
     <section class="editor-choice-section">
@@ -1804,132 +1817,132 @@
 </div>
 </section>
 </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-            /*** === 편집장의 선택 (탭 자동 슬라이드) === ***/
-            let currentTabIndex = 0;
-            let autoSlideInterval = null;
-            let isPlaying = false;
-            const autoSlideDelay = 4000;
+<script src="/js/theme.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
 
+        /*** === 편집장의 선택 (탭 자동 슬라이드) === ***/
+        let currentTabIndex = 0;
+        let autoSlideInterval = null;
+        let isPlaying = false;
+        const autoSlideDelay = 4000;
 
         const tabItems = document.querySelectorAll('.tab-item');
         const playButton = document.querySelector('.play-button');
 
         const tabContents = [
-        'editor-choice-content',
-        'event-content',
-        'weekly-content',
-        'new-books-content',
-        'trending-content',
-        'goods-content',
-        'hotdeal-content'
+            'editor-choice-content',
+            'event-content',
+            'weekly-content',
+            'new-books-content',
+            'trending-content',
+            'goods-content',
+            'hotdeal-content'
         ];
 
         const tabTexts = [
-        '편집장의 선택',
-        '추천 이벤트',
-        '이 주의 책',
-        '신간 소개',
-        '화제의 책',
-        '이벤트 굿즈',
-        '지금 핫딜중'
+            '편집장의 선택',
+            '추천 이벤트',
+            '이 주의 책',
+            '신간 소개',
+            '화제의 책',
+            '이벤트 굿즈',
+            '지금 핫딜중'
         ];
 
         function showTabContent(tabIndex) {
-        tabItems.forEach(t => t.classList.remove('active'));
-        if (tabItems[tabIndex]) {
-        tabItems[tabIndex].classList.add('active');
-    }
+            tabItems.forEach(t => t.classList.remove('active'));
+            if (tabItems[tabIndex]) {
+                tabItems[tabIndex].classList.add('active');
+            }
 
-        tabContents.forEach(contentId => {
-        const content = document.getElementById(contentId);
-        if (content) {
-        content.style.display = 'none';
-        content.classList.remove('active');
-    }
-    });
+            tabContents.forEach(contentId => {
+                const content = document.getElementById(contentId);
+                if (content) {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
+                }
+            });
 
-        const activeContent = document.getElementById(tabContents[tabIndex]);
-        if (activeContent) {
-        activeContent.style.display = 'block';
-        activeContent.classList.add('active');
-    }
+            const activeContent = document.getElementById(tabContents[tabIndex]);
+            if (activeContent) {
+                activeContent.style.display = 'block';
+                activeContent.classList.add('active');
+            }
 
-        const sectionTitle = document.getElementById('section-title');
-        if (sectionTitle) {
-        sectionTitle.textContent = tabTexts[tabIndex];
-    }
+            const sectionTitle = document.getElementById('section-title');
+            if (sectionTitle) {
+                sectionTitle.textContent = tabTexts[tabIndex];
+            }
 
-        currentTabIndex = tabIndex;
-    }
+            currentTabIndex = tabIndex;
+        }
 
         function nextTabSlide() {
-        currentTabIndex = (currentTabIndex + 1) % tabContents.length;
-        showTabContent(currentTabIndex);
-    }
+            currentTabIndex = (currentTabIndex + 1) % tabContents.length;
+            showTabContent(currentTabIndex);
+        }
 
         function prevTabSlide() {
-        currentTabIndex = (currentTabIndex - 1 + tabContents.length) % tabContents.length;
-        showTabContent(currentTabIndex);
-    }
+            currentTabIndex = (currentTabIndex - 1 + tabContents.length) % tabContents.length;
+            showTabContent(currentTabIndex);
+        }
 
         function startAutoSlide() {
-        if (!isPlaying) {
-        isPlaying = true;
-        autoSlideInterval = setInterval(nextTabSlide, autoSlideDelay);
-        playButton.classList.remove('playing');
-        playButton.classList.add('paused');
-    }
-    }
+            if (!isPlaying) {
+                isPlaying = true;
+                autoSlideInterval = setInterval(nextTabSlide, autoSlideDelay);
+                playButton.classList.remove('playing');
+                playButton.classList.add('paused');
+            }
+        }
 
         function stopAutoSlide() {
-        if (isPlaying) {
-        isPlaying = false;
-        clearInterval(autoSlideInterval);
-        autoSlideInterval = null;
-        playButton.classList.remove('paused');
-        playButton.classList.add('playing');
-    }
-    }
+            if (isPlaying) {
+                isPlaying = false;
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = null;
+                playButton.classList.remove('paused');
+                playButton.classList.add('playing');
+            }
+        }
 
         if (playButton) {
-        playButton.addEventListener('click', function() {
-        if (isPlaying) {
-        stopAutoSlide();
-    } else {
-        startAutoSlide();
-    }
-    });
-    }
+            playButton.addEventListener('click', function() {
+                if (isPlaying) {
+                    stopAutoSlide();
+                } else {
+                    startAutoSlide();
+                }
+            });
+        }
 
         if (tabItems.length > 0) {
-        tabItems.forEach((tab, index) => {
-        tab.addEventListener('click', function() {
-        if (isPlaying) {
-        stopAutoSlide();
-    }
-        showTabContent(index);
-    });
-    });
-    }
+            tabItems.forEach((tab, index) => {
+                tab.addEventListener('click', function() {
+                    if (isPlaying) {
+                        stopAutoSlide();
+                    }
+                    showTabContent(index);
+                });
+            });
+        }
 
         // === 탭용 전역 함수 등록 ===
         window.nextTab = function() {
-        if (isPlaying) stopAutoSlide();
-        nextTabSlide();
-    };
+            if (isPlaying) stopAutoSlide();
+            nextTabSlide();
+        };
 
         window.prevTab = function() {
-        if (isPlaying) stopAutoSlide();
-        prevTabSlide();
-    };
+            if (isPlaying) stopAutoSlide();
+            prevTabSlide();
+        };
 
         showTabContent(0);
         setTimeout(() => {
-        startAutoSlide();
-    }, 1000);
-
+            startAutoSlide();
+        }, 1000);
 
         /*** === 큰 광고 배너 슬라이드 === ***/
         let currentBannerSlide = 0;
@@ -1938,70 +1951,69 @@
         let userInteracting = false;
 
         function updateBannerSlider() {
-        const sliderTrack = document.getElementById('sliderTrack');
-        if (sliderTrack) {
-        const translateX = -currentBannerSlide * 33.333;
-        sliderTrack.style.transform = `translateX(${translateX}%)`;
-    }
-    }
+            const sliderTrack = document.getElementById('sliderTrack');
+            if (sliderTrack) {
+                const translateX = -currentBannerSlide * 33.333;
+                sliderTrack.style.transform = `translateX(${translateX}%)`;
+            }
+        }
 
         function nextBannerSlide() {
-        currentBannerSlide = (currentBannerSlide + 1) % totalBannerSlides;
-        updateBannerSlider();
-    }
+            currentBannerSlide = (currentBannerSlide + 1) % totalBannerSlides;
+            updateBannerSlider();
+        }
 
         function prevBannerSlide() {
-        currentBannerSlide = (currentBannerSlide - 1 + totalBannerSlides) % totalBannerSlides;
-        updateBannerSlider();
-    }
+            currentBannerSlide = (currentBannerSlide - 1 + totalBannerSlides) % totalBannerSlides;
+            updateBannerSlider();
+        }
 
         function startBannerAutoSlide() {
-        bannerInterval = setInterval(() => {
-        if (!userInteracting) {
-        nextBannerSlide();
-    }
-    }, 4000);
-    }
+            bannerInterval = setInterval(() => {
+                if (!userInteracting) {
+                    nextBannerSlide();
+                }
+            }, 4000);
+        }
 
         function stopBannerAutoSlide() {
-        if (bannerInterval) {
-        clearInterval(bannerInterval);
-        bannerInterval = null;
-    }
-    }
+            if (bannerInterval) {
+                clearInterval(bannerInterval);
+                bannerInterval = null;
+            }
+        }
 
         function resetBannerAutoSlide() {
-        stopBannerAutoSlide();
-        userInteracting = false;
-        setTimeout(() => {
-        startBannerAutoSlide();
-    }, 3000);
-    }
+            stopBannerAutoSlide();
+            userInteracting = false;
+            setTimeout(() => {
+                startBannerAutoSlide();
+            }, 3000);
+        }
 
         // 전역 등록 (HTML 버튼에서 호출 가능)
         window.nextBanner = function() {
-        userInteracting = true;
-        stopBannerAutoSlide();
-        nextBannerSlide();
-        resetBannerAutoSlide();
-    }
+            userInteracting = true;
+            stopBannerAutoSlide();
+            nextBannerSlide();
+            resetBannerAutoSlide();
+        }
 
         window.prevBanner = function() {
-        userInteracting = true;
-        stopBannerAutoSlide();
-        prevBannerSlide();
-        resetBannerAutoSlide();
-    }
+            userInteracting = true;
+            stopBannerAutoSlide();
+            prevBannerSlide();
+            resetBannerAutoSlide();
+        }
 
         // 배너 자동 시작
         setTimeout(() => {
-        startBannerAutoSlide();
-    }, 2000);
+            startBannerAutoSlide();
+        }, 2000);
 
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
+</script>
 
-
-    </script>
 </body>
 </html>
