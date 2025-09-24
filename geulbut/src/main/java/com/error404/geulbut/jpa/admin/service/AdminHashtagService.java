@@ -143,7 +143,11 @@ public class AdminHashtagService {
                     List<HashtagsDto> hashtags = group.stream()
                             .map(bh -> mapStruct.toDto(bh.getHashtag()))
                             .toList();
-                    dto.setHashtags(hashtags);
+                    dto.setHashtags(
+                            group.stream()
+                                    .map(bh -> bh.getHashtag().getName()) // 이름(String)만 추출
+                                    .toList()
+                    );
                     return dto;
                 })
                 .toList();
