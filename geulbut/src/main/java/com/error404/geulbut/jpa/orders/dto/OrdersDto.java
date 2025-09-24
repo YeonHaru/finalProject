@@ -20,13 +20,10 @@ public class OrdersDto {
     private Long totalPrice;
     private String  createdAt;
 
-    private String recipient;
     private String phone;
     private String address;
     private String memo;
     private String paymentMethod;
-    private String phone; // Users 전화번호
-    private String memo;  // 주문 메모
     private String  merchantUid;
     private List<OrderItemDto> items;
 
