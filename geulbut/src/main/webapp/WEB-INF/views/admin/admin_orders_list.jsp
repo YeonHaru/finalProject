@@ -4,9 +4,20 @@
 <html>
 <head>
   <title>관리자 주문 관리</title>
-  <%-- <link rel="stylesheet" href="/css/admin.css"> --%>
 </head>
+<!-- 공통/헤더 + 관리자 통합 CSS -->
+<link rel="stylesheet" href="${ctx}/css/00_common.css" />
+<link rel="stylesheet" href="${ctx}/css/header.css" />
+<link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
+
+<script>
+  // JS에서 컨텍스트 경로 사용
+  window.ctx = "${ctx}";
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <body>
+<jsp:include page="/common/admin_page_header.jsp" />
 <h1>주문 관리</h1>
 
 <!-- 상태 & 유저ID 필터 -->
@@ -34,6 +45,7 @@
   <tr>
     <th>주문ID</th>
     <th>사용자ID</th>
+    <th>사용자 이름</th>
     <th>총액</th>
     <th>상태</th>
     <th>결제수단</th>
@@ -50,9 +62,10 @@
         <tr>
           <td>${order.orderId}</td>
           <td>${order.userId}</td>
+          <td>${order.userName}</td>
           <td>${order.totalPrice}</td>
           <td>
-            <select class="status-select" data-id="${order.orderId}">
+            <select class="status-select" data-id="${order.orderId}" data-current-status="${order.status}">
               <option value="PENDING" ${order.status=='PENDING'?'selected':''}>대기</option>
               <option value="PAID" ${order.status=='PAID'?'selected':''}>결제 완료</option>
               <option value="SHIPPED" ${order.status=='SHIPPED'?'selected':''}>배송중</option>
@@ -75,9 +88,10 @@
         <tr>
           <td>${order.orderId}</td>
           <td>${order.userId}</td>
+          <td>${order.userName}</td>
           <td>${order.totalPrice}</td>
           <td>
-            <select class="status-select" data-id="${order.orderId}">
+            <select class="status-select" data-id="${order.orderId}" data-current-status="${order.status}">
               <option value="PENDING" ${order.status=='PENDING'?'selected':''}>대기</option>
               <option value="PAID" ${order.status=='PAID'?'selected':''}>결제 완료</option>
               <option value="SHIPPED" ${order.status=='SHIPPED'?'selected':''}>배송중</option>
@@ -117,8 +131,6 @@
   <button id="closeModal">닫기</button>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/admin/admin_orders.js"></script>
-
 </body>
 </html>

@@ -14,6 +14,7 @@ import java.util.List;
 public class OrdersDto {
     private Long orderId;
     private String userId;
+    private String userName;  // 추가
     private String status;
     private Long totalPrice;
     private String  createdAt;

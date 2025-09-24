@@ -1,6 +1,5 @@
 package com.error404.geulbut.jpa.admin.service;
 
-
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.jpa.orders.dto.OrdersDto;
@@ -24,43 +23,60 @@ public class AdminOrdersService {
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
 
-
-    //    전체 주문 조회(페이징)
+    // 전체 주문 조회(페이징)
     public Page<OrdersDto> getAllOrders(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return ordersRepository.findAll(pageable)
-                .map(mapStruct::toDto);
+                .map(order -> {
+                    OrdersDto dto = mapStruct.toDto(order);
+                    dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
+                    return dto;
+                });
     }
 
     // 단일 주문 조회
     public OrdersDto getOrderById(Long orderId) {
         Orders order = ordersRepository.findWithItemsAndBooksByOrderId(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.orders.notfound")));
-        return mapStruct.toDto(order);
+
+        OrdersDto dto = mapStruct.toDto(order);
+        dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
+        return dto;
     }
 
-    //    상태별 주문 조회
+    // 상태별 주문 조회
     public List<OrdersDto> getOrdersByStatus(String status) {
         return ordersRepository.findAllWithItemsAndBooks().stream()
                 .filter(o -> o.getStatus().equalsIgnoreCase(status))
-                .map(mapStruct::toDto)
+                .map(order -> {
+                    OrdersDto dto = mapStruct.toDto(order);
+                    dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
-//    전체 주문 조회(관리자용 , items + books 포함)
+    // 전체 주문 조회(관리자용, items + books 포함)
     public List<OrdersDto> getAllOrdersWithItems() {
         return ordersRepository.findAllWithItemsAndBooks()
                 .stream()
-                .map(mapStruct::toDto)
+                .map(order -> {
+                    OrdersDto dto = mapStruct.toDto(order);
+                    dto.setUserName(order.getUser() != null ? order.getUser().getName() : null);
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
-//    상태 변경
+    // 상태 변경
     public OrdersDto updateOrderStatus(Long orderId, String newStatus) {
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
         order.setStatus(newStatus);
-        return mapStruct.toDto(ordersRepository.save(order));
-    }
+        Orders saved = ordersRepository.save(order);
 
+        OrdersDto dto = mapStruct.toDto(saved);
+        dto.setUserName(saved.getUser() != null ? saved.getUser().getName() : null);
+        return dto;
+    }
 }

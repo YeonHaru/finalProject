@@ -15,8 +15,8 @@
 
             <!-- 드롭다운 트리거 -->
             <div class="ad-dropdown">
-                <a class="ad-link ad-link--dropdown" href="${ctx}/admin/hashtags"
-                   aria-haspopup="true" aria-expanded="false">Hashtags</a>
+                <a class="ad-link ad-link--dropdown" href="${ctx}/admin/users-info"
+                   aria-haspopup="true" aria-expanded="false">Member Management</a>
 
                 <!-- 드롭다운 메뉴 (호버 시 표시) -->
                 <ul class="ad-menu" role="menu" aria-label="Admin Menu">
@@ -25,8 +25,8 @@
                     <li role="none"><a role="menuitem" href="${ctx}/admin/publishers"  class="ad-menu__item">Publisher Management</a></li>
                     <li role="none"><a role="menuitem" href="${ctx}/admin/categories"  class="ad-menu__item">Category Management</a></li>
                     <li role="none"><a role="menuitem" href="${ctx}/admin/hashtags"    class="ad-menu__item">Hashtag Management</a></li>
-                    <li role="none"><a role="menuitem" href="${ctx}/admin/users"       class="ad-menu__item">Member Management</a></li>
-                    <li role="none"><a role="menuitem" href="${ctx}/admin/deliveries"  class="ad-menu__item">Delivery Management</a></li>
+                    <li role="none"><a role="menuitem" href="${ctx}/admin/users-info"  class="ad-menu__item">Member Management</a></li>
+                    <li role="none"><a role="menuitem" href="${ctx}/admin/orders"      class="ad-menu__item">Delivery Management</a></li>
                     <li role="none"><a role="menuitem" href="${ctx}/admin/events/new"  class="ad-menu__item">Event registration</a></li>
                     <li role="none"><a role="menuitem" href="${ctx}/admin/events"      class="ad-menu__item">Edit event</a></li>
                 </ul>
