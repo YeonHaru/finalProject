@@ -75,3 +75,10 @@ app:
   mail:
     from: geulbut@gmail.com
     from-name: 글벗
+
+# 결제 API
+payment:
+  mode: demo              # 데모 모드: 실결제 차단 스위치
+
+portone:
+  imp_code: imp13630305

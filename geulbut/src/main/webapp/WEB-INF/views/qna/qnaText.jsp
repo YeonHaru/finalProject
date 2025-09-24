@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <html>
 <head>
@@ -69,7 +71,7 @@
         </div>
       </div>
       <%--공지사항 글 내용--%>
-      <div class="px-3 py-2 notice-text">
+      <div class="px-4 py-4 notice-text">
         ${qna.QContent}
       </div>
       <%-- 댓글 구간 --%>
@@ -79,13 +81,15 @@
           <p class="comment-title">Comments</p>
         </div>
 
-        <div class="comment-input mb-4">
-          <form action="${pageContext.request.contextPath}/qnaComment" method="post">
-            <input type="hidden" name="id" value="${qna.id}" />
-            <textarea class="comment-textarea" name="aContent" placeholder="댓글을 작성하세요..." rows="3"></textarea>
-            <button type="submit" class="mt-3 btn-comment" style="float: right;">등록</button>
-          </form>
-        </div>
+        <sec:authorize access="authentication.name == 'admin001'">
+          <div class="comment-input mb-4">
+            <form action="${pageContext.request.contextPath}/qnaComment" method="post">
+              <input type="hidden" name="id" value="${qna.id}" />
+              <textarea class="comment-textarea" name="aContent" placeholder="댓글을 작성하세요..." rows="3"></textarea>
+              <button type="submit" class="mt-3 btn-comment" style="float: right;">등록</button>
+            </form>
+          </div>
+        </sec:authorize>
 
 
         <div class="comment-list">

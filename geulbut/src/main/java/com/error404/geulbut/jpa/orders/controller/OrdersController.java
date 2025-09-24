@@ -2,6 +2,7 @@ package com.error404.geulbut.jpa.orders.controller;
 
 import com.error404.geulbut.jpa.orders.dto.OrdersDto;
 import com.error404.geulbut.jpa.orders.service.OrdersService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -37,13 +38,18 @@ public class OrdersController {
     //    주문 생성
     @PostMapping
     public OrdersDto createOrder(@RequestBody OrdersDto dto,
-                                 Authentication authentication) {
+                                 Authentication authentication,
+                                 HttpServletRequest request) {
         String userId = authentication.getName();
         log.info(" [POST] 주문 생성 요청 - userId: {}", userId);
 
         dto.setUserId(userId);
+        OrdersDto saved = ordersService.createOrder(dto);
 
-        return ordersService.createOrder(dto);
+//        마지막주문 ID 세션 저장
+        request.getSession().setAttribute("lastOrderId", saved.getOrderId());
+
+        return saved;
     }
 
     //  주문 조회
