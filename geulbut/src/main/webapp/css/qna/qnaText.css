@@ -154,7 +154,7 @@ aside nav a:hover {
     border-bottom: 2px solid #333; /* 밑줄 색상/두께 */
     margin-bottom: 2rem;      /* 밑줄 아래 여백 */
 }
-.qna-title .btn-main {
+.btn-main {
 
     background-color: transparent;
     border: 1px solid var(--color-accent);
@@ -164,9 +164,10 @@ aside nav a:hover {
     font-size: 0.75rem;            /* 글자 크기 조절 */
     text-decoration: none;
     transition: 0.3s;
+    cursor: pointer;
 }
 
-.qna-title .btn-main:hover {
+.btn-main:hover {
     background-color: var(--color-accent); /* 호버 시 배경 채우기 */
     color: #fff;                            /* 글자 색 변경 */
 }
