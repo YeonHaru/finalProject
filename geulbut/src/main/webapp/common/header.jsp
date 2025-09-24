@@ -153,7 +153,10 @@
                         <c:set var="displayName" value="${userName}" scope="session"/>
                     </c:if>
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3cc0187f6322ecf3c7f665f48adfd04ecac75f15
                     <%-- ▼ 추가: 헤더에서 사용할 orderId를 안전하게 추출 --%>
                     <c:set var="currentOrderId"
                            value="${not empty param.orderId
@@ -274,7 +277,7 @@
 <!-- JS 환경변수 -->
 <script>
     const isLogin =
-        <sec:authorize access="isAuthenticated()">true</sec:authorize>
+        <sec:authorize access="isAuthenticated()">true</sec:authorize>;
     <sec:authorize access="!isAuthenticated()">false</sec:authorize>;
 </script>
 <script src="<c:url value='/common/js/header.js'/>" charset="UTF-8"></script>
