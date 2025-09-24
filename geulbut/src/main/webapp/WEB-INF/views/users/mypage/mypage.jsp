@@ -82,7 +82,8 @@
                                     <c:otherwise>
                                         <div>
                                             다음 등급(<strong>${nextTier}</strong>)까지
-                                            <strong><fmt:formatNumber value="${amountToNext}" pattern="#,##0"/> 원</strong> 남았어요.
+                                            <strong><fmt:formatNumber value="${amountToNext}" pattern="#,##0"/>
+                                                원</strong> 남았어요.
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -138,7 +139,8 @@
 
                                 <div class="col-12">
                                     <label for="currentPw" class="form-label">현재 비밀번호</label>
-                                    <input type="password" id="currentPw" name="currentPw" class="form-control" required>
+                                    <input type="password" id="currentPw" name="currentPw" class="form-control"
+                                           required>
                                 </div>
                                 <div class="col-12">
                                     <label for="newPw" class="form-label">새 비밀번호</label>
@@ -146,7 +148,8 @@
                                 </div>
                                 <div class="col-12">
                                     <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
-                                    <input type="password" id="confirmPw" name="confirmPw" class="form-control" required>
+                                    <input type="password" id="confirmPw" name="confirmPw" class="form-control"
+                                           required>
                                 </div>
                                 <div class="col-12 text-end">
                                     <button type="submit" class="btn btn-primary">비밀번호 변경</button>
@@ -287,7 +290,8 @@
                         <h5>
                             총합: <fmt:formatNumber value="${cartTotal}" pattern="#,##0"/> 원
                         </h5>
-                        <button class="btn btn-primary" onclick="checkout()">💳 결제하기</button>
+                        <button class="btn btn-primary"
+                                onclick="Orders.openOrderInfoModal(${cartTotal})">💳 결제하기</button>
                     </div>
                 </c:if>
             </div>
@@ -339,7 +343,7 @@
                                             <c:when test="${order.status == 'PAID'}">
                                                 <span class="badge bg-primary">결제 완료</span>
                                                 <button class="btn btn-sm btn-outline-danger ms-2"
-                                                        onclick="updateOrderStatus(${order.orderId}, 'CANCELLED')">
+                                                        onclick="Orders.updateOrderStatus(${order.orderId}, 'CANCELLED')">
                                                     취소
                                                 </button>
                                             </c:when>
@@ -351,7 +355,7 @@
                                             <c:when test="${order.status == 'DELIVERED'}">
                                                 <span class="badge bg-success">배송완료</span>
                                                 <button class="btn btn-sm btn-outline-warning ms-2"
-                                                        onclick="updateOrderStatus(${order.orderId}, 'REFUND_REQUEST')">
+                                                        onclick="Orders.updateOrderStatus(${order.orderId}, 'REFUND_REQUEST')">
                                                     환불 신청
                                                 </button>
                                             </c:when>
@@ -380,25 +384,37 @@
     </div>
 </div>
 
+<!-- 1) 부트스트랩 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- 2) 전역값 (csrf, userId 등) -->
 <script>
+    window.csrfHeaderName = "${_csrf.headerName}";
     window.csrfToken = "${_csrf.token}";
     window.currentUserId = "${user.userId}";
 </script>
-<!-- 공통 -->
-<script src="/js/mypage/mypage-common.js"></script>
-<%-- 주문 내역--%>
-<script src="/js/mypage/orders.js"></script>
-<!-- 장바구니 -->
-<script src="/js/mypage/cart.js"></script>
-<!-- 위시리스트 -->
-<script src="/js/mypage/wishlist.js"></script>
 
+<!-- 3) PortOne SDK -->
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+<!-- 4) imp_code 주입 (반드시 cart.js보다 먼저 존재) -->
+<div id="imp-root" data-imp-code="${impCode}"></div>
+
+<!-- 5) 나머지 공통/주문 스크립트 -->
+<script src="/js/mypage/mypage-common.js"></script>
+
+<script src="/js/mypage/orders.js"></script>
+
+<!-- 6) 방금 교체한 cart.js (마지막에) -->
+<script src="/js/mypage/cart.js"></script>
+
+<!-- 7) 위시리스트 -->
+<script src="/js/mypage/wishlist.js"></script>
 <%-- 버튼 클릭시 이동 경로 --%>
 <%--<a href="/mypage?tab=wishlist"> 위시리스트</a>--%>
 <%--<a href="/mypage?tab=cart"> 장바구니</a>--%>
 
+<jsp:include page="paymentModal.jsp"/>
 <jsp:include page="/common/footer.jsp"></jsp:include>
 </body>
 </html>

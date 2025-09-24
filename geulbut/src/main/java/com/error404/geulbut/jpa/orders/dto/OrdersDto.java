@@ -17,7 +17,11 @@ public class OrdersDto {
     private String status;
     private Long totalPrice;
     private String  createdAt;
+
+    private String recipient;
+    private String phone;
     private String address;
+    private String memo;
     private String paymentMethod;
 
     private List<OrderItemDto> items;

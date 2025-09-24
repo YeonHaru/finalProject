@@ -11,6 +11,9 @@ import java.util.Optional;
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByUserId(String userId);
 
+    // 멱등 체크용 — merchantUid로 조회
+    Optional<Orders> findByMerchantUid(String merchantUid);
+
     @Query("SELECT o FROM Orders o " +
             "JOIN FETCH o.items i " +
             "JOIN FETCH i.book b " +

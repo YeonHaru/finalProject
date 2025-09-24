@@ -107,7 +107,12 @@ public interface MapStruct {
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
 
     //  Mypage DTO 변환 승화
-    @Mapping(target = "joinDate", source = "joinDate", dateFormat = "yyyy-MM-dd")
+    @Mappings({
+            @Mapping(source = "joinDate", target = "joinDate", dateFormat = "yyyy-MM-dd"),
+            @Mapping(source = "name", target = "userName"),   // 엔티티 필드가 name일 경우
+            @Mapping(source = "phone", target = "phone"),
+            @Mapping(source = "address", target = "address")
+    })
     UserMypageDto toMypageDto(Users users);
 
     // Orders 매핑

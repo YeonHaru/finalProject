@@ -5,6 +5,7 @@ import com.error404.geulbut.jpa.orderitem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,12 @@ public class Orders extends BaseTimeEntity {
     private String paymentMethod;
     private String recipient;
     private String address;
+
+//    결제 관련 필드
+    @Column(name = "MERCHANT_UID", length = 100, unique = true)
+    private String merchantUid;
+    @Column(name = "PAID_AT")
+    private LocalDateTime paidAt;
 
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
