@@ -89,7 +89,7 @@ public class SecurityConfig {
                                 "/oauth2/**", "/login/oauth2/**", "/oauth2/authorization/**",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/favicon.ico", "/error",
-                                "dustApi", "DustWeatherApi","/v/**", "/dust","weather","weatherApi",
+                                "/v/**", "/notice", "/dustApi",
                                 "admin/css/admin-header.css", "/signup",
                                 "/users/check-id","/users/check-email",
                                 "/find-id","/find-password",

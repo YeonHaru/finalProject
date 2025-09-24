@@ -28,6 +28,7 @@ import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -97,14 +98,34 @@ public interface MapStruct {
         return Users.AuthProvider.valueOf(provider.trim().toUpperCase());
     }
 
+//  Books <-> BooksDto
+    @Mapping(target = "authorId", source = "author.authorId")
+    @Mapping(target = "authorName", source = "author.name")
+    @Mapping(target = "publisherId", source = "publisher.publisherId")
+    @Mapping(target = "publisherName", source = "publisher.name")
+    @Mapping(target = "categoryId", source = "category.categoryId")
+    @Mapping(target = "categoryName", source = "category.name")
+    @Mapping(target = "hashtags", source = "hashtags", qualifiedByName = "mapHashtagsToNames")
     BooksDto toDto(Books books);
+
+    @Named("mapHashtagsToNames")
+    default List<String> mapHashtagsToNames(Set<Hashtags> hashtags) {
+        if (hashtags == null || hashtags.isEmpty()) return List.of();
+        return hashtags.stream()
+                .map(Hashtags::getName)
+                .sorted()
+                .toList();
+    }
 
     @Mapping(target = "author.authorId", source = "authorId")
     @Mapping(target = "publisher.publisherId", source = "publisherId")
     @Mapping(target = "category.categoryId", source = "categoryId")
+    @Mapping(target = "hashtags", ignore = true)
     Books toEntity(BooksDto booksDto);
 
+    @Mapping(target = "hashtags", ignore = true)
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
+
 
     //  Mypage DTO 변환 승화
     @Mappings({
@@ -127,6 +148,7 @@ public interface MapStruct {
             expression = "java(entity.getCreatedAt() == null ? null : entity.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))"
     )
     @Mapping(target = "items", source = "items")
+    @Mapping(target = "userName", expression = "java(entity.getUser() != null ? entity.getUser().getName() : null)")
     OrdersDto toDto(Orders entity);
 
 //    주문내역쪽 리스트 매핑
