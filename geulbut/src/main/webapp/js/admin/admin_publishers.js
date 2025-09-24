@@ -33,8 +33,8 @@ $(function() {
         openModal();
     });
 
-    // 수정 모달 열기 (위임 바인딩, 기존 클래스 유지: .btn-edit)
-    $(document).off('click.pubEdit', '.btn-edit').on('click.pubEdit', '.btn-edit', function() {
+    // 수정 모달 열기
+    $(document).off('click.pubEdit', '.btnEdit').on('click.pubEdit', '.btnEdit', function() {
         const $row = $(this).closest('tr');
         const id   = $row.data('id');
         const name = $row.find('.publisher-name').text();
