@@ -144,6 +144,10 @@ public interface MapStruct {
     )
     @Mapping(target = "items", source = "items")
     @Mapping(target = "userName", expression = "java(entity.getUser() != null ? entity.getUser().getName() : null)")
+    @Mapping(
+            target = "deliveredAtFormatted",
+            expression = "java(entity.getDeliveredAt() == null ? null : entity.getDeliveredAt().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd (E) HH:mm\")))"
+    )
     OrdersDto toDto(Orders entity);
 
 //    주문내역쪽 리스트 매핑

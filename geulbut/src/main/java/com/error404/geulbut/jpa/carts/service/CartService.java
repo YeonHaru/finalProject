@@ -40,6 +40,7 @@ public class CartService {
     /** 📌 장바구니 추가 */
     @Transactional
     public void addToCart(String userId, Long bookId, int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("quantity must be > 0");
         // 해당 책이 이미 장바구니에 있는지 확인
         Cart cart = cartRepository.findByUserIdAndBook_BookId(userId, bookId)
                 .orElse(null);
@@ -65,6 +66,10 @@ public class CartService {
     // 장바구니 수량 금액 합계 수정
     @Transactional
     public Cart updateCartItem(String userId, Long bookId, int quantity) {
+        if (quantity <= 0) {
+            cartRepository.deleteByUserIdAndBook_BookId(userId, bookId);
+            return null;
+        }
         Cart cart = cartRepository.findByUserIdAndBook_BookId(userId, bookId)
                 .orElseThrow(() -> new RuntimeException("장바구니 항목을 찾을 수 없습니다."));
         cart.setQuantity(quantity);
