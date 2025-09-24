@@ -155,5 +155,10 @@
     tabs.member.btn.onclick = () => show('member');
     tabs.guest .btn.onclick = () => show('guest');
 </script>
+<c:if test="${signupDone}">
+    <script>
+        alert("회원가입이 완료되었습니다. 로그인 해주세요.");
+    </script>
+</c:if>
 </body>
 </html>

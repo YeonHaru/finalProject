@@ -77,7 +77,7 @@
 
                                 <c:choose>
                                     <c:when test="${empty nextTier}">
-                                        <div class="text-success">축하합니다! 최고 등급(GOLD)입니다 🎉</div>
+                                        <div class="text-success">축하합니다! 최고 등급(GOLD)입니다</div>
                                     </c:when>
                                     <c:otherwise>
                                         <div>

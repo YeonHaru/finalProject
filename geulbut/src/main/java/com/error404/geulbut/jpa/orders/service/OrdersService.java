@@ -51,13 +51,13 @@ public class OrdersService {
         });
 
         Orders savedOrder = ordersRepository.save(order);
-        Orders reloadedOrder= ordersRepository.findWithItemsAndBooksByOrderId(savedOrder.getOrderId())
+        Orders reloadedOrder = ordersRepository.findWithItemsAndBooksByOrderId(savedOrder.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 재조회 실패 id=" + savedOrder.getOrderId()));
         return mapStruct.toDto(reloadedOrder);
     }
 
     @Transactional(readOnly = true)
-    public OrdersDto getOrder(Long orderId){
+    public OrdersDto getOrder(Long orderId) {
         Orders order = ordersRepository.findWithItemsAndBooksByOrderId(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다. id=" + orderId));
         return mapStruct.toDto(order);
@@ -72,7 +72,7 @@ public class OrdersService {
     }
 
 
-//    주문 상태 변경 (예: PENDING -> PAID -> SHIPPED/CANCELLED)
+    //    주문 상태 변경 (예: PENDING -> PAID -> SHIPPED/CANCELLED)
     @Transactional // 추가:덕규
 
     public OrdersDto updateOrderStatus(Long orderId, String newStatus) {
@@ -80,6 +80,13 @@ public class OrdersService {
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없음. id=" + orderId));
 
         String oldStatus = nvl(order.getStatus());
+
+//     배송완료 시각 기록 (DB에 DELIVERED_AT 하나만 추가하는 최소 설계)
+        if ("DELIVERED".equalsIgnoreCase(newStatus)) {
+            if (order.getDeliveredAt() == null) {
+                order.setDeliveredAt(java.time.LocalDateTime.now());
+            }
+        }
 
         // 1) 상태 저장
         order.setStatus(newStatus);
@@ -101,12 +108,17 @@ public class OrdersService {
     }
 
 
-    private static long nz(Long v) { return v == null ? 0L : v; }
-    private static String nvl(String s) { return (s == null) ? "" : s; }
+    private static long nz(Long v) {
+        return v == null ? 0L : v;
+    }
 
-//    주문 삭제
+    private static String nvl(String s) {
+        return (s == null) ? "" : s;
+    }
+
+    //    주문 삭제
     @Transactional
-    public void deleteOrder(Long orderId, String userId){
+    public void deleteOrder(Long orderId, String userId) {
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
 
@@ -118,4 +130,40 @@ public class OrdersService {
         ordersRepository.delete(order);
     }
 
+    //    배송조회 페이지 구현
+    public enum ViewDeliveryStatus {READY, IN_TRANSIT, DELIVERED}
+
+    public static class DeliveryView {
+        private final ViewDeliveryStatus viewDeliveryStatus;
+        private final OrdersDto ordersDto;
+
+        public DeliveryView(ViewDeliveryStatus viewDeliveryStatus, OrdersDto ordersDto) {
+            this.viewDeliveryStatus = viewDeliveryStatus;
+            this.ordersDto = ordersDto;
+        }
+        public ViewDeliveryStatus getViewDeliveryStatus() {return viewDeliveryStatus;}
+        public OrdersDto getOrdersDto() {return ordersDto;}
+
+        public String getViewDeliveryStatusName() {
+            return viewDeliveryStatus == null ? "" : viewDeliveryStatus.name();
+        }
 }
+@Transactional(readOnly = true)
+public DeliveryView buildDeliveryView (Long orderId) {
+    OrdersDto ordersDto = getOrder(orderId);
+    ViewDeliveryStatus vs = resolveViewStatus(ordersDto);
+    return new DeliveryView(vs, ordersDto);
+    }
+private ViewDeliveryStatus resolveViewStatus(OrdersDto o) {
+    if ("DELIVERED".equalsIgnoreCase(o.getStatus()) || o.getDeliveredAt() != null) {
+        return ViewDeliveryStatus.DELIVERED;
+    }
+    if ("SHIPPED".equalsIgnoreCase(o.getStatus())) {
+        return ViewDeliveryStatus.IN_TRANSIT;
+    }
+        return ViewDeliveryStatus.READY;
+    }
+}
+
+
+

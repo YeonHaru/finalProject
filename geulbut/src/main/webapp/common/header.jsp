@@ -110,10 +110,32 @@
                         <c:set var="displayName" value="${userName}" scope="session"/>
                     </c:if>
 
+                    <%-- ▼ 추가: 헤더에서 사용할 orderId를 안전하게 추출 --%>
+                    <c:set var="orderIdHeader"
+                           value="${not empty param.orderId
+                     ? param.orderId
+                     : (not empty delivery and not empty delivery.order and not empty delivery.order.orderId
+                         ? delivery.order.orderId
+                         : sessionScope.lastOrderId)}"/>
+
                     <li><a href="#"><span>안녕하세요, ${fn:escapeXml(userName)} 님!</span></a></li>
                     <li><a href="${ctx}/mypage">마이페이지</a></li>
                     <li><a href="${ctx}/logout">로그아웃</a></li>
                     <li><a href="${ctx}/notice">공지사항</a></li>
+
+                    <%-- ▼ 주문아이디가 있으면 해당 주문 배송조회로, 없으면 내 주문목록으로 --%>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.lastOrderId}">
+                            <li>
+                                <a href="<c:url value='/orders/${sessionScope.lastOrderId}/delivery'/>">배송조회</a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li>
+                                <a href="${ctx}/mypage">배송조회</a> <%-- orderId 모르면 안전한 fall-back --%>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
                 </sec:authorize>
 
                 <!-- 비로그인 -->
@@ -121,6 +143,8 @@
                     <li><a href="${ctx}/login">로그인</a></li>
                     <li><a href="${ctx}/signup">회원가입</a></li>
                     <li><a href="${ctx}/notice">공지사항</a></li>
+                    <li><a href="${ctx}/login?redirect=%2Fmypage%2Forders">배송조회</a></li>
+
                 </sec:authorize>
             </ul>
         </nav>

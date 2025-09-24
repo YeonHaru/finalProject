@@ -6,6 +6,7 @@ import com.error404.geulbut.jpa.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class Orders extends BaseTimeEntity {
     private String paymentMethod;
     private String recipient;
     private String address;
+
+    private LocalDateTime deliveredAt;
 
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -68,10 +71,16 @@ public class Orders extends BaseTimeEntity {
         item.setOrder(this);
     }
 
+
+    public void markDelivered() {
+        if (this.deliveredAt == null) this.deliveredAt = LocalDateTime.now();
+    }
+
     // 기존 userId를 건드리지 않고 Users 엔티티와 연관
 //    관리자 배송조회에서 이름 가져오기
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
     private Users user;
+
 
 }
