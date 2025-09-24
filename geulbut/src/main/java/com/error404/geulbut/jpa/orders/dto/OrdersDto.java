@@ -21,5 +21,7 @@ public class OrdersDto {
     private String paymentMethod;
 
     private List<OrderItemDto> items;
+
+    private String recipient;
 }
 
