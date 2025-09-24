@@ -34,6 +34,7 @@ public class Orders extends BaseTimeEntity {
     private String address;
 
     private LocalDateTime deliveredAt;
+    private String  merchantUid;
 
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,7 +76,8 @@ public class Orders extends BaseTimeEntity {
     public void markDelivered() {
         if (this.deliveredAt == null) this.deliveredAt = LocalDateTime.now();
     }
-
+    private LocalDateTime paidAt;       // 결제시간 추가
+    
     // 기존 userId를 건드리지 않고 Users 엔티티와 연관
 //    관리자 배송조회에서 이름 가져오기
     @ManyToOne(fetch = FetchType.LAZY)

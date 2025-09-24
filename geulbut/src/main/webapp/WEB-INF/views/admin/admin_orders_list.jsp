@@ -49,9 +49,12 @@
     <th>총액</th>
     <th>상태</th>
     <th>결제수단</th>
+    <th>주문번호</th> <!-- 추가 -->
     <th>수령인</th>
     <th>주소</th>
     <th>주문일</th>
+    <th>결제일시</th>
+    <th>배송일시</th>
     <th>상세보기</th>
   </tr>
   </thead>
@@ -74,9 +77,12 @@
             </select>
           </td>
           <td>${order.paymentMethod}</td>
+          <td>${order.merchantUid}</td> <!-- 추가 -->
           <td>${order.recipient}</td>
           <td>${order.address}</td>
           <td>${order.createdAt}</td>
+          <td>${order.paidAt}</td>
+          <td>${order.deliveredAt}</td>
           <td>
             <button class="btn-detail" data-id="${order.orderId}">상세보기</button>
           </td>
@@ -100,6 +106,7 @@
             </select>
           </td>
           <td>${order.paymentMethod}</td>
+          <td>${order.merchantUid}</td> <!-- 추가 -->
           <td>${order.recipient}</td>
           <td>${order.address}</td>
           <td>${order.createdAt}</td>
