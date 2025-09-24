@@ -16,20 +16,6 @@
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
-
-<div class="theme-switcher">
-    <button data-theme="light">라이트</button>
-    <button data-theme="dark">다크</button>
-    <button data-theme="blue">블루</button>
-    <button data-theme="red">레드</button>
-    <button data-theme="green">그린</button>
-    <button data-theme="pink">핑크</button>
-    <button data-theme="mint">민트</button>
-    <button data-theme="lilac">라일락</button>
-    <button data-theme="peach">피치</button>
-
-</div>
-
 <div class="page">
     <!-- 편집장의 선택 섹션 -->
     <section class="editor-choice-section">
@@ -1817,7 +1803,7 @@
 </div>
 </section>
 </div>
-<script src="/js/theme.js"></script>
+<%--<script src="/js/theme.js"></script>--%>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 

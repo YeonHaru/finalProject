@@ -178,7 +178,7 @@
                     <div class="group-title">👥 회원 관리</div>
                     <ul>
                         <li><a href="${ctx}/admin/users-info">회원 조회 & 권한변경</a></li>
-                        <li><a href="${ctx}/admin/orders">배송 조회</a></li>
+                        <li><a href="${ctx}/admin/orders">전체 배송 조회</a></li>
                     </ul>
                 </div>
                 <div class="admin-group">

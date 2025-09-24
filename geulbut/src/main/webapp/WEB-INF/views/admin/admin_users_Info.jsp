@@ -16,19 +16,7 @@
     <script src="/js/theme.js"></script>
 </head>
 <body>
-<jsp:include page="/common/header.jsp"></jsp:include>
-
-<div class="theme-switcher">
-    <button data-theme="light">라이트</button>
-    <button data-theme="dark">다크</button>
-    <button data-theme="blue">블루</button>
-    <button data-theme="red">레드</button>
-    <button data-theme="green">그린</button>
-    <button data-theme="pink">핑크</button>
-    <button data-theme="mint">민트</button>
-    <button data-theme="lilac">라일락</button>
-    <button data-theme="peach">피치</button>
-</div>
+<jsp:include page="/common/admin_page_header.jsp"></jsp:include>
 
 <div class="page">
     <h1 class="mt-4 mb-4">회원 관리</h1>
