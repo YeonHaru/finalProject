@@ -24,6 +24,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const BOOKS_SAVE_BTN_ID = 'booksModalSaveBtn';
 
+    // 추가: 모달 전용 요소 참조 & 상태
+    const booksPager = document.getElementById('booksPager');
+    const booksModalFooter = document.getElementById('booksModalFooter');
+
+    const PAGE_SIZE = 20;
+    let paging = { page: 1, size: PAGE_SIZE, total: 0, pages: 0 };
+    let allBooksCache = [];                 // 검색 결과 전체 (클라이언트 페이징)
+    let originalLinkedIds = new Set();      // 서버에서 가져온 최초 연결 상태
+    let selectedBookIds  = new Set();       // 사용자가 체크로 만든 현재 상태(페이지 간 유지)
+
+
     let currentEditId = null;
     let currentManageHashtagId = null;
 
@@ -59,14 +70,22 @@ document.addEventListener('DOMContentLoaded', function () {
         booksModalTitle.textContent = title;
         if (booksList) booksList.innerHTML = '';
     }
+
     function closeBooksModal() {
         if (!booksModal) return;
         booksModal.style.display = 'none';
         if (booksList) booksList.innerHTML = '';
+        if (booksPager) booksPager.innerHTML = '';
         currentManageHashtagId = null;
         const saveBtn = document.getElementById(BOOKS_SAVE_BTN_ID);
         if (saveBtn) saveBtn.remove();
         if (bookKeywordInput) bookKeywordInput.value = '';
+
+        // 상태 초기화
+        allBooksCache = [];
+        originalLinkedIds = new Set();
+        selectedBookIds = new Set();
+        paging = { page: 1, size: PAGE_SIZE, total: 0, pages: 0 };
     }
 
     // 바인딩
@@ -200,77 +219,136 @@ document.addEventListener('DOMContentLoaded', function () {
     async function loadBooks(hashtagId, keyword = '') {
         if (!hashtagId) return;
         try {
+            // 1) 전체 후보 도서
             const resAll = await fetch(`${ctx}/admin/books/all?keyword=${encodeURIComponent(keyword)}`);
             if (!resAll.ok) throw new Error('도서를 불러오는 중 오류 발생');
-            const allBooks = await resAll.json();
+            allBooksCache = await resAll.json();
 
+            // 2) 연결된 도서
             const resLinked = await fetch(`${ctx}/admin/hashtags/${hashtagId}/books`);
             if (!resLinked.ok) throw new Error('연결된 도서를 불러오는 중 오류 발생');
             const linkedBooks = await resLinked.json();
-            const linkedIds = linkedBooks.map(b => Number(b.bookId));
 
-            booksList.innerHTML = '';
-            const ul = document.createElement('ul');
+            originalLinkedIds = new Set(linkedBooks.map(b => Number(b.bookId)));
+            selectedBookIds   = new Set(originalLinkedIds); // 시작 상태 = 서버 상태
 
-            allBooks.forEach(book => {
-                const li = document.createElement('li');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.value = book.bookId;
-                checkbox.checked = linkedIds.includes(Number(book.bookId));
-                checkbox.className = 'book-checkbox';
-                li.appendChild(checkbox);
-                li.appendChild(document.createTextNode(` ${book.title} (${book.isbn})`));
-                ul.appendChild(li);
-            });
-            booksList.appendChild(ul);
+            // 3) 페이징 설정 + 첫 페이지 렌더
+            paging.total = allBooksCache.length;
+            paging.pages = Math.max(1, Math.ceil(paging.total / paging.size));
+            paging.page  = 1;
 
-            let saveBtn = document.getElementById(BOOKS_SAVE_BTN_ID);
-            if (!saveBtn) {
-                saveBtn = document.createElement('button');
-                saveBtn.id = BOOKS_SAVE_BTN_ID;
-                saveBtn.type = 'button';
-                saveBtn.textContent = '저장';
-                saveBtn.className = 'btn btn-accent btn--glass';
-                booksList.parentElement.appendChild(saveBtn);
-            }
-
-            saveBtn.onclick = async () => {
-                saveBtn.disabled = true;
-                try {
-                    const checkboxes = booksList.querySelectorAll('input.book-checkbox');
-                    const toAdd = [];
-                    const toRemove = [];
-
-                    checkboxes.forEach(cb => {
-                        const id = Number(cb.value);
-                        if (cb.checked && !linkedIds.includes(id)) toAdd.push(id);
-                        if (!cb.checked && linkedIds.includes(id)) toRemove.push(id);
-                    });
-
-                    for (const id of toAdd) {
-                        const r = await fetch(`${ctx}/admin/hashtags/${hashtagId}/books/${id}`, { method: 'POST' });
-                        if (!r.ok) console.error('추가 실패', id);
-                    }
-                    for (const id of toRemove) {
-                        const r = await fetch(`${ctx}/admin/hashtags/${hashtagId}/books/${id}`, { method: 'DELETE' });
-                        if (!r.ok) console.error('삭제 실패', id);
-                    }
-
-                    showToast('도서 연결이 업데이트되었습니다');
-                    closeBooksModal();
-                    setTimeout(() => location.reload(), 800);
-                } catch (err) {
-                    console.error(err);
-                    showToast('도서 연결 업데이트 중 오류 발생', 'error');
-                } finally {
-                    saveBtn.disabled = false;
-                }
-            };
+            renderBooksPage();           // ← 아래 함수가 리스트 + 페이저를 그립니다.
+            ensureBooksSaveButton();     // 저장 버튼 표시/핸들러 연결
 
         } catch (err) {
             console.error(err);
             showToast(err.message || '도서 로드 중 오류', 'error');
         }
     }
+    function renderBooksPage(){
+        // slice
+        const start = (paging.page - 1) * paging.size;
+        const end   = Math.min(start + paging.size, paging.total);
+        const pageItems = allBooksCache.slice(start, end);
+
+        // 리스트 DOM
+        booksList.innerHTML = '';
+        const ul = document.createElement('ul');
+
+        pageItems.forEach(book => {
+            const idNum = Number(book.bookId);
+            const li = document.createElement('li');
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = idNum;
+            checkbox.className = 'book-checkbox';
+            checkbox.checked = selectedBookIds.has(idNum);
+
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) selectedBookIds.add(idNum);
+                else selectedBookIds.delete(idNum);
+            });
+
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(` ${book.title} (${book.isbn})`));
+            ul.appendChild(li);
+        });
+
+        booksList.appendChild(ul);
+
+        // 페이저 DOM
+        if (booksPager){
+            booksPager.innerHTML = '';
+            for (let i=1; i<=paging.pages; i++){
+                const a = document.createElement('a');
+                a.href = '#';
+                a.className = `page-btn ${i === paging.page ? 'active' : ''}`;
+                a.dataset.page = String(i);
+                a.textContent = String(i);
+                booksPager.appendChild(a);
+            }
+        }
+    }
+    booksPager?.addEventListener('click', (e) => {
+        const a = e.target.closest('a.page-btn');
+        if (!a) return;
+        e.preventDefault();
+        const p = Number(a.dataset.page || '1');
+        if (p >= 1 && p <= paging.pages){
+            paging.page = p;
+            renderBooksPage();
+        }
+    });
+    function ensureBooksSaveButton(){
+        let saveBtn = document.getElementById(BOOKS_SAVE_BTN_ID);
+        if (!saveBtn){
+            saveBtn = document.createElement('button');
+            saveBtn.id = BOOKS_SAVE_BTN_ID;
+            saveBtn.type = 'button';
+            saveBtn.textContent = '저장';
+            saveBtn.className = 'btn btn-accent btn--glass';
+            // 저장 버튼을 '닫기' 버튼 바로 앞에 배치 → [저장][닫기] 순서
+            const container = (booksModalFooter || booksList.parentElement);
+            const closeBtn  = document.getElementById('booksModalClose');
+            if (container && closeBtn && closeBtn.parentElement === container) {
+                container.insertBefore(saveBtn, closeBtn);
+                } else {
+                    container.appendChild(saveBtn);
+                }
+        }
+
+        saveBtn.onclick = async () => {
+            saveBtn.disabled = true;
+            try {
+                // 전체 선택 상태 vs 원본 상태를 비교 (페이지와 무관)
+                const toAdd = [];
+                const toRemove = [];
+
+                // 추가: selected - original
+                selectedBookIds.forEach(id => { if (!originalLinkedIds.has(id)) toAdd.push(id); });
+                // 제거: original - selected
+                originalLinkedIds.forEach(id => { if (!selectedBookIds.has(id)) toRemove.push(id); });
+
+                for (const id of toAdd) {
+                    const r = await fetch(`${ctx}/admin/hashtags/${currentManageHashtagId}/books/${id}`, { method: 'POST' });
+                    if (!r.ok) console.error('추가 실패', id);
+                }
+                for (const id of toRemove) {
+                    const r = await fetch(`${ctx}/admin/hashtags/${currentManageHashtagId}/books/${id}`, { method: 'DELETE' });
+                    if (!r.ok) console.error('삭제 실패', id);
+                }
+
+                showToast('도서 연결이 업데이트되었습니다');
+                closeBooksModal();
+                setTimeout(() => location.reload(), 800);
+            } catch (err) {
+                console.error(err);
+                showToast('도서 연결 업데이트 중 오류 발생', 'error');
+            } finally {
+                saveBtn.disabled = false;
+            }
+        };
+    }
+
 });

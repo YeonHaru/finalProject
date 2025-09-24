@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
 </head>
-<body class="bg-main text-main admin-authors">
+<body class="bg-main text-main admin-authors has-bg">
 <jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">

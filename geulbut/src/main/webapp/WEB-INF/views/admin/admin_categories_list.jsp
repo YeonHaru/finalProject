@@ -106,17 +106,27 @@
 <div id="booksModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-content" role="document">
         <h2 id="booksModalTitle">카테고리 속 책 목록</h2>
-        <table class="admin-table admin-books-table" id="booksTable">
+           <!-- 스크롤 래퍼: 작을 땐 스크롤, 클 땐 넉넉한 폭으로 -->
+           <div class="modal-table-scroll">
+             <table class="admin-table admin-books-table" id="booksTable">
+               <colgroup>
+                 <col style="width: 84px;" />     <!-- ID -->
+                 <col style="width: auto;" />     <!-- 제목 (가변) -->
+                 <col style="width: 160px;" />    <!-- 저자 -->
+                 <col style="width: 160px;" />    <!-- 출판사 -->
+                 <col style="width: 110px;" />    <!-- 가격 -->
+               </colgroup>
             <thead>
             <tr>
                 <th>ID</th><th>제목</th><th>저자</th><th>출판사</th><th>가격</th>
             </tr>
             </thead>
             <tbody></tbody>
-        </table>
-        <div class="t-right" style="margin-top:10px;">
-            <button id="booksModalCloseBtn" type="button" class="btn btn-delete btn--glass">닫기</button>
-        </div>
+                      </table>
+                  </div>
+           <div class="modal-footer">
+             <button id="booksModalCloseBtn" type="button" class="btn btn-delete btn--glass">닫기</button>
+           </div>
     </div>
 </div>
 

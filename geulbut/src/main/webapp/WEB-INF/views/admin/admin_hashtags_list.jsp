@@ -129,7 +129,12 @@
         <!-- 검색 결과 리스트 -->
         <div id="booksList" class="modal__scroll"></div>
 
-        <div class="t-right" style="margin-top:10px;">
+        <!-- 모달 내부 전용 페이지네이션 -->
+        <div id="booksPager" class="pagination modal-pagination"></div>
+
+        <!-- 우하단 정렬 푸터 -->
+        <div class="modal__footer" id="booksModalFooter">
+            <!-- 저장 버튼은 JS가 필요할 때 주입합니다 -->
             <button id="booksModalClose" type="button" class="btn btn-delete btn--glass">닫기</button>
         </div>
     </div>
