@@ -4,6 +4,7 @@ import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.jpa.qna.dto.QnaDto;
 import com.error404.geulbut.jpa.qna.entity.QnaEntity;
 import com.error404.geulbut.jpa.qna.repository.QnaRepository;
+import com.error404.geulbut.jpa.qnacomment.service.QnaCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +21,7 @@ import java.util.List;
 public class QnaService {
 
     private final QnaRepository qnaRepository;
-    private final MapStruct mapStruct;
+    private final QnaCommentService qnaCommentService;
 
     public void saveQna(QnaDto qnaDto) {
         QnaEntity entity = QnaEntity.builder()
@@ -56,7 +57,33 @@ public class QnaService {
     public List<QnaEntity> findAll() {
         return qnaRepository.findAll();
     }
+    // 특정 QnA 단건 조회 + 댓글 포함
+    @Transactional
+    public QnaDto getQnaWithComments(Long id) {
+        QnaEntity entity = qnaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("글 없음"));
 
+        if (entity.getViewCount() == null) entity.setViewCount(0L);
+        entity.setViewCount(entity.getViewCount() + 1);
+        qnaRepository.save(entity);
+
+        QnaDto dto = QnaDto.builder()
+                .id(entity.getQnaId())
+                .title(entity.getTitle())
+                .qContent(entity.getQContent())
+                .qAt(entity.getQAt())
+                .aId(entity.getAId())
+                .aContent(entity.getAContent())
+                .aAt(entity.getAAt())
+                .userId(entity.getUserId())
+                .viewCount(entity.getViewCount())
+                .build();
+
+        List comments = qnaCommentService.getCommentsByQna(entity.getQnaId());
+        dto.setComments(comments);
+
+        return dto;
+    }
     // 특정 QnA 조회
     public QnaDto findById(Long id) {
         QnaEntity entity = qnaRepository.findById(id)

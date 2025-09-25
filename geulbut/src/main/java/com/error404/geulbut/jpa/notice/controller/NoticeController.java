@@ -36,16 +36,23 @@ public class NoticeController {
 
     // 공지 상세보기
     @GetMapping("/noticeText")
-    public String noticeText(@RequestParam("id") Long id, Model model) {
+    public String noticeText(@RequestParam("id") Long id,
+                             @RequestParam(value = "commentPage", defaultValue = "1") int commentPage,
+                             Model model) {
 
-        // 조회수 증가 + 단건 조회
         NoticeDto notice = noticeService.getNoticeAndIncreaseViewCount(id);
         model.addAttribute("notice", notice);
 
-        List<NoticeCommentDto> comments = noticeCommentService.getCommentsByNotice(id);
-        model.addAttribute("comments", comments);
+        int commentSize = 3; // 한 페이지 댓글 3개
+        var commentPageData = noticeCommentService.getCommentsByNotice(id, commentPage, commentSize);
+
+        model.addAttribute("comments", commentPageData.getContent());
+        model.addAttribute("commentCurrentPage", commentPage);
+        model.addAttribute("commentTotalPage", commentPageData.getTotalPages());
+
         return "notice/noticeText";
     }
+
 
     // 공지 작성 페이지
     @GetMapping("/noticeWrite")

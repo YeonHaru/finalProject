@@ -1,8 +1,10 @@
 package com.error404.geulbut.jpa.qna.dto;
 
+import com.error404.geulbut.jpa.qnacomment.dto.QnaCommentDto;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +21,7 @@ public class QnaDto {
     private Date  aAt; // 로그인 된 유저가 댓글 단 시간
     private Long viewCount;
     private String userId;
+    // 추가: 댓글 리스트
+    private List<QnaCommentDto> comments;
 }
 

@@ -33,6 +33,13 @@ $(function () {
         $('#bookModal').css('display','flex').attr('aria-hidden','false');
     });
 
+
+
+    function closeBookModal(){
+        $('#bookModal').hide().attr('aria-hidden','true');
+    }
+    $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
+
     // 모달 닫기
     $('#btnCloseModal, #btnCancel').on('click', function () {
         $('#bookModal').hide();

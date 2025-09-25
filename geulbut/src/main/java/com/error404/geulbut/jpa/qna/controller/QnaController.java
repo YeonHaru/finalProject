@@ -28,6 +28,14 @@ public class QnaController {
             Model model) {
 
         var pageQnas = qnaService.getQnas(page, size); // Page<QnaDto>
+        List<QnaDto> qnas = pageQnas.getContent();
+
+        // 각 QnaDto에 첫 번째 댓글(답변자) 세팅
+        for (QnaDto qna : qnas) {
+            List<QnaCommentDto> comments = qnaCommentService.getCommentsByQna(qna.getId());
+            qna.setComments(comments); // comments 필드에 세팅
+        }
+
         model.addAttribute("qnas", pageQnas.getContent()); // 현재 페이지 글 목록
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", pageQnas.getTotalPages());
@@ -38,17 +46,30 @@ public class QnaController {
 
     // QnA 상세보기
     @GetMapping("/qnaText")
-    public String qnaText(@RequestParam("id") Long id, Model model) {
+    public String qnaText(
+            @RequestParam("id") Long id,
+            @RequestParam(value = "commentPage", defaultValue = "1") int commentPage,
+            Model model) {
+
         // 글 조회 + 조회수 증가
         QnaDto qna = qnaService.getQnaAndIncreaseViewCount(id);
         model.addAttribute("qna", qna);
 
-        // 댓글 조회
-        List<QnaCommentDto> comments = qnaCommentService.getCommentsByQna(id);
-        model.addAttribute("comments", comments);
+        // 댓글 페이징 조회 (한 페이지에 5개씩)
+        int pageSize = 3;
+        var pageComments = qnaCommentService.getCommentsByQnaPaged(id, commentPage, pageSize);
+
+        model.addAttribute("comments", pageComments.getContent());
+        model.addAttribute("commentCurrentPage", commentPage);
+        model.addAttribute("commentTotalPage", pageComments.getTotalPages());
+
+        // 댓글 전체 개수
+        model.addAttribute("totalCommentCount", pageComments.getTotalElements());
 
         return "qna/qnaText";
     }
+
+
 
     // QnA 글쓰기 페이지
     @GetMapping("/qnaWrite")
