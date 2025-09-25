@@ -59,6 +59,17 @@ public class AdminBooksController {
         }
     }
 
+    // 관리자용 도서 상세 페이지 (JSP 반환)
+    @GetMapping("/{bookId}/detail")
+    public String bookDetailPage(@PathVariable Long bookId, Model model) {
+        BooksDto book = adminBooksService.getBookById(bookId);
+        if (book == null) {
+            throw new IllegalArgumentException("도서를 찾을 수 없습니다. bookId=" + bookId);
+        }
+        model.addAttribute("book", book);
+        return "books/book_detail"; // <- 여기 폴더명 books로 수정
+    }
+
     // 도서 등록
     @PostMapping
     @ResponseBody

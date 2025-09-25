@@ -171,6 +171,9 @@
                         <%-- ▼ 추가: 헤더에서 사용할 orderId를 안전하게 추출 --%>
                         <c:set var="currentOrderId"
                                value="${not empty param.orderId
+                    <%-- ▼ 추가: 헤더에서 사용할 orderId를 안전하게 추출 --%>
+                    <c:set var="currentOrderId"
+                           value="${not empty param.orderId
                  ? param.orderId
                  : (not empty delivery and not empty delivery.ordersDto and not empty delivery.ordersDto.orderId
                       ? delivery.ordersDto.orderId
@@ -196,6 +199,26 @@
                             </c:otherwise>
                         </c:choose>
                     </sec:authorize>
+
+
+                    <li><a href="${ctx}/mypage">마이페이지</a></li>
+                    <li><a href="${ctx}/logout">로그아웃</a></li>
+                    <li><a href="${ctx}/notice">공지사항</a></li>
+
+                    <%-- ▼ 주문아이디가 있으면 해당 주문 배송조회로, 없으면 내 주문목록으로 --%>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.lastOrderId}">
+                            <li>
+                                <a href="<c:url value='/orders/${sessionScope.lastOrderId}/delivery'/>">배송조회</a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li>
+                                <a href="${ctx}/mypage">배송조회</a> <%-- orderId 모르면 안전한 fall-back --%>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </sec:authorize>
 
                     <!-- 비로그인 -->
                     <sec:authorize access="!isAuthenticated()">

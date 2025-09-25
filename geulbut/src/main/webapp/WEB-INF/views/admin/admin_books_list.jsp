@@ -7,6 +7,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8"/>
+    <script>window.ctx = "${ctx}";</script>
     <title>관리자 - 도서 관리</title>
 
     <link rel="stylesheet" href="${ctx}/css/00_common.css"/>
@@ -16,7 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-main text-main admin-books">
+<body class="bg-main text-main admin-books has-bg">
 <jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
@@ -37,11 +38,11 @@
 
     <!-- 도서 목록 테이블 -->
     <div class="table-scroll">
-        <table class="admin-table admin-books-table" id="booksTable">
+        <table class="admin-table admin-books-table" id="booksTable" data-ctx="${ctx}">
             <colgroup>
                 <col class="col-id"/>
                 <col class="col-title"/>
-                <col class="col-img"/> <!-- 이미지 컬럼 추가 -->
+                <col class="col-img"/>
                 <col class="col-isbn"/>
                 <col class="col-author"/>
                 <col class="col-publisher"/>
@@ -103,8 +104,11 @@
                         </td>
                         <td>${book.createdAt}</td>
                         <td>
+
+                            <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
                             <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
                             <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+
                         </td>
                     </tr>
                 </c:if>
@@ -129,7 +133,7 @@
 <p class="ht-footnote">© Geulbut Admin Books List</p>
 
 <!-- 도서 등록/수정 모달 -->
-<div id="bookModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
+<div id="bookModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none;">
     <div class="modal__dialog" role="document">
         <div class="modal__header">
             <h3 id="modalTitle">도서 등록</h3>
@@ -164,16 +168,17 @@
                          style="max-width:200px; max-height:300px; display:none;"/>
                 </div>
             </div>
+
             <div class="modal__footer">
-                <button type="submit" class="btn btn-accent">저장</button>
-                <button type="button" class="btn" id="btnCancel">닫기</button>
+                 <button type="submit" class="btn btn-cer-secondary save-btn">저장</button>
+                 <button type="button" class="btn btn-cer-success delete-btn" id="btnCancel">닫기</button>
             </div>
+
         </form>
     </div>
 </div>
 
 <script src="${ctx}/js/admin/admin_books_list.js"></script>
-<!-- 관리자 헤더 드롭다운 스크립트 -->
 <script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>
