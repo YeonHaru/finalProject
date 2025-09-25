@@ -27,7 +27,6 @@ public class OrdersDto {
     private String  merchantUid;
     private List<OrderItemDto> items;
 
-
     private LocalDateTime paidAt;
     private LocalDateTime deliveredAt;
 

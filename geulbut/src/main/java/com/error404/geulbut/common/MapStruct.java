@@ -145,7 +145,7 @@ public interface MapStruct {
 
     @Mapping(
             target = "createdAt",
-            expression = "java(entity.getCreatedAt() == null ? null : entity.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd\")))"
+            source = "createdAt" // LocalDateTime 그대로 전달
     )
     @Mapping(target = "items", source = "items")
     @Mapping(target = "userName", expression = "java(entity.getUser() != null ? entity.getUser().getName() : null)")

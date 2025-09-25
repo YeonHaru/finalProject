@@ -3,7 +3,6 @@ package com.error404.geulbut.jpa.admin.controller;
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.admin.service.AdminOrdersService;
 import com.error404.geulbut.jpa.orders.dto.OrdersDto;
-import com.error404.geulbut.jpa.orders.entity.Orders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -23,7 +21,7 @@ public class AdminOrdersController {
     private final AdminOrdersService adminOrdersService;
     private final ErrorMsg errorMsg;
 
-    // 주문 목록 페이지(페이징+필터)
+    // 주문 목록 페이지(페이징 + 필터)
     @GetMapping
     public String listOrdersPage(Model model,
                                  @RequestParam(defaultValue = "0") int page,
@@ -31,20 +29,15 @@ public class AdminOrdersController {
                                  @RequestParam(required = false) String status,
                                  @RequestParam(required = false) String userId) {
 
-        Page<OrdersDto> ordersPage;
+        // 서비스에서 필터 + 페이징 처리 (4개의 인자 전달)
+        Page<OrdersDto> ordersPage = adminOrdersService.getAllOrdersWithItems(
+                userId != null && !userId.isEmpty() ? userId : null,
+                status != null && !status.isEmpty() ? status : null,
+                page,
+                size
+        );
 
-        if ((status == null || status.isEmpty()) && (userId == null || userId.isEmpty())) {
-            ordersPage = adminOrdersService.getAllOrders(page, size);
-            model.addAttribute("ordersPage", ordersPage);
-        } else {
-            List<OrdersDto> filteredOrders = adminOrdersService.getAllOrdersWithItems()
-                    .stream()
-                    .filter(o -> (status == null || status.isEmpty() || o.getStatus().equalsIgnoreCase(status)) &&
-                            (userId == null || userId.isEmpty() || o.getUserId().equalsIgnoreCase(userId)))
-                    .collect(Collectors.toList());
-            model.addAttribute("ordersList", filteredOrders);
-        }
-
+        model.addAttribute("ordersPage", ordersPage);
         model.addAttribute("status", status);
         model.addAttribute("userId", userId);
         return "admin/admin_orders_list";
@@ -54,20 +47,16 @@ public class AdminOrdersController {
     @GetMapping("/{orderId}")
     @ResponseBody
     public OrdersDto getOrderById(@PathVariable Long orderId) {
-        // 엔티티 가져오기
-        Orders order = adminOrdersService.getOrderByIdEntity(orderId);
-
-        // DTO 변환
-        OrdersDto dto = adminOrdersService.mapToDto(order);
-
-        return dto;
+        return adminOrdersService.getOrderById(orderId);
     }
 
-    // 전체 주문 조회(items + books 포함)
+    // 전체 주문 조회(items + books 포함, 필터 없이)
     @GetMapping("/all")
     @ResponseBody
-    public List<OrdersDto> getAllOrdersWithItems() {
-        return adminOrdersService.getAllOrdersWithItems();
+    public List<OrdersDto> getAllOrdersWithItemsNoFilter() {
+        // userId, status, page, size 없이 전체 조회
+        return adminOrdersService.getAllOrdersWithItems(null, null, 0, Integer.MAX_VALUE)
+                .getContent();
     }
 
     // 주문 상태 변경
@@ -76,4 +65,12 @@ public class AdminOrdersController {
     public OrdersDto changeStatus(@PathVariable Long orderId, @RequestParam String status) {
         return adminOrdersService.updateOrderStatus(orderId, status);
     }
+
+    // 신규 주문 생성
+    @PostMapping("/create")
+    @ResponseBody
+    public OrdersDto createOrder(@RequestBody OrdersDto dto) {
+        return adminOrdersService.createOrder(dto);
+    }
+
 }
