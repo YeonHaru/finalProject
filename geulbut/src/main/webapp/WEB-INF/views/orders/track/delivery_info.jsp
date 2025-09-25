@@ -278,8 +278,21 @@
 <!-- JS: 탭/토글 -->
 <script>
     (function(){
-        const tabs = document.querySelectorAll('.tab');
+        const TAB_KEY = 'delivery.activeTabId';
+        const OPEN_KEY = 'delivery.openDetailIds';
+
+        const tabs   = document.querySelectorAll('.tab');
         const panels = document.querySelectorAll('.panel');
+        const detailButtons = document.querySelectorAll('.detail-toggle');
+
+        // 유틸: 열려있는 detail id 집합을 세션에 저장/로드
+        function loadOpenSet(){
+            try { return new Set(JSON.parse(sessionStorage.getItem(OPEN_KEY) || '[]')); }
+            catch { return new Set(); }
+        }
+        function saveOpenSet(set){
+            sessionStorage.setItem(OPEN_KEY, JSON.stringify(Array.from(set)));
+        }
 
         function activateTab(targetId){
             tabs.forEach(t => {
@@ -292,28 +305,81 @@
                 p.classList.toggle('is-active', active);
                 p.hidden = !active;
             });
+            sessionStorage.setItem(TAB_KEY, targetId);
         }
 
+        // 상세 토글 버튼 바인딩 (+ 상태 저장)
+        detailButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('aria-controls');
+                const panel = document.getElementById(id);
+                const openSet = loadOpenSet();
+
+                const expanded = btn.getAttribute('aria-expanded') === 'true';
+                const willExpand = !expanded;
+
+                btn.setAttribute('aria-expanded', String(willExpand));
+                panel.hidden = !willExpand;
+                btn.textContent = willExpand ? '접기' : '상세보기';
+
+                if (willExpand) openSet.add(id); else openSet.delete(id);
+                saveOpenSet(openSet);
+            });
+        });
+
+        // 탭 전환 이벤트 (+ 상태 저장)
         tabs.forEach(tab => {
-            tab.addEventListener('click', () => activateTab(tab.getAttribute('aria-controls')));
+            const targetId = tab.getAttribute('aria-controls');
+            const onActivate = () => activateTab(targetId);
+
+            tab.addEventListener('click', onActivate);
             tab.addEventListener('keydown', (e) => {
-                if(e.key === 'Enter' || e.key === ' '){
+                if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    activateTab(tab.getAttribute('aria-controls'));
+                    onActivate();
                 }
             });
         });
 
-        document.querySelectorAll('.detail-toggle').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.getAttribute('aria-controls');
-                const panel = document.getElementById(id);
-                const expanded = btn.getAttribute('aria-expanded') === 'true';
-                btn.setAttribute('aria-expanded', String(!expanded));
-                panel.hidden = expanded;
-                btn.textContent = expanded ? '상세보기' : '접기';
-            });
+        // “지난 배송완료 내역” 링크 클릭 직전에 현재 상태 저장 (탭/열림 유지)
+        document.querySelectorAll('.history-list .row-link').forEach(a => {
+            a.addEventListener('click', () => {
+                // 현재 활성 탭 찾기
+                const currentActive = Array.from(panels).find(p => p.classList.contains('is-active'));
+                if (currentActive) sessionStorage.setItem(TAB_KEY, currentActive.id);
+
+                // 현재 열려있는 detail 수집
+                const openIds = Array.from(detailButtons)
+                    .filter(b => b.getAttribute('aria-expanded') === 'true')
+                    .map(b => b.getAttribute('aria-controls'));
+                sessionStorage.setItem(OPEN_KEY, JSON.stringify(openIds));
+            }, { capture: true }); // 캡처 단계에서 먼저 저장 보장
         });
+
+        // 초기 복원 로직: 저장된 탭/디테일 열림 상태 복원
+        function restoreState(){
+            const savedTabId = sessionStorage.getItem(TAB_KEY);
+            if (savedTabId && document.getElementById(savedTabId)) {
+                activateTab(savedTabId);
+            } else {
+                // 서버 렌더 상태를 존중하되, 현재 .panel.is-active가 없다면 첫 번째 탭 활성화
+                const current = Array.from(panels).find(p => p.classList.contains('is-active') && !p.hidden);
+                if (!current && panels[0]) activateTab(panels[0].id);
+            }
+
+            const openSet = loadOpenSet();
+            detailButtons.forEach(btn => {
+                const id = btn.getAttribute('aria-controls');
+                const shouldOpen = openSet.has(id);
+                btn.setAttribute('aria-expanded', String(shouldOpen));
+                const panel = document.getElementById(id);
+                if (panel) panel.hidden = !shouldOpen;
+                btn.textContent = shouldOpen ? '접기' : '상세보기';
+            });
+        }
+
+        // DOM 준비되면 복원
+        restoreState();
     })();
 </script>
 </body>
