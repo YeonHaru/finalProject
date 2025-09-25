@@ -29,14 +29,21 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
             "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Books> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-    // 카테고리별 조회
+    // 카테고리별 조회 (저자/출판사/카테고리 포함)
+    @EntityGraph(attributePaths = {"author", "publisher", "category"})
     List<Books> findByCategory_CategoryId(Long categoryId);
 
-    // 작가별 책 조회
+    // 작가별 책 조회 (저자/출판사/카테고리 포함)
+    @EntityGraph(attributePaths = {"author", "publisher", "category"})
     List<Books> findByAuthor_AuthorId(Long authorId);
+
 
     @EntityGraph(attributePaths = {"author", "publisher", "category", "hashtags"})
     Optional<Books> findDetailByBookId(Long bookId);
+
+    // 출판사별 책 조회 (저자/출판사/카테고리 포함)
+    @EntityGraph(attributePaths = {"author", "publisher", "category"})
+    List<Books> findByPublisher_PublisherId(Long publisherId);
 
 
 }

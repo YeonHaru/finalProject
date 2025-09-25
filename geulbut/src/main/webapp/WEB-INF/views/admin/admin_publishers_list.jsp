@@ -89,8 +89,10 @@
 <p class="ht-footnote">© Geulbut Admin Publishers List</p>
 
 
+
 <!-- 모달: 도서/작가와 동일한 구조/클래스 -->
 <div id="publisherModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none;">
+
     <div class="modal__dialog" role="document">
         <div class="modal__header">
             <h3 id="modalTitle">출판사 등록</h3>
@@ -115,9 +117,42 @@
         </form>
     </div>
 </div>
+
+<!-- 출판사 책 목록 모달 (클래스, 스타일, role 모두 제거) -->
+<div id="publisherBooksModal" style="display:none;">
+    <div>
+        <!-- 모달 헤더 -->
+        <div>
+            <h3 id="booksModalTitle">출판사 - 등록된 책 목록</h3>
+            <button type="button" id="btnCloseBooksModal">×</button>
+        </div>
+
+        <!-- 모달 본문 -->
+        <div>
+            <table id="publisherBooksTable">
+                <colgroup>
+                    <col />
+                    <col />
+                    <col />
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>책 제목</th>
+                    <th>저자</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- JS로 데이터 삽입 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
 <!-- js -->
 <script src="${ctx}/js/admin/admin_publishers.js?v=1"></script>
-<!-- 관리자 헤더 드롭다운 스크립트 -->
 <script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>

@@ -28,5 +28,6 @@ public class OrderItem extends BaseTimeEntity {
     private Books book;
 
     private int quantity;
+    private Long price;
 }
 

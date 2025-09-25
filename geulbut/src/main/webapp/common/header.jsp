@@ -8,10 +8,51 @@
 <!-- CSS -->
 <link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
 
+<!-- CSS -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+<!-- 추가 스타일 -->
+<!-- CSS -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+<!-- 추가 스타일 -->
+<!-- CSS -->
+<link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+
+<!-- 추가 스타일 -->
+<style>
+    .site-header__nav--left { order: 1 !important; }
+    .site-header__logo { order: 2 !important; }
+    .site-header__nav--right { order: 3 !important; }
+    .site-header__greeting {
+        order: 4 !important;
+        flex: 0 0 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        margin: -8PX 0 4px 0 !important;    /* 위쪽 간격 제거 (4px → 0) */
+    }
+    .site-header__search {
+        order: 5 !important;
+        margin-top: 2px !important;
+    }
+    .site-header__nav--bottom { order: 6 !important; }
+
+    .greeting-message {
+        font-size: 0.8rem !important;
+        padding: 3px 12px !important;
+        background: rgba(64, 71, 78, 0.07) !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(125, 133, 140, 0.17) !important;
+        color: #5d666c !important;
+    }
+</style>
+
+<header class="site-header">
 <header class="site-header">
     <div class="container site-header__inner">
         <!-- 좌측 네비(비움) -->
         <nav class="site-header__nav site-header__nav--left" aria-label="Primary"></nav>
+
 
         <!-- 가운데 로고 -->
         <h1 class="site-header__logo">
@@ -19,6 +60,8 @@
                 <img src="${ctx}/images/logo.png" alt="글벗">
             </a>
         </h1>
+
+
 
         <!-- 우측 계정 메뉴 -->
         <nav class="site-header__nav site-header__nav--right" aria-label="Account">
@@ -111,14 +154,15 @@
                     </c:if>
 
                     <%-- ▼ 추가: 헤더에서 사용할 orderId를 안전하게 추출 --%>
-                    <c:set var="orderIdHeader"
+                    <c:set var="currentOrderId"
                            value="${not empty param.orderId
-                     ? param.orderId
-                     : (not empty delivery and not empty delivery.order and not empty delivery.order.orderId
-                         ? delivery.order.orderId
-                         : sessionScope.lastOrderId)}"/>
+                 ? param.orderId
+                 : (not empty delivery and not empty delivery.ordersDto and not empty delivery.ordersDto.orderId
+                      ? delivery.ordersDto.orderId
+                      : sessionScope.lastOrderId)}"/>
 
-                    <li><a href="#"><span>안녕하세요, ${fn:escapeXml(userName)} 님!</span></a></li>
+
+
                     <li><a href="${ctx}/mypage">마이페이지</a></li>
                     <li><a href="${ctx}/logout">로그아웃</a></li>
                     <li><a href="${ctx}/notice">공지사항</a></li>
@@ -149,10 +193,19 @@
             </ul>
         </nav>
 
+
         <!-- 모바일 햄버거 -->
         <button class="site-header__hamburger" aria-label="메뉴 열기">
             <span></span><span></span><span></span>
         </button>
+
+        <!-- 인사말 영역 (검색창 위쪽) -->
+        <div class="site-header__greeting">
+            <sec:authorize access="isAuthenticated()">
+                <!-- 기존 사용자명 계산 로직은 그대로 -->
+                <span class="greeting-message">안녕하세요, ${fn:escapeXml(userName)} 님!</span>
+            </sec:authorize>
+        </div>
 
 
         <!-- 검색 -->
@@ -220,7 +273,7 @@
 <!-- JS 환경변수 -->
 <script>
     const isLogin =
-        <sec:authorize access="isAuthenticated()">true</sec:authorize>
+        <sec:authorize access="isAuthenticated()">true</sec:authorize>;
     <sec:authorize access="!isAuthenticated()">false</sec:authorize>;
 </script>
 <script src="<c:url value='/common/js/header.js'/>" charset="UTF-8"></script>
