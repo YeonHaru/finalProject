@@ -6,6 +6,10 @@ import com.error404.geulbut.jpa.noticecomment.dto.NoticeCommentDto;
 import com.error404.geulbut.jpa.noticecomment.entity.NoticeCommentEntity;
 import com.error404.geulbut.jpa.noticecomment.repository.NoticeCommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +58,26 @@ public class NoticeCommentService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    // -------------------- 여기서부터 페이징 기능 추가 --------------------
+    @Transactional(readOnly = true)
+    public Page<NoticeCommentDto> getCommentsByNotice(Long noticeId, int page, int size) {
+        NoticeEntity notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 공지사항입니다."));
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").ascending());
+
+        Page<NoticeCommentEntity> commentPage = noticeCommentRepository.findByNotice(notice, pageable);
+
+        return commentPage.map(c -> NoticeCommentDto.builder()
+                .commentId(c.getCommentId())
+                .noticeId(c.getNotice().getNoticeId())
+                .userId(c.getUserId())
+                .content(c.getContent())
+                .createdAt(c.getCreatedAt())
+                .updatedAt(c.getUpdatedAt())
+                .build());
+    }
     // 댓글 수정
     public void updateComment(Long commentId, String userId, String content) {
         NoticeCommentEntity comment = noticeCommentRepository.findById(commentId)
@@ -86,4 +110,6 @@ public class NoticeCommentService {
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 댓글입니다."));
         return comment.getNotice().getNoticeId();
     }
+
+
 }
