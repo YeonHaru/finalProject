@@ -2,6 +2,7 @@ package com.error404.geulbut.jpa.admin.controller;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.jpa.admin.service.AdminPublishersService;
+import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -68,5 +71,12 @@ public class AdminPublishersController {
     @ResponseBody
     public boolean deletePublisher(@PathVariable Long publisherId) {
         return adminPublishersService.deletePublisher(publisherId);
+    }
+
+    // 출판사별 책 조회
+    @GetMapping("/{publisherId}/books")
+    @ResponseBody
+    public List<BooksDto> getBooksByPublisher(@PathVariable Long publisherId) {
+        return adminPublishersService.getBooksByPublisher(publisherId);
     }
 }

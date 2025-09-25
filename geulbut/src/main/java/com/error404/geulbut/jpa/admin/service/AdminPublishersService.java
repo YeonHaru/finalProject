@@ -2,6 +2,9 @@ package com.error404.geulbut.jpa.admin.service;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.common.MapStruct;
+import com.error404.geulbut.jpa.books.dto.BooksDto;
+import com.error404.geulbut.jpa.books.entity.Books;
+import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import com.error404.geulbut.jpa.publishers.repository.PublishersRepository;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ public class AdminPublishersService {
     private final PublishersRepository publishersRepository;
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
+    private final BooksRepository booksRepository;
 
 
     // 전체 조회 (페이징)
@@ -83,5 +88,15 @@ public class AdminPublishersService {
                 .map(mapStruct::toDto);
     }
 
+    // 출판사별 책 목록 조회
+    public List<BooksDto> getBooksByPublisher(Long publisherId) {
+        Publishers publisher = publishersRepository.findById(publisherId)
+                .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.publishers.notfound")));
 
+        List<Books> books = booksRepository.findByPublisher_PublisherId(publisher.getPublisherId());
+
+        return books.stream()
+                .map(mapStruct::toDto)
+                .collect(Collectors.toList());
+    }
 }
