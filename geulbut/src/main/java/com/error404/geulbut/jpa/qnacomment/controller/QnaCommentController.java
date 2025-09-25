@@ -25,6 +25,15 @@ public class QnaCommentController {
         Long qnaId = qnaCommentService.deleteCommentAndGetQnaId(commentId, userId);
         return "redirect:/qnaText?id=" + qnaId;
     }
+    // 댓글 수정
+    @PostMapping("/qnaCommentUpdate")
+    public String updateComment(@RequestParam("commentId") Long commentId,
+                                @RequestParam("content") String content) {
+        qnaCommentService.updateComment(commentId, content);
+        Long qnaId = qnaCommentService.findQnaIdByComment(commentId);
+        return "redirect:/qnaText?id=" + qnaId;
+    }
+
 
 
 }
