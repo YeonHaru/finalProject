@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function openModal(edit = false, name = '', id = null) {
         if (!hashtagModal) return;
         hashtagModal.style.display = 'flex';
+        hashtagModal.setAttribute('aria-hidden','false');
         hashtagNameInput.value = name;
         currentEditId = id;
         modalTitle.textContent = edit ? '해시태그 수정' : '해시태그 등록';
@@ -61,12 +62,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeModal() {
         if (!hashtagModal) return;
         hashtagModal.style.display = 'none';
+        hashtagModal.setAttribute('aria-hidden','true');
         hashtagNameInput.value = '';
         currentEditId = null;
     }
     function openBooksModal(title) {
         if (!booksModal) return;
         booksModal.style.display = 'flex';
+        booksModal.setAttribute('aria-hidden','false');
         booksModalTitle.textContent = title;
         if (booksList) booksList.innerHTML = '';
     }
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeBooksModal() {
         if (!booksModal) return;
         booksModal.style.display = 'none';
+        booksModal.setAttribute('aria-hidden','true');
         if (booksList) booksList.innerHTML = '';
         if (booksPager) booksPager.innerHTML = '';
         currentManageHashtagId = null;

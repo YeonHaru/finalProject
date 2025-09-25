@@ -6,20 +6,17 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
+    <script>window.ctx = "${ctx}";</script>
     <title>관리자 - 카테고리 관리</title>
 
     <!-- 공통/헤더 + 관리자 통합 CSS -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
-
-    <script>
-        window.ctx = "${ctx}";
-    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-main text-main admin-categories">
+<body class="bg-main text-main admin-categories has-bg">
 <jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
@@ -96,8 +93,8 @@
             <input type="text" id="modalCategoryName" />
         </label>
         <div class="t-right" style="margin-top:10px;">
-            <button id="modalSaveBtn" type="button" class="btn btn-accent btn--glass">저장</button>
-            <button id="modalCloseBtn" type="button" class="btn btn-delete btn--glass">닫기</button>
+            <button id="modalSaveBtn" type="submit" class="btn btn-cer-secondary save-btn">저장</button>
+            <button id="modalCloseBtn" type="button" class="btn btn-cer-success delete-btn">닫기</button>
         </div>
     </div>
 </div>
@@ -125,7 +122,7 @@
                       </table>
                   </div>
            <div class="modal-footer">
-             <button id="booksModalCloseBtn" type="button" class="btn btn-delete btn--glass">닫기</button>
+             <button id="booksModalCloseBtn" type="button" class="btn btn-cer-success delete-btn">닫기</button>
            </div>
     </div>
 </div>
