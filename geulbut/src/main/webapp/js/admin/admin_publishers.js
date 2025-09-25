@@ -20,12 +20,10 @@ $(function () {
         alert(msg);
     }
 
-
-    // 모달 열고/닫기
-     function openModal() {
-           $modal.css('display','flex').attr('aria-hidden','false');
-         }
-
+    // ---------------- 모달 열고/닫기 ----------------
+    function openModal() {
+        $modal.show().attr('aria-hidden', 'false');
+    }
 
     function closeModal() {
         $modal.hide().attr('aria-hidden', 'true');
@@ -88,10 +86,8 @@ $(function () {
         openModal();
     });
 
-    // 수정 모달 열기 (위임 바인딩, 기존 클래스 유지: .btn-edit)
-     $(document).off('click.pubEdit', '.btnEdit, .btn-edit')
-       .on('click.pubEdit', '.btnEdit, .btn-edit', function () {
-
+    $(document).off('click.pubEdit', '.btnEdit').on('click.pubEdit', '.btnEdit', function (e) {
+        e.stopPropagation();
         const $row = $(this).closest('tr');
         const id = $row.data('id');
         const name = $row.find('.publisher-name').text();
@@ -126,25 +122,22 @@ $(function () {
             url, method,
             contentType: 'application/json',
             data: JSON.stringify(data),
-
-            success: function(){ showMessage(id ? '수정 완료' : '등록 완료'); location.reload(); },
-            error: function(xhr){
-                const msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (id ? '수정 실패' : '등록 실패');
-                showMessage(msg);
+            success: function () {
+                showMessage(id ? '수정 완료' : '등록 완료');
+                location.reload();
             },
-            complete: function(){ $btn.prop('disabled', false); }
+            error: function () {
+                showMessage(id ? '수정 실패' : '등록 실패');
+            },
+            complete: function () {
+                $btn.prop('disabled', false);
+            }
         });
     });
-
-    // 삭제 — 기존 클래스 유지: .btn-delete (위임 바인딩)
-     $(document).off('click.pubDelete', '.btn-delete, .btnDelete')
-       .on('click.pubDelete', '.btn-delete, .btnDelete', function () {
-
 
     // ---------------- 삭제 ----------------
     $(document).off('click.pubDelete', '.btn-delete').on('click.pubDelete', '.btn-delete', function (e) {
         e.stopPropagation();
-
         if (!confirm('정말 삭제하시겠습니까?')) return;
         const id = $(this).closest('tr').data('id');
         $.ajax({

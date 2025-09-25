@@ -241,4 +241,3 @@
 </script>
 <script src="<c:url value='/common/js/header.js'/>" charset="UTF-8"></script>
 <script src="<c:url value='/js/api/DustWeatherApi.js'/>"></script>
-
