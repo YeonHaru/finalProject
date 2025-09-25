@@ -29,9 +29,10 @@
         <!-- 오른쪽 공지사항 콘텐츠 -->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
             <h2 class="mb-4 notice-title">▣ 공지사항
-                <sec:authorize access="principal.username == 'admin001'">
+                <sec:authorize access="hasRole('ADMIN')">
                     <a href="${pageContext.request.contextPath}/noticeWrite" class="btn btn-main">글쓰기</a>
                 </sec:authorize>
+
             </h2>
 
             <table class="notice-table border" style="width: 100%;">
