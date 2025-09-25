@@ -1,8 +1,6 @@
 $(function () {
 
-    // =============================
-    // 🔹 모달 select 옵션 로드
-    // =============================
+    // 모달 select 옵션 로드
     function loadOptions(callback) {
         $.get('/admin/books/options', function (res) {
             let authorSelect = $('#authorId');
@@ -21,9 +19,7 @@ $(function () {
         });
     }
 
-    // =============================
-    // 🔹 모달 열기 (도서 등록)
-    // =============================
+    // 도서 등록 모달 열기
     $('#btnAddBook').click(function () {
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
@@ -35,9 +31,7 @@ $(function () {
         $('#bookModal').show();
     });
 
-    // =============================
-    // 🔹 모달 닫기
-    // =============================
+    // 모달 닫기
     $('#btnCloseModal, #btnCancel').on('click', function () {
         $('#bookModal').hide();
     });
@@ -50,9 +44,7 @@ $(function () {
         if (e.key === 'Escape') $('#bookModal').hide();
     });
 
-    // =============================
-    // 🔹 등록 / 수정 submit
-    // =============================
+    // 등록 / 수정 submit
     $('#bookForm').submit(function (e) {
         e.preventDefault();
 
@@ -104,9 +96,7 @@ $(function () {
         });
     });
 
-    // =============================
-    // 🔹 삭제
-    // =============================
+    // 삭제
     $('#booksTableBody').on('click', '.btnDelete', function () {
         let bookId = $(this).closest('tr').data('id');
         if (confirm('정말 삭제하시겠습니까?')) {
@@ -122,9 +112,7 @@ $(function () {
         }
     });
 
-    // =============================
-    // 🔹 수정 버튼 클릭
-    // =============================
+    // 수정 버튼 클릭
     $('#booksTableBody').on('click', '.btnEdit', function () {
         let bookId = $(this).closest('tr').data('id');
 
@@ -160,9 +148,7 @@ $(function () {
         });
     });
 
-    // =============================
-    // 🔹 이미지 미리보기 업데이트
-    // =============================
+    // 이미지 미리보기 업데이트
     $('#imgUrl').on('input', function () {
         let url = $(this).val().trim();
         if (url) {
@@ -172,9 +158,7 @@ $(function () {
         }
     });
 
-    // =============================
-    // 🔹 검색 search + 페이징 갱신
-    // =============================
+    // 검색 + 페이징 갱신
     $('#bookSearchForm').submit(function (e) {
         e.preventDefault();
         let keyword = $(this).find('input[name="keyword"]').val().trim();
@@ -184,14 +168,14 @@ $(function () {
             tbody.empty();
 
             if (res.content.length === 0) {
-                tbody.append('<tr><td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
+                tbody.append('<tr><td colspan="13" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
                 $('.pagination').empty();
                 return;
             }
 
             res.content.forEach(book => {
                 let row = `
-                    <tr data-id="${book.bookId}">
+                    <tr class="data-row" data-id="${book.bookId}">
                         <td>${book.bookId}</td>
                         <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
                         <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb"/>` : ''}</td>
@@ -206,13 +190,14 @@ $(function () {
                         <td>
                             <button type="button" class="btn btn-accent btnEdit">수정</button>
                             <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                            <button type="button" class="btn btn-view btnView">상세보기</button>
                         </td>
                     </tr>
                 `;
                 tbody.append(row);
             });
 
-            // 🔹 페이징 다시 생성
+            // 페이징 생성
             let pagination = $('.pagination');
             pagination.empty();
             for (let i = 0; i < res.totalPages; i++) {
@@ -220,6 +205,14 @@ $(function () {
                 pagination.append(`<a href="?page=${i}&keyword=${keyword}" class="${active}">${i + 1}</a>`);
             }
         });
+    });
+
+    // 상세보기 버튼 클릭 시 이동
+    $('#booksTableBody').on('click', '.btnView', function () {
+        const bookId = $(this).closest('tr').data('id');
+        if (bookId) {
+            window.location.href = `/admin/books/${bookId}/detail`;
+        }
     });
 
 });
