@@ -37,11 +37,11 @@
 
     <!-- 도서 목록 테이블 -->
     <div class="table-scroll">
-        <table class="admin-table admin-books-table" id="booksTable">
+        <table class="admin-table admin-books-table" id="booksTable" data-ctx="${ctx}">
             <colgroup>
                 <col class="col-id"/>
                 <col class="col-title"/>
-                <col class="col-img"/> <!-- 이미지 컬럼 추가 -->
+                <col class="col-img"/>
                 <col class="col-isbn"/>
                 <col class="col-author"/>
                 <col class="col-publisher"/>
@@ -103,6 +103,7 @@
                         </td>
                         <td>${book.createdAt}</td>
                         <td>
+                            <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
                             <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
                             <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                         </td>
@@ -164,16 +165,16 @@
                          style="max-width:200px; max-height:300px; display:none;"/>
                 </div>
             </div>
-            <div class="modal__footer">
-                <button type="submit" class="btn btn-accent">저장</button>
-                <button type="button" class="btn" id="btnCancel">닫기</button>
-            </div>
+            <td>
+                <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+            </td>
+
         </form>
     </div>
 </div>
 
 <script src="${ctx}/js/admin/admin_books_list.js"></script>
-<!-- 관리자 헤더 드롭다운 스크립트 -->
 <script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>
