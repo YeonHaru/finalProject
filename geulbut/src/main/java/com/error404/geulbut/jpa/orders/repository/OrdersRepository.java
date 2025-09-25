@@ -41,13 +41,20 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     Long sumTotalByUserAndStatus(@Param("userId") String userId,
                                  @Param("status") String status);
 
-    // 관리자 조회용
+    // 관리자 조회용 (부분검색 + 상태 필터 + 페이징 유지)
     @Query("SELECT DISTINCT o FROM Orders o " +
-            "JOIN FETCH o.user u " +
-            "JOIN FETCH o.items i " +
-            "JOIN FETCH i.book b " +
+            "LEFT JOIN FETCH o.user u " +
+            "LEFT JOIN FETCH o.items i " +
+            "LEFT JOIN FETCH i.book b " +
+            "WHERE (:userId IS NULL OR o.userId LIKE %:userId%) " +
+            "AND (:status IS NULL OR o.status = :status) " +
             "ORDER BY o.createdAt DESC")
-    List<Orders> findAllWithItemsAndBooks();
+    List<Orders> findAllWithItemsAndBooks(
+            @Param("userId") String userId,
+            @Param("status") String status
+    );
+
+
 
     @Query("""
   select distinct o
