@@ -31,6 +31,15 @@ public class UsersService {
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
 
+    /** totalPurchase 기준으로 grade를 저장 전 항상 동기화 */
+    private void ensureGradeConsistent(Users user) {
+        long total = (user.getTotalPurchase() == null ? 0L : user.getTotalPurchase());
+        String newGrade = computeGrade(total);
+        if (newGrade != null && !newGrade.equals(user.getGrade())) {
+            user.setGrade(newGrade);
+        }
+    }
+
 //    아이디 사용 가능 여부 확인
     public boolean isUserIdAvailable(String userId) {
         if (userId == null || userId.isBlank()) return false;
@@ -304,6 +313,7 @@ public class UsersService {
         if (user == null || user.getUserId() == null) {
             throw new IllegalArgumentException(errorMsg.getMessage("error.user.request.null"));
         }
+        ensureGradeConsistent(user);
         return usersRepository.save(user);
     }
 
