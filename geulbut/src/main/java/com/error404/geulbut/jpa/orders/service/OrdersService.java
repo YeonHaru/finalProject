@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import static com.error404.geulbut.jpa.orders.entity.Orders.STATUS_PENDING;
@@ -24,6 +26,10 @@ public class OrdersService {
     private final MapStruct mapStruct;
     private final BooksRepository booksRepository;
     private final UsersService usersService;                // 추가 ( 덕규)
+    private final Clock clock;
+
+    private static final DateTimeFormatter DELIVERY_FMT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm");
 
     @Transactional
     public OrdersDto createOrder(OrdersDto dto) {
@@ -129,6 +135,9 @@ public class OrdersService {
         return (s == null) ? "" : s;
     }
 
+    private static boolean isBlank(String s) {
+        return s == null || s.isBlank();}
+
     //    주문 삭제
     @Transactional
     public void deleteOrder(Long orderId, String userId) {
@@ -165,6 +174,9 @@ public class OrdersService {
 public DeliveryView buildDeliveryView (Long orderId) {
     OrdersDto ordersDto = getOrder(orderId);
     ViewDeliveryStatus vs = resolveViewStatus(ordersDto);
+
+    applySimulatedDeliveredIfNeeded (ordersDto, vs);
+
     return new DeliveryView(vs, ordersDto);
     }
 private ViewDeliveryStatus resolveViewStatus(OrdersDto o) {
@@ -174,8 +186,28 @@ private ViewDeliveryStatus resolveViewStatus(OrdersDto o) {
     if ("SHIPPED".equalsIgnoreCase(o.getStatus())) {
         return ViewDeliveryStatus.IN_TRANSIT;
     }
+    if (o.getPaidAt() != null) {
+        LocalDateTime now =  LocalDateTime.now(clock);
+        LocalDateTime d1 = o.getPaidAt().plusDays(1);
+        LocalDateTime d3 = o.getPaidAt().plusDays(3);
+
+        if(now.isBefore(d1)) return ViewDeliveryStatus.READY;
+        if(now.isBefore(d3)) return ViewDeliveryStatus.IN_TRANSIT;
+        return ViewDeliveryStatus.DELIVERED;
+    }
+
         return ViewDeliveryStatus.READY;
     }
+
+    private void applySimulatedDeliveredIfNeeded(OrdersDto o, ViewDeliveryStatus vs) {
+        if (vs != ViewDeliveryStatus.DELIVERED) return;
+        if (o.getDeliveredAt() != null) return;
+
+        if (o.getPaidAt() != null) {
+            o.setDeliveredAt(o.getPaidAt().plusDays(3));
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<OrdersDto> getDeliveredHistory(String userId, int limit, Long excludeOrderId) {
         var page = ordersRepository.findDeliveredWithItemsAndBooksByUserId(
