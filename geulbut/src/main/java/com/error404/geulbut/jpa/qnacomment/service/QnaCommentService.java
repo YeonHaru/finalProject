@@ -6,9 +6,13 @@ import com.error404.geulbut.jpa.qnacomment.dto.QnaCommentDto;
 import com.error404.geulbut.jpa.qnacomment.entity.QnaCommentEntity;
 import com.error404.geulbut.jpa.qnacomment.repository.QnaCommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +55,24 @@ public class QnaCommentService {
                 ))
                 .collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
+    public Page<QnaCommentDto> getCommentsByQnaPaged(Long qnaId, int page, int size) {
+        QnaEntity qna = qnaRepository.findById(qnaId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 글입니다."));
+
+        Page<QnaCommentEntity> commentPage = qnaCommentRepository.findByQna(
+                qna, PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "createdAt"))
+        );
+
+        return commentPage.map(entity -> new QnaCommentDto(
+                entity.getCommentId(),
+                entity.getQna().getQnaId(),
+                entity.getUserId(),
+                entity.getContent(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        ));
+    }
     @Transactional
     public Long deleteCommentAndGetQnaId(Long commentId, String userId) {
         QnaCommentEntity comment = qnaCommentRepository.findById(commentId)
@@ -70,6 +92,13 @@ public class QnaCommentService {
         QnaCommentEntity comment = qnaCommentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
         return comment.getQna().getQnaId();
+    }
+    public void updateComment(Long commentId, String content) {
+        QnaCommentEntity comment = qnaCommentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
+        comment.setContent(content);
+        comment.setUpdatedAt(new Date());
+        qnaCommentRepository.save(comment);
     }
 
 

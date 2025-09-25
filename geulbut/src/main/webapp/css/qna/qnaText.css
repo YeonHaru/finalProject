@@ -1,3 +1,82 @@
+/*페이지네이션*/
+/* -----------------------------------------------------------------------
+   9) 페이지네이션 스타일
+----------------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-2);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    min-width: 36px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.pagination a:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.pagination .current {
+    background: var(--color-accent-dark);
+    color: #fff;
+    border-color: var(--color-accent-dark);
+    pointer-events: none;
+}
+
+.pagination .prev,
+.pagination .next {
+    font-weight: 600;
+}
+
+.pagination .prev:hover,
+.pagination .next:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.pagination .btn {
+    display: inline-block;
+    margin: 0 0.25rem; /* gap-1 수준 */
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius); /* 공통 CSS 라운딩 */
+    font-size: 0.875rem;
+    line-height: 1.25;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 기본 비활성 버튼 */
+.pagination .btn-light {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.pagination .btn-light:hover {
+    background-color: var(--color-bg);
+}
+
+/* 현재 페이지 강조 */
+.pagination .btn-main {
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    font-weight: 600;
+    cursor: default;
+    border: 1px solid var(--color-accent-dark);
+}
 /* 공지사항 2:8 레이아웃 */
 .notice-layout {
     display: grid;

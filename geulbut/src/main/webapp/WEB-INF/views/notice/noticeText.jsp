@@ -109,7 +109,27 @@
                         </sec:authorize>
                     </div>
                 </c:forEach>
+                <!-- 댓글 페이징 버튼 -->
+                <div class="pagination mt-2 text-center">
+                    <c:if test="${commentCurrentPage > 1}">
+                        <a href="${pageContext.request.contextPath}/noticeText?id=${notice.noticeId}&commentPage=${commentCurrentPage - 1}" class="btn btn-light">&laquo; 이전</a>
+                    </c:if>
 
+                    <c:forEach begin="1" end="${commentTotalPage}" var="i">
+                        <c:choose>
+                            <c:when test="${i == commentCurrentPage}">
+                                <span class="btn btn-main">${i}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/noticeText?id=${notice.noticeId}&commentPage=${i}" class="btn btn-light">${i}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+                    <c:if test="${commentCurrentPage < commentTotalPage}">
+                        <a href="${pageContext.request.contextPath}/noticeText?id=${notice.noticeId}&commentPage=${commentCurrentPage + 1}" class="btn btn-light">다음 &raquo;</a>
+                    </c:if>
+                </div>
                 <script>
                     function editComment(commentId, noticeId, content) {
                         const div = document.getElementById("comment-" + commentId);
