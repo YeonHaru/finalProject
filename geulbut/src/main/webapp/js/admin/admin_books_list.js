@@ -1,10 +1,12 @@
 $(function () {
+    // 컨텍스트 경로(배포 경로 안전)
+    const ctx = (typeof window.ctx !== 'undefined' && window.ctx) ? window.ctx : '';
 
     // =============================
     // 🔹 모달 select 옵션 로드
     // =============================
     function loadOptions(callback) {
-        $.get('/admin/books/options', function (res) {
+        $.get(`${ctx}/admin/books/options`, function (res) {
             let authorSelect = $('#authorId');
             let publisherSelect = $('#publisherId');
             let categorySelect = $('#categoryId');
@@ -24,7 +26,7 @@ $(function () {
     // =============================
     // 🔹 모달 열기 (도서 등록)
     // =============================
-    $('#btnAddBook').click(function () {
+    $('#btnAddBook').on('click', function () {
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
@@ -32,28 +34,27 @@ $(function () {
         $('#discountedPrice').val(0);
 
         loadOptions();
-        $('#bookModal').show();
+        $('#bookModal').css('display','flex').attr('aria-hidden','false');
     });
 
     // =============================
-    // 🔹 모달 닫기
+    // 🔹 모달 닫기 (오버레이/ESC/버튼)
     // =============================
-    $('#btnCloseModal, #btnCancel').on('click', function () {
-        $('#bookModal').hide();
-    });
-
+    function closeBookModal(){
+        $('#bookModal').hide().attr('aria-hidden','true');
+    }
+    $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
     $('#bookModal').on('click', function (e) {
-        if (e.target.id === 'bookModal') $('#bookModal').hide();
+        if (e.target.id === 'bookModal') closeBookModal();
     });
-
     $(document).on('keydown', function (e) {
-        if (e.key === 'Escape') $('#bookModal').hide();
+        if (e.key === 'Escape') closeBookModal();
     });
 
     // =============================
     // 🔹 등록 / 수정 submit
     // =============================
-    $('#bookForm').submit(function (e) {
+    $('#bookForm').on('submit', function (e) {
         e.preventDefault();
 
         let authorVal = $('#authorId').val();
@@ -66,18 +67,18 @@ $(function () {
 
         let bookId = $('#bookId').val();
         let method = bookId ? 'PUT' : 'POST';
-        let url = bookId ? '/admin/books/' + bookId : '/admin/books';
+        let url = bookId ? `${ctx}/admin/books/${bookId}` : `${ctx}/admin/books`;
 
         let data = {
             bookId: bookId || null,
             title: $('#title').val().trim(),
             isbn: $('#isbn').val().trim(),
-            price: parseInt($('#price').val()) || 0,
-            stock: parseInt($('#stock').val()) || 0,
-            discountedPrice: parseInt($('#discountedPrice').val()) || 0,
-            authorId: parseInt(authorVal),
-            publisherId: parseInt(publisherVal),
-            categoryId: parseInt(categoryVal),
+            price: parseInt($('#price').val(), 10) || 0,
+            stock: parseInt($('#stock').val(), 10) || 0,
+            discountedPrice: parseInt($('#discountedPrice').val(), 10) || 0,
+            authorId: parseInt(authorVal, 10),
+            publisherId: parseInt(publisherVal, 10),
+            categoryId: parseInt(categoryVal, 10),
             imgUrl: $('#imgUrl').val().trim()
         };
 
@@ -86,8 +87,8 @@ $(function () {
         if (data.price < 0 || data.stock < 0) { alert('가격/재고는 0 이상이어야 합니다.'); return; }
 
         $.ajax({
-            url: url,
-            method: method,
+            url,
+            method,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function () {
@@ -109,17 +110,17 @@ $(function () {
     // =============================
     $('#booksTableBody').on('click', '.btnDelete', function () {
         let bookId = $(this).closest('tr').data('id');
-        if (confirm('정말 삭제하시겠습니까?')) {
-            $.ajax({
-                url: '/admin/books/' + bookId,
-                method: 'DELETE',
-                success: function () {
-                    alert('삭제 완료');
-                    location.reload();
-                },
-                error: function () { alert('삭제 실패'); }
-            });
-        }
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+
+        $.ajax({
+            url: `${ctx}/admin/books/${bookId}`,
+            method: 'DELETE',
+            success: function () {
+                alert('삭제 완료');
+                location.reload();
+            },
+            error: function () { alert('삭제 실패'); }
+        });
     });
 
     // =============================
@@ -128,7 +129,7 @@ $(function () {
     $('#booksTableBody').on('click', '.btnEdit', function () {
         let bookId = $(this).closest('tr').data('id');
 
-        $.get('/admin/books/' + bookId + '/edit-options', function (res) {
+        $.get(`${ctx}/admin/books/${bookId}/edit-options`, function (res) {
             let book = res.book;
             let authors = res.authors;
             let publishers = res.publishers;
@@ -156,7 +157,7 @@ $(function () {
             $('#publisherId').val(book.publisherId || '');
             $('#categoryId').val(book.categoryId || '');
 
-            $('#bookModal').show();
+            $('#bookModal').css('display','flex').attr('aria-hidden','false');
         });
     });
 
@@ -173,17 +174,17 @@ $(function () {
     });
 
     // =============================
-    // 🔹 검색 search + 페이징 갱신
+    // 🔹 검색 + 결과/페이징 동적 갱신
     // =============================
-    $('#bookSearchForm').submit(function (e) {
+    $('#bookSearchForm').on('submit', function (e) {
         e.preventDefault();
-        let keyword = $(this).find('input[name="keyword"]').val().trim();
+        let keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
 
-        $.get('/admin/books/search', {keyword: keyword}, function (res) {
+        $.get(`${ctx}/admin/books/search`, { keyword }, function (res) {
             let tbody = $('#booksTableBody');
             tbody.empty();
 
-            if (res.content.length === 0) {
+            if (!res.content || res.content.length === 0) {
                 tbody.append('<tr><td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
                 $('.pagination').empty();
                 return;
@@ -194,7 +195,7 @@ $(function () {
                     <tr data-id="${book.bookId}">
                         <td>${book.bookId}</td>
                         <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
-                        <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb"/>` : ''}</td>
+                        <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb" alt="${book.title}"/>` : ''}</td>
                         <td><span class="isbn-mono">${book.isbn}</span></td>
                         <td>${book.authorName ?? ''}</td>
                         <td>${book.publisherName ?? ''}</td>
@@ -204,8 +205,8 @@ $(function () {
                         <td>${book.stock}</td>
                         <td>${book.createdAt}</td>
                         <td>
-                            <button type="button" class="btn btn-accent btnEdit">수정</button>
-                            <button type="button" class="btn btn-delete btnDelete">삭제</button>
+                            <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+                            <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
                         </td>
                     </tr>
                 `;
@@ -217,9 +218,8 @@ $(function () {
             pagination.empty();
             for (let i = 0; i < res.totalPages; i++) {
                 let active = i === res.number ? 'active' : '';
-                pagination.append(`<a href="?page=${i}&keyword=${keyword}" class="${active}">${i + 1}</a>`);
+                pagination.append(`<a href="?page=${i}&keyword=${encodeURIComponent(keyword)}" class="${active}">${i + 1}</a>`);
             }
         });
     });
-
 });

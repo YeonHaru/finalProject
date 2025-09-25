@@ -6,6 +6,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
+    <script>window.ctx = "${ctx}";</script>
     <title>관리자 - 출판사 관리</title>
 
     <!-- 공통/헤더 + 출판사 전용 CSS -->
@@ -16,7 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-main text-main admin-publishers">
+<body class="bg-main text-main admin-publishers has-bg">
 <jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
@@ -56,17 +57,14 @@
             </thead>
             <tbody id="publishersTableBody">
             <c:forEach var="publisher" items="${publishersPage.content}">
-                <tr class="data-row"
-                    data-id="${publisher.publisherId}"
-                    data-name="${publisher.name}"
-                    data-description="${publisher.description}">
+                <tr class="data-row" data-id="${publisher.publisherId}">
                     <td>${publisher.publisherId}</td>
                     <td class="t-left publisher-name">${publisher.name}</td>
                     <td class="t-left publisher-description">${publisher.description}</td>
                     <td class="created-at-cell">${publisher.createdAt}</td>
                     <td>
-                        <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
-                        <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+                        <button type="button" class="btn btn-cer-secondary save-btn">수정</button>
+                        <button type="button" class="btn btn-cer-success delete-btn">삭제</button>
                     </td>
                 </tr>
             </c:forEach>
@@ -92,7 +90,7 @@
 
 
 <!-- 모달: 도서/작가와 동일한 구조/클래스 -->
-<div id="publisherModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
+<div id="publisherModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none;">
     <div class="modal__dialog" role="document">
         <div class="modal__header">
             <h3 id="modalTitle">출판사 등록</h3>
@@ -111,8 +109,8 @@
             </label>
 
             <div class="modal__footer">
-                <button type="button" class="btn" id="btnCancel">닫기</button>
-                <button type="submit" class="btn btn-accent" id="modalSaveBtn">저장</button>
+                <button type="submit" class="btn btn-cer-secondary save-btn" id="modalSaveBtn">저장</button>
+                <button type="button" class="btn btn-cer-success delete-btn" id="btnCancel">닫기</button>
             </div>
         </form>
     </div>

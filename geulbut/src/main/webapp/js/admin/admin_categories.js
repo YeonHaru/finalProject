@@ -14,11 +14,25 @@ $(function () {
 
     // ---------- 공통 모달 open/close ----------
     const openModal = ($targetModal) => {
-        $targetModal.css('display', 'flex');
+        $targetModal.css('display', 'flex').attr('aria-hidden', 'false');
         $targetModal.find('.modal-content').scrollTop(0);
     };
-    const closeModal = ($targetModal) => $targetModal.hide();
+    const closeModal = ($targetModal) => {$targetModal.hide().attr('aria-hidden', 'true');};
 
+    // 버튼/배경 클릭 닫기
+    $('#modalCloseBtn').off('click.cat').on('click.cat', () => closeModal($modal));
+    $modal.off('click.cat').on('click.cat', e => { if (e.target.id === 'categoryModal') closeModal($modal); });
+
+    $('#booksModalCloseBtn').off('click.cat').on('click.cat', () => closeModal($booksModal));
+    $booksModal.off('click.cat').on('click.cat', e => { if (e.target.id === 'booksModal') closeModal($booksModal); });
+
+    // ESC로 두 모달 모두 닫기
+    $(document).off('keydown.catmod').on('keydown.catmod', e => {
+        if (e.key === 'Escape') {
+            if ($modal.is(':visible')) closeModal($modal);
+            if ($booksModal.is(':visible')) closeModal($booksModal);
+        }
+    });
     // 등록 버튼
     $('#btnAddCategory').on('click', function () {
         openModal($modal);
@@ -27,23 +41,21 @@ $(function () {
         $('#modalCategoryName').val('').focus();
     });
 
-    // 모달 닫기
-    $('#modalCloseBtn').on('click', () => closeModal($modal));
-    $modal.on('click', e => { if (e.target.id === 'categoryModal') closeModal($modal); });
-    $(document).on('keydown', e => { if (e.key === 'Escape') closeModal($modal); });
-
-    $('#booksModalCloseBtn').on('click', () => closeModal($booksModal));
-    $booksModal.on('click', e => { if (e.target.id === 'booksModal') closeModal($booksModal); });
-
     // ---------- 저장 ----------
     $('#modalSaveBtn').on('click', function () {
+        const $btn = $(this);
+        if ($btn.prop('disabled')) return;
+
         const id = $('#modalCategoryId').val();
         const data = { name: $('#modalCategoryName').val().trim() };
         if (!data.name) { showMessage('카테고리 이름을 입력하세요.'); return; }
 
+        $btn.prop('disabled', true);
+
         const ajaxOpt = {
             contentType: 'application/json',
             data: JSON.stringify(data),
+            complete: () => $btn.prop('disabled', false),
             success: () => { showMessage(id ? '수정 완료' : '등록 완료'); location.reload(); },
             error: () => { showMessage(id ? '수정 실패' : '등록 실패'); }
         };
@@ -52,8 +64,9 @@ $(function () {
         else $.ajax({ url: `${ctx}/admin/categories`, method: 'POST', ...ajaxOpt });
     });
 
+
     // ---------- 수정/삭제 ----------
-    $tbody.on('click', '.btn-edit', function () {
+    $tbody.on('click', '.btn-edit, .btnEdit', function (){
         const $row = $(this).closest('tr');
         const id = $row.data('id');
         const name = $row.find('.category-name').text();
@@ -63,7 +76,7 @@ $(function () {
         openModal($modal);
     });
 
-    $tbody.on('click', '.btn-delete', function () {
+    $tbody.on('click', '.btn-delete, .btnDelete', function (){
         if (!confirm('정말 삭제하시겠습니까?')) return;
         const id = $(this).closest('tr').data('id');
         $.ajax({

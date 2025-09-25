@@ -60,8 +60,8 @@
                     <td class="created-at-cell">${author.createdAt}</td>
                     <td class="t-left author-description">${author.description}</td>
                     <td>
-                        <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
-                        <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+                        <button type="button" class="btn btn-cer-secondary save-btn">수정</button>
+                        <button type="button" class="btn btn-cer-success delete-btn">삭제</button>
                     </td>
                 </tr>
             </c:forEach>
@@ -104,8 +104,8 @@
                 <img id="modalAuthorImgPreview" src="" alt="작가 이미지" />
             </div>
             <div class="modal__footer">
-                <button type="submit" class="btn btn-accent" id="modalSaveBtn">저장</button>
-                <button type="button" class="btn" id="modalCloseBtn2">닫기</button>
+                <button type="submit" class="btn btn-cer-secondary save-btn" id="modalSaveBtn">저장</button>
+                <button type="button" class="btn btn-cer-success delete-btn" id="modalCloseBtn2">닫기</button>
             </div>
         </form>
     </div>
