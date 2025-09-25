@@ -19,11 +19,13 @@ public class OrdersDto {
     private String status;
     private Long totalPrice;
     private String  createdAt;
+
+    private String phone;
     private String address;
+    private String memo;
     private String paymentMethod;
-
+    private String  merchantUid;
     private List<OrderItemDto> items;
-
 
     private LocalDateTime paidAt;
     private LocalDateTime deliveredAt;
@@ -34,6 +36,7 @@ public class OrdersDto {
     private String courierManName;  // 기사명
     private String courierManPhone; // 기사 연락처
     private String recipient;       // 수취인
+    private String deliveredAtFormatted;
 
     public String getDeliveredAtFormatted() {
         return deliveredAt == null ? null

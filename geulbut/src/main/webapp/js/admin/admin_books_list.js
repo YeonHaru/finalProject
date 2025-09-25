@@ -2,9 +2,7 @@ $(function () {
     // 컨텍스트 경로(배포 경로 안전)
     const ctx = (typeof window.ctx !== 'undefined' && window.ctx) ? window.ctx : '';
 
-    // =============================
-    // 🔹 모달 select 옵션 로드
-    // =============================
+    // 모달 select 옵션 로드
     function loadOptions(callback) {
         $.get(`${ctx}/admin/books/options`, function (res) {
             let authorSelect = $('#authorId');
@@ -23,10 +21,8 @@ $(function () {
         });
     }
 
-    // =============================
-    // 🔹 모달 열기 (도서 등록)
-    // =============================
-    $('#btnAddBook').on('click', function () {
+    // 도서 등록 모달 열기
+    $('#btnAddBook').click(function () {
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
@@ -37,13 +33,11 @@ $(function () {
         $('#bookModal').css('display','flex').attr('aria-hidden','false');
     });
 
-    // =============================
-    // 🔹 모달 닫기 (오버레이/ESC/버튼)
-    // =============================
-    function closeBookModal(){
-        $('#bookModal').hide().attr('aria-hidden','true');
-    }
-    $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
+    // 모달 닫기
+    $('#btnCloseModal, #btnCancel').on('click', function () {
+        $('#bookModal').hide();
+    });
+
     $('#bookModal').on('click', function (e) {
         if (e.target.id === 'bookModal') closeBookModal();
     });
@@ -51,10 +45,8 @@ $(function () {
         if (e.key === 'Escape') closeBookModal();
     });
 
-    // =============================
-    // 🔹 등록 / 수정 submit
-    // =============================
-    $('#bookForm').on('submit', function (e) {
+    // 등록 / 수정 submit
+    $('#bookForm').submit(function (e) {
         e.preventDefault();
 
         let authorVal = $('#authorId').val();
@@ -105,9 +97,7 @@ $(function () {
         });
     });
 
-    // =============================
-    // 🔹 삭제
-    // =============================
+    // 삭제
     $('#booksTableBody').on('click', '.btnDelete', function () {
         let bookId = $(this).closest('tr').data('id');
         if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -123,9 +113,7 @@ $(function () {
         });
     });
 
-    // =============================
-    // 🔹 수정 버튼 클릭
-    // =============================
+    // 수정 버튼 클릭
     $('#booksTableBody').on('click', '.btnEdit', function () {
         let bookId = $(this).closest('tr').data('id');
 
@@ -161,9 +149,7 @@ $(function () {
         });
     });
 
-    // =============================
-    // 🔹 이미지 미리보기 업데이트
-    // =============================
+    // 이미지 미리보기 업데이트
     $('#imgUrl').on('input', function () {
         let url = $(this).val().trim();
         if (url) {
@@ -173,10 +159,8 @@ $(function () {
         }
     });
 
-    // =============================
-    // 🔹 검색 + 결과/페이징 동적 갱신
-    // =============================
-    $('#bookSearchForm').on('submit', function (e) {
+    // 검색 + 페이징 갱신
+    $('#bookSearchForm').submit(function (e) {
         e.preventDefault();
         let keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
 
@@ -192,7 +176,7 @@ $(function () {
 
             res.content.forEach(book => {
                 let row = `
-                    <tr data-id="${book.bookId}">
+                    <tr class="data-row" data-id="${book.bookId}">
                         <td>${book.bookId}</td>
                         <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
                         <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb" alt="${book.title}"/>` : ''}</td>
@@ -213,7 +197,7 @@ $(function () {
                 tbody.append(row);
             });
 
-            // 🔹 페이징 다시 생성
+            // 페이징 생성
             let pagination = $('.pagination');
             pagination.empty();
             for (let i = 0; i < res.totalPages; i++) {
@@ -222,4 +206,13 @@ $(function () {
             }
         });
     });
+
+    // 상세보기 버튼 클릭 시 이동
+    $('#booksTableBody').on('click', '.btnView', function () {
+        const bookId = $(this).closest('tr').data('id');
+        if (bookId) {
+            window.location.href = `/admin/books/${bookId}/detail`;
+        }
+    });
+
 });

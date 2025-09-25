@@ -2,6 +2,8 @@ package com.error404.geulbut.jpa.carts.repository;
 
 import com.error404.geulbut.jpa.carts.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +21,10 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     boolean existsByUserIdAndBook_BookId(String userId, Long bookId);
     void deleteByUserIdAndBook_BookId(String userId, Long bookId);
 
+    // ✅ 결제용: Book까지 한 번에 로딩 (N+1 방지)
+    @Query("select c from Cart c join fetch c.book where c.userId = :userId")
+    List<Cart> findAllWithBookByUserId(@Param("userId") String userId);
+
+    // ✅ 결제 후: 사용자 카트 전부 삭제
+    void deleteByUserId(String userId);
 }

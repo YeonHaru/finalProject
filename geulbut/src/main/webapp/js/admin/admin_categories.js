@@ -89,8 +89,7 @@ $(function () {
 
     // ---------- 검색 ----------
     $('#searchForm').on('submit', function (e) {
-        // GET 그대로 전송 (action/form 으로 처리) — 여기선 굳이 JS 리로딩 안 함
-        // 필요 시 아래처럼 막고 location.href로 넘겨도 됩니다.
+        // GET 그대로 전송 (action/form 으로 처리)
         // e.preventDefault();
     });
 
@@ -104,8 +103,8 @@ $(function () {
         window.location.href = url;
     });
 
-    // ---------- 카테고리 ID 클릭 → 속한 책 조회 ----------
-    $tbody.on('click', 'td.category-id', function () {
+    // ---------- 카테고리 ID/이름 클릭 → 속한 책 조회 ----------
+    $tbody.on('click', 'td.category-id, td.category-name', function () {
         const categoryId = $(this).closest('tr').data('id');
         $.ajax({
             url: `${ctx}/admin/categories/${categoryId}/books`,
@@ -116,8 +115,9 @@ $(function () {
                     $booksTbody.append('<tr><td colspan="5" class="t-center">등록된 책이 없습니다.</td></tr>');
                 } else {
                     books.forEach(b => {
-                        const authorName = b.author ? b.author.name : '-';
-                        const publisherName = b.publisher ? b.publisher.name : '-';
+                        // DTO 기준으로 authorName/publisherName 가져오기
+                        const authorName = b.authorName || '-';
+                        const publisherName = b.publisherName || '-';
                         $booksTbody.append(`
 <tr>
   <td>${b.bookId}</td>

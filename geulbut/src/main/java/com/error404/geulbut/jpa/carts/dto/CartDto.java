@@ -14,7 +14,7 @@ public class CartDto {
     private String title;
     private String author;
     private String publisher;
-    private Long price;
+    private int price;
     private Long discountedPrice;
     private String imgUrl;
     private int quantity;

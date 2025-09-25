@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 
 <html>
 <head>
@@ -32,7 +34,7 @@
                 <div>
                     <sec:authorize access="principal.username == '${notice.userId}'">
                         <!-- 수정 버튼 -->
-                        <form action="${pageContext.request.contextPath}/noticeUpdate" method="get" style="display:inline;">
+                        <form action="${pageContext.request.contextPath}/noticeUpdate" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="${notice.noticeId}" />
                             <button type="submit" class="btn btn-main">수정</button>
                         </form>
@@ -88,30 +90,96 @@
                 <c:forEach var="comment" items="${comments}">
                     <div class="comment-item">
                         <span class="comment-author">${comment.userId}</span>
-                        <span class="comment-date">
-                <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
-            </span>
-                        <p class="comment-text">${comment.content}</p>
+                        <span class="comment-date"><fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/></span>
 
-                        <!-- 댓글 작성자와 로그인 사용자 일치 시 수정/삭제 버튼 표시 -->
+                        <div id="comment-${comment.commentId}">
+                            <p class="comment-text">${comment.content}</p>
+                        </div>
+
                         <sec:authorize access="principal.username == '${comment.userId}'">
                             <div style="margin-top:0.5rem;">
-                                <!-- 수정 버튼 -->
-                                <form action="${pageContext.request.contextPath}/noticeCommentUpdate" method="get" style="display:inline;">
-                                    <input type="hidden" name="commentId" value="${comment.commentId}" />
-                                    <button type="submit" class="btn btn-main btn-sm">수정</button>
-                                </form>
+                                <button type="button" class="btn btn-main btn-sm"
+                                        onclick="editComment('${comment.commentId}', '${notice.noticeId}', '${comment.content}')">수정</button>
 
-                                <!-- 삭제 버튼 -->
                                 <form action="${pageContext.request.contextPath}/noticeCommentDelete" method="post" style="display:inline;">
                                     <input type="hidden" name="commentId" value="${comment.commentId}" />
                                     <button type="submit" class="btn btn-main btn-sm">삭제</button>
                                 </form>
                             </div>
                         </sec:authorize>
-
                     </div>
                 </c:forEach>
+
+                <script>
+                    function editComment(commentId, noticeId, content) {
+                        const div = document.getElementById("comment-" + commentId);
+
+                        // 댓글 원본 HTML 저장 (취소 시 복원용)
+                        if (!div.dataset.original) {
+                            div.dataset.original = div.innerHTML;
+                        }
+
+                        // 수정 폼 만들기
+                        const form = document.createElement('form');
+                        form.action = '${pageContext.request.contextPath}/noticeCommentUpdate';
+                        form.method = 'post';
+
+                        const inputId = document.createElement('input');
+                        inputId.type = 'hidden';
+                        inputId.name = 'commentId';
+                        inputId.value = commentId;
+
+                        const inputNoticeId = document.createElement('input');
+                        inputNoticeId.type = 'hidden';
+                        inputNoticeId.name = 'noticeId';
+                        inputNoticeId.value = noticeId;
+
+                        const textarea = document.createElement('textarea');
+                        textarea.name = 'content';
+                        textarea.rows = 2;
+                        textarea.className = 'mt-2 comment-textarea';
+                        textarea.value = content;
+
+                        const saveBtn = document.createElement('button');
+                        saveBtn.type = 'submit';
+                        saveBtn.className = 'mt-2 mr-1 btn btn-main btn-sm';
+                        saveBtn.innerText = '저장';
+
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.type = 'button';
+                        cancelBtn.className = 'mt-2 btn btn-main btn-sm';
+                        cancelBtn.innerText = '취소';
+                        cancelBtn.onclick = () => cancelEdit(commentId);
+
+                        form.appendChild(inputId);
+                        form.appendChild(inputNoticeId);
+                        form.appendChild(textarea);
+                        form.appendChild(saveBtn);
+                        form.appendChild(cancelBtn);
+
+                        // 댓글 내용 div 교체
+                        div.innerHTML = '';
+                        div.appendChild(form);
+
+                        // 댓글 버튼 숨기기
+                        const btnDiv = div.nextElementSibling;
+                        if(btnDiv) btnDiv.style.display = 'none';
+                    }
+
+                    function cancelEdit(commentId) {
+                        const div = document.getElementById("comment-" + commentId);
+                        // 저장해둔 원본 HTML 복원
+                        if (div.dataset.original) {
+                            div.innerHTML = div.dataset.original;
+                        }
+
+                        // 댓글 버튼 다시 보이게
+                        const btnDiv = div.nextElementSibling;
+                        if(btnDiv) btnDiv.style.display = 'block';
+                    }
+                </script>
+
+
             </div>
 
 

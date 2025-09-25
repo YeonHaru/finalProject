@@ -26,7 +26,7 @@ public class NoticeCommentController {
         // 수정된 댓글 엔티티에서 noticeId 가져오기
         Long noticeId = noticeCommentService.getNoticeIdByComment(commentId);
 
-        return "redirect:/notice/detail?id=" + noticeId;
+        return "redirect:/noticeText?id=" + noticeId;
     }
 
     // 댓글 삭제
