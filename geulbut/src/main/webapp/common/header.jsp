@@ -139,6 +139,7 @@
                                        ? delivery.ordersDto.orderId
                                        : sessionScope.lastOrderId)}"/>
 
+                    <li><a href="#"><span>안녕하세요, ${fn:escapeXml(userName)} 님!</span></a></li>
                     <li><a href="${ctx}/mypage">마이페이지</a></li>
                     <li><a href="${ctx}/logout">로그아웃</a></li>
                     <li><a href="${ctx}/notice">공지사항</a></li>
