@@ -55,7 +55,17 @@
                         <td class="py-2 text-center">
                             <fmt:formatDate value="${qna.QAt}" pattern="yyyy-MM-dd"/>
                         </td>
-                        <td class="py-2 text-center">${qna.AId}</td>
+                        <td class="py-2 text-center">
+                            <c:choose>
+                                <c:when test="${not empty qna.comments}">
+                                    ${qna.comments[0].userId}
+                                </c:when>
+                                <c:otherwise>
+                                    -
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+
                     </tr>
                 </c:forEach>
                 </tbody>

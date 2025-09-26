@@ -5,20 +5,17 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
+    <script>window.ctx = "${ctx}";</script>
     <title>관리자 - 해시태그 관리</title>
 
     <!-- 공통/헤더 + 관리자 통합 CSS -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
-    <script>
-        // JS에서 컨텍스트 경로 사용
-        window.ctx = "${ctx}";
-    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-main text-main admin-hashtags">
+<body class="bg-main text-main admin-hashtags has-bg">
 <jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
@@ -77,8 +74,8 @@
                         </c:choose>
                     </td>
                     <td class="actions-cell">
-                        <button type="button" class="btn btn-accent btn--glass btnEdit btn-edit">수정</button>
-                        <button type="button" class="btn btn-delete btn--glass btnDelete btn-delete">삭제</button>
+                        <button type="button" class="btn btn-cer-secondary save-btn">수정</button>
+                        <button type="button" class="btn btn-cer-success delete-btn">삭제</button>
                         <button type="button" class="btn btn--glass btn-accent btn-manage-books">도서 관리</button>
                     </td>
                 </tr>
@@ -107,8 +104,8 @@
             <input type="text" id="hashtagName" placeholder="해시태그 이름" />
         </label>
         <div class="t-right" style="margin-top:10px;">
-            <button id="modalSaveBtn" type="button" class="btn btn-accent btn--glass">저장</button>
-            <button id="modalCloseBtn" type="button" class="btn btn-delete btn--glass">닫기</button>
+            <button id="modalSaveBtn" type="button" class="btn btn-cer-secondary save-btn">저장</button>
+            <button id="modalCloseBtn" type="button" class="btn btn-cer-success delete-btn">닫기</button>
         </div>
     </div>
 </div>
@@ -135,7 +132,7 @@
         <!-- 우하단 정렬 푸터 -->
         <div class="modal__footer" id="booksModalFooter">
             <!-- 저장 버튼은 JS가 필요할 때 주입합니다 -->
-            <button id="booksModalClose" type="button" class="btn btn-delete btn--glass">닫기</button>
+            <button id="booksModalClose" type="button" class="btn btn-cer-success delete-btn">닫기</button>
         </div>
     </div>
 </div>

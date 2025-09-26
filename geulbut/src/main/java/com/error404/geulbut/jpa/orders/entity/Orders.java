@@ -37,8 +37,12 @@ public class Orders extends BaseTimeEntity {
 //    결제 관련 필드
     @Column(name = "MERCHANT_UID", length = 100, unique = true)
     private String merchantUid;
+
     @Column(name = "PAID_AT")
     private LocalDateTime paidAt;
+
+
+
     private LocalDateTime deliveredAt;
   
 

@@ -6,16 +6,17 @@
 
 <html>
 <head>
+
     <title>관리자 - 회원조회</title>
-    <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
-    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="${ctx}/css/00_common.css" />
+    <link rel="stylesheet" href="${ctx}/css/header.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 외부 JS 분리 -->
     <script src="/js/admin/admin_users_Info.js"></script>
     <script src="/js/theme.js"></script>
 </head>
-<body>
+<body class="bg-main text-main admin-users has-bg">
 <jsp:include page="/common/admin_page_header.jsp"></jsp:include>
 
 <div class="page">
@@ -67,20 +68,32 @@
     </div>
 
     <!-- 회원 테이블 -->
-    <table class="admin-table">
-        <thead>
-        <tr>
-            <th>회원ID</th>
-            <th>이름</th>
-            <th>이메일</th>
-            <th>전화번호</th>
-            <th>기본주소</th>
-            <th>권한</th>
-            <th>가입일</th>
-            <th>계정상태</th>
-            <th>액션</th>
-        </tr>
-        </thead>
+    <div class="table-scroll">
+        <table class="admin-table admin-users-table">
+            <colgroup>
+                <col class="col-id">
+                <col class="col-name">
+                <col class="col-email">
+                <col class="col-phone">
+                <col class="col-address">
+                <col class="col-role">
+                <col class="col-joindate">
+                <col class="col-status">
+                <col class="col-actions">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>회원ID</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>전화번호</th>
+                <th>기본주소</th>
+                <th>권한</th>
+                <th>가입일</th>
+                <th>계정상태</th>
+                <th>액션</th>
+            </tr>
+            </thead>
         <tbody>
         <c:forEach var="user" items="${usersPage.content}">
             <tr class="data-row">
@@ -106,8 +119,8 @@
                     </select>
                 </td>
                 <td>
-                    <button class="btn btn-accent save-btn" data-userid="${user.userId}">저장</button>
-                    <button class="btn btn-delete delete-btn" data-userid="${user.userId}">삭제</button>
+                    <button class="btn btn-cer-secondary save-btn" data-userid="${user.userId}">저장</button>
+                    <button class="btn btn-cer-success   delete-btn" data-userid="${user.userId}">삭제</button>
                 </td>
             </tr>
 
@@ -128,7 +141,7 @@
         </c:forEach>
         </tbody>
     </table>
-
+    </div>
     <!-- 페이지네이션 -->
     <c:if test="${usersPage.totalPages > 0}">
         <div class="pagination mt-2">
@@ -149,6 +162,6 @@
 </div>
 
 <p class="ht-footnote">© Geulbut Admin Users Info</p>
-
+<script src="/js/admin/bs_quartz_actions.js"></script>
 </body>
 </html>
