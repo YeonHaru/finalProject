@@ -841,62 +841,80 @@ h1 {
 .admin-books-table {
     table-layout: fixed;
     width: 100%;
-    min-width: 980px
+    min-width: 1120px;
 }
-
-.admin-books-table col.col-id {
-    width: 84px
+.admin-books-table col.col-id { width: 84px; }
+.admin-books-table col.col-title { width: auto; min-width: 220px; }
+.admin-books-table col.col-isbn { width: 130px; }
+.admin-books-table col.col-author { width: 120px; }
+.admin-books-table col.col-publisher { width: 120px; }
+.admin-books-table col.col-category { width: 120px; }
+.admin-books-table col.col-price { width: 90px; }
+.admin-books-table col.col-discount { width: 90px; }
+.admin-books-table col.col-stock { width: 70px; }
+.admin-books-table col.col-created { width: 140px; }
+.admin-books-table col.col-actions { width: 300px; }
+.admin-books-table .t-left { text-align: left; }
+.admin-books-table .t-right { text-align: right; }
+.admin-books-table .btnView, .admin-books-table .btnEdit, .admin-books-table .btnDelete {
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    display: inline-flex;            /* 폰트/라인차로 생기는 미세 뜸 방지 */
+    align-items: center;
+    justify-content: center;
 }
-
-.admin-books-table col.col-title {
-    width: auto;
-    min-width: 220px
+.admin-books-table .btnDelete {
+    margin-left: 8px
 }
-
-.admin-books-table col.col-isbn {
-    width: 130px
+.admin-books-table .btnEdit {
+    background: var(--color-accent);
+    color: #fff
 }
-
-.admin-books-table col.col-author {
-    width: 120px
+.admin-books-table .btnEdit:hover {
+    background: var(--admin-accent-dark)
 }
-
-.admin-books-table col.col-publisher {
-    width: 120px
+.admin-books-table .btnDelete {
+    background: var(--admin-btn-delete);
+    color: #fff
 }
-
-.admin-books-table col.col-category {
-    width: 120px
+/* BOOKS - 좌우 가장자리 여백 통일 */
+.admin-books-table th:first-child,
+.admin-books-table td:first-child {
+    padding-left: var(--space-4);     /* 좌측 테두리와 동일 */
 }
-
-.admin-books-table col.col-price {
-    width: 90px
+.admin-books-table th:last-child,
+.admin-books-table td:last-child {
+    padding-right: var(--space-4);
 }
-
-.admin-books-table col.col-discount {
-    width: 90px
+/* 3) 버튼들 간 간격 통일(보기/수정/삭제) */
+.admin-books-table td:last-child .btn + .btn {
+    margin-left: 8px;
 }
-
-.admin-books-table col.col-stock {
-    width: 70px
+.admin-books-table td:last-child {
+    padding-left: var(--space-3);
 }
-
-.admin-books-table col.col-created {
-    width: 140px
+@media (min-width: 1600px) {
+    .admin-books-table col.col-actions { width: 340px; }
 }
-
-.admin-books-table col.col-actions {
-    width: 170px
+@media (max-width: 1200px) {
+    .admin-books-table col.col-publisher,
+    .admin-books-table col.col-category,
+    .admin-books-table col.col-discount,
+    .admin-books-table col.col-created {
+        width: 0;
+    }
 }
-
-.admin-books-table .t-left {
-    text-align: left
+@media (max-width: 992px) {
+    .admin-books-table col.col-isbn { width: 0; }
 }
-
-.admin-books-table .t-right {
-    text-align: right
+@media (max-width: 920px) {
+    .admin-books-table td:last-child .btn + .btn { margin-left: 6px; }
 }
-
+@media (min-width: 1600px) {
+    .admin-books .page { width: min(92%, 1600px); }
+    .admin-books-table col.col-actions { width: 320px; }
+}
 .title-ellipsis {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -912,33 +930,7 @@ h1 {
     font-size: .9rem
 }
 
-.admin-books-table .btnEdit, .admin-books-table .btnDelete {
-    display: inline-block;
-    min-width: 60px;
-    height: 28px;
-    line-height: 28px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    vertical-align: middle
-}
 
-.admin-books-table .btnDelete {
-    margin-left: 8px
-}
-
-.admin-books-table .btnEdit {
-    background: var(--color-accent);
-    color: #fff
-}
-
-.admin-books-table .btnEdit:hover {
-    background: var(--admin-accent-dark)
-}
-
-.admin-books-table .btnDelete {
-    background: var(--admin-btn-delete);
-    color: #fff
-}
 
 /* AUTHORS */
 .admin-authors-table {

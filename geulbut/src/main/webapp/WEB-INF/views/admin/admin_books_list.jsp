@@ -86,12 +86,22 @@
                                 <img src="${book.imgUrl}" alt="${book.title}" class="book-thumb"/>
                             </c:if>
                         </td>
-                        <td><span class="isbn-mono">${book.isbn}</span></td>
+                        <!-- th: ISBN 에 hide-md → td 도 hide-md -->
+                        <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
+
                         <td>${book.authorName}</td>
-                        <td>${book.publisherName}</td>
-                        <td>${book.categoryName}</td>
+
+                        <!-- th: 출판사 에 hide-lg → td 도 hide-lg -->
+                        <td class="hide-lg">${book.publisherName}</td>
+
+                        <!-- th: 카테고리 에 hide-lg → td 도 hide-lg -->
+                        <td class="hide-lg">${book.categoryName}</td>
+
                         <td class="t-right"><c:out value="${book.price}"/></td>
-                        <td class="t-right"><c:out value="${book.discountedPrice}"/></td>
+
+                        <!-- th: 할인가 에 hide-lg → td 도 hide-lg -->
+                        <td class="t-right hide-lg"><c:out value="${book.discountedPrice}"/></td>
+
                         <td>
                             <c:choose>
                                 <c:when test="${book.stock gt 0}">
@@ -102,7 +112,10 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <td>${book.createdAt}</td>
+
+                        <!-- th: 생성일 에 hide-lg → td 도 hide-lg -->
+                        <td class="hide-lg">${book.createdAt}</td>
+
                         <td>
                             <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
                             <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>

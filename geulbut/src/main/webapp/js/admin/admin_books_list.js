@@ -40,8 +40,18 @@ $(function () {
     function closeBookModal() {
         $('#bookModal').hide().attr('aria-hidden', 'true');
     }
-
-
+    // 닫기 트리거 연결
+    $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
+    // 오버레이(배경) 클릭 시 닫기
+    $('#bookModal').on('click', function (e) {
+        if (e.target === this) closeBookModal();
+    });
+    // ESC로 닫기
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $('#bookModal').is(':visible')) {
+            closeBookModal();
+        }
+    });
     // 등록 / 수정 submit
     $('#bookForm').submit(function (e) {
 
@@ -51,9 +61,18 @@ $(function () {
         let publisherVal = $('#publisherId').val();
         let categoryVal = $('#categoryId').val();
 
-        if (!authorVal) { alert('저자를 선택해주세요.'); return; }
-        if (!publisherVal) { alert('출판사를 선택해주세요.'); return; }
-        if (!categoryVal) { alert('카테고리를 선택해주세요.'); return; }
+        if (!authorVal) {
+            alert('저자를 선택해주세요.');
+            return;
+        }
+        if (!publisherVal) {
+            alert('출판사를 선택해주세요.');
+            return;
+        }
+        if (!categoryVal) {
+            alert('카테고리를 선택해주세요.');
+            return;
+        }
 
         let bookId = $('#bookId').val();
         let method = bookId ? 'PUT' : 'POST';
@@ -72,9 +91,18 @@ $(function () {
             imgUrl: $('#imgUrl').val().trim()
         };
 
-        if (!data.title) { alert('제목을 입력해주세요.'); return; }
-        if (!data.isbn) { alert('ISBN을 입력해주세요.'); return; }
-        if (data.price < 0 || data.stock < 0) { alert('가격/재고는 0 이상이어야 합니다.'); return; }
+        if (!data.title) {
+            alert('제목을 입력해주세요.');
+            return;
+        }
+        if (!data.isbn) {
+            alert('ISBN을 입력해주세요.');
+            return;
+        }
+        if (data.price < 0 || data.stock < 0) {
+            alert('가격/재고는 0 이상이어야 합니다.');
+            return;
+        }
 
         $.ajax({
             url,
@@ -107,8 +135,13 @@ $(function () {
             $.ajax({
                 url: `${ctx}/admin/books/${bookId}`,
                 method: 'DELETE',
-                success: function () { alert('삭제 완료'); location.reload(); },
-                error: function () { alert('삭제 실패'); }
+                success: function () {
+                    alert('삭제 완료');
+                    location.reload();
+                },
+                error: function () {
+                    alert('삭제 실패');
+                }
             });
         })
         // 수정
@@ -175,25 +208,31 @@ $(function () {
 
             res.content.forEach(book => {
                 let row = `
-                    <tr class="data-row" data-id="${book.bookId}">
-                        <td>${book.bookId}</td>
-                        <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
-                        <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb" alt="${book.title}"/>` : ''}</td>
-                        <td><span class="isbn-mono">${book.isbn}</span></td>
-                        <td>${book.authorName ?? ''}</td>
-                        <td>${book.publisherName ?? ''}</td>
-                        <td>${book.categoryName ?? ''}</td>
-                        <td class="t-right">${book.price}</td>
-                        <td class="t-right">${book.discountedPrice ?? ''}</td>
-                        <td>${book.stock}</td>
-                        <td>${book.createdAt}</td>
-                        <td>
-                            <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
-                            <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+<tr class="data-row" data-id="${book.bookId}">
+  <td>${book.bookId}</td>
+  <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
+  <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb" alt="${book.title}"/>` : ''}</td>
 
+  <!-- ISBN → hide-md -->
+  <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
 
-                        </td>
-                    </tr>`;
+  <td>${book.authorName ?? ''}</td>
+
+  <!-- 출판사/카테고리/할인가/생성일 → hide-lg -->
+  <td class="hide-lg">${book.publisherName ?? ''}</td>
+  <td class="hide-lg">${book.categoryName ?? ''}</td>
+  <td class="t-right">${book.price}</td>
+  <td class="t-right hide-lg">${book.discountedPrice ?? ''}</td>
+  <td>${book.stock}</td>
+  <td class="hide-lg">${book.createdAt}</td>
+
+  <td>
+    <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
+    <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
+    <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+  </td>
+</tr>`;
+
                 tbody.append(row);
             });
 
@@ -206,15 +245,4 @@ $(function () {
             }
         });
     });
-
-
-    // 상세보기 버튼 클릭 시 이동
-    $('#booksTableBody').on('click', '.btnView', function () {
-        const bookId = $(this).closest('tr').data('id');
-        if (bookId) {
-            window.location.href = `/admin/books/${bookId}/detail`;
-        }
-    });
-
-
 });
