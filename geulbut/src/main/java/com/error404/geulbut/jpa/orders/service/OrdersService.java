@@ -27,6 +27,7 @@ public class OrdersService {
     private final BooksRepository booksRepository;
     private final UsersService usersService;                // 추가 ( 덕규)
     private final Clock clock;
+    private final PointService pointService;
 
     private static final DateTimeFormatter DELIVERY_FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm");
@@ -121,6 +122,15 @@ public class OrdersService {
         // PAID -> (PAID 외) : 환불/취소로 간주하여 누적 감소
         else if (STATUS_PAID.equalsIgnoreCase(oldStatus) && !STATUS_PAID.equalsIgnoreCase(newStatus)) {
             usersService.refundAndRegrade(updateOrder.getUserId(), amount);
+        }
+
+        // 포인트 적립/회수
+        if (!STATUS_PAID.equalsIgnoreCase(oldStatus) && STATUS_PAID.equalsIgnoreCase(newStatus)) {
+            // 결제완료로 전환 → 포인트 적립
+            pointService.accrueOnPaidOrder(orderId);
+        } else if (STATUS_PAID.equalsIgnoreCase(oldStatus) && !STATUS_PAID.equalsIgnoreCase(newStatus)) {
+            // 결제완료였다가 다른 상태(취소/환불 등)로 전환 → 포인트 회수
+            pointService.revokeOnCancelledOrder(orderId);
         }
 
         return mapStruct.toDto(updateOrder);

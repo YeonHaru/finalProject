@@ -38,9 +38,23 @@ public class OrdersDto {
     private String recipient;       // 수취인
     private String deliveredAtFormatted;
 
+//    포인트 관련 추가
+    private Long pointsAccrued;            // 이 주문으로 적립된 포인트
+    private LocalDateTime pointsAccruedAt; // 적립 시각
+    private LocalDateTime pointsRevokedAt; // 회수 시각
+
     public String getDeliveredAtFormatted() {
         return deliveredAt == null ? null
                 : deliveredAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd (E) HH:mm"));
+    }
+
+    public String getPointsAccruedFormatted() {
+        return pointsAccruedAt  == null ? null
+                : pointsAccruedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+    public String getPointsRevokedFormatted() {
+        return pointsRevokedAt == null ? null
+                : pointsRevokedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
 
