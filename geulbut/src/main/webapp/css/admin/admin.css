@@ -45,11 +45,6 @@
     /* PANTONE 17-3906 Minimal Gray 근사(hover 용) */
     --pantone-minimal-gray: #B5B7C0;
 
-    /* 글래스 버튼 전용 */
-    --glass-blur: 10px;
-    --glass-alpha: 0.22; /* 배경 투명도 */
-    --glass-shadow: 0 8px 24px rgba(0, 0, 0, .12), inset 0 1px 0 rgba(255, 255, 255, .35);
-
     /* PANTONE 13-4108 Nimbus Cloud 근사값 */
     --pantone-nimbus-cloud: #D8D9DB; /* 중성 라이트 그레이 */
     --pantone-nimbus-cloud-hover: #C9CBD0; /* hover용 살짝 진한톤 */
@@ -279,7 +274,7 @@ h1 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    transition: transform var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
     will-change: transform, box-shadow;
 }
 
@@ -299,92 +294,6 @@ h1 {
 
 .btn-delete:hover {
     filter: brightness(.95)
-}
-
-/* ---------- 1-1. 글래스 버튼 확장(알약 + 입체감) ---------- */
-.btn--glass {
-    border-radius: 999px; /* 알약 */
-    min-width: 72px;
-    height: 36px;
-    padding: 0 14px;
-    background: rgba(255, 255, 255, var(--glass-alpha));
-    color: var(--pantone-coolgray-10);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-    border: 1px solid rgba(255, 255, 255, .35);
-}
-
-.btn--glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 40%);
-    mix-blend-mode: screen;
-    opacity: .9;
-}
-
-.btn--glass::after {
-    content: "";
-    position: absolute;
-    top: 6%;
-    left: 10%;
-    right: 10%;
-    height: 24%;
-    border-radius: 999px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0));
-    filter: blur(1px);
-    pointer-events: none;
-}
-
-.btn--glass:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, .14), inset 0 1px 0 rgba(255, 255, 255, .45);
-}
-
-.btn--glass:active {
-    transform: translateY(0);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .16), inset 0 2px 3px rgba(0, 0, 0, .06);
-}
-
-.btn--glass:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, .25);
-    outline-offset: 2px
-}
-
-/* 글래스 색상 변형 */
-.btn-accent.btn--glass {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0)),
-    rgba(255, 255, 255, var(--glass-alpha));
-    color: #222;
-    border-color: rgba(255, 255, 255, .45);
-}
-
-/* 요청: 등록/수정 hover = Minimal Gray */
-.btn-accent.btn--glass:hover {
-    background: var(--pantone-minimal-gray);
-    color: #111;
-    border-color: rgba(0, 0, 0, .06);
-}
-
-/* 요청: 삭제 버튼 그라데이션(#F1FEC6 → #A882DD) */
-.btn-delete.btn--glass {
-    color: #1a1a1a;
-    background: linear-gradient(135deg, #F1FEC6 0%, #A882DD 100%);
-    border-color: rgba(255, 255, 255, .45);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-}
-
-.btn-delete.btn--glass:hover {
-    filter: saturate(105%) brightness(1.02);
-    transform: translateY(-1px);
-}
-
-.btn-delete.btn--glass:active {
-    filter: saturate(110%) brightness(.98)
 }
 
 /* 테이블 안 버튼 높이/정렬 */
@@ -478,106 +387,6 @@ h1 {
     .table-scroll {
         overflow-x: hidden
     }
-}
-
-
-/* ---------- 3. 페이지네이션 ---------- */
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin: var(--space-4) 0 var(--space-4);
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-.pagination a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
-    font-size: .9rem;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 10px;
-    border: 1px solid var(--cer-secondary-border);
-    background: var(--brand-green-bright);
-    color: var(--cer-secondary-text);
-    transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-
-.pagination a::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 40%);
-    mix-blend-mode: screen;
-    opacity: .9;
-}
-
-.pagination a:hover {
-    background: var(--cer-secondary-hover);
-}
-
-.pagination a.active {
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
-}
-
-/* 기존 카테고리 페이징(#pagination .page-btn)도 동일 톤 */
-#pagination {
-    text-align: center;
-    margin: var(--space-4) 0
-}
-
-#pagination .page-btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
-    margin: 0 4px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, .35);
-    cursor: pointer;
-    background: rgba(255, 255, 255, var(--glass-alpha));
-    color: #222;
-    font-weight: 600;
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease);
-}
-
-#pagination .page-btn::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 40%);
-    mix-blend-mode: screen;
-    opacity: .9;
-}
-
-#pagination .page-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, .14), inset 0 1px 0 rgba(255, 255, 255, .45);
-}
-
-#pagination .page-btn.active {
-    background: var(--pantone-minimal-gray);
-    color: #111;
-    border-color: rgba(0, 0, 0, .06);
 }
 
 /* ---------- 4. 통계/상세/모달 등 ---------- */
@@ -1350,50 +1159,11 @@ h1 {
     background: var(--cer-secondary-bg);
     color: var(--cer-secondary-text);
     border: 1px solid var(--cer-secondary-border);
-    /* 글래스 공통감 유지 */
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
 }
 
 .btnEdit:hover,
 .btn-edit:hover {
     background: var(--cer-secondary-hover);
-}
-
-.btnEdit.btn--glass,
-.btn-edit.btn--glass {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 45%),
-    var(--pantone-coolgray-1);
-    color: #222;
-    border-color: rgba(0, 0, 0, .06);
-    /* 글래스 공통감 유지 */
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-}
-
-.btnEdit.btn--glass:hover,
-.btn-edit.btn--glass:hover {
-    /* 요청: Minimal Gray hover */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .32), rgba(255, 255, 255, 0) 45%),
-    var(--pantone-coolgray-1-hover);
-    color: #111;
-    transform: translateY(-1px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, .14), inset 0 1px 0 rgba(255, 255, 255, .45);
-}
-
-.btnEdit.btn--glass:active,
-.btn-edit.btn--glass:active {
-    transform: translateY(0);
-    filter: saturate(103%) brightness(.99);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .16), inset 0 2px 3px rgba(0, 0, 0, .06);
-}
-
-.btnEdit.btn--glass:focus-visible,
-.btn-edit.btn--glass:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, .25);
-    outline-offset: 2px;
 }
 
 /* 2) 논글래스(일반) 버전도 동일 톤 */
@@ -1422,26 +1192,6 @@ h1 {
 .btnDelete:hover,
 .btn-delete:hover {
     background: var(--brand-green);
-}
-
-.btnDelete.btn--glass,
-.btn-delete.btn--glass {
-    color: #1a1a1a;
-    background: linear-gradient(135deg, #F1FEC6 0%, #A882DD 100%);
-    border-color: rgba(255, 255, 255, .45);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-}
-
-.btnDelete.btn--glass:hover,
-.btn-delete.btn--glass:hover {
-    filter: saturate(105%) brightness(1.02);
-    transform: translateY(-1px);
-}
-
-.btnDelete.btn--glass:active,
-.btn-delete.btn--glass:active {
-    filter: saturate(110%) brightness(.98);
 }
 
 /* 3) 테이블 안 버튼 높이/정렬(두 네이밍 모두 적용) */
@@ -1634,58 +1384,6 @@ body.admin-hashtags .admin-hashtags-table td.hashtag-id {
 
     /* 이 너비에서도 1줄이 안 되면 버튼 텍스트 줄이거나
        버튼 라벨을 아이콘+툴팁으로 바꾸는 게 UI 상 권장입니다. */
-}
-
-/* =========================================================
-   Hashtags — '도서 관리' 버튼 Nimbus Cloud 톤
-   - 글래스 룩 유지
-   - .btn-accent 기본 hover(미니멀그레이)보다 우선 적용되도록 더 강한 선택자 사용
-========================================================= */
-
-body.admin-hashtags .admin-hashtags-table td.actions-cell .btn-manage-books.btn--glass {
-    /* 베이스: Nimbus Cloud */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 45%),
-    var(--pantone-nimbus-cloud);
-    color: #222;
-    border-color: rgba(0, 0, 0, .06); /* 글래스 테두리 톤 정리 */
-    /* 글래스 공통감 유지 */
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-}
-
-/* hover/active/focus */
-body.admin-hashtags .admin-hashtags-table td.actions-cell .btn-manage-books.btn--glass:hover {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .32), rgba(255, 255, 255, 0) 45%),
-    var(--pantone-nimbus-cloud-hover);
-    color: #111;
-    transform: translateY(-1px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, .14), inset 0 1px 0 rgba(255, 255, 255, .45);
-}
-
-body.admin-hashtags .admin-hashtags-table td.actions-cell .btn-manage-books.btn--glass:active {
-    transform: translateY(0);
-    filter: saturate(103%) brightness(.99);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .16), inset 0 2px 3px rgba(0, 0, 0, .06);
-}
-
-body.admin-hashtags .admin-hashtags-table td.actions-cell .btn-manage-books.btn--glass:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, .25);
-    outline-offset: 2px;
-}
-
-/* 페이지네이션 래퍼를 카드로 (여백 규칙은 그대로 유지) */
-.pagination,
-#pagination {
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, .50); /* ↓ 조금 더 투명 */
-    backdrop-filter: blur(6px) saturate(140%);
-    -webkit-backdrop-filter: blur(6px) saturate(140%);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--elev-1);
-    width: fit-content; /* 내용만큼 카드 크기 */
-    margin-inline: auto; /* 가운데 정렬 */
 }
 
 /* =========================================================
@@ -2242,13 +1940,6 @@ body.admin-users .detail-row .detail-content {
     background: var(--cer-secondary-hover);
 }
 
-.modal__footer .btn.btn-accent.btn--glass {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0)),
-    rgba(255, 255, 255, var(--glass-alpha));
-    color: #222;
-    border-color: rgba(255, 255, 255, .45);
-}
-
 /* Toast */
 .toast {
     position: fixed;
@@ -2387,313 +2078,60 @@ body.admin-users .detail-row .detail-content {
     outline-offset: 2px;
 }
 
-/* USERS 페이지네이션 정리: 틀 제거 + 버튼만 노출 */
-body.admin-users .pagination {
-    /* 카드형 래퍼 없애기 */
-    padding: 0;
-    margin: var(--space-4) 0;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-}
-
-/* 유광 오버레이 제거 (구멍 느낌의 주범) */
-body.admin-users .pagination a::before {
-    content: none;
-}
-
-body.admin-users .pagination a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
-    font-size: .9rem;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 10px;
-    border: 1px solid var(--cer-success-border);
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-
-body.admin-users .pagination a:hover {
-    background: var(--cer-success-hover);
-}
-
-body.admin-users .pagination a.active {
-    /* active도 동일 톤 유지(필요하면 더 진하게 바꿔도 OK) */
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
-}
-
-/* 래퍼(틀) 제거 + 중앙 정렬 */
-body.admin-users .page .pagination {
-    display: flex; /* 내부 a들을 가로로 */
-    justify-content: center; /* 가운데 정렬 */
-    align-items: center;
-    width: 100%; /* fit-content 영향 상쇄 */
-    gap: 8px;
-    margin: var(--space-4) 0;
-    padding: 0;
-    background: transparent; /* 카드 배경 제거 */
-    border: 0; /* 카드 테두리 제거 */
-    box-shadow: none; /* 카드 그림자 제거 */
-}
-
-body.admin-users .page .pagination a::before {
-    content: none;
-}
-
-/*  링크 버튼 톤을 '삭제 버튼(= Success 팔레트)'과 1:1 일치시킴 */
-body.admin-users .page .pagination a {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
-    font-size: .9rem;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 10px;
-
-    /* ▼ .btn-cer-success와 동일 변수 사용 */
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border: 1px solid var(--cer-success-border);
-    box-shadow: none;
-    transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-
-/* hover/active 상태도 동일 팔레트 유지 */
-body.admin-users .page .pagination a:hover {
-    background: var(--cer-success-hover);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
-}
-
-body.admin-users .page .pagination a.active {
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
-}
-
 /* =========================================================
-   [ADMIN GLOBAL UI] Buttons & Pagination (single source of truth)
-   - 수정/저장: .btn-cer-secondary
-   - 삭제:     .btn-cer-success
-   - 모든 페이지네이션: .pagination
-   - 모달 푸터 버튼도 동일 팔레트
+   Pagination — Bootswatch "Materia" 느낌 (Bootstrap 미사용)
+   사용: <ul class="pagination materia"> … </ul>
 ========================================================= */
-
-/* 1) 버튼 베이스(공용) */
-.btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 72px;
-    height: 36px;
-    padding: 0 14px;
-    font-weight: 600;
-    font-size: .9rem;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
-    white-space: nowrap;
+.pagination.materia {
+    display:flex;justify-content:center;align-items:center;gap:.5rem;
+    padding:0;margin:1.5rem 0;list-style:none;background:transparent;border:0;box-shadow:none;
 }
 
-/* 글래스(선택) */
-.btn--glass {
-    border-radius: 999px;
-    background: rgba(255, 255, 255, var(--glass-alpha));
-    color: var(--pantone-coolgray-10);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-    border: 1px solid rgba(255, 255, 255, .35);
+.pagination.materia .page-item { /* li */
+    display: inline-block;
 }
 
-.btn--glass:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, .14), inset 0 1px 0 rgba(255, 255, 255, .45);
+.pagination.materia .page-link {position:relative;display:block;min-width:38px;padding:.5rem .9rem;text-align:center;
+    font-weight:600;font-size:.92rem;line-height:1;border-radius:.35rem;
+    background:#fff;color:#455a64;border:1px solid rgba(0,0,0,.12);
+    box-shadow:0 1px 2px rgba(0,0,0,.08);text-decoration:none;
+    transition:background .15s ease,color .15s ease,border-color .15s ease,transform .05s ease;
 }
 
-.btn--glass:active {
-    transform: translateY(0);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .16), inset 0 2px 3px rgba(0, 0, 0, .06);
+.pagination.materia .page-link:hover {
+    background:#f6f7f8;border-color:rgba(0,0,0,.18);color:#263238;
 }
 
-.btn--glass:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, .25);
-    outline-offset: 2px
+.pagination.materia .page-item.active .page-link {
+    background:#fff;                 /* 파란색 → 흰색 */
+    color:#263238;                   /* 글자 진회색 */
+    border-color:rgba(0,0,0,.24);    /* 테두리만 살짝 진하게 */
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+    cursor:default;
+    font-weight:700;
 }
 
-/* 2) 팔레트 — 수정/저장(Secondary) & 삭제(Success) */
-.btn-cer-secondary {
-    background: var(--cer-secondary-bg);
-    color: var(--cer-secondary-text);
-    border-color: var(--cer-secondary-border);
+.pagination.materia .page-item.disabled .page-link {
+    background:#f1f3f5;color:#adb5bd;border-color:rgba(0,0,0,.08);
+    pointer-events:none;box-shadow:none;
+}
+/* 버튼들을 하나의 캡슐처럼 보이게(선택) */
+.pagination.materia .page-link{margin-left:-1px;border-radius:0}
+.pagination.materia .page-item:first-child .page-link{
+    border-top-left-radius:.5rem;border-bottom-left-radius:.5rem;margin-left:0
+}
+.pagination.materia .page-item:last-child .page-link{
+    border-top-right-radius:.5rem;border-bottom-right-radius:.5rem
 }
 
-.btn-cer-secondary:hover {
-    background: var(--cer-secondary-hover);
-}
+/* 아주 좁은 화면 보정 */
+@media (max-width: 480px) {
+    .pagination.materia {
+        gap: .35rem;
+    }
 
-.btn-cer-success {
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
-}
-
-.btn-cer-success:hover {
-    background: var(--cer-success-hover);
-}
-
-.btn-cer-secondary:focus-visible,
-.btn-cer-success:focus-visible {
-    outline: 2px solid rgba(0, 0, 0, .25);
-    outline-offset: 2px;
-}
-
-/* (선택) 글래스 변형 컬러: 요청 그라데이션 유지 */
-.btn-cer-success.btn--glass {
-    color: #1a1a1a;
-    background: linear-gradient(135deg, #F1FEC6 0%, #A882DD 100%);
-    border-color: rgba(255, 255, 255, .45);
-}
-
-/* 3) 테이블 내부 버튼 크기 정렬(모든 관리자 테이블 공통) */
-.admin-table .btn {
-    height: 32px;
-    line-height: 32px;
-    padding: 0 12px;
-}
-
-.admin-table .btn + .btn {
-    margin-left: 8px;
-}
-
-/* 4) 호환(네이밍 혼용 대응): JSP에 흩어진 클래스들을 새 팔레트로 매핑
-   - 수정/저장류: .btnEdit, .btn-edit, .save-btn, .btn-save, .modal의 .btn.btn-accent
-   - 삭제류:     .btnDelete, .btn-delete, .delete-btn
-*/
-.btnEdit, .btn-edit, .save-btn, .btn-save,
-.modal__footer .btn.btn-accent {
-    /* secondary 톤 적용 */
-    background: var(--cer-secondary-bg);
-    color: var(--cer-secondary-text);
-    border: 1px solid var(--cer-secondary-border);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: var(--glass-shadow);
-}
-
-.btnEdit:hover, .btn-edit:hover, .save-btn:hover, .btn-save:hover,
-.modal__footer .btn.btn-accent:hover {
-    background: var(--cer-secondary-hover);
-}
-
-.btnDelete, .btn-delete, .delete-btn {
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border: 1px solid var(--cer-success-border);
-}
-
-.btnDelete:hover, .btn-delete:hover, .delete-btn:hover {
-    background: var(--cer-success-hover);
-}
-
-/* 5) 모달 푸터 버튼 정렬 + 동일 팔레트 사용(닫기=secondary / 삭제=success 추천) */
-.modal__footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-.modal__footer .btn {
-    min-width: 84px;
-    height: 36px;
-    line-height: 36px;
-}
-
-/* 6) 페이지네이션(전 관리자 공통) — 중앙정렬 + Success 팔레트로 통일 */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin: var(--space-4) 0;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-}
-
-.pagination a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
-    font-size: .9rem;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 10px;
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border: 1px solid var(--cer-success-border);
-    transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-
-.pagination a:hover {
-    background: var(--cer-success-hover);
-}
-
-.pagination a.active {
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
-}
-
-/* 불필요한 유광 오버레이 제거 */
-.pagination a::before {
-    content: none;
-}
-
-/* (레거시 지원) #pagination .page-btn를 .pagination와 동일 룩으로 */
-#pagination {
-    text-align: center;
-}
-
-#pagination .page-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
-    margin: 0 4px;
-    border-radius: 10px;
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border: 1px solid var(--cer-success-border);
-    transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-
-#pagination .page-btn:hover {
-    background: var(--cer-success-hover);
-}
-
-#pagination .page-btn.active {
-    background: var(--cer-success-bg);
-    color: var(--cer-success-text);
-    border-color: var(--cer-success-border);
+    .pagination.materia .page-link {
+        min-width: 34px;
+        padding: .45rem .7rem;
+    }
 }

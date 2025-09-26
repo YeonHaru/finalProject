@@ -6,13 +6,11 @@
 
 <html>
 <head>
-
     <title>관리자 - 회원조회</title>
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- 외부 JS 분리 -->
     <script src="/js/admin/admin_users_Info.js"></script>
     <script src="/js/theme.js"></script>
 </head>
@@ -25,17 +23,13 @@
     <!-- 검색창 통합 -->
     <div class="search-wrapper admin-search-form">
         <form method="get" action="/admin/users-info" class="search-form">
-            <!-- 검색 입력창 -->
             <input id="q" name="keyword" type="text" placeholder="회원ID, 이름, 이메일 검색" value="${keyword}"/>
-            <!-- 검색 버튼 -->
             <button type="submit" class="btn-search">검색</button>
-            <!-- 세부 검색 토글 -->
             <button type="button" id="toggleAdvancedSearch" class="btn-search" style="background:#ccc; color:#000;">
                 조건검색 ▼
             </button>
         </form>
 
-        <!-- 세부검색 -->
         <div id="advancedSearch" class="advanced-search" style="display:none;">
             <label for="startDate">가입일:</label>
             <input type="date" id="startDate" name="startDate" value="${startDate}">
@@ -79,6 +73,8 @@
                 <col class="col-role">
                 <col class="col-joindate">
                 <col class="col-status">
+                <col class="col-point">
+                <col class="col-grade">
                 <col class="col-actions">
             </colgroup>
             <thead>
@@ -91,71 +87,90 @@
                 <th>권한</th>
                 <th>가입일</th>
                 <th>계정상태</th>
+                <th>포인트</th>
+                <th>등급</th>
                 <th>액션</th>
             </tr>
             </thead>
-        <tbody>
-        <c:forEach var="user" items="${usersPage.content}">
-            <tr class="data-row">
-                <td>${user.userId}</td>
-                <td>${user.name}</td>
-                <td>${user.email != null ? user.email : '-'}</td>
-                <td>${user.phone != null ? user.phone : '-'}</td>
-                <td>${user.address != null ? user.address : '-'}</td>
-                <td>
-                    <select class="role-select" data-userid="${user.userId}">
-                        <option value="USER" ${user.role == 'USER' ? 'selected' : ''}>USER</option>
-                        <option value="ADMIN" ${user.role == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-                        <option value="MANAGER" ${user.role == 'MANAGER' ? 'selected' : ''}>MANAGER</option>
-                    </select>
-                </td>
-                <td>${user.joinDate}</td>
-                <td>
-                    <select class="status-select" data-userid="${user.userId}">
-                        <option value="ACTIVE" ${user.status == 'ACTIVE' ? 'selected' : ''}>활성</option>
-                        <option value="INACTIVE" ${user.status == 'INACTIVE' ? 'selected' : ''}>비활성</option>
-                        <option value="DELETED" ${user.status == 'DELETED' ? 'selected' : ''}>삭제</option>
-                        <option value="SUSPENDED" ${user.status == 'SUSPENDED' ? 'selected' : ''}>정지</option>
-                    </select>
-                </td>
-                <td>
-                    <button class="btn btn-cer-secondary save-btn" data-userid="${user.userId}">저장</button>
-                    <button class="btn btn-cer-success   delete-btn" data-userid="${user.userId}">삭제</button>
-                </td>
-            </tr>
+            <tbody>
+            <c:forEach var="user" items="${usersPage.content}">
+                <tr class="data-row">
+                    <td>${user.userId}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email != null ? user.email : '-'}</td>
+                    <td>${user.phone != null ? user.phone : '-'}</td>
+                    <td>${user.address != null ? user.address : '-'}</td>
+                    <td>
+                        <select class="role-select" data-userid="${user.userId}">
+                            <option value="USER" ${user.role == 'USER' ? 'selected' : ''}>USER</option>
+                            <option value="ADMIN" ${user.role == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+                            <option value="MANAGER" ${user.role == 'MANAGER' ? 'selected' : ''}>MANAGER</option>
+                        </select>
+                    </td>
+                    <td>${user.joinDate}</td>
+                    <td>
+                        <select class="status-select" data-userid="${user.userId}">
+                            <option value="ACTIVE" ${user.status == 'ACTIVE' ? 'selected' : ''}>활성</option>
+                            <option value="INACTIVE" ${user.status == 'INACTIVE' ? 'selected' : ''}>비활성</option>
+                            <option value="DELETED" ${user.status == 'DELETED' ? 'selected' : ''}>삭제</option>
+                            <option value="SUSPENDED" ${user.status == 'SUSPENDED' ? 'selected' : ''}>정지</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="point-input" value="${user.point != null ? user.point : 0}" min="0" style="width:80px;"/>
+                    </td>
+                    <td>
+                        <select class="grade-select">
+                            <option value="BRONZE" ${user.grade == 'BRONZE' ? 'selected' : ''}>BRONZE</option>
+                            <option value="SILVER" ${user.grade == 'SILVER' ? 'selected' : ''}>SILVER</option>
+                            <option value="GOLD" ${user.grade == 'GOLD' ? 'selected' : ''}>GOLD</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-cer-secondary save-btn" data-userid="${user.userId}">저장</button>
+                        <button class="btn btn-cer-success delete-btn" data-userid="${user.userId}">삭제</button>
+                    </td>
+                </tr>
 
-            <tr class="detail-row" style="display:none;">
-                <td colspan="9">
-                    <div class="detail-content">
-                        <p><strong>회원ID:</strong> ${user.userId}</p>
-                        <p><strong>이름:</strong> ${user.name}</p>
-                        <p><strong>이메일:</strong> ${user.email != null ? user.email : '-'}</p>
-                        <p><strong>전화번호:</strong> ${user.phone != null ? user.phone : '-'}</p>
-                        <p><strong>주소:</strong> ${user.address != null ? user.address : '-'}</p>
-                        <p><strong>권한:</strong> ${user.role}</p>
-                        <p><strong>가입일:</strong> ${user.joinDate}</p>
-                        <p><strong>계정상태:</strong> ${user.status}</p>
-                    </div>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
+                <tr class="detail-row" style="display:none;">
+                    <td colspan="11">
+                        <div class="detail-content">
+                            <p><strong>회원ID:</strong> ${user.userId}</p>
+                            <p><strong>이름:</strong> ${user.name}</p>
+                            <p><strong>이메일:</strong> ${user.email != null ? user.email : '-'}</p>
+                            <p><strong>전화번호:</strong> ${user.phone != null ? user.phone : '-'}</p>
+                            <p><strong>주소:</strong> ${user.address != null ? user.address : '-'}</p>
+                            <p><strong>권한:</strong> ${user.role}</p>
+                            <p><strong>가입일:</strong> ${user.joinDate}</p>
+                            <p><strong>계정상태:</strong> ${user.status}</p>
+                            <p><strong>포인트:</strong> <input type="number" class="point-input" value="${user.point != null ? user.point : 0}" min="0" style="width:80px;"/></p>
+                            <p><strong>등급:</strong>
+                                <select class="grade-select">
+                                    <option value="BRONZE" ${user.grade == 'BRONZE' ? 'selected' : ''}>BRONZE</option>
+                                    <option value="SILVER" ${user.grade == 'SILVER' ? 'selected' : ''}>SILVER</option>
+                                    <option value="GOLD" ${user.grade == 'GOLD' ? 'selected' : ''}>GOLD</option>
+                                </select>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
     </div>
+
     <!-- 페이지네이션 -->
     <c:if test="${usersPage.totalPages > 0}">
         <div class="pagination mt-2">
             <c:if test="${usersPage.number > 0}">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}">◀
-                    이전</a>
+                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}">◀ 이전</a>
             </c:if>
             <c:forEach begin="0" end="${usersPage.totalPages - 1}" var="i">
                 <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${i}&size=${usersPage.size}"
                    class="${i == usersPage.number ? 'active' : ''}">${i + 1}</a>
             </c:forEach>
             <c:if test="${usersPage.number < usersPage.totalPages - 1}">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}">다음
-                    ▶</a>
+                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}">다음 ▶</a>
             </c:if>
         </div>
     </c:if>

@@ -149,8 +149,8 @@ $(function () {
         .on('click', '.btnView', function () {
             const bookId = $(this).closest('tr').data('id');
             if (bookId) {
-                // AdminBooksController가 아닌 BooksController 경로로 이동
-                window.location.href = ctx + `/book/${bookId}`;
+                // AdminBooksController가 아닌 BooksController 경로로 새 창 열기
+                window.open(ctx + `/book/${bookId}`, '_blank');
             }
         });
 
