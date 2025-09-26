@@ -40,8 +40,18 @@ $(function () {
     function closeBookModal() {
         $('#bookModal').hide().attr('aria-hidden', 'true');
     }
-
-
+    // 닫기 트리거 연결
+    $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
+    // 오버레이(배경) 클릭 시 닫기
+    $('#bookModal').on('click', function (e) {
+        if (e.target === this) closeBookModal();
+    });
+    // ESC로 닫기
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $('#bookModal').is(':visible')) {
+            closeBookModal();
+        }
+    });
     // 등록 / 수정 submit
     $('#bookForm').submit(function (e) {
 
