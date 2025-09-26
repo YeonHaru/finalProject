@@ -11,7 +11,8 @@ public class OrderItemDto {
     private Long orderedItemId;
     private Long bookId;
     private int quantity;
-    private int price;
+    private Long price;
+    private Long discountedPrice;
     private String title;
     private String imageUrl;
 }

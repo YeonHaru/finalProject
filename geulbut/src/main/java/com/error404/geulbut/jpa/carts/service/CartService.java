@@ -112,21 +112,26 @@ public class CartService {
                 .paymentMethod(info != null ? info.payMethod().toUpperCase() : "CARD")
                 .build();
 
-        long total = 0L;
+        long total = 0L;        // 실제 결제 총액(할인가 반영)
+
         for (Cart c : items) {
-            long price = c.getBook().getPrice(); // ✅ 주문 시점 단가 스냅샷
+            long unitPrice = (c.getBook().getDiscountedPrice() != null && c.getBook().getDiscountedPrice() > 0)
+                    ? c.getBook().getDiscountedPrice()
+                    : c.getBook().getPrice();  // 할인가 있으면 적용, 없으면 정가
+
             int qty = c.getQuantity();
-            total += price * qty;
+            total += unitPrice * qty;   // 결제 합산
 
             order.addItem(OrderItem.builder()
                     .order(order)
                     .book(c.getBook())
-                    .price(price)
+                    .price(c.getBook().getPrice())              // 정가 스냅샷
+                    .discountedPrice(c.getBook().getDiscountedPrice())  // 할인가 스냅샷
                     .quantity(qty)
                     .build());
         }
 
-        // 총액 계산 (info.amount()와 다르면 서버값 우선)
+        // 총액 계산
         order.setTotalPrice(total);
 
         ordersRepository.save(order);      // 주문/주문아이템 저장
