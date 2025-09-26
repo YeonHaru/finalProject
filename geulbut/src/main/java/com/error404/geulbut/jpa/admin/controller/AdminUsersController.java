@@ -1,4 +1,3 @@
-// AdminUsersController.java
 package com.error404.geulbut.jpa.admin.controller;
 
 import com.error404.geulbut.jpa.admin.service.AdminUsersService;
@@ -46,14 +45,14 @@ public class AdminUsersController {
         return "admin/admin_users_Info";
     }
 
-    /** 2. REST API: 전체 회원 조회 */
+    /** 2. 전체 회원 조회 */
     @GetMapping("/api/users")
     @ResponseBody
     public List<UsersDto> getAllUsersApi() {
         return adminUsersService.getAllUsers();
     }
 
-    /** 3. REST API: 특정 회원 조회 */
+    /** 3. 특정 회원 조회 */
     @GetMapping("/api/users/{userId}")
     @ResponseBody
     public ResponseEntity<UsersDto> getUserByIdApi(@PathVariable String userId) {
@@ -62,7 +61,7 @@ public class AdminUsersController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /** 4. REST API: 회원 권한 변경 */
+    /** 4. 회원 권한 변경 */
     @PutMapping("/api/users/{userId}/role")
     @ResponseBody
     public ResponseEntity<String> updateUserRoleApi(
@@ -74,7 +73,7 @@ public class AdminUsersController {
         else return ResponseEntity.badRequest().body("회원이 존재하지 않음");
     }
 
-    /** 5. REST API: 회원 삭제 */
+    /** 5. 회원 삭제 */
     @DeleteMapping("/api/users/{userId}")
     @ResponseBody
     public ResponseEntity<String> deleteUserApi(@PathVariable String userId) {
@@ -83,7 +82,7 @@ public class AdminUsersController {
         else return ResponseEntity.badRequest().body("회원이 존재하지 않음");
     }
 
-    /** 6. REST API: 회원 통계 */
+    /** 6. 회원 통계 */
     @GetMapping("/api/users/stats")
     @ResponseBody
     public Map<String, Long> getUserStats() {
@@ -93,7 +92,7 @@ public class AdminUsersController {
         return stats;
     }
 
-    /** 7. REST API: 회원 계정 상태 변경 */
+    /** 7. 계정 상태 변경 */
     @PutMapping("/api/users/{userId}/status")
     @ResponseBody
     public ResponseEntity<String> updateUserStatusApi(
@@ -105,7 +104,7 @@ public class AdminUsersController {
         else return ResponseEntity.badRequest().body("회원이 존재하지 않음");
     }
 
-    // DTO 생성
+    /** DTO 요청 */
     public static class UpdateUserInfoRequest {
         public String newRole;
         public String newStatus;
@@ -113,7 +112,7 @@ public class AdminUsersController {
         public String newGrade;
     }
 
-    /** 8. REST API: 회원 정보 통합 수정 (role, status, point, grade) */
+    /** 8. 회원 정보 통합 수정 */
     @PutMapping("/api/users/{userId}/info")
     @ResponseBody
     public ResponseEntity<String> updateUserInfoApi(
@@ -130,5 +129,4 @@ public class AdminUsersController {
         if (result) return ResponseEntity.ok("회원 정보 수정 완료");
         else return ResponseEntity.badRequest().body("회원 정보 수정 실패");
     }
-
 }
