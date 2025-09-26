@@ -1,8 +1,9 @@
 $(function () {
-    // 컨텍스트 경로(배포 경로 안전)
     const ctx = (typeof window.ctx !== 'undefined' && window.ctx) ? window.ctx : '';
 
-    // 모달 select 옵션 로드
+    // =============================
+    // 🔹 모달 select 옵션 로드
+    // =============================
     function loadOptions(callback) {
         $.get(`${ctx}/admin/books/options`, function (res) {
             let authorSelect = $('#authorId');
@@ -21,8 +22,10 @@ $(function () {
         });
     }
 
+
     // 도서 등록 모달 열기
     $('#btnAddBook').click(function () {
+
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
@@ -30,30 +33,18 @@ $(function () {
         $('#discountedPrice').val(0);
 
         loadOptions();
-        $('#bookModal').css('display','flex').attr('aria-hidden','false');
+        $('#bookModal').css('display', 'flex').attr('aria-hidden', 'false');
     });
-
-
-
-    function closeBookModal(){
-        $('#bookModal').hide().attr('aria-hidden','true');
-    }
-    $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
 
     // 모달 닫기
-    $('#btnCloseModal, #btnCancel').on('click', function () {
-        $('#bookModal').hide();
-    });
+    function closeBookModal() {
+        $('#bookModal').hide().attr('aria-hidden', 'true');
+    }
 
-    $('#bookModal').on('click', function (e) {
-        if (e.target.id === 'bookModal') closeBookModal();
-    });
-    $(document).on('keydown', function (e) {
-        if (e.key === 'Escape') closeBookModal();
-    });
 
     // 등록 / 수정 submit
     $('#bookForm').submit(function (e) {
+
         e.preventDefault();
 
         let authorVal = $('#authorId').val();
@@ -104,74 +95,75 @@ $(function () {
         });
     });
 
-    // 삭제
-    $('#booksTableBody').on('click', '.btnDelete', function () {
-        let bookId = $(this).closest('tr').data('id');
-        if (!confirm('정말 삭제하시겠습니까?')) return;
+    // =============================
+    // 🔹 테이블 버튼 이벤트
+    // =============================
+    $('#booksTableBody')
+        // 삭제
+        .on('click', '.btnDelete', function () {
+            let bookId = $(this).closest('tr').data('id');
+            if (!confirm('정말 삭제하시겠습니까?')) return;
 
-        $.ajax({
-            url: `${ctx}/admin/books/${bookId}`,
-            method: 'DELETE',
-            success: function () {
-                alert('삭제 완료');
-                location.reload();
-            },
-            error: function () { alert('삭제 실패'); }
+            $.ajax({
+                url: `${ctx}/admin/books/${bookId}`,
+                method: 'DELETE',
+                success: function () { alert('삭제 완료'); location.reload(); },
+                error: function () { alert('삭제 실패'); }
+            });
+        })
+        // 수정
+        .on('click', '.btnEdit', function () {
+            let bookId = $(this).closest('tr').data('id');
+            $.get(`${ctx}/admin/books/${bookId}/edit-options`, function (res) {
+                let book = res.book;
+                $('#modalTitle').text('도서 수정');
+                $('#bookId').val(book.bookId);
+                $('#title').val(book.title);
+                $('#isbn').val(book.isbn);
+                $('#price').val(book.price);
+                $('#stock').val(book.stock);
+                $('#discountedPrice').val(book.discountedPrice || 0);
+                $('#imgUrl').val(book.imgUrl || '');
+                $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
+
+                let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
+                let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
+                let categorySelect = $('#categoryId').empty().append('<option value="">선택</option>');
+
+                res.authors.forEach(a => authorSelect.append(`<option value="${a.authorId}">${a.name}</option>`));
+                res.publishers.forEach(p => publisherSelect.append(`<option value="${p.publisherId}">${p.name}</option>`));
+                res.categories.forEach(c => categorySelect.append(`<option value="${c.categoryId}">${c.name}</option>`));
+
+                $('#authorId').val(book.authorId || '');
+                $('#publisherId').val(book.publisherId || '');
+                $('#categoryId').val(book.categoryId || '');
+
+                $('#bookModal').css('display', 'flex').attr('aria-hidden', 'false');
+            });
+        })
+        // 상세보기
+        .on('click', '.btnView', function () {
+            const bookId = $(this).closest('tr').data('id');
+            if (bookId) {
+                // AdminBooksController가 아닌 BooksController 경로로 이동
+                window.location.href = ctx + `/book/${bookId}`;
+            }
         });
-    });
 
-    // 수정 버튼 클릭
-    $('#booksTableBody').on('click', '.btnEdit', function () {
-        let bookId = $(this).closest('tr').data('id');
-
-        $.get(`${ctx}/admin/books/${bookId}/edit-options`, function (res) {
-            let book = res.book;
-            let authors = res.authors;
-            let publishers = res.publishers;
-            let categories = res.categories;
-
-            $('#modalTitle').text('도서 수정');
-            $('#bookId').val(book.bookId);
-            $('#title').val(book.title);
-            $('#isbn').val(book.isbn);
-            $('#price').val(book.price);
-            $('#stock').val(book.stock);
-            $('#discountedPrice').val(book.discountedPrice || 0);
-            $('#imgUrl').val(book.imgUrl || '');
-            $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
-
-            let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
-            let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
-            let categorySelect = $('#categoryId').empty().append('<option value="">선택</option>');
-
-            authors.forEach(a => authorSelect.append(`<option value="${a.authorId}">${a.name}</option>`));
-            publishers.forEach(p => publisherSelect.append(`<option value="${p.publisherId}">${p.name}</option>`));
-            categories.forEach(c => categorySelect.append(`<option value="${c.categoryId}">${c.name}</option>`));
-
-            $('#authorId').val(book.authorId || '');
-            $('#publisherId').val(book.publisherId || '');
-            $('#categoryId').val(book.categoryId || '');
-
-            $('#bookModal').css('display','flex').attr('aria-hidden','false');
-        });
-    });
-
-    // 이미지 미리보기 업데이트
+    // 이미지 미리보기
     $('#imgUrl').on('input', function () {
         let url = $(this).val().trim();
-        if (url) {
-            $('#imgPreview').attr('src', url).show();
-        } else {
-            $('#imgPreview').hide();
-        }
+        $('#imgPreview').attr('src', url).toggle(!!url);
     });
+
 
     // 검색 + 페이징 갱신
     $('#bookSearchForm').submit(function (e) {
+
         e.preventDefault();
         let keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
 
-        $.get(`${ctx}/admin/books/search`, { keyword }, function (res) {
+        $.get(`${ctx}/admin/books/search`, {keyword}, function (res) {
             let tbody = $('#booksTableBody');
             tbody.empty();
 
@@ -198,13 +190,14 @@ $(function () {
                         <td>
                             <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
                             <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+
+
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
                 tbody.append(row);
             });
 
-            // 페이징 생성
+            // 페이징
             let pagination = $('.pagination');
             pagination.empty();
             for (let i = 0; i < res.totalPages; i++) {
@@ -214,6 +207,7 @@ $(function () {
         });
     });
 
+
     // 상세보기 버튼 클릭 시 이동
     $('#booksTableBody').on('click', '.btnView', function () {
         const bookId = $(this).closest('tr').data('id');
@@ -221,5 +215,6 @@ $(function () {
             window.location.href = `/admin/books/${bookId}/detail`;
         }
     });
+
 
 });
