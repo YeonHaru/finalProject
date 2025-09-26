@@ -20,10 +20,7 @@ import com.error404.geulbut.jpa.orders.dto.OrdersDto;
 import com.error404.geulbut.jpa.orders.entity.Orders;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
-import com.error404.geulbut.jpa.users.dto.UserMypageDto;
-import com.error404.geulbut.jpa.users.dto.UsersLoginDto;
-import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
-import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
+import com.error404.geulbut.jpa.users.dto.*;
 import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
@@ -194,5 +191,8 @@ public interface MapStruct {
 
     void updateFromDto(BookHashtagsDto dto, @MappingTarget BookHashtags entity);
 
-
+    // 관리자용 DTO
+    UsersDto toAdminDto(Users users);
+    Users toAdminEntity(UsersDto usersDto);
+    void updateFromAdminDto(UsersDto usersDto, @MappingTarget Users users);
 }
