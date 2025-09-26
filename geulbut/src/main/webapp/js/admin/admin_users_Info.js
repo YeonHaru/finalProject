@@ -11,19 +11,34 @@ $(function () {
         $(this).next('.detail-row').slideToggle();
     });
 
-    // 권한 변경 저장
+    // 권한, 상태, 포인트, 등급 변경 저장
     $('.save-btn').click(function (e) {
         e.stopPropagation();
+        let $row = $(this).closest('tr');
         let userId = $(this).data('userid');
-        let newRole = $(this).closest('tr').find('.role-select').val();
+
+        let newRole = $row.find('.role-select').val();
+        let newStatus = $row.find('.status-select').val();
+        let newPoint = $row.find('.point-input').val();
+        let newGrade = $row.find('.grade-select').val();
+
         $.ajax({
-            url: '/admin/api/users/' + userId + '/role?newRole=' + newRole,
+            url: '/admin/api/users/' + userId + '/info', // 수정된 URL
             method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                newRole: newRole,
+                newStatus: newStatus,
+                newPoint: newPoint,
+                newGrade: newGrade
+            }),
             success: function () {
-                alert('권한이 변경되었습니다.');
+                alert('회원 정보가 변경되었습니다.');
                 location.reload();
             },
-            error: function () { alert('권한 변경 실패'); }
+            error: function () {
+                alert('회원 정보 변경 실패');
+            }
         });
     });
 
@@ -39,11 +54,11 @@ $(function () {
                 alert('회원이 삭제되었습니다.');
                 location.reload();
             },
-            error: function () { alert('회원 삭제 실패'); }
+            error: function() { alert('회원 삭제 실패'); }
         });
     });
 
-    // 계정 상태 변경 저장
+    // 계정 상태 변경 저장 (선택 시 바로 반영)
     $('.status-select').change(function (e) {
         e.stopPropagation();
         let userId = $(this).data('userid');
@@ -55,7 +70,7 @@ $(function () {
                 alert('계정 상태가 변경되었습니다.');
                 location.reload();
             },
-            error: function () { alert('계정 상태 변경 실패'); }
+            error: function() { alert('계정 상태 변경 실패'); }
         });
     });
 
