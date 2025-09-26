@@ -12,7 +12,7 @@ function refreshCart() {
         .then(data => {
             console.log("📌 [DEBUG] 장바구니 데이터:", data);
 
-            if (data.status !== "success" || !data.items || data.items.length === 0) {
+            if ((data.status !== "success" && data.status !== "ok") || !data.items || data.items.length === 0) {
                 cartContainer.innerHTML =
                     '<div class="alert alert-info">장바구니가 비어 있습니다.</div>';
                 return;
@@ -70,9 +70,8 @@ function refreshCart() {
             html += `
         <div class="mt-3 text-end">
           <h5>총합: <span id="cart-total">${fmtKR(data.cartTotal)}</span> 원</h5>
-         
-          <button class="btn btn-primary"
-           onclick="openOrderInfoModal(${Number(data.cartTotal || 0)})">💳 결제하기</button>
+          <!-- ✅ 결제: Orders 네임스페이스 호출 -->
+          <button class="btn btn-primary" onclick="Orders.openOrderInfoModal(${Number(data.cartTotal || 0)})">💳 결제하기</button>
         </div>
       `;
 
@@ -145,68 +144,5 @@ function removeCart(bookId) {
         .catch(err => console.error("❌ 장바구니 삭제 실패:", err));
 }
 
-// 📌 결제 모달 열기
-function openOrderInfoModal(amount) {
-    const modalEl = document.getElementById("orderInfoModal");
-    if (!modalEl) {
-        alert("❌ 주문 정보 모달을 찾을 수 없습니다.");
-        return;
-    }
-
-    // 총액 표시
-    const totalEl = modalEl.querySelector("#oiTotal");
-    if (totalEl) {
-        totalEl.textContent = fmtKR(amount);
-    }
-
-    // Bootstrap Modal 열기
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
-}
-
-// 📌 결제 진행 버튼 이벤트
-document.addEventListener("click", async (e) => {
-    if (e.target.id !== "oi-confirm") return;
-
-    const form = document.getElementById("orderForm");
-    if (!form) return;
-
-    // form 데이터 수집
-    const formData = new FormData(form);
-    const payload = {};
-    formData.forEach((v, k) => payload[k] = v);
-
-    try {
-        const res = await fetch("/payments/verify", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": window.csrfToken
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error("결제 요청 실패");
-        const data = await res.json();
-
-        if (data.status === "ok") {
-            alert("✅ 결제가 완료되었습니다.");
-            bootstrap.Modal.getInstance(document.getElementById("orderInfoModal")).hide();
-
-            // 장바구니 비우고, 주문내역 새로고침
-            refreshCart();
-            if (window.Orders && Orders.refreshOrders) {
-                Orders.refreshOrders();
-            }
-        } else {
-            alert("❌ 결제 실패: " + (data.message || "알 수 없는 오류"));
-        }
-    } catch (err) {
-        console.error("❌ 결제 오류:", err);
-        alert("결제 중 문제가 발생했습니다.");
-    }
-});
-
 // 전역 노출
 window.refreshCart = refreshCart;
-window.openOrderInfoModal = openOrderInfoModal;
