@@ -29,5 +29,6 @@ public class OrderItem extends BaseTimeEntity {
 
     private int quantity;
     private Long price;
+    private Long discountedPrice;
 }
 

@@ -39,7 +39,6 @@ public class Orders extends BaseTimeEntity {
     private String merchantUid;
     @Column(name = "PAID_AT")
     private LocalDateTime paidAt;
-
     private LocalDateTime deliveredAt;
   
 
@@ -84,7 +83,6 @@ public class Orders extends BaseTimeEntity {
     public void markDelivered() {
         if (this.deliveredAt == null) this.deliveredAt = LocalDateTime.now();
     }
-    private LocalDateTime paidAt;       // 결제시간 추가
     
     // 기존 userId를 건드리지 않고 Users 엔티티와 연관
 //    관리자 배송조회에서 이름 가져오기
