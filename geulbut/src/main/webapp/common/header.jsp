@@ -138,6 +138,7 @@
                                    : (not empty delivery && not empty delivery.ordersDto && not empty delivery.ordersDto.orderId
                                        ? delivery.ordersDto.orderId
                                        : sessionScope.lastOrderId)}"/>
+
                     <li><a href="${ctx}/mypage">마이페이지</a></li>
                     <li><a href="${ctx}/logout">로그아웃</a></li>
                     <li><a href="${ctx}/notice">공지사항</a></li>

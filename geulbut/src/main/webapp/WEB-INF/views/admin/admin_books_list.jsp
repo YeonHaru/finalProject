@@ -104,11 +104,9 @@
                         </td>
                         <td>${book.createdAt}</td>
                         <td>
-
                             <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
                             <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
                             <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
-
                         </td>
                     </tr>
                 </c:if>
@@ -168,12 +166,10 @@
                          style="max-width:200px; max-height:300px; display:none;"/>
                 </div>
             </div>
-
             <div class="modal__footer">
                  <button type="submit" class="btn btn-cer-secondary save-btn">저장</button>
                  <button type="button" class="btn btn-cer-success delete-btn" id="btnCancel">닫기</button>
             </div>
-
         </form>
     </div>
 </div>

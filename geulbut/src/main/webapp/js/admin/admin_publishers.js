@@ -86,8 +86,12 @@ $(function () {
         openModal();
     });
 
-    $(document).off('click.pubEdit', '.btnEdit').on('click.pubEdit', '.btnEdit', function (e) {
-        e.stopPropagation();
+
+    // 수정 모달 열기 (위임 바인딩, 기존 클래스 유지: .btn-edit)
+     $(document).off('click.pubEdit', '.btnEdit, .btn-edit')
+       .on('click.pubEdit', '.btnEdit, .btn-edit', function (e) {
+       e.stopPropagation();
+
         const $row = $(this).closest('tr');
         const id = $row.data('id');
         const name = $row.find('.publisher-name').text();
@@ -192,3 +196,4 @@ $(function () {
     // ---------------- 검색/페이징 (기본 GET 활용) ----------------
     // $('#publisherSearchForm').on('submit', function(){ /* 기본 GET 유지 */ });
 });
+})
