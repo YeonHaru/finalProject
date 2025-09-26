@@ -32,7 +32,7 @@ public class OrdersController {
     private final OrdersService ordersService;
 //  허용 상태값 화이트리스트
     private static final Set<String> ALLOWED_STATUSES = Set.of(
-            STATUS_PENDING, STATUS_PAID, STATUS_CANCELLED, STATUS_SHIPPED
+            STATUS_PENDING, STATUS_PAID, STATUS_CANCELLED, STATUS_SHIPPED, "DELIVERED"
     );
 
     //    주문 생성
@@ -103,7 +103,7 @@ public class OrdersController {
                     caller, current.getUserId(), orderId, normalized);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
         }
-        log.info("[PATCH] 주문 상태 변경 - uesrId: {}, status: {}", caller, orderId, normalized);
+        log.info("[PATCH] 주문 상태 변경 - userId: {}, orderId: {}, status: {}", caller, orderId, normalized);
         return ordersService.updateOrderStatus(orderId, normalized);
     }
 

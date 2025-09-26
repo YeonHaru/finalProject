@@ -33,6 +33,11 @@ public class Orders extends BaseTimeEntity {
     private String recipient;
     private String address;
 
+//    포인트 관련 필드
+    private Long pointsAccrued;                     // 이 주문으로 적립된 포인트
+    private LocalDateTime pointsAccruedAt;    // 적립 시각
+    private LocalDateTime pointsRevokedAt;   //  회수 시각(취소/환불시에)
+
 
 //    결제 관련 필드
     @Column(name = "MERCHANT_UID", length = 100, unique = true)

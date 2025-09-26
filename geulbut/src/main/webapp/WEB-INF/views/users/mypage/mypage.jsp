@@ -56,7 +56,7 @@
                     <p>이메일: ${user.email}</p>
                     <p>가입일: ${user.joinDate}</p>
                     <p>등급: ${user.grade}</p>
-                    <p>포인트: ${user.point}</p>
+                    <p>포인트: <strong><fmt:formatNumber value="${user.point}" pattern="#,##0"/></strong> P</p>
 
                     <!-- ✅ 알림 메시지 -->
                     <c:if test="${not empty errorMsg}">
@@ -371,6 +371,35 @@
                                             <c:when test="${order.status == 'REFUNDED'}">
                                                 <span class="badge bg-dark">환불 완료</span>
                                             </c:when>
+                                        </c:choose>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <c:choose>
+
+                                            <c:when test="${not empty order.pointsRevokedAt}">
+                                                <span class="badge bg-danger">포인트 회수됨</span>
+                                                <small> - <c:out value="${order.pointsAccrued}"/> P</small>
+                                            </c:when>
+
+
+                                            <c:when test="${not empty order.pointsAccrued}">
+                                                <span class="badge bg-success">포인트 적립</span>
+                                                <small> + <c:out value="${order.pointsAccrued}"/> P</small>
+                                                <c:if test="${not empty order.pointsAccruedAt}">
+                                                    <small class="text-muted"> · ${order.pointsAccruedAt}</small>
+                                                </c:if>
+                                            </c:when>
+
+
+                                            <c:when test="${order.status eq 'PAID'}">
+                                                <span class="badge bg-warning text-dark">포인트 적립 예정</span>
+                                            </c:when>
+
+                                            
+                                            <c:otherwise>
+                                                <span class="badge bg-light text-dark">포인트 대상 아님</span>
+                                            </c:otherwise>
                                         </c:choose>
                                     </div>
 

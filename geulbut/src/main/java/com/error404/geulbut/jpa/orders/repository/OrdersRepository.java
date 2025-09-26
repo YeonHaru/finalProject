@@ -90,4 +90,103 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             Pageable pageable
     );
 
+    // ====== 여기서부터 포인트용 추가 ======
+
+    // (1) 미적립 PAID 주문
+    @Query("""
+    select o
+    from Orders o
+    where upper(o.status) = 'PAID'
+      and o.pointsAccrued is null
+    order by o.createdAt asc
+    """)
+    List<Orders> findPaidNotAccruedTop(Pageable pageable);
+
+    @Query("""
+    select count(o)
+    from Orders o
+    where upper(o.status) = 'PAID'
+      and o.pointsAccrued is null
+    """)
+    long countPaidNotAccrued();
+
+    // (2) 회수 필요 주문
+    @Query("""
+    select o
+    from Orders o
+    where upper(o.status) = 'CANCELLED'
+      and o.pointsAccrued is not null
+      and o.pointsRevokedAt is null
+    order by o.createdAt asc
+    """)
+    List<Orders> findCancelledNeedRevokeTop(Pageable pageable);
+
+    @Query("""
+    select count(o)
+    from Orders o
+    where upper(o.status) = 'CANCELLED'
+      and o.pointsAccrued is not null
+      and o.pointsRevokedAt is null
+    """)
+    long countCancelledNeedRevoke();
+
+    // (3) 사용자별 집계(선택)
+    @Query("""
+    select coalesce(sum(o.pointsAccrued), 0)
+    from Orders o
+    where o.userId = :userId
+      and o.pointsAccrued is not null
+      and (o.pointsRevokedAt is null)
+    """)
+    Long sumAccruedPointsAliveByUser(@Param("userId") String userId);
+
+    @Query("""
+    select count(o)
+    from Orders o
+    where o.userId = :userId
+      and o.pointsAccrued is not null
+    """)
+    Long countAccruedOrdersByUser(@Param("userId") String userId);
+
+    @Query("""
+    select count(o)
+    from Orders o
+    where o.userId = :userId
+      and o.pointsRevokedAt is not null
+    """)
+    Long countRevokedOrdersByUser(@Param("userId") String userId);
+
+    // (4) 결제/취소 처리 시 단건 로딩
+    @Query("""
+    select o
+    from Orders o
+      left join fetch o.user u
+    where o.orderId = :orderId
+    """)
+    Optional<Orders> findWithUserByOrderId(@Param("orderId") Long orderId);
+
+    // (선택) 포인트 플래그 필터 포함 관리자 조회
+    @Query("""
+    select distinct o
+    from Orders o
+      left join fetch o.user u
+      left join fetch o.items i
+      left join fetch i.book b
+    where (:userId is null or o.userId like %:userId%)
+      and (:status is null or o.status = :status)
+      and (:accStatus is null
+           or (:accStatus = 'NONE' and o.pointsAccrued is null)
+           or (:accStatus = 'DONE' and o.pointsAccrued is not null))
+      and (:rvkStatus is null
+           or (:rvkStatus = 'NONE' and o.pointsRevokedAt is null)
+           or (:rvkStatus = 'DONE' and o.pointsRevokedAt is not null))
+    order by o.createdAt desc
+    """)
+    List<Orders> findAllWithItemsBooksAndPointFlags(
+            @Param("userId") String userId,
+            @Param("status") String status,
+            @Param("accStatus") String accStatus,
+            @Param("rvkStatus") String rvkStatus
+    );
+
 }

@@ -52,6 +52,7 @@ public class MypageController {
             UserMypageDto dto = mapStruct.toMypageDto(user);
             model.addAttribute("user", dto);
             model.addAttribute("canChangePassword", user.getProvider() == Users.AuthProvider.LOCAL);
+            model.addAttribute("pointBalance", user.getPoint() == null ? 0L : user.getPoint());
         }
 
         //  위시리스트
