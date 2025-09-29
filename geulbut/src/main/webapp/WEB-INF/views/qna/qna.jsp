@@ -13,26 +13,24 @@
 <jsp:include page="/common/header.jsp"></jsp:include>
 
 <div class="page my-3">
-    <div class="grid gap-4 notice-layout">
+    <div class="grid gap-4 qna-layout">
         <!-- 왼쪽 사이드바 -->
         <aside class="bg-surface border rounded p-4">
             <h2 class="mb-3 text-center">고객센터</h2>
             <nav class="grid gap-2">
-                <a href="#" class="text-main">공지사항</a>
-                <a href="#" class="text-light">자주 묻는 질문</a>
+                <a href="${pageContext.request.contextPath}/notice" class="text-main">공지사항</a>
+                <a href="${pageContext.request.contextPath}/commonquestions" class="text-light">자주 묻는 질문</a>
                 <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
             </nav>
         </aside>
 
-        <!-- 오른쪽 콘텐츠ddddxxcczzz  ddd-->
-        <!-- cc오른쪽 콘텐츠 aacccc-->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
-            <h2 class="mb-4 notice-title">
+            <h2 class="mb-4 qna-title">
                 ▣ 1:1 문의
                 <a href="${pageContext.request.contextPath}/qnaWrite" class="btn btn-main">글쓰기</a>
             </h2>
 
-            <table class="notice-table border" style="width: 100%;">
+            <table class="qna-table border" style="width: 100%;">
                 <thead class="bg-main">
                 <tr>
                     <th class="py-2 px-3">번호</th>
