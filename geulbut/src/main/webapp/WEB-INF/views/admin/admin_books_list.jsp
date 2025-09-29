@@ -81,6 +81,7 @@
                         <td class="t-left">
                             <div class="title-ellipsis" title="${book.title}">${book.title}</div>
                         </td>
+<%--                    책 이미지가 없으면 디폴트 이미지로 바꿈    --%>
                         <td>
                             <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
                                  alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
