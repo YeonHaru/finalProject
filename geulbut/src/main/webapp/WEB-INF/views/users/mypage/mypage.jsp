@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/mypage/mypage.css">
 </head>
+</head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
