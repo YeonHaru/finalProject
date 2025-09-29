@@ -85,3 +85,6 @@ $(function () {
         error: function() { console.error('통계 정보 불러오기 실패'); }
     });
 });
+
+// 도서 관리와 동일: 비활성(aria-disabled="true") 페이지네이션 링크 클릭 방지
+$(document).on('click', '.pagination-toolbar a[aria-disabled="true"]', function (e) { e.preventDefault(); });

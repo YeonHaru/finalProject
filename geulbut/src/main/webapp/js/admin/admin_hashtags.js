@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const btnAddHashtag = document.getElementById('btnAddHashtag');
     const tableBody = document.getElementById('hashtagsTable')?.querySelector('tbody');
-    const pagination = document.getElementById('pagination');
     const keywordInput = document.getElementById('keyword');
     const searchForm = document.getElementById('searchForm');
 
@@ -188,17 +187,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 페이징 (기존 공통 톤과 동일)
-    pagination?.addEventListener('click', e => {
-        if (!e.target.classList.contains('page-btn')) return;
-        e.preventDefault();
-        const page = e.target.dataset.page;
-        const keyword = (keywordInput?.value || '').trim();
-        let url = `${ctx}/admin/hashtags?page=${page}`;
-        if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
-        location.href = url;
-    });
-
     // 검색 (GET 유지)
     searchForm?.addEventListener('submit', e => {
         e.preventDefault();
@@ -249,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showToast(err.message || '도서 로드 중 오류', 'error');
         }
     }
-    function renderBooksPage(){
+    function renderBooksPage() {
         // slice
         const start = (paging.page - 1) * paging.size;
         const end   = Math.min(start + paging.size, paging.total);
@@ -269,7 +257,9 @@ document.addEventListener('DOMContentLoaded', function () {
             checkbox.className = 'book-checkbox';
             checkbox.checked = selectedBookIds.has(idNum);
 
-            checkbox.addEventListener('change', () => {
+            checkbox.addEventListener('change', (ev) => {
+                // 버블링 억제(페이저/리스트 클릭 간섭 방지)
+                ev.stopPropagation();
                 if (checkbox.checked) selectedBookIds.add(idNum);
                 else selectedBookIds.delete(idNum);
             });
@@ -281,29 +271,82 @@ document.addEventListener('DOMContentLoaded', function () {
 
         booksList.appendChild(ul);
 
-        // 페이저 DOM
-        if (booksPager){
-            booksPager.innerHTML = '';
-            for (let i=1; i<=paging.pages; i++){
-                const a = document.createElement('a');
-                a.href = '#';
-                a.className = `page-btn ${i === paging.page ? 'active' : ''}`;
-                a.dataset.page = String(i);
-                a.textContent = String(i);
-                booksPager.appendChild(a);
-            }
+        // 새 페이저 구성
+        if (booksPager) {
+            renderBooksPager();
         }
     }
+    function renderBooksPager() {
+        booksPager.innerHTML = '';
+
+        const group = document.createElement('div');
+        group.className = 'btn-group';
+        booksPager.appendChild(group);
+
+        // « prev
+        const prev = document.createElement('a');
+        prev.href = '#';
+        prev.className = 'btn btn-secondary btn-nav';
+        prev.setAttribute('aria-label', '이전');
+        prev.textContent = '«';
+        if (paging.page === 1) prev.setAttribute('aria-disabled', 'true');
+        group.appendChild(prev);
+
+        // 가운데 숫자 윈도우(최대 7개: 현재±2 + 양끝 보정)
+        const total = paging.pages;
+        const cur   = paging.page;
+        const windowSize = 7;
+        let start = Math.max(1, cur - 2);
+        let end   = Math.min(total, start + windowSize - 1);
+        start     = Math.max(1, Math.min(start, end - windowSize + 1));
+
+        for (let i = start; i <= end; i++) {
+            const a = document.createElement('a');
+            a.href = '#';
+            a.className = 'btn btn-secondary page-btn' + (i === cur ? ' active' : '');
+            if (i === cur) a.setAttribute('aria-current', 'page');
+            a.dataset.page = String(i);
+            a.textContent = String(i);
+            group.appendChild(a);
+        }
+
+        // » next
+        const next = document.createElement('a');
+        next.href = '#';
+        next.className = 'btn btn-secondary btn-nav';
+        next.setAttribute('aria-label', '다음');
+        next.textContent = '»';
+        if (paging.page === total || total === 0) next.setAttribute('aria-disabled', 'true');
+        group.appendChild(next);
+    }
     booksPager?.addEventListener('click', (e) => {
-        const a = e.target.closest('a.page-btn');
-        if (!a) return;
+        const btn = e.target.closest('a.btn');
+        if (!btn) return;
         e.preventDefault();
-        const p = Number(a.dataset.page || '1');
-        if (p >= 1 && p <= paging.pages){
-            paging.page = p;
-            renderBooksPage();
+        e.stopPropagation();
+
+        if (btn.hasAttribute('aria-disabled')) return;
+
+        if (btn.classList.contains('btn-nav')) {
+            // « 또는 »
+            const isPrev = btn.textContent?.includes('«');
+            const target = isPrev ? paging.page - 1 : paging.page + 1;
+            if (target >= 1 && target <= paging.pages) {
+                paging.page = target;
+                renderBooksPage();
+            }
+            return;
+        }
+
+        if (btn.classList.contains('page-btn')) {
+            const p = Number(btn.dataset.page || '1');
+            if (p >= 1 && p <= paging.pages && p !== paging.page) {
+                paging.page = p;
+                renderBooksPage();
+            }
         }
     });
+
     function ensureBooksSaveButton(){
         let saveBtn = document.getElementById(BOOKS_SAVE_BTN_ID);
         if (!saveBtn){
@@ -311,15 +354,16 @@ document.addEventListener('DOMContentLoaded', function () {
             saveBtn.id = BOOKS_SAVE_BTN_ID;
             saveBtn.type = 'button';
             saveBtn.textContent = '저장';
-            saveBtn.className = 'btn btn-accent btn--glass';
-            // 저장 버튼을 '닫기' 버튼 바로 앞에 배치 → [저장][닫기] 순서
+            // 기존: 'btn btn-outline-success btn--liquid-glass'
+            saveBtn.className = 'btn btn-primary btn--liquid-glass';
+
             const container = (booksModalFooter || booksList.parentElement);
             const closeBtn  = document.getElementById('booksModalClose');
             if (container && closeBtn && closeBtn.parentElement === container) {
-                container.insertBefore(saveBtn, closeBtn);
-                } else {
-                    container.appendChild(saveBtn);
-                }
+                container.insertBefore(saveBtn, closeBtn); // [저장][닫기] 순서
+            } else {
+                container.appendChild(saveBtn);
+            }
         }
 
         saveBtn.onclick = async () => {

@@ -33,7 +33,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent btn--glass" id="btnAddBook">도서 등록</button>
+        <button type="button" class="btn btn-light btn--liquid-glass" id="btnAddBook">도서 등록</button>
     </div>
 
     <!-- 도서 목록 테이블 -->
@@ -117,9 +117,9 @@
                         <td class="hide-lg">${book.createdAt}</td>
 
                         <td>
-                            <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
-                            <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
-                            <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+                            <button type="button" class="btn btn-secondary btn--liquid-glass btnView">상세보기</button>
+                            <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
+                            <button type="button" class="btn btn-danger btn--liquid-glass btnDelete">삭제</button>
                         </td>
                     </tr>
                 </c:if>
@@ -133,12 +133,48 @@
         </table>
     </div>
 
-    <!-- 페이징 -->
-    <div class="pagination">
-        <c:forEach var="i" begin="0" end="${booksPage.totalPages - 1}">
-            <a href="?page=${i}&keyword=${param.keyword}" class="${i == booksPage.number ? 'active' : ''}">${i + 1}</a>
-        </c:forEach>
+    <!-- 페이징 (Materia 버튼그룹) -->
+    <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
+        <div class="btn-group" role="group" aria-label="페이지">
+
+            <!-- 이전 («) -->
+            <c:choose>
+                <c:when test="${booksPage.first}">
+                    <!-- 맨 앞 페이지면 비활성 (링크 제거) -->
+                    <a class="btn btn-secondary btn-nav" aria-label="이전" aria-disabled="true">&laquo;</a>
+                </c:when>
+                <c:otherwise>
+                    <a class="btn btn-secondary btn-nav"
+                       href="?page=${booksPage.number - 1}&keyword=${param.keyword}"
+                       aria-label="이전">&laquo;</a>
+                </c:otherwise>
+            </c:choose>
+
+            <!-- 숫자들 -->
+            <c:forEach var="i" begin="0" end="${booksPage.totalPages - 1}">
+                <a class="btn btn-secondary ${i == booksPage.number ? 'active' : ''}"
+                   href="?page=${i}&keyword=${param.keyword}"
+                    ${i == booksPage.number ? 'aria-current="page"' : ''}>
+                        ${i + 1}
+                </a>
+            </c:forEach>
+
+            <!-- 다음 (») -->
+            <c:choose>
+                <c:when test="${booksPage.last}">
+                    <!-- 맨 끝 페이지면 비활성 (링크 제거) -->
+                    <a class="btn btn-secondary btn-nav" aria-label="다음" aria-disabled="true">&raquo;</a>
+                </c:when>
+                <c:otherwise>
+                    <a class="btn btn-secondary btn-nav"
+                       href="?page=${booksPage.number + 1}&keyword=${param.keyword}"
+                       aria-label="다음">&raquo;</a>
+                </c:otherwise>
+            </c:choose>
+
+        </div>
     </div>
+
 </div>
 
 <p class="ht-footnote">© Geulbut Admin Books List</p>
@@ -147,8 +183,8 @@
 <div id="bookModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none;">
     <div class="modal__dialog" role="document">
         <div class="modal__header">
-            <h3 id="modalTitle">도서 등록</h3>
-            <button type="button" class="modal__close" id="btnCloseModal" aria-label="닫기">×</button>
+            <h3 id="modalTitle" class="mt-3 mb-3 ml-3">도서 등록</h3>
+            <button type="button" class="modal__close btn--liquid is-circle" id="btnCloseModal" aria-label="닫기">×</button>
         </div>
 
         <form id="bookForm" class="modal__form">
@@ -180,8 +216,8 @@
                 </div>
             </div>
             <div class="modal__footer">
-                 <button type="submit" class="btn btn-cer-secondary save-btn">저장</button>
-                 <button type="button" class="btn btn-cer-success delete-btn" id="btnCancel">닫기</button>
+                <button type="submit" class="btn btn-secondary btn--liquid-glass save-btn mt-3">저장</button>
+                <button type="button" class="btn btn-danger btn--liquid-glass mt-3" id="btnCancel">닫기</button>
             </div>
         </form>
     </div>
@@ -191,3 +227,4 @@
 <script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>
+
