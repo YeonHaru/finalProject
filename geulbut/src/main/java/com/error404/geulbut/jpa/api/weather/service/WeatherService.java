@@ -109,10 +109,17 @@ public class WeatherService {
             }
             return list;
 
+//         에러 로그가 너무 많이 떠서 한줄로 압축 하겠습니다.
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Weather API 접속 실패: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             return Collections.emptyList();
         }
+
+//      Api 복구전까진 주석으로 막아 두겠습니다.
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return Collections.emptyList();
+//        }
     }
 
     /**
