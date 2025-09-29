@@ -8,14 +8,14 @@
 <head>
     <title>공지사항</title>
     <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="/css/notice/notice2.css">
+    <link rel="stylesheet" href="/css/commonquestions/commonquestions.css">
     <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
 <div class="page my-3">
-    <div class="grid gap-4 notice-layout">
+    <div class="grid gap-4 commonquestions-layout">
         <!-- 왼쪽 사이드바 -->
         <aside class="bg-surface border rounded p-4">
             <h2 class="mb-3 text-center">고객센터</h2>
@@ -28,14 +28,14 @@
 
         <!-- 오른쪽 공지사항 콘텐츠 -->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
-            <h2 class="mb-4 notice-title">▣ 공지사항
+            <h2 class="mb-4 commonquestions-title">▣ 자주 묻는 질문
                 <sec:authorize access="hasRole('ADMIN')">
                     <a href="${pageContext.request.contextPath}/noticeWrite" class="btn btn-main">글쓰기</a>
                 </sec:authorize>
 
             </h2>
 
-            <table class="notice-table border" style="width: 100%;">
+            <table class="commonquestions-table border" style="width: 100%;">
                 <thead class="bg-main">
                 <tr>
                     <th class="py-2 px-3">번호</th>
@@ -46,45 +46,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="data" items="${notices}">
+                <c:forEach var="qna" items="${topQnas}">
                     <tr>
-                        <td class="py-2 px-3 text-light">${data.noticeId}</td>
+                        <td class="py-2 px-3 text-light">${qna.id}</td>
                         <td class="py-2 px-3">
-                            <a href="${pageContext.request.contextPath}/noticeText?id=${data.noticeId}" class="text-main">
-                                    ${data.title}
+                            <a href="${pageContext.request.contextPath}/qnaText?id=${qna.id}" class="text-main">
+                                    ${qna.title}
                             </a>
                         </td>
-                        <td class="py-2 text-center">${data.writer}</td>
-                        <td class="py-2 text-center"><fmt:formatDate value="${data.createdAt}" pattern="yyyy-MM-dd"/></td>
-                        <td class="py-2 text-center">${data.viewCount}</td>
+                        <td class="py-2 text-center">${qna.userId}</td>
+                        <td class="py-2 text-center"><fmt:formatDate value="${qna.QAt}" pattern="yyyy-MM-dd"/></td>
+                        <td class="py-2 text-center">${qna.viewCount}</td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
 
-            <!-- 페이징 버튼 -->
-            <div class="pagination mt-4 text-center">
-                <!-- 이전 버튼 -->
-                <c:if test="${currentPage > 1}">
-                    <a href="${pageContext.request.contextPath}/notice?page=${currentPage - 1}" class="btn btn-light">&laquo; 이전</a>
-                </c:if>
 
-                <!-- 페이지 번호 버튼 -->
-                <c:forEach begin="1" end="${totalPage}" var="i">
-                    <c:choose>
-                        <c:when test="${i == currentPage}">
-                            <span class="btn btn-main">${i}</span>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/notice?page=${i}" class="btn btn-light">${i}</a>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
 
-                <!-- 다음 버튼 -->
-                <c:if test="${currentPage < totalPage}">
-                    <a href="${pageContext.request.contextPath}/notice?page=${currentPage + 1}" class="btn btn-light">다음 &raquo;</a>
-                </c:if>
+
+
             </div>
 
         </div>

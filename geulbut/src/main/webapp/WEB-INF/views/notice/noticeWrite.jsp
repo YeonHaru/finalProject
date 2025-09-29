@@ -5,27 +5,27 @@
 <head>
   <title>공지사항 작성</title>
   <link rel="stylesheet" href="/css/00_common.css">
-  <link rel="stylesheet" href="/css/qna/qnaWrite.css">
+  <link rel="stylesheet" href="/css/notice/noticeWrite.css">
   <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
 <div class="page my-3">
-  <div class="grid gap-4 qna-layout">
+  <div class="grid gap-4 notice-layout">
     <!-- 왼쪽 사이드바 -->
     <aside class="bg-surface border rounded p-4">
       <h2 class="mb-3 text-center">고객센터</h2>
       <nav class="grid gap-2">
         <a href="${pageContext.request.contextPath}/notice" class="text-main">공지사항</a>
-        <a href="#" class="text-light">자주 묻는 질문</a>
+        <a href="${pageContext.request.contextPath}/commonquestions" class="text-light">자주 묻는 질문</a>
         <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
       </nav>
     </aside>
 
     <!-- 오른쪽 공지사항 글 작성 -->
-    <div class="bg-surface rounded shadow-sm p-4 qna-write">
-      <h2 class="mb-4 qna-title">공지사항 작성</h2>
+    <div class="bg-surface rounded shadow-sm p-4 notice-write">
+      <h2 class="mb-4 notice-title">공지사항 작성</h2>
 
       <c:choose>
         <c:when test="${not empty notice}">

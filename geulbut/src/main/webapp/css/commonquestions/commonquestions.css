@@ -1,3 +1,4 @@
+
 /*페이지네이션*/
 /* -----------------------------------------------------------------------
    9) 페이지네이션 스타일
@@ -46,7 +47,13 @@
     background: var(--color-accent);
     color: #fff;
 }
-
+.panel {
+    display: flex;
+    align-items: center;  /* 수직 정렬 */
+    gap: 0.5rem;          /* 요소 사이 간격 */
+    flex-wrap: nowrap;    /* 한 줄로 유지 */
+    background:#ECECEC;
+}
 .pagination .btn {
     display: inline-block;
     margin: 0 0.25rem; /* gap-1 수준 */
@@ -78,26 +85,17 @@
     border: 1px solid var(--color-accent-dark);
 }
 /* 공지사항 2:8 레이아웃 */
-.qna-layout {
+.commonquestions-layout {
     display: grid;
     gap: var(--gap-4);
     grid-template-columns: 1fr; /* 모바일에서는 1단 */
 }
 
 @media (min-width: 768px) {
-    .qna-layout {
+    .commonquestions-layout {
         grid-template-columns: 1.5fr 8.5fr; /* 태블릿 이상 2:8 비율 */
     }
 }
-.panel {
-    display: flex;
-    align-items: center;  /* 수직 정렬 */
-    gap: 0.5rem;          /* 요소 사이 간격 */
-    flex-wrap: nowrap;    /* 한 줄로 유지 */
-    background:#ECECEC;
-}
-
-
 /* 사이드바 메뉴 hover */
 aside nav a {
     padding: var(--space-2) var(--space-3);
@@ -112,119 +110,12 @@ aside nav a:hover {
     text-align: center;
 }
 
-/* -----------------------------------------------------------------------
-   공지사항 아이콘 + 텍스트 가로·세로 중앙 정렬
------------------------------------------------------------------------ */
-.qna-meta {
-    display: flex;
-    height: 2rem;
-    flex-wrap: wrap;
-    gap: var(--gap-3);
-    background: #ECECEC;
-    border-top: 2px solid var(--color-accent);
-    border-bottom: 2px solid var(--color-accent);
-    align-items: center;
-}
-
-.qna-meta .meta-item {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-1);
-    font-size: 0.875rem;
-    color: var(--color-text-light);
-}
-
-.qna-meta .meta-item i {
-    font-size: 0.75rem;
-}
-
-/* 시간 아이템만 오른쪽 끝으로 보내기 */
-.qna-meta .time-item {
-    margin-left: auto;
-}
-/*공지사항 내용*/
-.qna-text {
-    font-size: var(--space-3);        /* 글씨 크기 */
-    line-height: var(--space-4);         /* 줄 간격 확대 */
-    color: var(--color-text); /* 글색상 */
-    min-height: 200px; /* 최소 높이 200px */
-}
-/*Comments 관련*/
-.comment-title {
-    border-bottom: 2px solid var(--color-accent); /* 밑줄 */
-    padding-bottom: 0.25rem;                     /* 글과 밑줄 간격 */
-    display: inline-block;                        /* 밑줄 길이를 글 길이에 맞춤 */
-    font-weight: 600;                    /* 필요시 글씨 굵게 */
-    margin-bottom: var(--space-3);       /* 아래 요소와 간격 */
-}
 
 
-/* 댓글 헤더 밑줄 */
-.comment-title {
-    border-bottom: 2px solid var(--color-accent);
-    padding-bottom: 0.25rem;
-    display: inline-block;
-    font-weight: 600;
-    margin-bottom: var(--space-3);
-}
 
-/* 댓글 입력 영역 */
-.comment-input {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-2);
-}
 
-.comment-textarea {
-    width: 100%;
-    padding: var(--space-2);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    resize: vertical;
-    font-family: inherit;
-}
-
-.btn-comment {
-    align-self: flex-end;
-    padding: 0.5rem 1rem;
-    background: var(--color-accent);
-    color: #fff;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: background var(--dur) var(--ease);
-}
-.btn-comment:hover {
-    background: var(--color-accent-dark);
-}
-
-/* 댓글 리스트 */
-.comment-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-3);
-}
-
-.comment-item {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-2);
-}
-
-.comment-author {
-    font-weight: 600;
-    margin-right: var(--space-2);
-}
-
-.comment-date {
-    font-size: 0.8rem;
-    color: var(--color-text-light);
-}
-
-.comment-text {
-    margin-top: var(--space-1);
-}
-.qna-title {
+/*오른쪽 공지사항 콘텐츠*/
+.commonquestions-title {
     display: flex;
     justify-content: space-between; /* 양 끝으로 배치 */
     align-items: center;           /* 세로 가운데 정렬 */
@@ -233,7 +124,7 @@ aside nav a:hover {
     border-bottom: 2px solid #333; /* 밑줄 색상/두께 */
     margin-bottom: 2rem;      /* 밑줄 아래 여백 */
 }
-.btn-main {
+.commonquestions-title .btn-main {
 
     background-color: transparent;
     border: 1px solid var(--color-accent);
@@ -243,22 +134,41 @@ aside nav a:hover {
     font-size: 0.75rem;            /* 글자 크기 조절 */
     text-decoration: none;
     transition: 0.3s;
-    cursor: pointer;
 }
 
-.btn-main:hover {
+.commonquestions-title .btn-main:hover {
     background-color: var(--color-accent); /* 호버 시 배경 채우기 */
     color: #fff;                            /* 글자 색 변경 */
 }
-/* 댓글 입력 form - flex로 버튼 오른쪽 정렬 */
-.comment-form {
-    display: flex;
-    flex-direction: column; /* 기본 세로 정렬 */
+
+/* 테이블 구분선: 셀에 적용 (연하게) */
+.commonquestions-table {
+    border-collapse: collapse; /* 필수: 셀 경계가 합쳐져서 선이 깨끗하게 보임 */
+    border-spacing: 0;
+    width: 100%;
 }
 
-.comment-form .btn-comment {
-    align-self: flex-end;  /* 버튼 오른쪽 끝 정렬 */
+/* 테이블 본문 셀 아래에 연한 선 */
+.commonquestions-table tbody td {
+    border-bottom: 1px solid rgba(0,0,0,0.12); /* 연한 회색 (원하면 더 연하게 0.04 등으로) */
+    /* 기존 유틸리티 px/py와 충돌할 수 있으니 필요시 제거/조정 */
+    /* padding: 0.75rem 1rem; */
 }
+
+/* 마지막 행의 밑줄 제거 */
+.commonquestions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* (옵션) 헤더와 본문 선 구분을 조금 더 명확히 */
+.commonquestions-table thead th {
+    border-bottom: 1px solid #666666;
+}
+
+
+
+
+
 
 
 

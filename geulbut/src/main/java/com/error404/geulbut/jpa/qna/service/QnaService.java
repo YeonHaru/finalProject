@@ -144,7 +144,10 @@ public class QnaService {
                 .orElseThrow(() -> new RuntimeException("글을 찾을 수 없습니다."));
         qnaRepository.delete(entity);
     }
-
+    // 조회수 상위 10개 (자주 묻는 질문용)
+    public List<QnaEntity> getTop10Qna() {
+        return qnaRepository.findTop10ByOrderByViewCountDesc();
+    }
 
 
 }
