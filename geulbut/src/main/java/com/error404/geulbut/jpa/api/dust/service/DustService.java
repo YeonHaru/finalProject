@@ -73,8 +73,7 @@ public class DustService {
                 result.put(sido, grade);
 
             } catch (Exception e) {
-                // 오류 발생 시에도 맑음 처리
-                result.put(sido, "좋음");
+                result.put(sido, null);
             }
         }
 
