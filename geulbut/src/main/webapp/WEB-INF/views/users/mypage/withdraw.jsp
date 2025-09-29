@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/css/00_common.css">
 </head>
 <body>
-<jsp:include page="/common/header.jsp"></jsp:include>
+
 
 <div class="container my-5">
   <h1 class="mb-4">회원 탈퇴</h1>
@@ -24,6 +24,6 @@
   </form>
 </div>
 
-<jsp:include page="/common/footer.jsp"></jsp:include>
+
 </body>
 </html>

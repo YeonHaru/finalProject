@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <title>배송조회</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 공통/페이지 CSS -->
     <link rel="stylesheet" href="<c:url value='/css/00_common.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/orders/deliveryInfo.css'/>">
     <link rel="stylesheet" href="/css/header.css">
@@ -18,11 +17,9 @@
 <main class="page page--track" aria-labelledby="pageTitle">
     <h1 id="pageTitle" class="sr-only">배송조회</h1>
 
-    <!-- 뷰모델 바인딩 -->
     <c:set var="o" value="${delivery.ordersDto}"/>
     <c:set var="vStatus" value="${delivery.viewDeliveryStatus}"/>
 
-    <!-- ===== 현재 주문 배송 현황 카드 ===== -->
     <article class="card">
         <header class="card__header">
             <h2 class="card__title">주문 배송 현황</h2>
@@ -33,7 +30,6 @@
             </c:choose>
         </header>
 
-        <!-- 요약 정보 -->
         <div class="grid grid--2">
             <div class="kv">
                 <span class="k">도착시간/예정</span>
@@ -66,7 +62,6 @@
             </div>
         </div>
 
-        <!-- 주문 상품 목록 -->
         <c:if test="${not empty o.items}">
             <ul class="order-items">
                 <c:forEach var="it" items="${o.items}">
@@ -75,7 +70,6 @@
                             <c:if test="${not empty it.imageUrl}">
                                 <img src="${it.imageUrl}" alt="${it.title}" class="oi-thumb"/>
                             </c:if>
-
                             <div class="oi-info">
                                 <div class="oi-title">${it.title}</div>
                                 <div class="oi-meta">
@@ -91,7 +85,6 @@
         </c:if>
     </article>
 
-    <!-- ===== 지난 배송완료 내역 ===== -->
     <c:if test="${not empty history}">
         <article class="card">
             <header class="card__header">
@@ -107,9 +100,7 @@
                             <span class="h-col date">
                                 <c:choose>
                                     <c:when test="${not empty h.deliveredAtFormatted}">${h.deliveredAtFormatted}</c:when>
-                                    <c:when test="${not empty h.deliveredAt}">
-                                        <fmt:formatDate value="${h.deliveredAt}" pattern="yyyy-MM-dd (E) HH:mm"/>
-                                    </c:when>
+                                    <c:when test="${not empty h.deliveredAt}">${h.deliveredAt}</c:when>
                                     <c:otherwise>—</c:otherwise>
                                 </c:choose>
                             </span>

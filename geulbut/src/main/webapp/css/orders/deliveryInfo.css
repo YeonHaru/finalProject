@@ -93,6 +93,7 @@
     flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 
+
 /* ========== 링크 ========== */
 .link{ color: var(--accent-color-1, #3b82f6); text-decoration: underline; }
 .link:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }

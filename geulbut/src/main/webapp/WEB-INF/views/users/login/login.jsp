@@ -153,7 +153,7 @@
     }
 
     tabs.member.btn.onclick = () => show('member');
-    tabs.guest .btn.onclick = () => show('guest');
+    tabs.guest.btn.onclick = () => show('guest');
 </script>
 <c:if test="${signupDone}">
     <script>
