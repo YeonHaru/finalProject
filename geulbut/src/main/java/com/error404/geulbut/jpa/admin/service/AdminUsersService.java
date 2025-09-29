@@ -127,36 +127,28 @@ public class AdminUsersService {
         return false;
     }
 
-    /** 7. 회원 정보 전체 수정 (role, status, point, grade) */
+    /**
+     * 7. 회원 정보 전체 수정 (role, status, point, grade)
+     */
     public boolean updateUserInfo(String userId, String newRole, String newStatus, Long newPoint, String newGrade) {
         Optional<Users> optionalUsers = usersRepository.findById(userId);
         if (optionalUsers.isPresent()) {
             Users user = optionalUsers.get();
 
-            // 역할
-            if (newRole != null) {
-                user.setRole(newRole);
-            }
+            if (newRole != null) user.setRole(newRole);
 
-            // 상태
             if (newStatus != null) {
                 try {
                     Users.UserStatus statusEnum = Users.UserStatus.valueOf(newStatus.toUpperCase());
                     user.setStatus(statusEnum);
                 } catch (IllegalArgumentException e) {
-                    return false; // 잘못된 상태값이면 실패
+                    return false;
                 }
             }
 
-            // 포인트
-            if (newPoint != null) {
-                user.setPoint(newPoint);
-            }
+            if (newPoint != null) user.setPoint(newPoint);
 
-            // 등급
-            if (newGrade != null) {
-                user.setGrade(newGrade);
-            }
+            if (newGrade != null) user.setGrade(newGrade);
 
             usersRepository.save(user);
             return true;

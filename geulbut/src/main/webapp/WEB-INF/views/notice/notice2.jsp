@@ -20,8 +20,8 @@
         <aside class="bg-surface border rounded p-4">
             <h2 class="mb-3 text-center">고객센터</h2>
             <nav class="grid gap-2">
-                <a href="#" class="text-main">공지사항</a>
-                <a href="#" class="text-light">자주 묻는 질문</a>
+                <a href="${pageContext.request.contextPath}/notice" class="text-main">공지사항</a>
+                <a href="${pageContext.request.contextPath}/commonquestions" class="text-light">자주 묻는 질문</a>
                 <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
             </nav>
         </aside>
@@ -66,7 +66,7 @@
             <div class="pagination mt-4 text-center">
                 <!-- 이전 버튼 -->
                 <c:if test="${currentPage > 1}">
-                    <a href="${pageContext.request.contextPath}/qna?page=${currentPage - 1}" class="btn btn-light">&laquo; 이전</a>
+                    <a href="${pageContext.request.contextPath}/notice?page=${currentPage - 1}" class="btn btn-light">&laquo; 이전</a>
                 </c:if>
 
                 <!-- 페이지 번호 버튼 -->
@@ -76,14 +76,14 @@
                             <span class="btn btn-main">${i}</span>
                         </c:when>
                         <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/qna?page=${i}" class="btn btn-light">${i}</a>
+                            <a href="${pageContext.request.contextPath}/notice?page=${i}" class="btn btn-light">${i}</a>
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
 
                 <!-- 다음 버튼 -->
                 <c:if test="${currentPage < totalPage}">
-                    <a href="${pageContext.request.contextPath}/qna?page=${currentPage + 1}" class="btn btn-light">다음 &raquo;</a>
+                    <a href="${pageContext.request.contextPath}/notice?page=${currentPage + 1}" class="btn btn-light">다음 &raquo;</a>
                 </c:if>
             </div>
 

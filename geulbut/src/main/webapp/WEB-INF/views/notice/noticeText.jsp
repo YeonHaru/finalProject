@@ -9,7 +9,7 @@
 <head>
     <title>공지사항 상세</title>
     <link rel="stylesheet" href="/css/00_common.css">
-    <link rel="stylesheet" href="/css/qna/qnaText.css">
+    <link rel="stylesheet" href="/css/notice/noticeText.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -23,26 +23,28 @@
             <h2 class="mb-3 text-center">고객센터</h2>
             <nav class="grid gap-2">
                 <a href="${pageContext.request.contextPath}/notice" class="text-main">공지사항</a>
-                <a href="#" class="text-light">자주 묻는 질문</a>
+                <a href="${pageContext.request.contextPath}/commonquestions" class="text-light">자주 묻는 질문</a>
                 <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
             </nav>
         </aside>
 
         <!-- 오른쪽 공지사항 콘텐츠 -->
         <div class="bg-surface rounded shadow-sm p-4" style="width: 100%;">
-            <h2 class="mb-4 qna-title">▣ 공지사항
+            <h2 class="mb-4 notice-title">▣ 공지사항
                 <div>
                     <sec:authorize access="principal.username == '${notice.userId}'">
                         <!-- 수정 버튼 -->
-                        <form action="${pageContext.request.contextPath}/noticeUpdate" method="post" style="display:inline;">
+                        <form action="${pageContext.request.contextPath}/noticeUpdate" method="get" style="display:inline;">
                             <input type="hidden" name="id" value="${notice.noticeId}" />
-                            <button type="submit" class="btn btn-main">수정</button>
+                            <button type="submit" class="btn btn-main"
+                                    onclick="return confirm('수정하시겠습니까?');">수정</button>
                         </form>
 
                         <!-- 삭제 버튼 -->
                         <form action="${pageContext.request.contextPath}/noticeDelete" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="${notice.noticeId}" />
-                            <button type="submit" class="btn btn-main">삭제</button>
+                            <button type="submit" class="btn btn-main"
+                                    onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
                         </form>
                     </sec:authorize>
                 </div>
@@ -78,14 +80,17 @@
                 <p class="comment-title">Comments</p>
             </div>
             <!-- 댓글 구간 (기존 구조 그대로 유지) -->
+            <!-- 댓글 입력 -->
             <div class="comment-input mb-4">
                 <form action="${pageContext.request.contextPath}/noticeComment" method="post">
                     <input type="hidden" name="noticeId" value="${notice.noticeId}" />
                     <textarea class="comment-textarea" name="content" placeholder="댓글을 작성하세요..." rows="3"></textarea>
-                    <button type="submit" class="mt-3 btn-comment" style="float: right;">등록</button>
+                    <button type="submit" class="mt-3 btn-comment" style="float: right;"
+                            onclick="return confirm('댓글을 등록하시겠습니까?');">등록</button>
                 </form>
             </div>
-            <%--댓글 리스트--%>
+
+        <%--댓글 리스트--%>
             <div class="comment-list">
                 <c:forEach var="comment" items="${comments}">
                     <div class="comment-item">
@@ -95,18 +100,22 @@
                         <div id="comment-${comment.commentId}">
                             <p class="comment-text">${comment.content}</p>
                         </div>
-
+                            <%--댓글 수정, 삭제--%>
                         <sec:authorize access="principal.username == '${comment.userId}'">
                             <div style="margin-top:0.5rem;">
+                                <!-- 수정 버튼 -->
                                 <button type="button" class="btn btn-main btn-sm"
-                                        onclick="editComment('${comment.commentId}', '${notice.noticeId}', '${comment.content}')">수정</button>
+                                        onclick="if(confirm('댓글을 수정하시겠습니까?')) { editComment('${comment.commentId}', '${notice.noticeId}', '${comment.content}'); }">수정</button>
 
+                                <!-- 삭제 버튼 -->
                                 <form action="${pageContext.request.contextPath}/noticeCommentDelete" method="post" style="display:inline;">
                                     <input type="hidden" name="commentId" value="${comment.commentId}" />
-                                    <button type="submit" class="btn btn-main btn-sm">삭제</button>
+                                    <button type="submit" class="btn btn-main btn-sm"
+                                            onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
                                 </form>
                             </div>
                         </sec:authorize>
+
                     </div>
                 </c:forEach>
                 <!-- 댓글 페이징 버튼 -->
@@ -164,6 +173,10 @@
                         saveBtn.type = 'submit';
                         saveBtn.className = 'mt-2 mr-1 btn btn-main btn-sm';
                         saveBtn.innerText = '저장';
+                        saveBtn.onclick = () => {
+                            return confirm('댓글 수정을 저장하시겠습니까?');
+                        };
+
 
                         const cancelBtn = document.createElement('button');
                         cancelBtn.type = 'button';

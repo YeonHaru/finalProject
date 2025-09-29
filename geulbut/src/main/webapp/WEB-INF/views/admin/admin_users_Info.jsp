@@ -127,8 +127,8 @@
                         </select>
                     </td>
                     <td>
-                        <button class="btn btn-cer-secondary save-btn" data-userid="${user.userId}">저장</button>
-                        <button class="btn btn-cer-success delete-btn" data-userid="${user.userId}">삭제</button>
+                        <button class="btn btn-secondary btn--liquid-glass save-btn" data-userid="${user.userId}">저장</button>
+                        <button class="btn btn-danger btn--liquid-glass delete-btn" data-userid="${user.userId}">삭제</button>
                     </td>
                 </tr>
 
@@ -161,17 +161,39 @@
 
     <!-- 페이지네이션 -->
     <c:if test="${usersPage.totalPages > 0}">
-        <div class="pagination mt-2">
-            <c:if test="${usersPage.number > 0}">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}">◀ 이전</a>
-            </c:if>
-            <c:forEach begin="0" end="${usersPage.totalPages - 1}" var="i">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${i}&size=${usersPage.size}"
-                   class="${i == usersPage.number ? 'active' : ''}">${i + 1}</a>
-            </c:forEach>
-            <c:if test="${usersPage.number < usersPage.totalPages - 1}">
-                <a href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}">다음 ▶</a>
-            </c:if>
+        <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
+            <div class="btn-group" role="group" aria-label="페이지">
+                <!-- 이전 («) -->
+                <c:choose>
+                    <c:when test="${usersPage.first}">
+                        <a class="btn btn-secondary btn-nav" aria-label="이전" aria-disabled="true">&laquo;</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-secondary btn-nav"
+                           href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number - 1}&size=${usersPage.size}"
+                           aria-label="이전">&laquo;</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <!-- 숫자들 -->
+                <c:forEach begin="0" end="${usersPage.totalPages - 1}" var="i">
+                    <a class="btn btn-secondary ${i == usersPage.number ? 'active' : ''}"
+                       href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${i}&size=${usersPage.size}"
+                        ${i == usersPage.number ? 'aria-current="page"' : ''}>${i + 1}</a>
+                </c:forEach>
+
+                <!-- 다음 (») -->
+                <c:choose>
+                    <c:when test="${usersPage.last}">
+                        <a class="btn btn-secondary btn-nav" aria-label="다음" aria-disabled="true">&raquo;</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-secondary btn-nav"
+                           href="?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&roleFilter=${roleFilter}&statusFilter=${statusFilter}&page=${usersPage.number + 1}&size=${usersPage.size}"
+                           aria-label="다음">&raquo;</a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
     </c:if>
 </div>

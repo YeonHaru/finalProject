@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let dust = dustData[region];
             if (!dust) {
                 const norm = region.replace(/(광역시|특별시|도|시)$/, '');
-                dust = dustData[norm] || '-';
+                dust = dustData[norm] || '불나서 데이터x';
             }
 
             const div = document.createElement('div');

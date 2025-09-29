@@ -18,12 +18,6 @@
 </head>
 <body class="bg-main">
 <jsp:include page="/common/header.jsp"/>
-<div class="page py-4">
-    <p>제목:${book.title}</p>
-    <p>작가:${book.authorName}</p>
-    <p>출판사:${book.publisherName}</p>
-    <p>해시태그:${book.hashtags}</p>
-</div>
 
 <main id="main" class="page py-4" role="main">
     <!-- 브레드크럼 -->
@@ -98,10 +92,8 @@
 
             <!-- 추가 정보 -->
             <section class="grid gap-1 mt-2" aria-label="추가 정보">
-                <p class="text-light">ISBN: 978-89-12345-67-8</p>
-                <p class="text-light">출간일: <time datetime="2025-01-01">2025-01-01</time></p>
-                <p class="text-light">쪽수: 320쪽</p>
-                <p class="text-light">크기/무게: 148 x 210mm / 420g</p>
+                <p class="text-light">ISBN: ${book.isbn}</p>
+                <p class="text-light">출간일: <time datetime="2025-01-01">${book.publishedDate}</time></p>
             </section>
         </section>
     </article>

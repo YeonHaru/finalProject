@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <html>
 <head>
     <title>검색 결과</title>
@@ -15,16 +16,9 @@
 <jsp:include page="/common/header.jsp"/>
 
 <div class="page py-4">
-    <!-- 상단 툴바 -->
+
+    <!-- 상단 툴바(체크/일괄 버튼만 유지, 페이징 링크는 하단으로 이동) -->
     <div class="row gap-2 mb-3 container">
-        <div class="row gap-1">
-            <c:forEach var="i" begin="1" end="${totalPages}">
-                <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm ${i == page ? 'is-active' : ''}"
-                   href="${pageContext.request.contextPath}/search?q=${param.q}&page=${i}">
-                        ${i}
-                </a>
-            </c:forEach>
-        </div>
         <div class="row gap-1 ml-3 text-light">
             <label class="row gap-1">
                 <input id="checkAll" type="checkbox">
@@ -37,101 +31,180 @@
     </div>
 
     <form name="listForm" action="${pageContext.request.contextPath}/search" method="get" class="container">
-        <input type="hidden" id="page" name="page" value="${page}"/>
+        <!-- 컨트롤러에서 내려준 표시용 1-base 페이지 번호를 보존하려면 필요시 사용 -->
+        <input type="hidden" id="page" name="page" value="${pageNumber - 1}"/>
+        <input type="hidden" name="keyword" value="${keyword}"/>
+        <input type="hidden" name="size" value="${size}"/>
 
-        <ol class="grid gap-3">
-            <c:forEach var="data" items="${searches}">
-                <li class="srch-item bg-surface border rounded shadow-sm p-3">
-                    <!-- 체크박스 -->
-                    <div class="srch-col-check row">
-                        <input type="checkbox" name="selected" value="${data.bookId}">
-                    </div>
+        <!-- 총 건수 안내 -->
+        <p class="mb-2 text-light">
+            총 <strong><fmt:formatNumber value="${pages.totalElements}" groupingUsed="true"/></strong>건
+            (현재 <strong>${pageNumber}</strong> / ${totalPages} 페이지)
+        </p>
 
-                    <!-- 썸네일 -->
-                    <a class="srch-thumb rounded-sm border bg-main"
-                       href="${pageContext.request.contextPath}/book/${data.bookId}">
-                        <img src="${empty data.booksImgUrl ? '/images/thumb_ing.gif' : data.booksImgUrl}"
-                             alt="${fn:escapeXml(data.title)} 표지">
-                    </a>
+        <c:choose>
+            <c:when test="${pages.totalElements == 0}">
+                <div class="card p-3 border rounded bg-surface">검색 결과가 없습니다.</div>
+            </c:when>
+            <c:otherwise>
+                <ol class="grid gap-3">
+                    <c:forEach var="data" items="${searches}">
+                        <li class="srch-item bg-surface border rounded shadow-sm p-3">
+                            <!-- 체크박스 -->
+                            <div class="srch-col-check row">
+                                <input type="checkbox" name="selected" value="${data.bookId}">
+                            </div>
 
-                    <!-- 정보 -->
-                    <div class="srch-info">
-                        <div class="row gap-1 mb-1 text-light">
-                            <c:if test="${not empty data.categoryName}">
-                                <span class="text-light">${data.categoryName}</span>
-                            </c:if>
-                        </div>
-
-                        <h3 class="mb-1 srch-title">
-                            <a href="${pageContext.request.contextPath}/book/${data.bookId}">
-                                    ${data.title}
+                            <!-- 썸네일 -->
+                            <a class="srch-thumb rounded-sm border bg-main"
+                               href="${pageContext.request.contextPath}/book/${data.bookId}">
+                                <img src="${empty data.bookImgUrl ? '/images/thumb_ing.gif' : data.bookImgUrl}"
+                                     alt="${fn:escapeXml(data.title)} 표지">
                             </a>
-                        </h3>
 
-                        <p class="mb-2 text-light">
-                            <c:if test="${not empty data.authorName}">
-                                ${data.authorName}
-                            </c:if>
-                            <c:if test="${not empty data.publisherName}">
-                                &nbsp;|&nbsp; ${data.publisherName}
-                            </c:if>
-                        </p>
+                            <!-- 정보 -->
+                            <div class="srch-info">
+                                <div class="row gap-1 mb-1 text-light">
+                                    <c:if test="${not empty data.categoryName}">
+                                        <span class="text-light">${data.categoryName}</span>
+                                    </c:if>
+                                </div>
 
-                        <!-- 가격 -->
-                        <div class="row gap-2 mb-2">
-                            <span class="text-light strike">
-                                <fmt:formatNumber value="${data.price}" type="number"/>원
-                            </span>
-                            <c:choose>
-                                <c:when test="${data.discountedPrice != null && data.discountedPrice < data.price}">
-                                    <span class="accent-strong">
-                                        <fmt:formatNumber value="${data.discountedPrice}" type="number"/>원
+                                <h3 class="mb-1 srch-title">
+                                    <a href="${pageContext.request.contextPath}/book/${data.bookId}">
+                                            ${data.title}
+                                    </a>
+                                </h3>
+
+                                <p class="mb-2 text-light">
+                                    <c:if test="${not empty data.authorName}">
+                                        ${data.authorName}
+                                    </c:if>
+                                    <c:if test="${not empty data.publisherName}">
+                                        &nbsp;|&nbsp; ${data.publisherName}
+                                    </c:if>
+                                </p>
+
+                                <!-- 가격 -->
+                                <div class="row gap-2 mb-2">
+                                    <span class="text-light strike">
+                                        <fmt:formatNumber value="${data.price}" type="number"/>원
                                     </span>
-                                    <span class="accent-strong">
-                                        <fmt:formatNumber value="${(1 - (data.discountedPrice * 1.0 / data.price)) * 100}"
-                                                          maxFractionDigits="0"/>%할인
-                                    </span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="text-light">할인 없음</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+                                    <c:choose>
+                                        <c:when test="${data.discountedPrice != null && data.discountedPrice < data.price}">
+                                            <span class="accent-strong">
+                                                <fmt:formatNumber value="${data.discountedPrice}" type="number"/>원
+                                            </span>
+                                            <span class="accent-strong">
+                                                <fmt:formatNumber value="${(1 - (data.discountedPrice * 1.0 / data.price)) * 100}"
+                                                                  maxFractionDigits="0"/>%할인
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-light">할인 없음</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
 
-                        <!-- 배송/뱃지 -->
-                        <div class="row gap-1 mb-2 text-light">
-                            <span class="chip chip--soft">알뜰배송</span>
-                            <span>밤 11시 잠들기전 배송</span>
-                        </div>
+                                <!-- 배송/뱃지 -->
+                                <div class="row gap-1 mb-2 text-light">
+                                    <span class="chip chip--soft">알뜰배송</span>
+                                    <span>밤 11시 잠들기전 배송</span>
+                                </div>
 
-                        <!-- 해시태그 -->
-                        <c:if test="${not empty data.hashtags}">
-                            <ul class="row gap-1 mb-2">
-                                <c:forEach var="tag" items="${data.hashtags}">
-                                    <li><a class="chip chip--tag"
-                                           href="${pageContext.request.contextPath}/search?tag=${fn:escapeXml(tag)}">#${tag}</a></li>
-                                </c:forEach>
-                            </ul>
+                                <!-- 해시태그 -->
+                                <c:if test="${not empty data.hashtags}">
+                                    <ul class="row gap-1 mb-2">
+                                        <c:forEach var="tag" items="${data.hashtags}">
+                                            <li>
+                                                <a class="chip chip--tag"
+                                                   href="<c:url value='/search'>
+                                                            <c:param name='keyword' value='${fn:escapeXml(tag)}'/>
+                                                            <c:param name='page' value='0'/>
+                                                            <c:param name='size' value='${size}'/>
+                                                        </c:url>">#${tag}</a>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </c:if>
+
+                                <!-- 액션 -->
+                                <div class="row gap-2">
+                                    <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
+                                            data-act="cart" data-id="${data.bookId}">장바구니</button>
+                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                            data-act="buy" data-id="${data.bookId}">바로구매</button>
+                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                            data-act="wish" data-id="${data.bookId}">보관함</button>
+                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                            data-act="like" data-id="${data.bookId}">마이리스트</button>
+                                </div>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </ol>
+            </c:otherwise>
+        </c:choose>
+
+        <!-- 하단 페이징 (0-base page 전송) -->
+        <c:if test="${pages.totalElements > 0}">
+            <div class="container mt-4">
+                <nav aria-label="페이지 네비게이션">
+                    <ul class="row gap-1">
+                        <!-- 이전 -->
+                        <c:if test="${pageNumber > 1}">
+                            <li>
+                                <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm"
+                                   href="<c:url value='/search'>
+                                            <c:param name='keyword' value='${keyword}'/>
+                                            <c:param name='page' value='${pageNumber - 2}'/>
+                                            <c:param name='size' value='${size}'/>
+                                        </c:url>">이전</a>
+                            </li>
                         </c:if>
 
-                        <!-- 액션 -->
-                        <div class="row gap-2">
-                            <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
-                                    data-act="cart" data-id="${data.bookId}">장바구니</button>
-                            <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                    data-act="buy" data-id="${data.bookId}">바로구매</button>
-                            <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                    data-act="wish" data-id="${data.bookId}">보관함</button>
-                            <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                    data-act="like" data-id="${data.bookId}">마이리스트</button>
-                        </div>
-                    </div>
-                </li>
-            </c:forEach>
-        </ol>
+                        <!-- 번호 (블록 페이징) -->
+                        <c:forEach var="p" begin="${startPage}" end="${endPage}">
+                            <c:set var="isActive" value="${p == pageNumber}"/>
+                            <li>
+                                <c:choose>
+                                    <c:when test="${isActive}">
+                                        <span class="px-2 py-1 border rounded-sm bg-surface shadow-sm is-active">[${p}]</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm"
+                                           href="<c:url value='/search'>
+                                                    <c:param name='keyword' value='${keyword}'/>
+                                                    <c:param name='page' value='${p - 1}'/>
+                                                    <c:param name='size' value='${size}'/>
+                                                </c:url>">${p}</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                        </c:forEach>
+
+                        <!-- 다음 -->
+                        <c:if test="${pageNumber < totalPages}">
+                            <li>
+                                <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm"
+                                   href="<c:url value='/search'>
+                                            <c:param name='keyword' value='${keyword}'/>
+                                            <c:param name='page' value='${pageNumber}'/>
+                                            <c:param name='size' value='${size}'/>
+                                        </c:url>">다음</a>
+                            </li>
+                        </c:if>
+                    </ul>
+
+                    <p class="mt-2 text-light">페이지 범위: ${startPage} ~ ${endPage}</p>
+                </nav>
+            </div>
+        </c:if>
     </form>
+
 </div>
 
 <script src="/js/book_all/book_all.js"></script>
+
 </body>
 </html>

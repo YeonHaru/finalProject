@@ -1,4 +1,3 @@
-
 /* 기본 설정 */
 * {
     margin: 0;
@@ -8,7 +7,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f8fafc;
+    background: #ffffff;
     min-height: 100vh;
     line-height: 1.6;
 }
@@ -23,7 +22,7 @@ body {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 24px;
     padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(90, 122, 74, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 40px;
@@ -48,9 +47,9 @@ body {
     display: inline-block;
     font-size: 32px;
     font-weight: 600;
-    color: #1f2937;
+    color: #5A7A4A;
     letter-spacing: -0.5px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 3px rgba(90, 122, 74, 0.1);
 }
 
 .play-button {
@@ -73,14 +72,14 @@ body {
 }
 
 .play-button::before {
-    color: #6b7280;
+    color: #7A8B6E;
     font-size: 16px;
     line-height: 1;
     transition: color 0.2s ease;
 }
 
 .play-button:hover::before {
-    color: #374151;
+    color: #5A7A4A;
 }
 
 .play-button.playing::before {
@@ -100,14 +99,14 @@ body {
     transform: translate(-50%, -50%);
     width: 3px;
     height: 14px;
-    background: #6b7280;
-    box-shadow: 6px 0 0 #6b7280;
+    background: #7A8B6E;
+    box-shadow: 6px 0 0 #7A8B6E;
     transition: all 0.2s ease;
 }
 
 .play-button.paused:hover::after {
-    background: #374151;
-    box-shadow: 6px 0 0 #374151;
+    background: #5A7A4A;
+    box-shadow: 6px 0 0 #5A7A4A;
 }
 
 /* 탭 메뉴 */
@@ -116,30 +115,30 @@ body {
     justify-content: center;
     flex-wrap: wrap;
     gap: 12px;
-    border-top: 1px solid #e9ecef;
+    border-top: 1px solid #E8C18E;
     padding-top: 24px;
     margin-bottom: 30px;
 }
 
 .tab-item {
     background: none;
-    border: 1px solid #e9ecef;
+    border: 1px solid #E8C18E;
     padding: 10px 20px;
     border-radius: 20px;
     font-size: 14px;
-    color: #6c757d;
+    color: #7A8B6E;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .tab-item:hover {
-    border-color: #5d666c;
-    color: #40474e;
+    border-color: #87A96B;
+    color: #5A7A4A;
 }
 
 .tab-item.active {
-    background: linear-gradient(135deg, #40474e 0%, #5d666c 100%);
+    background: linear-gradient(135deg, #87A96B 0%, #9BBF82 100%);
     color: white;
     border-color: transparent;
 }
@@ -166,9 +165,9 @@ body {
     background: white;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -181,12 +180,12 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, rgb(175, 187, 207) 0%, #284b7c 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .book-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(90, 122, 74, 0.15);
 }
 
 .book-badge {
@@ -202,8 +201,8 @@ body {
 }
 
 .book-badge.recommend {
-    background: #6e8ebc; /* 진한 그레이 계열 */
-    color: #f9fafb;      /* 글자는 밝은 회색/흰색 */
+    background: #87A96B;
+    color: #ffffff;
 }
 
 .book-image {
@@ -213,7 +212,7 @@ body {
     margin: 0 auto 16px auto;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(90, 122, 74, 0.15);
 }
 
 .book-image img {
@@ -233,7 +232,7 @@ body {
     left: 8px;
     width: 24px;
     height: 24px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(90, 122, 74, 0.7);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -246,20 +245,20 @@ body {
 .book-title {
     font-size: 16px;
     font-weight: 600;
-    color: #344d60;
+    color: #5A7A4A;
     margin-bottom: 6px;
     line-height: 1.3;
 }
 
 .book-author {
     font-size: 13px;
-    color: #7f8c8d;
+    color: #7A8B6E;
     margin-bottom: 12px;
 }
 
 .editor-comment {
     background: #fef9e7;
-    border-left: 3px solid #f1c40f;
+    border-left: 3px solid #E8C18E;
     padding: 15px;
     margin: 8px 0;
     border-radius: 6px;
@@ -274,7 +273,7 @@ body {
 .editor-comment .comment-title {
     font-size: 10px !important;
     font-weight: 600;
-    color: #4b5563; /* 제목 글자: 중간 정도 어두운 회색 */
+    color: #5A7A4A; /* 제목 글자: 중간 정도 어두운 회색 */
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -282,7 +281,7 @@ body {
 
 .editor-comment .comment-text {
     font-size: 13px !important;
-    color: #2c3e50;
+    color: #5A7A4A;
     font-style: italic;
     line-height: 1.5;
     display: -webkit-box;
@@ -300,7 +299,7 @@ body {
 }
 
 .star {
-    color: #f1c40f;
+    color: #E8C18E;
     font-size: 14px;
 }
 
@@ -310,7 +309,7 @@ body {
     justify-content: center;
     flex-wrap: wrap;
     gap: 12px;
-    border-top: 1px solid #e9ecef;
+    border-top: 1px solid #E8C18E;
     padding-top: 24px;
     margin-bottom: 0;
     margin-top: auto;
@@ -319,24 +318,24 @@ body {
 
 .tab-item {
     background: none;
-    border: 1px solid #d6d9dc; /* 조금 더 진한 회색 */
+    border: 1px solid #D4A574; /* 조금 더 진한 회색 */
     padding: 10px 20px;
     border-radius: 20px;
     font-size: 14px;
-    color: #6c757d;
+    color: #7A8B6E;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .tab-item:hover {
-    border-color: #495057; /* 진한 회색 */
-    color: #495057; /* 진한 회색 */
-    background-color: #f8f9fa; /* 연한 회색 배경 */
+    border-color: #87A96B; /* 진한 회색 */
+    color: #5A7A4A; /* 진한 회색 */
+    background-color: #ffffff; /* 연한 회색 배경 */
 }
 
 .tab-item.active {
-    background: linear-gradient(135deg, #6c757d 0%, #495057 100%); /* 회색 그라데이션 */
+    background: linear-gradient(135deg, #87A96B 0%, #9BBF82 100%); /* 회색 그라데이션 */
     color: white;
     border-color: transparent;
 }
@@ -355,9 +354,9 @@ body {
     background: white;
     border-radius: 12px;
     padding: 10px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -371,7 +370,7 @@ body {
 
 .book-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(90, 122, 74, 0.15);
 }
 
 .book-badge {
@@ -393,7 +392,7 @@ body {
     margin: 0 auto 10px auto; /* 8px → 10px */
     border-radius: 8px; /* 6px → 8px */
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.15);
 }
 
 .book-image img {
@@ -413,7 +412,7 @@ body {
     left: 3px;
     width: 16px;
     height: 16px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(90, 122, 74, 0.7);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -426,7 +425,7 @@ body {
 .book-title {
     font-size: 12px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 3px;
     line-height: 1.2;
     height: 29px;
@@ -438,13 +437,13 @@ body {
 
 .book-author {
     font-size: 10px;
-    color: #7f8c8d;
+    color: #7A8B6E;
     margin-bottom: 6px;
 }
 
 .editor-comment {
     background: #fef9e7;
-    border-left: 2px solid #f1c40f;
+    border-left: 2px solid #E8C18E;
     padding: 6px;
     margin: 6px 0;
     border-radius: 4px;
@@ -454,7 +453,7 @@ body {
 .comment-title {
     font-size: 7px;
     font-weight: 600;
-    color: #272b30;
+    color: #5A7A4A;
     margin-bottom: 2px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -462,7 +461,7 @@ body {
 
 .comment-text {
     font-size: 9px;
-    color: #2c3e50;
+    color: #5A7A4A;
     font-style: italic;
     line-height: 1.2;
     display: -webkit-box;
@@ -479,11 +478,20 @@ body {
 }
 
 .star {
-    color: #f1c40f;
+    color: #E8C18E;
     font-size: 10px;
 }
 
 /* 신간 소개 스타일 */
+.new-book-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;  /* 원하는 줄 수 (여기서는 1줄) */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .new-books-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -497,9 +505,9 @@ body {
     background: #ffffff;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     text-align: center;
     cursor: pointer;
@@ -516,20 +524,20 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #bbc6d5 0%, #4f6173 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .new-book-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(90, 122, 74, 0.15);
 }
 
 .new-book-badge {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #4b5770; /* 중간 정도 어두운 회색 */
-    color: #f9fafb;      /* 밝은 글자 */
+    background: #87A96B; /* 중간 정도 어두운 회색 */
+    color: #ffffff;      /* 밝은 글자 */
     padding: 4px 12px;
     border-radius: 16px;
     font-size: 11px;
@@ -543,51 +551,49 @@ body {
     margin: 0 auto 16px auto;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(90, 122, 74, 0.15);
 }
 
 .new-book-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+    object-fit: cover;     /* 이미지 비율 유지 + 영역 꽉 채움 */
+    object-position: center;
+    display: block;
 }
 
-.new-book-card:hover .new-book-image img {
-    transform: scale(1.05);
-}
 
 .new-book-title {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 6px;
     line-height: 1.3;
 }
 
 .new-book-author {
     font-size: 13px;
-    color: #7f8c8d;
+    color: #7A8B6E;
     margin-bottom: 8px;
 }
 
 .new-book-date {
     font-size: 12px;
-    color: #6b7280; /* 어두운 회색 계열로 변경 */
+    color: #7A8B6E; /* 어두운 회색 계열로 변경 */
     margin-bottom: 12px;
     font-weight: 500;
 }
 
 .new-book-description {
     font-size: 12px;
-    color: #6c757d;
+    color: #7A8B6E;
     line-height: 1.4;
     margin-bottom: 16px;
     min-height: 32px;
 }
 
 .new-book-button {
-    background: #4b5a73; /* 진한 무채색 계열 */
+    background: #87A96B; /* 진한 무채색 계열 */
     color: white;
     border: none;
     border-radius: 20px;
@@ -601,9 +607,9 @@ body {
 }
 
 .new-book-button:hover {
-    background: #1f2937; /* 버튼 hover 시 더 진하게 */
+    background: #5A7A4A; /* 버튼 hover 시 더 진하게 */
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(55, 65, 81, 0.3);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.3);
 }
 
 /* 화제의 책 스타일 */
@@ -620,9 +626,9 @@ body {
     background: white;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     text-align: center;
     cursor: pointer;
@@ -639,12 +645,12 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ecd7bc 0%, #f6ad8c 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .trending-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(90, 122, 74, 0.15);
 }
 
 .trending-badge {
@@ -660,16 +666,16 @@ body {
 }
 
 .trending-badge.hot {
-    background: rgba(248, 79, 91, 0.89);
+    background: rgba(212, 165, 116, 0.89);
 }
 
 .trending-badge.viral {
 
-    background: rgba(214, 34, 44, 0.77);
+    background: rgba(212, 165, 116, 0.77);
 }
 
 .trending-badge.rising {
-    background: rgba(225, 88, 88, 0.84);
+    background: rgba(212, 165, 116, 0.84);
 }
 
 .trending-image {
@@ -678,7 +684,7 @@ body {
     margin: 0 auto 16px auto;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(90, 122, 74, 0.15);
     position: relative;
 }
 
@@ -699,7 +705,7 @@ body {
     right: 8px;
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, #d65f5f 0%, #fab386 100%);
+    background: linear-gradient(135deg, #D4A574 0%, #E8C18E 100%);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -707,20 +713,20 @@ body {
     justify-content: center;
     font-size: 12px;
     font-weight: bold;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(90, 122, 74, 0.2);
 }
 
 .trending-title {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 6px;
     line-height: 1.3;
 }
 
 .trending-author {
     font-size: 13px;
-    color: #7f8c8d;
+    color: #7A8B6E;
     margin-bottom: 12px;
 }
 
@@ -735,7 +741,7 @@ body {
 .stats-title {
     font-size: 10px;
     font-weight: 600;
-    color: #d56565;
+    color: #D4A574;
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -743,7 +749,7 @@ body {
 
 .stats-info {
     font-size: 12px;
-    color: #2c3e50;
+    color: #5A7A4A;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -758,7 +764,7 @@ body {
 
 .stats-trend {
     font-size: 11px;
-    color: #cc3c3c;
+    color: #D4A574;
     font-weight: 600;
 }
 
@@ -771,13 +777,13 @@ body {
 }
 
 .trending-rating .star {
-    color: #dc2626;
+    color: #E8C18E;
     font-size: 14px;
 }
 
 .rating-number {
     font-size: 12px;
-    color: #6c757d;
+    color: #7A8B6E;
     margin-left: 4px;
 }
 
@@ -795,9 +801,9 @@ body {
     background: white;
     border-radius: 16px;
     padding: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     text-align: center;
     cursor: pointer;
@@ -814,12 +820,12 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #efdfb1 0%, #dcb412 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .hotdeal-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 32px rgba(90, 122, 74, 0.12);
 }
 
 .hotdeal-badge {
@@ -835,7 +841,7 @@ body {
 }
 
 .hotdeal-badge.discount-30 {
-    background: #f1a72b;
+    background: #E8C18E;
 }
 
 .hotdeal-image {
@@ -844,7 +850,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.1);
 }
 
 .hotdeal-image img {
@@ -856,14 +862,14 @@ body {
 .hotdeal-title {
     font-size: 14px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 6px;
     line-height: 1.3;
 }
 
 .hotdeal-author {
     font-size: 12px;
-    color: #7f8c8d;
+    color: #7A8B6E;
     margin-bottom: 8px;
 }
 
@@ -877,30 +883,30 @@ body {
 
 .original-price {
     font-size: 12px;
-    color: #999;
+    color: #7A8B6E;
     text-decoration: line-through;
 }
 
 .sale-price {
     font-size: 16px;
     font-weight: 700;
-    color: #e74c3c;
+    color: #D4A574;
 }
 
 .hotdeal-time {
     background: #fff5d5;
-    border: 1px solid #f6e2c5;
+    border: 1px solid #E8C18E;
     border-radius: 8px;
     padding: 8px;
     font-size: 11px;
-    color: #c53030;
+    color: #D4A574;
     font-weight: 600;
     margin-bottom: 8px;
 }
 
 
 .hotdeal-button {
-    background: linear-gradient(135deg, #e6773b 0%, #ec9e22 100%);
+    background: linear-gradient(135deg, #D4A574 0%, #E8C18E 100%);
     color: white;
     border: none;
     border-radius: 20px;
@@ -914,7 +920,7 @@ body {
 
 .hotdeal-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
 }
 
 /* 추천 이벤트 카드 스타일 */
@@ -931,9 +937,9 @@ body {
     background: white;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     display: flex;
     gap: 16px;
     cursor: pointer;
@@ -949,12 +955,12 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #edcdcd 0%, #b55252 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .event-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 32px rgba(90, 122, 74, 0.12);
 }
 
 .event-image {
@@ -963,7 +969,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.1);
 }
 
 .event-image img {
@@ -982,7 +988,7 @@ body {
 .event-title {
     font-size: 18px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 12px;
     line-height: 1.3;
 }
@@ -995,22 +1001,22 @@ body {
 
 .event-date, .event-location, .event-time {
     font-size: 14px;
-    color: #6c757d;
+    color: #7A8B6E;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .event-date {
-    color: #379cd8;
+    color: #87A96B;
 }
 
 .event-location {
-    color: #d84839;
+    color: #D4A574;
 }
 
 .event-time {
-    color: #b166d1;
+    color: #9BBF82;
 }
 
 /* 굿즈 카드 스타일 */
@@ -1027,9 +1033,9 @@ body {
     background: white;
     border-radius: 16px;
     padding: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     text-align: center;
     cursor: pointer;
@@ -1046,12 +1052,12 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #d6cff8 0%, #564f93 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .goods-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 32px rgba(90, 122, 74, 0.12);
 }
 
 .goods-badge {
@@ -1067,19 +1073,19 @@ body {
 }
 
 .goods-badge.special {
-    background: #9d52e6;
+    background: #87A96B;
 }
 
 .goods-badge.new {
-    background: #5f7dcc;
+    background: #9BBF82;
 }
 
 .goods-badge.hot {
-    background: #7b3def;
+    background: #D4A574;
 }
 
 .goods-badge.best {
-    background: #4b57ef;
+    background: #E8C18E;
 }
 
 .goods-image {
@@ -1088,7 +1094,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.1);
 }
 
 .goods-image img {
@@ -1104,25 +1110,25 @@ body {
 .goods-title {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 8px;
 }
 
 .goods-period {
     font-size: 12px;
-    color: #3291d1;
+    color: #87A96B;
     margin-bottom: 4px;
 }
 
 .goods-publisher {
     font-size: 12px;
-    color: #df4b3c;
+    color: #D4A574;
     margin-bottom: 4px;
 }
 
 .goods-author {
     font-size: 12px;
-    color: #864c9e;
+    color: #9BBF82;
     margin-bottom: 12px;
 }
 
@@ -1137,12 +1143,12 @@ body {
 .current-price {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
 }
 
 .discount {
     font-size: 12px;
-    color: #e74c3c;
+    color: #D4A574;
     font-weight: 500;
 }
 
@@ -1160,9 +1166,9 @@ body {
     background: white;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(90, 122, 74, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(90, 122, 74, 0.05);
     position: relative;
     text-align: center;
     cursor: pointer;
@@ -1179,19 +1185,19 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #c5dac9 0%, #5aaa6c 100%);
+    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .weekly-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 32px rgba(90, 122, 74, 0.12);
 }
 
 .weekly-badge {
     position: absolute;
     top: 12px;
     right: 12px;
-    background: rgba(50, 184, 65, 0.76);
+    background: rgba(135, 169, 107, 0.76);
     color: white;
     padding: 4px 10px;
     border-radius: 16px;
@@ -1206,7 +1212,7 @@ body {
     margin: 0 auto 16px auto;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(90, 122, 74, 0.15);
 }
 
 .weekly-image img {
@@ -1222,13 +1228,13 @@ body {
 .weekly-title {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: #5A7A4A;
     margin-bottom: 6px;
 }
 
 .weekly-author {
     font-size: 13px;
-    color: #7f8c8d;
+    color: #7A8B6E;
     margin-bottom: 12px;
 }
 
@@ -1243,16 +1249,16 @@ body {
 .rating-score {
     font-size: 14px;
     font-weight: 600;
-    color: #f39c12;
+    color: #E8C18E;
 }
 
 .rating-text {
     font-size: 12px;
-    color: #7f8c8d;
+    color: #7A8B6E;
 }
 
 .weekly-comment {
-    background: #f8f9fa;
+    background: #ffffff;
     border-radius: 8px;
     padding: 12px;
     text-align: left;
@@ -1261,7 +1267,7 @@ body {
 
 .weekly-comment .comment-text {
     font-size: 12px;
-    color: #2c3e50;
+    color: #5A7A4A;
     line-height: 1.4;
 }
 
@@ -1447,8 +1453,8 @@ body {
 /* 광고창 */
 .ad-marquee {
 
-    background: linear-gradient(45deg, #f8f9fa, #a4b0be);
-    color: #243445;
+    background: linear-gradient(45deg, #ffffff, #E8C18E);
+    color: #5A7A4A;
     padding: 12px 0;
     overflow: hidden;
     margin: 20px 0;
@@ -1486,7 +1492,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: #333;
+    color: #5A7A4A;
     transition: transform 0.2s ease;
 }
 
@@ -1498,12 +1504,12 @@ body {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #f8f9fa;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(90,122,74,0.1);
 }
 
 .icon-label {
@@ -1517,9 +1523,9 @@ body {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
     margin: 40px 0;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
 }
 
 .featured-header {
@@ -1528,7 +1534,7 @@ body {
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #E8C18E;
 }
 
 .featured-title-area {
@@ -1540,7 +1546,7 @@ body {
 .bookmark-icon {
     width: 40px;
     height: 40px;
-    background: #374151;
+    background: #87A96B;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -1557,18 +1563,18 @@ body {
 .featured-main-title {
     font-size: 20px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     margin: 0;
 }
 
 .featured-subtitle {
     font-size: 14px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin: 0;
 }
 
 .hot-indicator {
-    background: linear-gradient(135deg, #fab2b2 0%, #cd4747 100%);
+    background: linear-gradient(135deg, #D4A574 0%, #E8C18E 100%);
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
@@ -1585,7 +1591,7 @@ body {
 
 .featured-book-card {
     background: white;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
     border-radius: 12px;
     padding: 16px;
     transition: all 0.3s ease;
@@ -1598,8 +1604,8 @@ body {
 
 .featured-book-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    border-color: #d1d5db;
+    box-shadow: 0 8px 24px rgba(90,122,74,0.12);
+    border-color: #D4A574;
 }
 
 .book-info-top {
@@ -1612,7 +1618,7 @@ body {
 }
 
 .discount-badge {
-    background: rgba(0,0,0,0.8);
+    background: rgba(90,122,74,0.8);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
@@ -1621,7 +1627,7 @@ body {
 }
 
 .category-tag {
-    background: #5a5bc1;
+    background: #87A96B;
     color: white;
     padding: 4px 8px;
     border-radius: 12px;
@@ -1635,7 +1641,7 @@ body {
     margin-bottom: 12px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(90,122,74,0.1);
 }
 
 .featured-book-image img {
@@ -1659,7 +1665,7 @@ body {
 .featured-book-title {
     font-size: 14px;
     font-weight: 600;
-    color: #273345;
+    color: #5A7A4A;
     margin-bottom: 4px;
     line-height: 1.3;
     display: -webkit-box;
@@ -1671,7 +1677,7 @@ body {
 
 .featured-book-author {
     font-size: 12px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin-bottom: 8px;
 }
 
@@ -1685,13 +1691,13 @@ body {
 }
 
 .stars {
-    color: #fbbf24;
+    color: #E8C18E;
     font-size: 12px;
     font-weight: 600;
 }
 
 .review-count {
-    color: #9ca3af;
+    color: #7A8B6E;
     font-size: 11px;
 }
 
@@ -1705,18 +1711,18 @@ body {
 .current-price {
     font-size: 14px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
 }
 
 .original-price {
     font-size: 12px;
-    color: #9ca3af;
+    color: #7A8B6E;
     text-decoration: line-through;
 }
 
 .book-description {
     font-size: 11px;
-    color: #6b7280;
+    color: #7A8B6E;
     line-height: 1.4;
     margin-bottom: 12px;
     display: -webkit-box;
@@ -1728,7 +1734,7 @@ body {
 }
 
 .detail-button {
-    background: #374151;
+    background: #87A96B;
     color: white;
     border: none;
     border-radius: 6px;
@@ -1741,18 +1747,18 @@ body {
 }
 
 .detail-button:hover {
-    background: #1f2937;
+    background: #5A7A4A;
     transform: translateY(-1px);
 }
 
 .view-all-link {
     text-align: center;
     padding-top: 16px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #E8C18E;
 }
 
 .view-all-link a {
-    color: #6b7280;
+    color: #7A8B6E;
     text-decoration: none;
     font-size: 13px;
     font-weight: 500;
@@ -1760,7 +1766,7 @@ body {
 }
 
 .view-all-link a:hover {
-    color: #374151;
+    color: #5A7A4A;
 }
 
 /* 베스트셀러 */
@@ -1768,17 +1774,17 @@ body {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
     margin: 40px 0;
 }
 
 .bestseller-title {
     font-size: 20px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     margin-bottom: 24px;
     padding-bottom: 12px;
-    border-bottom: 2px solid #f3f4f6;
+    border-bottom: 2px solid #E8C18E;
 }
 
 .bestseller-grid {
@@ -1792,38 +1798,38 @@ body {
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: #fafafa;
+    background: #ffffff;
     border-radius: 12px;
-    border: 1px solid #f1f5f9;
+    border: 1px solid #E8C18E;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .bestseller-item:hover {
-    background: #f8fafc;
-    border-color: #e2e8f0;
+    background: #ffffff;
+    border-color: #D4A574;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
 }
 
 .rank-number {
     font-size: 20px;
     font-weight: 700;
-    color: #6b7280;
+    color: #7A8B6E;
     min-width: 24px;
     text-align: center;
 }
 
 .rank-number.rank-1 {
-    color: #fbbf24;
+    color: #E8C18E;
 }
 
 .rank-number.rank-2 {
-    color: #9ca3af;
+    color: #D4A574;
 }
 
 .rank-number.rank-3 {
-    color: #d97706;
+    color: #9BBF82;
 }
 
 .bestseller-thumb {
@@ -1831,7 +1837,7 @@ body {
     height: 66px;
     object-fit: cover;
     border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(90,122,74,0.1);
     flex-shrink: 0;
 }
 
@@ -1851,7 +1857,7 @@ body {
 .bestseller-book-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1f2937;
+    color: #5A7A4A;
     margin: 0;
     line-height: 1.3;
     flex: 1;
@@ -1861,7 +1867,7 @@ body {
 
 .bestseller-author {
     font-size: 12px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin: 0;
 }
 
@@ -1875,17 +1881,17 @@ body {
 }
 
 .bestseller-badge.new {
-    background: rgba(246, 76, 76, 0.81);
+    background: rgba(212, 165, 116, 0.81);
     color: white;
 }
 
 .bestseller-badge.up {
-    background: rgba(16, 185, 129, 0.8);
+    background: rgba(135, 169, 107, 0.8);
     color: white;
 }
 
 .bestseller-badge.down {
-    background: rgba(245, 158, 11, 0.78);
+    background: rgba(232, 193, 142, 0.78);
     color: white;
 }
 
@@ -1894,9 +1900,9 @@ body {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
     margin: 40px 0;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
 }
 
 .special-header {
@@ -1905,7 +1911,7 @@ body {
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #E8C18E;
 }
 
 .special-title-area {
@@ -1917,7 +1923,7 @@ body {
 .special-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #ffbb59 0%, #f18b40 100%);
+    background: linear-gradient(135deg, #E8C18E 0%, #D4A574 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -1934,19 +1940,19 @@ body {
 .special-main-title {
     font-size: 20px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     margin: 0;
 }
 
 .special-subtitle {
     font-size: 14px;
-    color: #e69824;
+    color: #D4A574;
     margin: 0;
     font-weight: 600;
 }
 
 .more-link {
-    color: #6b7280;
+    color: #7A8B6E;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
@@ -1954,7 +1960,7 @@ body {
 }
 
 .more-link:hover {
-    color: #374151;
+    color: #5A7A4A;
 }
 
 .special-books-grid {
@@ -1966,7 +1972,7 @@ body {
 
 .special-book-card {
     background: white;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
     border-radius: 12px;
     padding: 16px;
     transition: all 0.3s ease;
@@ -1979,8 +1985,8 @@ body {
 
 .special-book-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    border-color: #d1d5db;
+    box-shadow: 0 8px 24px rgba(90,122,74,0.12);
+    border-color: #D4A574;
 }
 
 .special-badges {
@@ -1993,7 +1999,7 @@ body {
 }
 
 .discount-percent {
-    background: #e34a4a;
+    background: #D4A574;
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
@@ -2002,7 +2008,7 @@ body {
 }
 
 .days-left {
-    background: #ea951b;
+    background: #E8C18E;
     color: white;
     padding: 4px 8px;
     border-radius: 12px;
@@ -2016,7 +2022,7 @@ body {
     margin-bottom: 12px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(90,122,74,0.1);
 }
 
 .special-book-image img {
@@ -2039,7 +2045,7 @@ body {
 
 .book-category {
     font-size: 11px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin-bottom: 4px;
     font-weight: 500;
 }
@@ -2047,7 +2053,7 @@ body {
 .special-book-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1f2937;
+    color: #5A7A4A;
     margin-bottom: 4px;
     line-height: 1.3;
     display: -webkit-box;
@@ -2059,7 +2065,7 @@ body {
 
 .special-book-author {
     font-size: 12px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin-bottom: 12px;
 }
 
@@ -2072,19 +2078,19 @@ body {
 
 .special-price-info .original-price {
     font-size: 12px;
-    color: #9ca3af;
+    color: #7A8B6E;
     text-decoration: line-through;
 }
 
 .special-price {
     font-size: 16px;
     font-weight: 700;
-    color: #e1900a;
+    color: #D4A574;
 }
 
 .price-label {
     font-size: 10px;
-    color: #ec980b;
+    color: #E8C18E;
     font-weight: 500;
 }
 
@@ -2094,7 +2100,7 @@ body {
     align-items: center;
     padding: 16px 20px;
     background: #fff4b5;
-    border: 1px solid #f3e1a2;
+    border: 1px solid #E8C18E;
     border-radius: 12px;
     margin-top: 20px;
 }
@@ -2104,7 +2110,7 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #92400e;
+    color: #D4A574;
     font-weight: 500;
 }
 
@@ -2113,7 +2119,7 @@ body {
 }
 
 .view-all-special-btn {
-    background: linear-gradient(135deg, #f1a11e 0%, #ea7928 100%);
+    background: linear-gradient(135deg, #E8C18E 0%, #D4A574 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -2126,7 +2132,7 @@ body {
 
 .view-all-special-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 12px rgba(232, 193, 142, 0.3);
 }
 
 /* 큰 도서 광고창  */
@@ -2139,7 +2145,7 @@ body {
     margin-right: -50vw;
     margin-top: 40px;
     margin-bottom: 40px;
-    background: #f8f9fa;
+    background: #ffffff;
     overflow: hidden;
 }
 
@@ -2161,17 +2167,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+    background: linear-gradient(135deg, #87A96B 0%, #9BBF82 100%);
     position: relative;
     overflow: hidden;
 }
 
 .slider-item:nth-child(2) {
-    background: linear-gradient(135deg, #6b4c57 0%, #523a47 100%);
+    background: linear-gradient(135deg, #D4A574 0%, #E8C18E 100%);
 }
 
 .slider-item:nth-child(3) {
-    background: linear-gradient(135deg, #3c4f76 0%, #2a3b5c 100%);
+    background: linear-gradient(135deg, #7A8B6E 0%, #5A7A4A 100%);
 }
 
 .slider-content {
@@ -2185,7 +2191,7 @@ body {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 12px;  /* 15px → 12px로 줄임 */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 4px rgba(90,122,74,0.3);
     line-height: 1.2;  /* 줄 높이 추가 */
 }
 
@@ -2234,14 +2240,14 @@ body {
     transition: all 0.3s ease;
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: #5A7A4A;
     z-index: 10;
 }
 
 .slider-nav:hover {
     background: rgba(255, 255, 255, 0.95);
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.2);
 }
 
 .slider-nav.prev {
@@ -2265,7 +2271,7 @@ body {
     background: white;
     padding: 40px 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
     margin: 40px 0;
     position: relative;
 }
@@ -2273,7 +2279,7 @@ body {
 .hot-news-title {
     font-size: 24px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     text-align: center;
     margin-bottom: 40px;
     position: relative;
@@ -2313,11 +2319,11 @@ body {
 }
 
 .hot-news-card {
-    background: #fafbfc;
+    background: #ffffff;
     border-radius: 16px;
     padding: 24px;
     transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
     position: relative;
     height: 100%;
     display: flex;
@@ -2326,8 +2332,8 @@ body {
 
 .hot-news-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    border-color: #d1d5db;
+    box-shadow: 0 10px 25px rgba(90,122,74,0.1);
+    border-color: #D4A574;
 }
 
 .card-header {
@@ -2338,7 +2344,7 @@ body {
 }
 
 .rank-badge {
-    background: #374151;
+    background: #87A96B;
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
@@ -2347,18 +2353,18 @@ body {
 }
 
 .rank-badge.rank-1 {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    color: #1f2937;
+    background: linear-gradient(135deg, #9BBF82 0%, #87A96B 100%);
+    color: #5A7A4A;
 }
 
 .rank-badge.rank-2 {
-    background: linear-gradient(135deg, #c0c0c0 0%, #e5e5e5 100%);
-    color: #1f2937;
+    background: linear-gradient(135deg, #D4A574 0%, #E8C18E 100%);
+    color: #5A7A4A;
 }
 
 .rank-badge.rank-3 {
-    background: linear-gradient(135deg, #cd7f32 0%, #daa850 100%);
-    color: #1f2937;
+    background: linear-gradient(135deg, #9BBF82 0%, #87A96B 100%);
+    color: #5A7A4A;
 }
 
 .status-badge {
@@ -2370,19 +2376,19 @@ body {
 }
 
 .status-badge.hot {
-    background: #c33a3a;
+    background: #D4A574;
 }
 
 .status-badge.best {
-    background: #10a371;
+    background: #87A96B;
 }
 
 .status-badge.new {
-    background: #3470d5;
+    background: #9BBF82;
 }
 
 .status-badge.trending {
-    background: #ea960a;
+    background: #E8C18E;
 }
 
 .book-cover {
@@ -2391,7 +2397,7 @@ body {
     margin-bottom: 20px;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
 }
 
 .book-cover img {
@@ -2414,20 +2420,20 @@ body {
 .book-title {
     font-size: 18px;
     font-weight: 600;
-    color: #1f2937;
+    color: #5A7A4A;
     margin-bottom: 8px;
     line-height: 1.3;
 }
 
 .book-author {
     font-size: 14px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin-bottom: 12px;
 }
 
 .book-description {
     font-size: 13px;
-    color: #4b5563;
+    color: #7A8B6E;
     line-height: 1.4;
     margin-bottom: 12px;
     flex-grow: 1;
@@ -2435,7 +2441,7 @@ body {
 
 .book-genre {
     font-size: 12px;
-    color: #9ca3af;
+    color: #7A8B6E;
     margin-bottom: 12px;
 }
 
@@ -2444,7 +2450,7 @@ body {
 }
 
 .book-rating .stars {
-    color: #fbbf24;
+    color: #E8C18E;
     font-size: 14px;
     font-weight: 600;
 }
@@ -2452,10 +2458,10 @@ body {
 .book-price {
     font-size: 18px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     margin-bottom: 16px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #E8C18E;
 }
 
 .book-stats {
@@ -2463,7 +2469,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin-top: auto;
 }
 
@@ -2484,7 +2490,7 @@ body {
 
 .slider-nav {
     background: rgba(255,255,255,0.9);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
     border-radius: 25px;
     padding: 10px 20px;
     display: flex;
@@ -2494,15 +2500,15 @@ body {
     transition: all 0.3s ease;
     font-size: 14px;
     font-weight: 600;
-    color: #374151;
+    color: #87A96B;
     min-width: 80px;
 }
 
 .slider-nav:hover {
     background: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    color: #667eea;
-    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(90,122,74,0.15);
+    color: #5A7A4A;
+    border-color: #D4A574;
 }
 /* 프로모션 섹션 */
 .promotion-section {
@@ -2546,8 +2552,8 @@ body {
     background: white;
     border-radius: 16px;
     padding: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(90,122,74,0.08);
+    border: 1px solid #E8C18E;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -2559,31 +2565,31 @@ body {
 
 .promotion-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 24px rgba(90,122,74,0.12);
 }
 
 .bestseller-promo {
-    border-left: 4px solid #ecb421;
+    border-left: 4px solid #E8C18E;
 }
 
 .md-promo {
-    border-left: 4px solid #c3aef1;
+    border-left: 4px solid #9BBF82;
 }
 
 .new-book-promo {
- border-left: 4px solid #f1d171;
+    border-left: 4px solid #E8C18E;
 }
 
 .md-promo {
-    border-left: 4px solid #c3aef1;
+    border-left: 4px solid #9BBF82;
 }
 
 .new-book-promo {
-    border-left: 4px solid #77cc85;
+    border-left: 4px solid #87A96B;
 }
 
 .audiobook-promo {
-    border-left: 4px solid #8198f8;
+    border-left: 4px solid #D4A574;
 }
 
 .promo-icon {
@@ -2592,29 +2598,29 @@ body {
     align-items: center;
     gap: 8px;
     padding: 16px;
-    background: #f8f9fa;
+    background: #ffffff;
     border-radius: 12px;
     flex-shrink: 0;
 }
 
 .bestseller-promo .promo-icon {
     background: #fef3c7;
-    color: #d17608;
+    color: #E8C18E;
 }
 
 .md-promo .promo-icon {
     background: #f3e8ff;
-    color: #5e37bc;
+    color: #9BBF82;
 }
 
 .new-book-promo .promo-icon {
     background: #d1fae5;
-    color: #047e5a;
+    color: #87A96B;
 }
 
 .audiobook-promo .promo-icon {
     background: #e0e7ff;
-    color: #3c33d6;
+    color: #D4A574;
 }
 
 .promo-icon svg {
@@ -2637,21 +2643,21 @@ body {
 .promo-title {
     font-size: 18px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     margin-bottom: 4px;
 }
 
 .promo-subtitle {
     font-size: 16px;
     font-weight: 600;
-    color: #374151;
+    color: #5A7A4A;
     margin-bottom: 8px;
     line-height: 1.3;
 }
 
 .promo-description {
     font-size: 14px;
-    color: #6b7280;
+    color: #7A8B6E;
     line-height: 1.4;
     margin-bottom: 16px;
 }
@@ -2659,7 +2665,7 @@ body {
 .promo-button {
     background: none;
     border: none;
-    color: #4d67d5;
+    color: #87A96B;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -2668,7 +2674,7 @@ body {
 }
 
 .promo-button:hover {
-    color: #4c46da;
+    color: #5A7A4A;
 }
 
 .promo-image {
@@ -2681,7 +2687,7 @@ body {
     height: 110px;
     object-fit: cover;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.15);
 }
 
 /* 슬라이더 화살표 */
@@ -2701,15 +2707,15 @@ body {
     transition: all 0.3s ease;
     font-size: 18px;
     font-weight: bold;
-    color: #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #5A7A4A;
+    box-shadow: 0 2px 8px rgba(90, 122, 74, 0.1);
     z-index: 10;
 }
 
 .promo-slider-btn:hover {
     background: white;
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(90, 122, 74, 0.2);
 }
 
 .promo-slider-btn.prev {
@@ -2721,7 +2727,7 @@ body {
 }
 
 .promotion-footer {
-    background: #f8f9fa;
+    background: #ffffff;
     border-radius: 12px;
     padding: 16px 20px;
     text-align: center;
@@ -2729,7 +2735,7 @@ body {
 
 .promotion-notice {
     font-size: 14px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin: 0;
     display: flex;
     align-items: center;
@@ -2738,7 +2744,7 @@ body {
 }
 
 .notice-dot {
-    color: rgba(234, 114, 28, 0.91);
+    color: rgba(232, 193, 142, 0.91);
     font-size: 12px;
 }
 
@@ -2825,9 +2831,9 @@ body {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
     margin: 40px 0;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
 }
 
 .audiobook-header {
@@ -2836,7 +2842,7 @@ body {
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #E8C18E;
 }
 
 .audiobook-title-area {
@@ -2848,7 +2854,7 @@ body {
 .audiobook-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, rgba(13, 156, 186, 0.93) 0%, rgba(29, 184, 204, 0.87) 100%);
+    background: linear-gradient(135deg, rgba(135, 169, 107, 0.93) 0%, rgba(155, 191, 130, 0.87) 100%);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -2865,13 +2871,13 @@ body {
 .audiobook-main-title {
     font-size: 20px;
     font-weight: 700;
-    color: #1f2937;
+    color: #5A7A4A;
     margin: 0;
 }
 
 .audiobook-subtitle {
     font-size: 14px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin: 0;
 }
 
@@ -2882,7 +2888,7 @@ body {
 }
 
 .free-trial-btn {
-    background: linear-gradient(135deg,  rgba(13, 156, 186, 0.93) 0%, rgba(29, 184, 204, 0.87) 100%);
+    background: linear-gradient(135deg,  rgba(135, 169, 107, 0.93) 0%, rgba(155, 191, 130, 0.87) 100%);
     color: white;
     border: none;
     border-radius: 20px;
@@ -2898,11 +2904,11 @@ body {
 
 .free-trial-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 4px 12px rgba(135, 169, 107, 0.3);
 }
 
 .audiobook-more-link {
-    color: #6b7280;
+    color: #7A8B6E;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
@@ -2910,7 +2916,7 @@ body {
 }
 
 .audiobook-more-link:hover {
-    color: #374151;
+    color: #5A7A4A;
 }
 
 .audiobook-grid {
@@ -2922,7 +2928,7 @@ body {
 
 .audiobook-card {
     background: white;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E8C18E;
     border-radius: 12px;
     padding: 16px;
     transition: all 0.3s ease;
@@ -2935,8 +2941,8 @@ body {
 
 .audiobook-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    border-color: #d1d5db;
+    box-shadow: 0 8px 24px rgba(90,122,74,0.12);
+    border-color: #D4A574;
 }
 
 .audiobook-badge {
@@ -2952,11 +2958,11 @@ body {
 }
 
 .audiobook-badge.new {
-    background: #ed5f5f;
+    background: #D4A574;
 }
 
 .audiobook-badge.popular {
-    background: #9b78f3;
+    background: #9BBF82;
 }
 
 .audiobook-cover {
@@ -2966,7 +2972,7 @@ body {
     margin-bottom: 12px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(90,122,74,0.1);
 }
 
 .audiobook-cover img {
@@ -2986,7 +2992,7 @@ body {
     right: 8px;
     width: 28px;
     height: 28px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(90, 122, 74, 0.7);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -2998,7 +3004,7 @@ body {
     position: absolute;
     bottom: 8px;
     left: 8px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(90, 122, 74, 0.7);
     color: white;
     padding: 4px 8px;
     border-radius: 12px;
@@ -3023,13 +3029,13 @@ body {
 .rating-stars {
     font-size: 12px;
     font-weight: 600;
-    color: #f59e0b;
+    color: #E8C18E;
 }
 
 .audiobook-category {
     font-size: 11px;
-    color: #6b7280;
-    background: #f3f4f6;
+    color: #7A8B6E;
+    background: #ffffff;
     padding: 2px 8px;
     border-radius: 8px;
 }
@@ -3037,7 +3043,7 @@ body {
 .audiobook-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1f2937;
+    color: #5A7A4A;
     margin-bottom: 6px;
     line-height: 1.3;
     display: -webkit-box;
@@ -3048,20 +3054,20 @@ body {
 
 .audiobook-author {
     font-size: 12px;
-    color: #6b7280;
+    color: #7A8B6E;
     margin-bottom: 4px;
 }
 
 .audiobook-narrator {
     font-size: 12px;
-    color: #0897ae;
+    color: #87A96B;
     font-weight: 500;
 }
 
 /* 오디오북 프로모션 */
 .audiobook-promotion {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1px solid #95c2da;
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+    border: 1px solid #D4A574;
     border-radius: 16px;
     padding: 24px;
     display: flex;
@@ -3079,13 +3085,13 @@ body {
 .promo-icon-large {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg,  rgba(13, 156, 186, 0.93) 0%, rgba(29, 184, 204, 0.87) 100%);
+    background: linear-gradient(135deg,  rgba(135, 169, 107, 0.93) 0%, rgba(155, 191, 130, 0.87) 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 4px 12px rgba(135, 169, 107, 0.3);
 }
 
 .promo-text {
@@ -3097,18 +3103,18 @@ body {
 .promo-main-title {
     font-size: 20px;
     font-weight: 700;
-    color: #0f172a;
+    color: #5A7A4A;
     margin: 0;
 }
 
 .promo-description {
     font-size: 14px;
-    color: #64748b;
+    color: #7A8B6E;
     margin: 0;
 }
 
 .start-trial-btn {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    background: linear-gradient(135deg, #87A96B 0%, #9BBF82 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -3117,16 +3123,16 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 4px 12px rgba(135, 169, 107, 0.3);
 }
 
 .start-trial-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 6px 20px rgba(135, 169, 107, 0.4);
 }
 
 .more-audiobooks-link {
-    color: #06b6d4;
+    color: #87A96B;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -3134,7 +3140,7 @@ body {
 }
 
 .more-audiobooks-link:hover {
-    color: #1686a5;
+    color: #5A7A4A;
 }
 
 /* 오디오북 섹션 반응형 */
@@ -3262,7 +3268,7 @@ body {
     text-align: center;
     padding: 60px 20px;
     font-family: 'Noto Sans', sans-serif;
-    background: #fff;
+    background: #ffffff;
 }
 
 .awards-header h2 {
@@ -3272,7 +3278,7 @@ body {
 
 .awards-header p {
     font-size: 1rem;
-    color: #666;
+    color: #7A8B6E;
     margin-bottom: 40px;
 }
 
@@ -3284,12 +3290,12 @@ body {
 }
 
 .award-card {
-    background: #f8f9fa;
+    background: #ffffff;
     border-radius: 16px;
     padding: 20px;
     width: 220px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 8px rgba(90,122,74,0.05);
     transition: transform 0.2s;
 }
 
@@ -3304,7 +3310,7 @@ body {
 
 .award-card .year {
     font-size: 0.9rem;
-    color: #888;
+    color: #7A8B6E;
     margin-bottom: 8px;
 }
 
@@ -3315,23 +3321,23 @@ body {
 
 .award-card .subtitle {
     font-size: 0.85rem;
-    color: #555;
+    color: #5A7A4A;
     margin-bottom: 6px;
 }
 
 .award-card .desc {
     font-size: 0.8rem;
-    color: #777;
+    color: #7A8B6E;
 }
 
-.award-card.yellow { background: #fff9e5; color: #b38700; }
-.award-card.lightblue { background: #f5f8ff; color: #394c65; }
-.award-card.orange { background: #fff4e5; color: #e06c00; }
-.award-card.blue { background: #e6f0ff; color: #2e5cb8; }
+.award-card.yellow { background: #fff9e5; color: #E8C18E; }
+.award-card.lightblue { background: #f5f8ff; color: #87A96B; }
+.award-card.orange { background: #fff4e5; color: #D4A574; }
+.award-card.blue { background: #e6f0ff; color: #9BBF82; }
 
 .awards-footer {
     margin-top: 50px;
-    color: #555;
+    color: #5A7A4A;
 }
 
 .features {
@@ -3342,10 +3348,10 @@ body {
     flex-wrap: wrap;
 }
 
-.feature.red { color: #ed6e62; }
-.feature.green { color: #50d685; }
-.feature.navy { color: #486885; }
-.feature.yellow { color: #e8c857; }
+.feature.red { color: #D4A574; }
+.feature.green { color: #87A96B; }
+.feature.navy { color: #5A7A4A; }
+.feature.yellow { color: #E8C18E; }
 
 
 /* 반응형 디자인 */

@@ -1,6 +1,7 @@
 package com.error404.geulbut.jpa.qna.controller;
 
 import com.error404.geulbut.jpa.qna.dto.QnaDto;
+import com.error404.geulbut.jpa.qna.entity.QnaEntity;
 import com.error404.geulbut.jpa.qna.service.QnaService;
 import com.error404.geulbut.jpa.qnacomment.dto.QnaCommentDto;
 import com.error404.geulbut.jpa.qnacomment.service.QnaCommentService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -119,6 +121,22 @@ public class QnaController {
         qnaService.deleteQna(id);
 
         return "redirect:/qna";
+    }
+
+    // 자주 묻는 질문 (조회수 TOP 10)
+    @GetMapping("/commonquestions")
+    public String getCommonQuestions(Model model) {
+        List<QnaEntity> topEntities = qnaService.getTop10Qna();
+        List<QnaDto> topQnas = topEntities.stream().map(entity -> QnaDto.builder()
+                        .id(entity.getQnaId())
+                        .title(entity.getTitle())
+                        .qAt(entity.getQAt())
+                        .viewCount(entity.getViewCount())
+                        .userId(entity.getUserId())
+                        .build())
+                .collect(Collectors.toList());
+        model.addAttribute("topQnas", topQnas);
+        return "commonquestions/commonquestions";  // JSP
     }
 
 }
