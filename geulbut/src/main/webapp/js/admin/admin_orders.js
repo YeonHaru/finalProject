@@ -24,13 +24,12 @@ $(document).ready(function () {
         const created = $td.data('created');
         let date = $td.data('date');
 
-        // 배송완료일 계산
         if ($td.hasClass('deliveredAt')) {
             if (status === "DELIVERED") {
                 if (!date && created) {
                     try {
                         let d = new Date(created.replace(' ', 'T'));
-                        d.setDate(d.getDate() + 3); // 주문일 +3
+                        d.setDate(d.getDate() + 3);
                         date = d;
                     } catch (e) {
                         date = null;
@@ -52,10 +51,10 @@ $(document).ready(function () {
 
             if (data.status === "DELIVERED") {
                 if (data.deliveredAt) {
-                    deliveredAt = formatDate(data.deliveredAt); // DB값
+                    deliveredAt = formatDate(data.deliveredAt);
                 } else if (data.createdAt) {
                     const base = new Date(data.createdAt.replace(' ', 'T'));
-                    base.setDate(base.getDate() + 3); // 주문일 +3
+                    base.setDate(base.getDate() + 3);
                     deliveredAt = formatDate(base);
                 }
             }
@@ -87,14 +86,15 @@ $(document).ready(function () {
             html += '</ul>';
 
             $('#orderDetailContent').html(html);
-            $('#orderDetailModal').fadeIn();
+            // 중앙 정렬 적용 + fadeIn
+            $('#orderDetailModal').css('display', 'flex').hide().fadeIn();
         }).fail(function () {
             alert('주문 상세 조회 중 오류가 발생했습니다.');
         });
     });
 
     // --- 모달 닫기 ---
-    $('#closeModal').click(function () {
+    $('#closeModal, #closeModalBottom').click(function () {
         $('#orderDetailContent').empty();
         $('#orderDetailModal').fadeOut();
     });
@@ -114,7 +114,7 @@ $(document).ready(function () {
         $.ajax({
             url: `${ctx}/admin/orders/${orderId}/status`,
             type: 'POST',
-            data: { status: newStatus },
+            data: {status: newStatus},
             success: function (data) {
                 alert('주문 상태가 변경되었습니다: ' + data.status);
                 $select.data('current-status', data.status);
@@ -138,5 +138,4 @@ $(document).ready(function () {
             }
         });
     });
-
 });
