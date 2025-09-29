@@ -1,184 +1,151 @@
-/* ================== 0. 헤딩 ================== */
-h1 {
-    font-size: 2rem;
-    color: #000000;
-    margin-bottom: 20px;
-}
-
-/* ================== 1. 검색폼 ================== */
-form {
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-
-form label {
-    color: #000000;
-    font-weight: 500;
-}
-
-form input, form select {
-    padding: 5px 10px;
-    border: 1px solid #E8C18E; /* 소프트 골드 */
-    border-radius: 4px;
-    background-color: #ffffff;
-    color: #5A7A4A;
-}
-
-form button {
-    background-color: #D4A574; /* 포인트 컬러 1 */
-    color: #ffffff;
-    border-radius: 4px;
-    padding: 6px 15px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-}
-
-form button:hover {
-    background-color: #E8C18E; /* 포인트 컬러 2 */
-}
-
-/* ================== 2. 테이블 ================== */
-table {
+/* 화면을 최대한 넓게 사용, 좌우는 반응형 여백 */
+.admin-orders .page {
     width: 100%;
+    max-width: none;                 /* 1280px 상한 제거 */
+    margin-inline: auto;
+    padding-inline: clamp(12px, 3vw, 32px);  /* 너무 붙지 않도록 적당한 여백 */
+}
+
+/* 제목 색상: footer 톤과 동일 */
+.admin-orders h1 {
+    margin: 20px 0 12px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #D4A574;
+}
+
+/* ───────────────────────────────────────────
+   테이블: 정렬 안정화를 위한 기본값
+   ─────────────────────────────────────────── */
+.table-scroll {               /* 필요 시에만 가로 스크롤 */
+    overflow-x: auto;
+}
+
+.admin-orders-table {
+    table-layout: fixed;      /* colgroup 기준으로 정확히 정렬 */
+    width: 100%;
+    min-width: 1280px;        /* 데스크톱에서 내용이 안 잘리도록 기준 폭 확보 */
     border-collapse: collapse;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
-thead {
-    background: linear-gradient(to right, #87A96B, #9BBF82); /* 라이트 → 브라이트 그린 */
-    color: #000000;
+.admin-orders-table th,
+.admin-orders-table td {
+    vertical-align: middle;   /* 세로 정렬 통일 */
+    padding: 10px 12px;
 }
 
-thead th {
-    padding: 10px;
+/* colgroup 폭 재조정 (주소에 여유) */
+.admin-orders-table col.col-id        { width: 72px; }
+.admin-orders-table col.col-userid    { width: 96px; }
+.admin-orders-table col.col-username  { width: 150px; }
+.admin-orders-table col.col-total     { width: 110px; }
+.admin-orders-table col.col-status    { width: 140px; }
+.admin-orders-table col.col-paymethod { width: 120px; }
+.admin-orders-table col.col-merchant  { width: 180px; }
+.admin-orders-table col.col-recipient { width: 120px; }
+.admin-orders-table col.col-address   { width: auto; min-width: 320px; } /* 주소는 넉넉하게 */
+.admin-orders-table col.col-created   { width: 160px; }
+.admin-orders-table col.col-paid      { width: 160px; }
+.admin-orders-table col.col-delivered { width: 160px; }
+.admin-orders-table col.col-actions   { width: 120px; }
+
+.admin-orders-table td:nth-child(1),
+.admin-orders-table td:nth-child(2){
+    white-space: normal;   /* 다른 곳은 그대로 한 줄, 1~2열만 헤더 줄바꿈 허용 */
+    line-height: 1.2;
+}
+
+/* 숫자/날짜/짧은 텍스트: 한 줄 + 말줄임(정렬 안정) */
+.admin-orders-table td:nth-child(3),
+.admin-orders-table td:nth-child(4),
+.admin-orders-table td:nth-child(6),
+.admin-orders-table td:nth-child(7),
+.admin-orders-table td:nth-child(8),
+.admin-orders-table td:nth-child(10),
+.admin-orders-table td:nth-child(11),
+.admin-orders-table td:nth-child(12),
+.admin-orders-table td:nth-child(13),
+.admin-orders-table thead th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 총액 우측 정렬(가독) */
+.admin-orders-table td:nth-child(4) { text-align: right; }
+
+/* 주소 열: 여러 줄 허용 + 단어 단위 우선, 불가하면 아무 위치든 줄바꿈 */
+.admin-orders-table td:nth-child(9) {
+    white-space: normal;
+    word-break: keep-all;      /* 한글은 단어 단위 줄바꿈 우선 */
+    overflow-wrap: anywhere;   /* 긴 토큰(영문/번호)도 안전하게 줄바꿈 */
     text-align: left;
 }
 
-tbody td {
-    padding: 10px;
-    border-bottom: 1px solid #E8C18E;
-    color: rgba(0, 0, 0, 0.61);
+/* 상태 셀렉트는 폭 제한으로 레이아웃 안정 */
+.admin-orders-table select.status-select {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--color-text);
+    font-size: .9rem;
+    max-width: 120px;
 }
 
-tbody tr:hover {
-    background-color: #f5f5f5;
+/* 상세보기 버튼 동일 높이 */
+.admin-orders-table .btn-detail {
+    height: 32px;
+    line-height: 32px;
+    min-width: 72px;
+    padding: 0 12px;
 }
 
-/* ================== 3. 상태 선택 select ================== */
-.status-select {
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: 1px solid #7A8B6E; /* 보조 글자색 기준 */
-    background-color: #ffffff;
-    color: #5A7A4A;
-    font-weight: 500;
-}
-
-.status-select option {
-    color: #5A7A4A;
-}
-
-/* ================== 4. 상세보기 버튼 ================== */
-.btn-detail {
-    background-color: #D4A574; /* 포인트 컬러 1 */
-    color: #ffffff;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.btn-detail:hover {
-    background-color: #E8C18E; /* 포인트 컬러 2 */
-}
-
-/* ================== 5. 페이지네이션 ================== */
-.pagination {
-    margin-top: 20px;
-    display: flex;
-    gap: 5px;
-}
-
-.pagination a {
-    padding: 5px 10px;
-    border: 1px solid #D4A574;
-    border-radius: 4px;
-    text-decoration: none;
-    color: #5A7A4A;
-    transition: all 0.3s;
-}
-
-.pagination a.active {
-    background-color: #D4A574;
-    color: #ffffff;
-}
-
-.pagination a:hover {
-    background-color: #E8C18E;
-    color: #ffffff;
-}
-
-/* ================== 6. 모달 ================== */
-.modal {
-    display: none; /* 반드시 마지막 display */
+#orderModal {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    /* 가운데 정렬 */
+    inset: 0;                       /* top/right/bottom/left: 0 */
+    display: none;                  /* JS에서 flex로 바꿈 */
     align-items: center;
     justify-content: center;
+    background-color: rgba(0,0,0,.35);
+    z-index: 1000;                  /* 다른 요소 위로 */
 }
 
-/* 모달 내용 */
-.modal-content {
+#orderModal .modal__dialog {
+    width: min(900px, 92vw);
+    max-height: 80vh;
+    overflow: hidden;
     background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 90%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    animation: fadeInModal .3s ease;
-    position: relative; /* 닫기 버튼 기준 */
+    border-radius: 12px;
 }
 
-
-.modal-content h3 {
-    margin-top: 0;
-    color: #5A7A4A;
+#orderModal .modal__form {
+    max-height: 60vh;               /* 내용이 길면 내부 스크롤 */
+    overflow: auto;
 }
 
-.modal-content button {
-    background-color: #D4A574;
-    color: #ffffff;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    margin-top: 10px;
+/* ───────────────────────────────────────────
+   반응형: 좁아지면 일부 열을 단계적으로 숨김(회원관리와 동일한 방식)
+   ─────────────────────────────────────────── */
+
+/* ≤1440px: 결제일시(11), 배송일시(12) 숨김 */
+@media (max-width: 1440px) {
+    .admin-orders-table thead th:nth-child(11),
+    .admin-orders-table tbody td:nth-child(11),
+    .admin-orders-table thead th:nth-child(12),
+    .admin-orders-table tbody td:nth-child(12) { display: none; }
 }
 
-.modal-content button:hover {
-    background-color: #E8C18E;
+/* ≤1280px: 주문번호(7)도 숨김 */
+@media (max-width: 1280px) {
+    .admin-orders-table thead th:nth-child(7),
+    .admin-orders-table tbody td:nth-child(7) { display: none; }
 }
 
-.modal-close {
-    float: right;
-    font-size: 22px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-.modal-close:hover {
-    color: red;
-}
-
-@keyframes fadeInModal {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
+/* ≤1040px: 결제수단(6) 숨김 */
+@media (max-width: 1040px) {
+    .admin-orders-table thead th:nth-child(6),
+    .admin-orders-table tbody td:nth-child(6) { display: none; }
 }
