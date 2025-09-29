@@ -7,7 +7,6 @@
     <title>관리자 주문 관리</title>
     <link rel="stylesheet" href="${ctx}/css/00_common.css"/>
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css"/>
-    <link rel="stylesheet" href="${ctx}/css/admin/admin_orders.css"/>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>window.ctx = "${ctx}";</script>
 </head>
