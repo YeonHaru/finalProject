@@ -46,6 +46,8 @@ public class Orders extends BaseTimeEntity {
     @Column(name = "PAID_AT")
     private LocalDateTime paidAt;
 
+    @Column(name = "IMP_UID", unique = true)
+    private String impUid;
 
 
     private LocalDateTime deliveredAt;
