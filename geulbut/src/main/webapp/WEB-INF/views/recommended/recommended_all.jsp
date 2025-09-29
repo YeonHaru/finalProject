@@ -1,207 +1,234 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user
-  Date: 25. 9. 24.
-  Time: 오후 2:49
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <html>
 <head>
-    <title>Title</title>
-    <link rel="stylesheet" href="/css/recommended/recommended.css">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/00_common.css">
+    <link rel="stylesheet" href="/css/signup/signup.css">
 </head>
 <body>
-${eventcontentsA}
-${eventcontentsB}
-<div class="container">
-    <!-- 통합 이벤트 섹션 -->
-    <div class="event-container">
-        <!-- 추천 이벤트 -->
-        <div class="section-header">
-            <div class="icon">📅</div>
-            <span>추천 이벤트</span>
-        </div>
+<div class="signup-wrapper">
+    <div class="signup-card">
+        <h1 class="signup-title">ㄱㅂ</h1>
 
-        <div class="slider-container">
-            <button class="slider-btn prev" onclick="slideLeft('events-slider')">‹</button>
-            <div class="events-grid" id="events-slider">
-                <c:forEach var="data" items="${eventcontentsA}">
-                    <div class="event-card">
-                        <div class="event-image">
-                            <div class="event-badge">HOT</div>
-                            📷
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title"><c:out value="${data.title}" /></div>
-                            <div class="event-date"><c:out value="${data.days}" /></div>
-                            <div class="event-location"><c:out value="${data.point}" /></div>
-                            <div class="event-time"><c:out value="${data.timeInfo}" /></div>
-                        </div>
-                    </div>
-                </c:forEach>
+        <c:if test="${not empty signupError}">
+            <p class="error-msg">${signupError}</p>
+        </c:if>
 
-
+        <form class="signup-form" action="<c:url value='/signup'/>" method="post" id="signupForm">
+            <!-- CSRF -->
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <div class="input-group">
+                <input id="userId" type="text" name="userId" placeholder="아이디" value="${usersSignupDto.userId}"/>
+                <span id="userIdMsg" class="help-msg"></span>
             </div>
-            <button class="slider-btn next" onclick="slideRight('events-slider')">›</button>
-        </div>
 
-        <!-- 섹션 구분선 -->
-        <div class="section-divider"></div>
+            <div class="input-group">
+                <input id="password" type="password" name="password" placeholder="비밀번호"/>
+                <span id="passwordMsg" class="help-msg"></span>
+            </div>
 
-        <!-- 이벤트 굿즈 -->
-        <div class="section-header">
-            <div class="icon">🎁</div>
-            <span>이벤트 굿즈</span>
-        </div>
+            <div class="input-group">
+                <input id="password2" type="password" name="passwordConfirm" placeholder="비밀번호 확인"/>
+                <span id="password2Msg" class="help-msg"></span>
+            </div>
 
-        <div class="slider-container">
-            <button class="slider-btn prev" onclick="slideLeft('goods-slider')">‹</button>
-            <div class="goods-grid" id="goods-slider">
-                <div class="goods-card">
-                    <div class="goods-image">
-                        <div class="goods-badge badge-limited">한정</div>
-                        📷
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title">북패딩 감성우산</div>
-                        <div class="goods-period">📅 2025.01.15 ~ 2025.02.28</div>
-                        <div class="goods-location">지금품질: 첫 구매</div>
-                        <div class="goods-price">
-                            <span class="current-price">29,000원</span>
-                            <span class="discount-rate">35% 할인</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="input-group">
+                <input type="text" name="name" placeholder="이름" value="${usersSignupDto.name}"/>
+            </div>
 
-                <div class="goods-card">
-                    <div class="goods-image">
-                        <div class="goods-badge badge-new">NEW</div>
-                        📷
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title">달빛 무드등</div>
-                        <div class="goods-period">📅 2025.01.20 ~ 2025.03.15</div>
-                        <div class="goods-location">지금품질: 회원기수</div>
-                        <div class="goods-price">
-                            <span class="current-price">42,000원</span>
-                            <span class="discount-rate">30% 할인</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="input-group">
+                <input id="email" type="email" name="email" placeholder="이메일" value="${usersSignupDto.email}"/>
+                <span id="emailMsg" class="help-msg"></span>
+            </div>
 
-                <div class="goods-card">
-                    <div class="goods-image">
-                        <div class="goods-badge badge-hot">HOT</div>
-                        📷
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title">도서관 향 캔들</div>
-                        <div class="goods-period">📅 2025.01.10 ~ 2025.02.20</div>
-                        <div class="goods-location">지금품질: 리뷰적립</div>
-                        <div class="goods-price">
-                            <span class="current-price">18,000원</span>
-                            <span class="discount-rate">25% 할인</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="input-group">
+                <input type="text" name="phone" placeholder="전화번호" value="${usersSignupDto.phone}"/>
+            </div>
 
-                <div class="goods-card">
-                    <div class="goods-image">
-                        <div class="goods-badge badge-best">BEST</div>
-                        📷
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title">독서 블루라이트 안경</div>
-                        <div class="goods-period">📅 2025.01.25 ~ 2025.03.10</div>
-                        <div class="goods-location">지금품질: 멤버십</div>
-                        <div class="goods-price">
-                            <span class="current-price">33,000원</span>
-                            <span class="discount-rate">40% 할인</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="input-group">
+                <input type="text" name="address" placeholder="주소" value="${usersSignupDto.address}"/>
+            </div>
 
-                <!-- 추가 굿즈들 -->
-                <div class="goods-card">
-                    <div class="goods-image">
-                        <div class="goods-badge badge-new">NEW</div>
-                        📷
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title">책갈피 세트</div>
-                        <div class="goods-period">📅 2025.02.01 ~ 2025.03.31</div>
-                        <div class="goods-location">지금품질: 신규회원</div>
-                        <div class="goods-price">
-                            <span class="current-price">15,000원</span>
-                            <span class="discount-rate">20% 할인</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="input-group">
+                <input type="date" name="birthday" value="${usersSignupDto.birthday}"/>
+            </div>
 
-                <div class="goods-card">
-                    <div class="goods-image">
-                        <div class="goods-badge badge-limited">한정</div>
-                        📷
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title">독서 노트</div>
-                        <div class="goods-period">📅 2025.01.01 ~ 2025.02.15</div>
-                        <div class="goods-location">지금품질: VIP</div>
-                        <div class="goods-price">
-                            <span class="current-price">25,000원</span>
-                            <span class="discount-rate">30% 할인</span>
-                        </div>
-                    </div>
+            <div class="form-row">
+                <label class="select-label">성별:
+                    <c:set var="g" value="${usersSignupDto.gender}" />
+                    <select name="gender">
+                        <option value="M" ${fn:toUpperCase(g) eq 'M' ? 'selected="selected"' : ''}>남</option>
+                        <option value="F" ${fn:toUpperCase(g) eq 'F' ? 'selected="selected"' : ''}>여</option>
+                    </select>
+                </label>
+                <div class="checkbox-group">
+                    <input type="hidden" name="_postNotifyAgree" value="on"/>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="postNotifyAgree" value="true"
+                        ${usersSignupDto.postNotifyAgree ? 'checked' : ''}/> 알림 수신
+                    </label>
+
+                    <input type="hidden" name="_promoAgree" value="on"/>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="promoAgree" value="true"
+                        ${usersSignupDto.promoAgree ? 'checked' : ''}/> 프로모션 수신
+                    </label>
                 </div>
             </div>
-            <button class="slider-btn next" onclick="slideRight('goods-slider')">›</button>
-        </div>
+
+            <button id="submitBtn" type="submit" class="submit-btn" disabled>회원가입</button>
+        </form>
     </div>
 </div>
 
 <script>
-    function slideLeft(sliderId) {
-        const slider = document.getElementById(sliderId);
-        const cardWidth = 300; // 카드 너비 + 간격
-        slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    <%--  1) 문서에 한번만 찾아서 변수로 보관  --%>
+    const $form = document.getElementById('signupForm');
+    const $submit = document.getElementById('submitBtn');
+
+    const $userId = document.getElementById('userId');
+    const $email = document.getElementById('email');
+    const $password = document.getElementById('password');
+    const $password2 = document.getElementById('password2');
+
+    const $userIdMsg = document.getElementById('userIdMsg');
+    const $emailMsg = document.getElementById('emailMsg');
+    const $passwordMsg = document.getElementById('passwordMsg');
+    const $password2Msg = document.getElementById('password2Msg');
+
+    // 2) 검사결과를 기억함
+    // - idOK: 아이디 사용 가능 여부
+    // - emailOK: 이메일 사용 가능 여부 (비워도 되는 정책이면, 비었을 때 true)
+    // - pwOK: 비밀번호 조건 충족 여부
+    let idOK = false, emailOK = true, pwOK = false, pw2OK = false;
+
+    // 3) 유틸: 디바운스(debounce)
+    // - 입력이 연속으로 들어올 때, "일정 시간(ms) 동안 입력이 멈추면" 한 번만 실행
+    // - 서버에 과도한 요청(중복확인 AJAX)을 방지
+    const debounce = (fn, ms=300) => {
+        let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+    };
+    // 4) 제출 버튼 활성/비활성 스위치
+    // - 세 플래그가 모두 true일 때만 버튼을 활성화
+    function refreshSubmit() {
+        // 하나라도 false 면 disabled = true 버튼 비활성
+        $submit.disabled = !(idOK && emailOK && pwOK && pw2OK);
+    }
+    // 5) 아이디 중복 확인
+    // 흐름:
+    //  (1) 입력값 기본 규칙(길이 등) 확인
+    //  (2) 서버에 GET /users/check-id?userId=... 요청
+    //  (3) true/false 응답에 따라 메시지와 idOK 갱신
+    async function checkId() {
+        const v = $userId.value.trim();
+        // 1) 최소길이 규칙 예 ) 4자 이상
+        if (v.length < 4) {
+            idOK = false;
+            $userIdMsg.textContent = '아이디는 4자 이상이어야 합니다.';
+            refreshSubmit(); return;
+        }
+        try {
+            // 2) 서버에 중복확인 요청
+            const res = await fetch('/users/check-id?userId=' + encodeURIComponent(v));
+            const ok = await res.json();
+            idOK = !!ok;
+            // 3) 사용자에게 결과 메시지 표시
+            $userIdMsg.textContent = ok ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.';
+        } catch(e) {
+            // 네트워크/서버 오류등등
+            idOK = false;
+            $userIdMsg.textContent = '아이디 확인 중 오류가 발생했습니다.';
+        } finally {
+            // 다 되면 버튼 갱신
+            refreshSubmit();
+        }
     }
 
-    function slideRight(sliderId) {
-        const slider = document.getElementById(sliderId);
-        const cardWidth = 300; // 카드 너비 + 간격
-        slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    async function checkEmail() {
+        let v = $email.value.trim().toLowerCase();
+        $email.value = v;
+        if (v === '') { // 이메일 선택항목이면 비워도 통과
+            emailOK = true;
+            $emailMsg.textContent = '';
+            refreshSubmit(); return;
+        }
+        // 간단 패턴
+        const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+        if (!emailRe.test(v)) {
+            emailOK = false;
+            $emailMsg.textContent = '이메일 형식을 확인해주세요.';
+            refreshSubmit(); return;
+        }
+        try {
+            const res = await fetch('/users/check-email?email=' + encodeURIComponent(v));
+            const ok = await res.json();
+            emailOK = !!ok;
+            $emailMsg.textContent = ok ? '사용 가능한 이메일입니다.' : '이미 가입된 이메일입니다.';
+        } catch(e) {
+            emailOK = false;
+            $emailMsg.textContent = '이메일 확인 중 오류가 발생했습니다.';
+        } finally {
+            refreshSubmit();
+        }
     }
 
-    // 스크롤 위치에 따른 버튼 상태 업데이트
-    function updateButtons() {
-        const sliders = ['events-slider', 'goods-slider'];
-
-        sliders.forEach(sliderId => {
-            const slider = document.getElementById(sliderId);
-            const container = slider.parentElement;
-            const prevBtn = container.querySelector('.prev');
-            const nextBtn = container.querySelector('.next');
-
-            const isAtStart = slider.scrollLeft === 0;
-            const isAtEnd = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth;
-
-            prevBtn.disabled = isAtStart;
-            nextBtn.disabled = isAtEnd;
-        });
+    function checkPassword() {
+        const v = $password.value;
+        // 간단 정책: 8자 이상
+        if (v.length >= 8) {
+            pwOK = true;
+            $passwordMsg.textContent = '';
+        } else {
+            pwOK = false;
+            $passwordMsg.textContent = '비밀번호는 8자 이상이어야 합니다.';
+        }
+        refreshSubmit();
+        checkPasswordConfirm();
     }
 
-    // 스크롤 이벤트 리스너 추가
-    document.addEventListener('DOMContentLoaded', function() {
-        const sliders = document.querySelectorAll('.events-grid, .goods-grid');
-        sliders.forEach(slider => {
-            slider.addEventListener('scroll', updateButtons);
-        });
+    function checkPasswordConfirm() {
+        const v1 = $password.value;
+        const v2 = $password2.value;
+        if (!v2) {
+            pw2OK = false;
+            $password2Msg.textContent = '비밀번호를 다시 입력하세요.';
+        } else if (v1 !== v2) {
+            pw2OK = false;
+            $password2Msg.textContent = '비밀번호가 일치하지 않습니다.';
+        } else {
+            pw2OK = true;
+            $password2Msg.textContent = '';
+        }
+        refreshSubmit();
+    }
 
-        // 초기 버튼 상태 설정
-        updateButtons();
+    $userId.addEventListener('input', debounce(checkId, 400));
+    $email.addEventListener('input', debounce(checkEmail, 400));
+    $password.addEventListener('input', checkPassword);
+    $password2.addEventListener('input', checkPasswordConfirm);
+
+    // 최종 제출 전 정규화/최종검증
+    $form.addEventListener('submit', (e) => {
+        $userId.value = $userId.value.trim();
+        $email.value = $email.value.trim().toLowerCase();
+
+        if (!(idOK && emailOK && pwOK && pw2OK)) {
+            e.preventDefault();
+            alert('입력값을 확인해주세요.');
+        }
     });
+
+    // 초기 상태 점검(값이 미리 있을 수 있으니)
+    checkPassword();
+    if ($userId.value.trim()) checkId();
+    if ($email.value.trim()) checkEmail();
+    if ($password2.value.trim()) checkPasswordConfirm();
+
 </script>
 </body>
 </html>

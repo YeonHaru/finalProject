@@ -33,6 +33,11 @@
             </div>
 
             <div class="input-group">
+                <input id="password2" type="password" name="passwordConfirm" placeholder="비밀번호 확인"/>
+                <span id="password2Msg" class="help-msg"></span>
+            </div>
+
+            <div class="input-group">
                 <input type="text" name="name" placeholder="이름" value="${usersSignupDto.name}"/>
             </div>
 
@@ -82,23 +87,25 @@
 </div>
 
 <script>
-<%--  1) 문서에 한번만 찾아서 변수로 보관  --%>
+    <%--  1) 문서에 한번만 찾아서 변수로 보관  --%>
     const $form = document.getElementById('signupForm');
     const $submit = document.getElementById('submitBtn');
 
     const $userId = document.getElementById('userId');
     const $email = document.getElementById('email');
     const $password = document.getElementById('password');
+    const $password2 = document.getElementById('password2');
 
     const $userIdMsg = document.getElementById('userIdMsg');
     const $emailMsg = document.getElementById('emailMsg');
     const $passwordMsg = document.getElementById('passwordMsg');
+    const $password2Msg = document.getElementById('password2Msg');
 
     // 2) 검사결과를 기억함
     // - idOK: 아이디 사용 가능 여부
     // - emailOK: 이메일 사용 가능 여부 (비워도 되는 정책이면, 비었을 때 true)
     // - pwOK: 비밀번호 조건 충족 여부
-    let idOK = false, emailOK = true, pwOK = false;
+    let idOK = false, emailOK = true, pwOK = false, pw2OK = false;
 
     // 3) 유틸: 디바운스(debounce)
     // - 입력이 연속으로 들어올 때, "일정 시간(ms) 동안 입력이 멈추면" 한 번만 실행
@@ -110,7 +117,7 @@
     // - 세 플래그가 모두 true일 때만 버튼을 활성화
     function refreshSubmit() {
         // 하나라도 false 면 disabled = true 버튼 비활성
-        $submit.disabled = !(idOK && emailOK && pwOK);
+        $submit.disabled = !(idOK && emailOK && pwOK && pw2OK);
     }
     // 5) 아이디 중복 확인
     // 흐름:
@@ -151,7 +158,7 @@
             refreshSubmit(); return;
         }
         // 간단 패턴
-        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
         if (!emailRe.test(v)) {
             emailOK = false;
             $emailMsg.textContent = '이메일 형식을 확인해주세요.';
@@ -181,18 +188,36 @@
             $passwordMsg.textContent = '비밀번호는 8자 이상이어야 합니다.';
         }
         refreshSubmit();
+        checkPasswordConfirm();
+    }
+
+    function checkPasswordConfirm() {
+        const v1 = $password.value;
+        const v2 = $password2.value;
+        if (!v2) {
+            pw2OK = false;
+            $password2Msg.textContent = '비밀번호를 다시 입력하세요.';
+        } else if (v1 !== v2) {
+            pw2OK = false;
+            $password2Msg.textContent = '비밀번호가 일치하지 않습니다.';
+        } else {
+            pw2OK = true;
+            $password2Msg.textContent = '';
+        }
+        refreshSubmit();
     }
 
     $userId.addEventListener('input', debounce(checkId, 400));
     $email.addEventListener('input', debounce(checkEmail, 400));
     $password.addEventListener('input', checkPassword);
+    $password2.addEventListener('input', checkPasswordConfirm);
 
     // 최종 제출 전 정규화/최종검증
     $form.addEventListener('submit', (e) => {
         $userId.value = $userId.value.trim();
         $email.value = $email.value.trim().toLowerCase();
 
-        if (!(idOK && emailOK && pwOK)) {
+        if (!(idOK && emailOK && pwOK && pw2OK)) {
             e.preventDefault();
             alert('입력값을 확인해주세요.');
         }
@@ -202,6 +227,7 @@
     checkPassword();
     if ($userId.value.trim()) checkId();
     if ($email.value.trim()) checkEmail();
+    if ($password2.value.trim()) checkPasswordConfirm();
 
 </script>
 </body>
