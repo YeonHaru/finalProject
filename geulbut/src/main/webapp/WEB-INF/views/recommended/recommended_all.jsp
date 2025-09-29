@@ -78,47 +78,47 @@
             <button class="slider-btn next" onclick="slideRight('goods-slider')">›</button>
         </div>
 
-<script>
-    function slideLeft(sliderId) {
-        const slider = document.getElementById(sliderId);
-        const cardWidth = 300; // 카드 너비 + 간격
-        slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-    }
+        <script>
+            function slideLeft(sliderId) {
+                const slider = document.getElementById(sliderId);
+                const cardWidth = 300; // 카드 너비 + 간격
+                slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+            }
 
-    function slideRight(sliderId) {
-        const slider = document.getElementById(sliderId);
-        const cardWidth = 300; // 카드 너비 + 간격
-        slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
-    }
+            function slideRight(sliderId) {
+                const slider = document.getElementById(sliderId);
+                const cardWidth = 300; // 카드 너비 + 간격
+                slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+            }
 
-    // 스크롤 위치에 따른 버튼 상태 업데이트
-    function updateButtons() {
-        const sliders = ['events-slider', 'goods-slider'];
+            // 스크롤 위치에 따른 버튼 상태 업데이트
+            function updateButtons() {
+                const sliders = ['events-slider', 'goods-slider'];
 
-        sliders.forEach(sliderId => {
-            const slider = document.getElementById(sliderId);
-            const container = slider.parentElement;
-            const prevBtn = container.querySelector('.prev');
-            const nextBtn = container.querySelector('.next');
+                sliders.forEach(sliderId => {
+                    const slider = document.getElementById(sliderId);
+                    const container = slider.parentElement;
+                    const prevBtn = container.querySelector('.prev');
+                    const nextBtn = container.querySelector('.next');
 
-            const isAtStart = slider.scrollLeft === 0;
-            const isAtEnd = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth;
+                    const isAtStart = slider.scrollLeft === 0;
+                    const isAtEnd = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth;
 
-            prevBtn.disabled = isAtStart;
-            nextBtn.disabled = isAtEnd;
-        });
-    }
+                    prevBtn.disabled = isAtStart;
+                    nextBtn.disabled = isAtEnd;
+                });
+            }
 
-    // 스크롤 이벤트 리스너 추가
-    document.addEventListener('DOMContentLoaded', function() {
-        const sliders = document.querySelectorAll('.events-grid, .goods-grid');
-        sliders.forEach(slider => {
-            slider.addEventListener('scroll', updateButtons);
-        });
+            // 스크롤 이벤트 리스너 추가
+            document.addEventListener('DOMContentLoaded', function() {
+                const sliders = document.querySelectorAll('.events-grid, .goods-grid');
+                sliders.forEach(slider => {
+                    slider.addEventListener('scroll', updateButtons);
+                });
 
-        // 초기 버튼 상태 설정
-        updateButtons();
-    });
-</script>
+                // 초기 버튼 상태 설정
+                updateButtons();
+            });
+        </script>
 </body>
 </html>
