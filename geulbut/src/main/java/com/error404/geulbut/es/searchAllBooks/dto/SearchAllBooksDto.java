@@ -18,6 +18,6 @@ public class SearchAllBooksDto {
     private String authorName;
     private String categoryName;
     private String publisherName;
-    private String booksImgUrl;
+    private String bookImgUrl;
     private List<String> hashtags;
 }
