@@ -126,7 +126,7 @@ h1 {
     margin: 20px 0 12px;
     font-size: 30px;
     font-weight: 700;
-    color: #7A8B6E;
+    color: #D4A574;
 }
 
 /* 페이지 컨테이너 */
@@ -1361,7 +1361,7 @@ body.admin-categories .admin-categories-table td.category-id {
 .ht-footnote {
     margin: 28px 0 10px;
     text-align: center;
-    color: #9a9a9a;
+    color: #D4A574;
     font-size: 12px
 }
 
@@ -2043,7 +2043,7 @@ body.admin-users .detail-row .detail-content {
 
 /* 색상 계열 */
 .btn-light {
-    background:#ffffff; border-color:rgba(0,0,0,.12); color:var(--pantone-coolgray-10);
+    background:#ffffff; border-color:rgba(0,0,0,.12); color:#D4A574;
 }
 .btn-light:hover { background:#F7F7F7; border-color:rgba(0,0,0,.18); }
 
@@ -2402,3 +2402,44 @@ body.admin-hashtags .admin-hashtags-table td { padding: .5rem 1rem; vertical-ali
 body.admin-hashtags .admin-hashtags-table td:last-child { white-space: nowrap; overflow: visible; text-overflow: clip; }
 body.admin-hashtags .admin-hashtags-table td.actions-cell .btn { height:32px; line-height:32px; min-width:72px; padding:0 .75rem; }
 body.admin-hashtags .pagination-toolbar .btn-group > .btn { height:44px; line-height:44px; }
+
+/* =========================================================
+   [공통 테마 패치] — 전 페이지 글자/배경을 기본 흑/백으로
+   - JS 수정 없음 / !important 사용 안 함 / 스타일 태그 금지
+   - 파일 맨 아래에 배치해서 기존 규칙보다 우선 적용
+========================================================= */
+
+/* 1) 토큰(변수)로 전역 글자/배경 색 재정의 */
+:root {
+    --color-bg: #ffffff;   /* 전체 바탕 순백 */
+    --color-text: #111111; /* 기본 본문 글자 검정 */
+    --table-body-text: #111111; /* 게시판 tbody 글자도 검정 */
+}
+
+/* 2) 배경 이미지를 쓰는 레이어는 꺼서 ‘깨끗한 흰 바탕’ 유지 */
+body.has-bg::before,
+body.has-bg::after {
+    display: none;
+}
+
+/* 3) 게시판 카드(테이블/스크롤 래퍼)도 유리효과 제거하고 흰 바탕으로 */
+.admin-table,
+.table-scroll {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* 4) 테이블 헤더/행 hover 톤을 흰 바탕에 맞게 옅은 회색으로 정리 */
+.admin-table thead th {
+    background: #ffffff;
+    color: #111111;
+}
+.admin-table tbody tr:hover {
+    background: #f6f6f6;
+}
+
+/* 5) 제목도 통일해서 선명하게(필요 시 해제 가능) */
+h1 {
+    color: #111111;
+}
