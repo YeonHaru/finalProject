@@ -19,9 +19,9 @@
         <aside class="bg-surface border rounded p-4">
             <h2 class="mb-3 text-center">고객센터</h2>
             <nav class="grid gap-2">
-                <a href="#" class="text-main">공지사항</a>
-                <a href="#" class="text-light">자주 묻는 질문</a>
-                <a href="${pageContext.request.contextPath}/qna?id=${data.no}" class="text-light">1:1 문의</a>
+                <a href="${pageContext.request.contextPath}/notice" class="text-main">공지사항</a>
+                <a href="${pageContext.request.contextPath}/commonquestions" class="text-light">자주 묻는 질문</a>
+                <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
 
             </nav>
         </aside>
@@ -48,14 +48,22 @@
                           placeholder="문의 내용을 입력하세요" rows="8" required>${qna.QContent}</textarea>
 
                 <!-- 제출 버튼 -->
+                <!-- 제출 버튼 -->
                 <div class="text-right">
-                    <button type="submit" class="btn btn-main">
-                        <c:choose>
-                            <c:when test="${not empty qna.id}">수정</c:when>
-                            <c:otherwise>등록</c:otherwise>
-                        </c:choose>
-                    </button>
+                    <c:choose>
+                        <c:when test="${not empty qna.id}">
+                            <!-- 수정일 때 -->
+                            <button type="submit" class="btn btn-main"
+                                    onclick="return confirm('수정하시겠습니까?');">수정</button>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- 등록일 때 -->
+                            <button type="submit" class="btn btn-main"
+                                    onclick="return confirm('등록하시겠습니까?');">등록</button>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
+
             </form>
 
         </div>

@@ -22,10 +22,8 @@ $(function () {
         });
     }
 
-
     // 도서 등록 모달 열기
     $('#btnAddBook').click(function () {
-
         $('#modalTitle').text('도서 등록');
         $('#bookForm')[0].reset();
         $('#bookId').val('');
@@ -40,39 +38,25 @@ $(function () {
     function closeBookModal() {
         $('#bookModal').hide().attr('aria-hidden', 'true');
     }
-    // 닫기 트리거 연결
     $('#btnCloseModal, #btnCancel').on('click', closeBookModal);
-    // 오버레이(배경) 클릭 시 닫기
     $('#bookModal').on('click', function (e) {
         if (e.target === this) closeBookModal();
     });
-    // ESC로 닫기
     $(document).on('keydown', function (e) {
-        if (e.key === 'Escape' && $('#bookModal').is(':visible')) {
-            closeBookModal();
-        }
+        if (e.key === 'Escape' && $('#bookModal').is(':visible')) closeBookModal();
     });
+
     // 등록 / 수정 submit
     $('#bookForm').submit(function (e) {
-
         e.preventDefault();
 
         let authorVal = $('#authorId').val();
         let publisherVal = $('#publisherId').val();
         let categoryVal = $('#categoryId').val();
 
-        if (!authorVal) {
-            alert('저자를 선택해주세요.');
-            return;
-        }
-        if (!publisherVal) {
-            alert('출판사를 선택해주세요.');
-            return;
-        }
-        if (!categoryVal) {
-            alert('카테고리를 선택해주세요.');
-            return;
-        }
+        if (!authorVal) { alert('저자를 선택해주세요.'); return; }
+        if (!publisherVal) { alert('출판사를 선택해주세요.'); return; }
+        if (!categoryVal) { alert('카테고리를 선택해주세요.'); return; }
 
         let bookId = $('#bookId').val();
         let method = bookId ? 'PUT' : 'POST';
@@ -91,34 +75,18 @@ $(function () {
             imgUrl: $('#imgUrl').val().trim()
         };
 
-        if (!data.title) {
-            alert('제목을 입력해주세요.');
-            return;
-        }
-        if (!data.isbn) {
-            alert('ISBN을 입력해주세요.');
-            return;
-        }
-        if (data.price < 0 || data.stock < 0) {
-            alert('가격/재고는 0 이상이어야 합니다.');
-            return;
-        }
+        if (!data.title) { alert('제목을 입력해주세요.'); return; }
+        if (!data.isbn) { alert('ISBN을 입력해주세요.'); return; }
+        if (data.price < 0 || data.stock < 0) { alert('가격/재고는 0 이상이어야 합니다.'); return; }
 
         $.ajax({
-            url,
-            method,
+            url, method,
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function () {
-                alert('저장 완료');
-                location.reload();
-            },
+            success: function () { alert('저장 완료'); location.reload(); },
             error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    alert('저장 실패: ' + xhr.responseJSON.message);
-                } else {
-                    alert('저장 실패');
-                }
+                if (xhr.responseJSON && xhr.responseJSON.message) alert('저장 실패: ' + xhr.responseJSON.message);
+                else alert('저장 실패');
             }
         });
     });
@@ -127,7 +95,6 @@ $(function () {
     // 🔹 테이블 버튼 이벤트
     // =============================
     $('#booksTableBody')
-        // 삭제
         .on('click', '.btnDelete', function () {
             let bookId = $(this).closest('tr').data('id');
             if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -135,16 +102,10 @@ $(function () {
             $.ajax({
                 url: `${ctx}/admin/books/${bookId}`,
                 method: 'DELETE',
-                success: function () {
-                    alert('삭제 완료');
-                    location.reload();
-                },
-                error: function () {
-                    alert('삭제 실패');
-                }
+                success: function () { alert('삭제 완료'); location.reload(); },
+                error: function () { alert('삭제 실패'); }
             });
         })
-        // 수정
         .on('click', '.btnEdit', function () {
             let bookId = $(this).closest('tr').data('id');
             $.get(`${ctx}/admin/books/${bookId}/edit-options`, function (res) {
@@ -174,13 +135,9 @@ $(function () {
                 $('#bookModal').css('display', 'flex').attr('aria-hidden', 'false');
             });
         })
-        // 상세보기
         .on('click', '.btnView', function () {
             const bookId = $(this).closest('tr').data('id');
-            if (bookId) {
-                // AdminBooksController가 아닌 BooksController 경로로 새 창 열기
-                window.open(ctx + `/book/${bookId}`, '_blank');
-            }
+            if (bookId) window.open(ctx + `/book/${bookId}`, '_blank');
         });
 
     // 이미지 미리보기
@@ -189,60 +146,93 @@ $(function () {
         $('#imgPreview').attr('src', url).toggle(!!url);
     });
 
-
-    // 검색 + 페이징 갱신
+    // =============================
+    // 🔹 검색 + 페이징 갱신
+    // =============================
     $('#bookSearchForm').submit(function (e) {
-
         e.preventDefault();
         let keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
 
-        $.get(`${ctx}/admin/books/search`, {keyword}, function (res) {
+        $.get(`${ctx}/admin/books/search`, { keyword }, function (res) {
             let tbody = $('#booksTableBody');
             tbody.empty();
 
             if (!res.content || res.content.length === 0) {
                 tbody.append('<tr><td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
-                $('.pagination').empty();
+                $('.pagination, .pagination-toolbar').remove();
                 return;
             }
 
+            // 목록 렌더
             res.content.forEach(book => {
                 let row = `
 <tr class="data-row" data-id="${book.bookId}">
   <td>${book.bookId}</td>
   <td class="t-left"><div class="title-ellipsis" title="${book.title}">${book.title}</div></td>
   <td>${book.imgUrl ? `<img src="${book.imgUrl}" class="book-thumb" alt="${book.title}"/>` : ''}</td>
-
-  <!-- ISBN → hide-md -->
   <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
-
   <td>${book.authorName ?? ''}</td>
-
-  <!-- 출판사/카테고리/할인가/생성일 → hide-lg -->
   <td class="hide-lg">${book.publisherName ?? ''}</td>
   <td class="hide-lg">${book.categoryName ?? ''}</td>
   <td class="t-right">${book.price}</td>
   <td class="t-right hide-lg">${book.discountedPrice ?? ''}</td>
   <td>${book.stock}</td>
   <td class="hide-lg">${book.createdAt}</td>
-
   <td>
-    <button type="button" class="btn btn-accent btn--glass btnView">상세보기</button>
-    <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
-    <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+    <button type="button" class="btn btn-secondary btnView">상세보기</button>
+    <button type="button" class="btn btn-primary btnEdit">수정</button>
+    <button type="button" class="btn btn-danger btnDelete">삭제</button>
   </td>
 </tr>`;
-
                 tbody.append(row);
             });
 
-            // 페이징
-            let pagination = $('.pagination');
-            pagination.empty();
-            for (let i = 0; i < res.totalPages; i++) {
-                let active = i === res.number ? 'active' : '';
-                pagination.append(`<a href="?page=${i}&keyword=${encodeURIComponent(keyword)}" class="${active}">${i + 1}</a>`);
+            // --- 페이징 (Materia 버튼그룹) : 전체 교체 ---
+            $('.pagination, .pagination-toolbar').remove();
+
+            const $toolbar = $(`
+  <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
+    <div class="btn-group" role="group" aria-label="페이지"></div>
+  </div>`);
+            const $group = $toolbar.find('.btn-group');
+
+            const total = res.totalPages || 0;
+            const now   = (typeof res.number === 'number') ? res.number : 0;
+            const first = (typeof res.first  === 'boolean') ? res.first : (now === 0);
+            const last  = (typeof res.last   === 'boolean') ? res.last  : (now === total - 1);
+
+            if (total > 1) {
+                // « 이전
+                $group.append(`
+<a class="btn btn-secondary btn-nav"
+   href="?page=${Math.max(0, now - 1)}&keyword=${encodeURIComponent(keyword)}"
+   aria-label="이전" ${first ? 'aria-disabled="true"' : ''}>&laquo;</a>`);
+
+                // 숫자들
+                for (let i = 0; i < total; i++) {
+                    const isActive = i === now;
+                    $group.append(`
+<a class="btn btn-secondary ${isActive ? 'active' : ''}"
+   href="?page=${i}&keyword=${encodeURIComponent(keyword)}"
+   ${isActive ? 'aria-current="page"' : ''}>${i + 1}</a>`);
+                }
+
+                // » 다음
+                $group.append(`
+<a class="btn btn-secondary btn-nav"
+   href="?page=${Math.min(total - 1, now + 1)}&keyword=${encodeURIComponent(keyword)}"
+   aria-label="다음" ${last ? 'aria-disabled="true"' : ''}>&raquo;</a>`);
+
+                // 비활성 링크 클릭 방지
+                $toolbar.on('click', 'a[aria-disabled="true"]', function (e) { e.preventDefault(); });
+
+                // 렌더링 위치
+                $('.table-scroll').after($toolbar);
             }
-        });
-    });
-});
+            // ✅ 검색/렌더 완료 후: 가로 스크롤을 다시 왼쪽으로
+            $('.table-scroll').each(function () { this.scrollLeft = 0; });
+        }); // $.get 끝
+    }); // #bookSearchForm submit 끝
+    // ✅ 초기 로드 시: 테이블이 오른쪽 끝에서 보이는 현상 방지
+    $('.table-scroll').each(function () { this.scrollLeft = 0; });
+}); // $(function(){}) 끝

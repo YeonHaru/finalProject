@@ -22,38 +22,15 @@ $(function () {
 
     // ---------------- 모달 열고/닫기 ----------------
     function openModal() {
-        $modal.show().attr('aria-hidden', 'false');
+        $modal.css('display', 'flex').attr('aria-hidden', 'false');
     }
 
     function closeModal() {
         $modal.hide().attr('aria-hidden', 'true');
     }
 
-    function openBooksModal() {
-        // 화면 중앙 + 간단한 배경 스타일 적용
-        $booksModal.css({
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            'background-color': 'rgba(0,0,0,0.3)',
-            display: 'flex',
-            'align-items': 'center',
-            'justify-content': 'center',
-            'z-index': 9999
-        });
-
-        $booksModalDialog.css({
-            'background-color': '#fff',
-            padding: '20px',
-            'box-shadow': '0 4px 10px rgba(0,0,0,0.3)',
-            'max-width': '600px',
-            width: '90%',
-            'border-radius': '8px'
-        });
-
-        $booksModal.show().attr('aria-hidden', 'false');
+    function openBooksModal(){
+        $booksModal.css('display','flex').attr('aria-hidden','false');
     }
 
     function closeBooksModal() {
@@ -140,7 +117,8 @@ $(function () {
     });
 
     // ---------------- 삭제 ----------------
-    $(document).off('click.pubDelete', '.btn-delete').on('click.pubDelete', '.btn-delete', function (e) {
+    $(document).off('click.pubDelete', '.btn-delete, .btnDelete')
+                .on('click.pubDelete',  '.btn-delete, .btnDelete', function (e) {
         e.stopPropagation();
         if (!confirm('정말 삭제하시겠습니까?')) return;
         const id = $(this).closest('tr').data('id');
@@ -196,4 +174,3 @@ $(function () {
     // ---------------- 검색/페이징 (기본 GET 활용) ----------------
     // $('#publisherSearchForm').on('submit', function(){ /* 기본 GET 유지 */ });
 });
-})

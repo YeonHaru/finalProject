@@ -1,5 +1,4 @@
 /* 페이지 전용 최소 보완 — 00_common.css 유틸 우선 사용 */
-
 .srch-item {
     display: grid;
     grid-template-columns: 32px 200px 1fr; /* 체크박스 | 썸네일 | 설명 */
@@ -66,3 +65,7 @@
     .srch-item { grid-template-columns: 24px 96px 1fr; }
     .srch-thumb { width: 96px; height: 140px; }
 }
+
+
+
+

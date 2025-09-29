@@ -6,6 +6,7 @@
    --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>추천 도서</title>
@@ -119,59 +120,23 @@
 
         <!-- 신간 소개 컨텐츠 -->
         <div class="tab-content" id="new-books-content">
-            <div class="new-books-grid">
-                <!-- 신간 카드 1 -->
-                <div class="new-book-card">
-                    <div class="new-book-badge">NEW</div>
-                    <div class="new-book-image">
-                        <img src="https://via.placeholder.com/250x330/667eea/ffffff?text=특별한+편의점+3" alt="특별한 편의점 3">
-                    </div>
-                    <h3 class="new-book-title">특별한 편의점 3</h3>
-                    <p class="new-book-author">김충연</p>
-                    <div class="new-book-date">📅 2024.09.15</div>
-                    <p class="new-book-description">특별한 이야기 시리즈 완결편</p>
-                    <button class="new-book-button">예약구매</button>
-                </div>
 
-                <!-- 신간 카드 2 -->
-                <div class="new-book-card">
-                    <div class="new-book-badge">NEW</div>
-                    <div class="new-book-image">
-                        <img src="https://via.placeholder.com/250x330/764ba2/ffffff?text=7년의+밤" alt="7년의 밤">
+                <div class="new-books-grid">
+                    <!-- 신간 카드 1 -->
+                    <c:forEach var="data" items="${introductions}">
+                    <div class="new-book-card">
+                        <div class="new-book-badge">NEW</div>
+                        <div class="new-book-image">
+                            <img src="${data.imgUrl}" alt="${data.title}">
+                        </div>
+                        <h3 class="new-book-title"><c:out value="${data.title}" /></h3>
+                        <p class="new-book-author"><c:out value="${data.name}" /></p>
+                        <div class="new-book-date"><c:out value="${data.publishedDate}" /></div>
+                        <p class="new-book-description"><c:out value="${data.description}" /></p>
+                        <button class="new-book-button">예약구매</button>
                     </div>
-                    <h3 class="new-book-title">7년의 밤</h3>
-                    <p class="new-book-author">정유정</p>
-                    <div class="new-book-date">📅 2024.09.20</div>
-                    <p class="new-book-description">스릴 넘치는 새로운 장편</p>
-                    <button class="new-book-button">예약구매</button>
+                    </c:forEach>
                 </div>
-
-                <!-- 신간 카드 3 -->
-                <div class="new-book-card">
-                    <div class="new-book-badge">NEW</div>
-                    <div class="new-book-image">
-                        <img src="https://via.placeholder.com/250x330/f093fb/ffffff?text=우리가+빛의+속도로+갈+수+없다면" alt="우리가 빛의 속도로 갈 수 없다면">
-                    </div>
-                    <h3 class="new-book-title">우리가 빛의 속도로 갈 수 없다면</h3>
-                    <p class="new-book-author">김초엽</p>
-                    <div class="new-book-date">📅 2024.09.25</div>
-                    <p class="new-book-description">SF 소설의 새로운 차원을 연 작품</p>
-                    <button class="new-book-button">예약구매</button>
-                </div>
-
-                <!-- 신간 카드 4 -->
-                <div class="new-book-card">
-                    <div class="new-book-badge">NEW</div>
-                    <div class="new-book-image">
-                        <img src="https://via.placeholder.com/250x330/4facfe/ffffff?text=완전한+행복" alt="완전한 행복">
-                    </div>
-                    <h3 class="new-book-title">완전한 행복</h3>
-                    <p class="new-book-author">정유정</p>
-                    <div class="new-book-date">📅 2024.09.30</div>
-                    <p class="new-book-description">심리 스릴러의 완성형</p>
-                    <button class="new-book-button">예약구매</button>
-                </div>
-            </div>
         </div>
 
         <!-- 화제의 책 컨텐츠 -->

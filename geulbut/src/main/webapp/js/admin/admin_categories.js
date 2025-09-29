@@ -20,10 +20,9 @@ $(function () {
     const closeModal = ($targetModal) => {$targetModal.hide().attr('aria-hidden', 'true');};
 
     // 버튼/배경 클릭 닫기
-    $('#modalCloseBtn').off('click.cat').on('click.cat', () => closeModal($modal));
     $modal.off('click.cat').on('click.cat', e => { if (e.target.id === 'categoryModal') closeModal($modal); });
 
-    $('#booksModalCloseBtn').off('click.cat').on('click.cat', () => closeModal($booksModal));
+    $('#modalCloseBtn, #modalCancelBtn').off('click.cat').on('click.cat', () => closeModal($modal));
     $booksModal.off('click.cat').on('click.cat', e => { if (e.target.id === 'booksModal') closeModal($booksModal); });
 
     // ESC로 두 모달 모두 닫기
@@ -42,13 +41,14 @@ $(function () {
     });
 
     // ---------- 저장 ----------
-    $('#modalSaveBtn').on('click', function () {
-        const $btn = $(this);
+    $('#categoryForm').off('submit.cat').on('submit.cat', function(e) {
+        e.preventDefault();
+        const $btn = $('#modalSaveBtn');
         if ($btn.prop('disabled')) return;
 
         const id = $('#modalCategoryId').val();
         const data = { name: $('#modalCategoryName').val().trim() };
-        if (!data.name) { showMessage('카테고리 이름을 입력하세요.'); return; }
+        if (!data.name) { alert('카테고리 이름을 입력하세요.'); return; }
 
         $btn.prop('disabled', true);
 
@@ -56,14 +56,13 @@ $(function () {
             contentType: 'application/json',
             data: JSON.stringify(data),
             complete: () => $btn.prop('disabled', false),
-            success: () => { showMessage(id ? '수정 완료' : '등록 완료'); location.reload(); },
-            error: () => { showMessage(id ? '수정 실패' : '등록 실패'); }
+            success: () => { alert(id ? '수정 완료' : '등록 완료'); location.reload(); },
+            error: () => { alert(id ? '수정 실패' : '등록 실패'); }
         };
 
         if (id) $.ajax({ url: `${ctx}/admin/categories/${id}`, method: 'PUT', ...ajaxOpt });
         else $.ajax({ url: `${ctx}/admin/categories`, method: 'POST', ...ajaxOpt });
     });
-
 
     // ---------- 수정/삭제 ----------
     $tbody.on('click', '.btn-edit, .btnEdit', function (){
@@ -91,16 +90,6 @@ $(function () {
     $('#searchForm').on('submit', function (e) {
         // GET 그대로 전송 (action/form 으로 처리)
         // e.preventDefault();
-    });
-
-    // ---------- 페이징 (a.page-btn) ----------
-    $('#pagination').on('click', '.page-btn', function (e) {
-        e.preventDefault();
-        const page = $(this).data('page');
-        const keyword = ($('#searchKeyword').val() || '').trim();
-        let url = `${ctx}/admin/categories?page=${page}`;
-        if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
-        window.location.href = url;
     });
 
     // ---------- 카테고리 ID/이름 클릭 → 속한 책 조회 ----------

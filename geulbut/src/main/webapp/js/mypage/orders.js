@@ -119,8 +119,10 @@ window.Orders = (() => {
             case 'PAID':
                 return `
           <span class="badge bg-primary">결제 완료</span>
-          <button class="btn btn-sm btn-outline-danger ms-2"
-                  onclick="Orders.removeOrder(${id})">취소</button>`;
+            <button class="btn btn-sm btn-outline-danger ms-2"
+              onclick="Orders.cancelPay(${id})">결제 취소</button>`;
+            case 'CANCELLED':
+                return `<span class="badge bg-secondary">취소됨</span>`;
             case 'SHIPPED':
                 return `<span class="badge bg-info text-dark">배송중</span>`;
             case 'DELIVERED':
@@ -161,7 +163,7 @@ window.Orders = (() => {
     }
 
     async function removeOrder(orderId) {
-        if (!confirm("정말 주문을 삭제하시겠습니까?")) return;
+        if (!confirm("정말 주문을 취소하시겠습니까?")) return;
 
         try {
             const res = await fetch(`/orders/${orderId}`, {
@@ -169,21 +171,57 @@ window.Orders = (() => {
                 headers: {'X-CSRF-TOKEN': window.csrfToken}
             });
             const data = await res.json();
-            if (data.status === "ok") {
-                alert(data.message || "주문이 삭제되었습니다.");
+            if (res.ok && data.status === "ok") {
+                alert(data.message || "주문이 취소되었습니다.");
                 await refreshOrders();
             } else {
-                alert("❌ 삭제 실패: " + (data.message || ''));
+                alert("❌ 취소 실패: " + (data.message || ''));
             }
         } catch (err) {
-            console.error("삭제 요청 실패:", err);
+            console.error("취소 요청 실패:", err);
         }
     }
 
+    async function cancelPay(orderId) {
+        if (!confirm("정말 결제를 취소하시겠습니까?")) return;
+
+        const reason = prompt("취소 사유(선택):") || "";
+
+        const headers = { 'Accept': 'application/json' };
+        // CSRF 쓰면 헤더 추가
+        if (window.csrfToken) headers['X-CSRF-TOKEN'] = window.csrfToken;
+
+        try {
+            const res = await fetch(`/payments/cancel/${orderId}?reason=${encodeURIComponent(reason)}`, {
+                method: 'POST',
+                headers,
+                credentials: 'include', // 로그인 세션 쿠키 포함!
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                alert(data.message || '취소 실패');
+                return;
+            }
+            alert(data.message || '결제가 정상적으로 취소되었습니다.');
+            await refreshOrders();
+        } catch (e) {
+            console.error('❌ 결제 취소 요청 실패:', e);
+            alert('네트워크 오류로 취소에 실패했습니다.');
+        }
+    }
     /** ========== 3) 결제 모달 → prepare → 결제 → verify ========== */
 
     /** 모달 열기: 총액 세팅, 확인버튼 바인딩 */
     function openOrderInfoModal(total) {
+
+        const latestEl = document.querySelector("#cart-total");
+        if (latestEl){
+            const latestAmount = parseInt(latestEl.textContent.replace(/[^0-9]/g,""))
+            total = latestAmount;
+        }
+
         const totalEl = document.getElementById('oiTotal');
         if (totalEl) totalEl.textContent = fmtKR(total);
 
@@ -242,6 +280,10 @@ window.Orders = (() => {
     async function requestDemoPay(total, prep /* { merchantUid } */) {
         const o = getOrderFormValues();
 
+        const oiTotalEl = document.getElementById("oiTotal");
+        if (oiTotalEl){
+            total = parseInt(oiTotalEl.textContent.replace(/[^0-9]/g, ""), 10);
+        }
         const IMP = window.IMP;
         if (!IMP) {
             alert('결제 모듈 초기화에 실패했습니다. 새로고침 후 다시 시도해 주세요.');
@@ -335,6 +377,7 @@ window.Orders = (() => {
         openOrderInfoModal,
         requestDemoPay,
         preparePay,
+        cancelPay,
         mount
     };
 })();

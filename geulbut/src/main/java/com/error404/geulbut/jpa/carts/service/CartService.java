@@ -134,7 +134,6 @@ public class CartService {
         // 총액 계산
         order.setTotalPrice(total);
 
-        ordersRepository.save(order);      // 주문/주문아이템 저장
         cartRepository.deleteByUserId(userId); // 장바구니 비우기
         return order;
     }

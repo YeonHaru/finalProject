@@ -1,0 +1,151 @@
+/* 화면을 최대한 넓게 사용, 좌우는 반응형 여백 */
+.admin-orders .page {
+    width: 100%;
+    max-width: none;                 /* 1280px 상한 제거 */
+    margin-inline: auto;
+    padding-inline: clamp(12px, 3vw, 32px);  /* 너무 붙지 않도록 적당한 여백 */
+}
+
+/* 제목 색상: footer 톤과 동일 */
+.admin-orders h1 {
+    margin: 20px 0 12px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #D4A574;
+}
+
+/* ───────────────────────────────────────────
+   테이블: 정렬 안정화를 위한 기본값
+   ─────────────────────────────────────────── */
+.table-scroll {               /* 필요 시에만 가로 스크롤 */
+    overflow-x: auto;
+}
+
+.admin-orders-table {
+    table-layout: fixed;      /* colgroup 기준으로 정확히 정렬 */
+    width: 100%;
+    min-width: 1280px;        /* 데스크톱에서 내용이 안 잘리도록 기준 폭 확보 */
+    border-collapse: collapse;
+}
+
+.admin-orders-table th,
+.admin-orders-table td {
+    vertical-align: middle;   /* 세로 정렬 통일 */
+    padding: 10px 12px;
+}
+
+/* colgroup 폭 재조정 (주소에 여유) */
+.admin-orders-table col.col-id        { width: 72px; }
+.admin-orders-table col.col-userid    { width: 96px; }
+.admin-orders-table col.col-username  { width: 150px; }
+.admin-orders-table col.col-total     { width: 110px; }
+.admin-orders-table col.col-status    { width: 140px; }
+.admin-orders-table col.col-paymethod { width: 120px; }
+.admin-orders-table col.col-merchant  { width: 180px; }
+.admin-orders-table col.col-recipient { width: 120px; }
+.admin-orders-table col.col-address   { width: auto; min-width: 320px; } /* 주소는 넉넉하게 */
+.admin-orders-table col.col-created   { width: 160px; }
+.admin-orders-table col.col-paid      { width: 160px; }
+.admin-orders-table col.col-delivered { width: 160px; }
+.admin-orders-table col.col-actions   { width: 120px; }
+
+.admin-orders-table td:nth-child(1),
+.admin-orders-table td:nth-child(2){
+    white-space: normal;   /* 다른 곳은 그대로 한 줄, 1~2열만 헤더 줄바꿈 허용 */
+    line-height: 1.2;
+}
+
+/* 숫자/날짜/짧은 텍스트: 한 줄 + 말줄임(정렬 안정) */
+.admin-orders-table td:nth-child(3),
+.admin-orders-table td:nth-child(4),
+.admin-orders-table td:nth-child(6),
+.admin-orders-table td:nth-child(7),
+.admin-orders-table td:nth-child(8),
+.admin-orders-table td:nth-child(10),
+.admin-orders-table td:nth-child(11),
+.admin-orders-table td:nth-child(12),
+.admin-orders-table td:nth-child(13),
+.admin-orders-table thead th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 총액 우측 정렬(가독) */
+.admin-orders-table td:nth-child(4) { text-align: right; }
+
+/* 주소 열: 여러 줄 허용 + 단어 단위 우선, 불가하면 아무 위치든 줄바꿈 */
+.admin-orders-table td:nth-child(9) {
+    white-space: normal;
+    word-break: keep-all;      /* 한글은 단어 단위 줄바꿈 우선 */
+    overflow-wrap: anywhere;   /* 긴 토큰(영문/번호)도 안전하게 줄바꿈 */
+    text-align: left;
+}
+
+/* 상태 셀렉트는 폭 제한으로 레이아웃 안정 */
+.admin-orders-table select.status-select {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--color-text);
+    font-size: .9rem;
+    max-width: 120px;
+}
+
+/* 상세보기 버튼 동일 높이 */
+.admin-orders-table .btn-detail {
+    height: 32px;
+    line-height: 32px;
+    min-width: 72px;
+    padding: 0 12px;
+}
+
+#orderModal {
+    position: fixed;
+    inset: 0;                       /* top/right/bottom/left: 0 */
+    display: none;                  /* JS에서 flex로 바꿈 */
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,.35);
+    z-index: 1000;                  /* 다른 요소 위로 */
+}
+
+#orderModal .modal__dialog {
+    width: min(900px, 92vw);
+    max-height: 80vh;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 12px;
+}
+
+#orderModal .modal__form {
+    max-height: 60vh;               /* 내용이 길면 내부 스크롤 */
+    overflow: auto;
+}
+
+/* ───────────────────────────────────────────
+   반응형: 좁아지면 일부 열을 단계적으로 숨김(회원관리와 동일한 방식)
+   ─────────────────────────────────────────── */
+
+/* ≤1440px: 결제일시(11), 배송일시(12) 숨김 */
+@media (max-width: 1440px) {
+    .admin-orders-table thead th:nth-child(11),
+    .admin-orders-table tbody td:nth-child(11),
+    .admin-orders-table thead th:nth-child(12),
+    .admin-orders-table tbody td:nth-child(12) { display: none; }
+}
+
+/* ≤1280px: 주문번호(7)도 숨김 */
+@media (max-width: 1280px) {
+    .admin-orders-table thead th:nth-child(7),
+    .admin-orders-table tbody td:nth-child(7) { display: none; }
+}
+
+/* ≤1040px: 결제수단(6) 숨김 */
+@media (max-width: 1040px) {
+    .admin-orders-table thead th:nth-child(6),
+    .admin-orders-table tbody td:nth-child(6) { display: none; }
+}

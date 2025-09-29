@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // 절대 URL 사용 (TODO: 추후 외부 설정으로 빼도 됨)
     fetch('http://192.168.30.37:8080/dustApi')
         .then(res => res.json())
         .then(data => {
@@ -21,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             function showNext() {
                 const item = items[idx];
                 const district = item.districtName || item.key || "지역";
-                const issue = item.issueGbn || item.value || "상태";
+                // grade가 null이면 "데이터 없음"으로 표시
+                const issue = item.issueGbn || item.value || item.grade || "데이터 없음";
                 const val = item.issueVal || item.val || "-";
 
                 ticker.textContent = `${district}: ${issue} (${val})`;
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ticker.classList.remove("warning", "danger");
                 if (issue === "경보") {
                     ticker.classList.add("danger");
-                } else {
+                } else if (issue === "주의보") {
                     ticker.classList.add("warning");
                 }
 

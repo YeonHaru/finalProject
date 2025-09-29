@@ -20,8 +20,8 @@
         <aside class="bg-surface border rounded p-4">
             <h2 class="mb-3 text-center">고객센터</h2>
             <nav class="grid gap-2">
-                <a href="#" class="text-main">공지사항</a>
-                <a href="#" class="text-light">자주 묻는 질문</a>
+                <a href="${pageContext.request.contextPath}/notice" class="text-main">공지사항</a>
+                <a href="${pageContext.request.contextPath}/commonquestions" class="text-light">자주 묻는 질문</a>
                 <a href="${pageContext.request.contextPath}/qna" class="text-light">1:1 문의</a>
             </nav>
         </aside>

@@ -32,7 +32,7 @@ public class SearchAllBooks {
     private String categoryName;
     @JsonProperty("publisher_name")
     private String publisherName;
-    @JsonProperty("books_img_url")
-    private String booksImgUrl;
+    @JsonProperty("book_img_url")
+    private String bookImgUrl;
     private List<String> hashtags;
 }

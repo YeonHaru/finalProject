@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>관리자 - 출판사 관리</title>
-
+    <script>window.ctx = "${ctx}";</script>
     <!-- 공통/헤더 + 출판사 전용 CSS -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
@@ -16,7 +16,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-main text-main admin-publishers">
+<body class="bg-main text-main admin-publishers has-bg">
 <jsp:include page="/common/admin_page_header.jsp" />
 
 <div class="page">
@@ -32,7 +32,7 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-accent btn--glass" id="btnAddPublisher">출판사 등록</button>
+         <button type="button" class="btn btn-light btn--liquid-glass" id="btnAddPublisher">출판사 등록</button>
     </div>
 
     <!-- 출판사 목록 -->
@@ -65,8 +65,8 @@
                     <td class="t-left publisher-description">${publisher.description}</td>
                     <td class="created-at-cell">${publisher.createdAt}</td>
                     <td>
-                        <button type="button" class="btn btn-accent btn--glass btnEdit">수정</button>
-                        <button type="button" class="btn btn-delete btn--glass btnDelete">삭제</button>
+                        <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
+                        <button type="button" class="btn btn-danger  btn--liquid-glass btnDelete">삭제</button>
                     </td>
                 </tr>
             </c:forEach>
@@ -76,14 +76,41 @@
 
     <!-- 페이지네이션 -->
     <c:if test="${publishersPage.totalPages > 0}">
-        <div id="pagination" class="pagination">
-            <c:forEach begin="0" end="${publishersPage.totalPages - 1}" var="i">
-                <c:url var="pageUrl" value="${ctx}/admin/publishers">
-                    <c:param name="keyword" value="${param.keyword}" />
-                    <c:param name="page" value="${i}" />
-                </c:url>
-                <a href="${pageUrl}" class="${i == publishersPage.number ? 'active' : ''}">${i + 1}</a>
-            </c:forEach>
+        <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
+            <div class="btn-group" role="group" aria-label="페이지">
+                <!-- 이전 « -->
+                <c:choose>
+                    <c:when test="${publishersPage.first}">
+                        <a class="btn btn-secondary btn-nav" aria-disabled="true" aria-label="이전">&laquo;</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-secondary btn-nav"
+                           href="?page=${publishersPage.number - 1}&keyword=${param.keyword}"
+                           aria-label="이전">&laquo;</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <!-- 숫자 -->
+                <c:forEach begin="0" end="${publishersPage.totalPages - 1}" var="i">
+                    <a class="btn btn-secondary ${i == publishersPage.number ? 'active' : ''}"
+                       href="?page=${i}&keyword=${param.keyword}"
+                        ${i == publishersPage.number ? 'aria-current="page"' : ''}>
+                            ${i + 1}
+                    </a>
+                </c:forEach>
+
+                <!-- 다음 » -->
+                <c:choose>
+                    <c:when test="${publishersPage.last}">
+                        <a class="btn btn-secondary btn-nav" aria-disabled="true" aria-label="다음">&raquo;</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-secondary btn-nav"
+                           href="?page=${publishersPage.number + 1}&keyword=${param.keyword}"
+                           aria-label="다음">&raquo;</a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
     </c:if>
 </div>
@@ -110,8 +137,8 @@
             </label>
 
             <div class="modal__footer">
-                <button type="button" class="btn" id="btnCancel">닫기</button>
-                <button type="submit" class="btn btn-accent" id="modalSaveBtn">저장</button>
+                <button type="submit" class="btn btn-secondary btn--liquid-glass save-btn" id="modalSaveBtn">저장</button>
+                <button type="button" class="btn btn-danger    btn--liquid-glass"        id="btnCancel">닫기</button>
             </div>
         </form>
     </div>
