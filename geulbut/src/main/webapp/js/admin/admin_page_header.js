@@ -26,7 +26,7 @@
     dd.addEventListener('mouseenter', openMenu);
     dd.addEventListener('mouseleave', () => {
         clearTimeout(closeTimer);
-        closeTimer = setTimeout(closeMenu, 180); // 짧은 지연
+        closeTimer = setTimeout(closeMenu, 400); // 짧은 지연
     });
 
     // --- 포커스: 내부에 포커스 있으면 열림 유지 ---
