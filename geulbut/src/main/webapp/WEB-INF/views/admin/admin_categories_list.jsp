@@ -33,8 +33,8 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button id="btnAddCategory" type="button" class="btn btn-accent btn--glass">카테고리 등록</button>    </div>
-
+        <button id="btnAddCategory" type="button" class="btn btn-light btn--liquid-glass">카테고리 등록</button>
+    </div>
     <!-- 목록 테이블 -->
     <div class="table-scroll">
         <table class="admin-table admin-categories-table" id="categoriesTable">
@@ -59,8 +59,8 @@
                     <td class="category-name t-left" title="${category.name}">${category.name}</td>
                     <td>${category.createdAt}</td>
                     <td class="actions-cell">
-                        <button type="button" class="btn btn-accent btn--glass btnEdit btn-edit">수정</button>
-                        <button type="button" class="btn btn-delete btn--glass btnDelete btn-delete">삭제</button>
+                        <button type="button" class="btn btn-secondary btn--liquid-glass btnEdit btn-edit">수정</button>
+                        <button type="button" class="btn btn-danger btn--liquid-glass btnDelete btn-delete">삭제</button>
                     </td>
                 </tr>
             </c:forEach>
@@ -72,32 +72,67 @@
     </div>
 
     <!-- 페이징 (해시태그와 동일 구조/스타일) -->
-    <div id="pagination" class="pagination">
-        <c:if test="${categoriesPage.totalPages > 0}">
-            <c:forEach begin="0" end="${categoriesPage.totalPages - 1}" var="i">
-                <a href="#" class="page-btn ${i == categoriesPage.number ? 'active' : ''}" data-page="${i}">${i + 1}</a>
-            </c:forEach>
-        </c:if>
-    </div>
+        <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
+            <div class="btn-group" role="group" aria-label="페이지">
+
+                <!-- 이전 («) -->
+                <c:choose>
+                    <c:when test="${categoriesPage.first}">
+                        <a class="btn btn-secondary btn-nav" aria-label="이전" aria-disabled="true">&laquo;</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-secondary btn-nav"
+                           href="?page=${categoriesPage.number - 1}&keyword=${param.keyword}"
+                           aria-label="이전">&laquo;</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <!-- 숫자들 -->
+                <c:forEach var="i" begin="0" end="${categoriesPage.totalPages - 1}">
+                    <a class="btn btn-secondary ${i == categoriesPage.number ? 'active' : ''}"
+                       href="?page=${i}&keyword=${param.keyword}"
+                        ${i == categoriesPage.number ? 'aria-current="page"' : ''}>${i + 1}</a>
+                </c:forEach>
+
+                <!-- 다음 (») -->
+                <c:choose>
+                    <c:when test="${categoriesPage.last}">
+                        <a class="btn btn-secondary btn-nav" aria-label="다음" aria-disabled="true">&raquo;</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-secondary btn-nav"
+                           href="?page=${categoriesPage.number + 1}&keyword=${param.keyword}"
+                           aria-label="다음">&raquo;</a>
+                    </c:otherwise>
+                </c:choose>
+
+            </div>
+        </div>
+
 </div>
 
 <p class="ht-footnote">© Geulbut Admin Categories List</p>
 
 <!-- 등록/수정 모달 (공통 모달 톤) -->
-<div id="categoryModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content" role="document">
-        <h2 id="modalTitle">카테고리 등록</h2>
-        <input type="hidden" id="modalCategoryId" />
-        <label>
-            <span class="t-left" style="display:block; margin-bottom:4px; font-size:.9rem;">카테고리 이름</span>
-            <input type="text" id="modalCategoryName" />
-        </label>
-        <div class="t-right" style="margin-top:10px;">
-            <button id="modalSaveBtn" type="submit" class="btn btn-cer-secondary save-btn">저장</button>
-            <button id="modalCloseBtn" type="button" class="btn btn-cer-success delete-btn">닫기</button>
+    <div id="categoryModal" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
+        <div class="modal__dialog" role="document">
+            <div class="modal__header">
+                <h3 id="modalTitle" class="mt-3 mb-3 ml-3">카테고리 등록</h3>
+                <button type="button" class="modal__close btn--liquid is-circle" id="modalCloseBtn" aria-label="닫기">×</button>
+            </div>
+
+            <form class="modal__form" id="categoryForm">
+                <input type="hidden" id="modalCategoryId" />
+                <label>카테고리 이름
+                    <input type="text" id="modalCategoryName" />
+                </label>
+                <div class="modal__footer">
+                    <button id="modalSaveBtn" type="submit" class="btn btn-secondary btn--liquid-glass save-btn">저장</button>
+                    <button id="modalCancelBtn" type="button" class="btn btn-danger btn--liquid-glass">닫기</button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
 
 <!-- 책 목록 모달 (읽기용) -->
 <div id="booksModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">

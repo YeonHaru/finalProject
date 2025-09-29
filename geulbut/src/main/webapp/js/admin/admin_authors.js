@@ -13,9 +13,10 @@ $(function () {
     const $booksModal = $('#authorBooksModal');
     const $booksList = $('#booksList');
 
+    // ✅ 도서 페이지와 동일한 방식으로 ctx 사용
     const ctx = (typeof window.ctx !== 'undefined' && window.ctx) ? window.ctx : '';
 
-    // 이미지 미리보기
+    // 이미지 미리보기(디바운스)
     let previewTimer = null;
     $img.on('input', function () {
         const url = $(this).val().trim();
@@ -23,26 +24,26 @@ $(function () {
         previewTimer = setTimeout(() => { $preview.attr('src', url || ''); }, 120);
     });
 
-    // 모달 열고 닫기
-    function openModal($m) { $m.show().css('display', 'flex').attr('aria-hidden', 'false'); }
+    // 모달 접근성/열고닫기(Books 톤과 동일)
+    function openModal($m) { $m.css('display', 'flex').attr('aria-hidden', 'false'); }
     function closeModal($m) { $m.hide().attr('aria-hidden', 'true'); }
 
     $modal.off('click').on('click', e => { if (e.target.id === 'authorModal') closeModal($modal); });
     $booksModal.off('click').on('click', e => { if (e.target.id === 'authorBooksModal') closeModal($booksModal); });
     $(document).off('keydown.adminAuthorsEsc').on('keydown.adminAuthorsEsc', e => {
-        if (e.key === 'Escape') { closeModal($modal); closeModal($booksModal); }
+        if (e.key === 'Escape') { if ($modal.is(':visible')) closeModal($modal); if ($booksModal.is(':visible')) closeModal($booksModal); }
     });
     $('#btnCloseModal, #modalCloseBtn2').off('click').on('click', () => closeModal($modal));
     $('#btnCloseBooksModal').off('click').on('click', () => closeModal($booksModal));
 
-    // 등록 모달 열기
+    // 등록 모달
     $(document).off('click.openAuthorCreate', '#btnAddAuthor').on('click.openAuthorCreate', '#btnAddAuthor', function () {
         $modalTitle.text('작가 등록');
         $id.val(''); $name.val(''); $img.val(''); $created.val(''); $desc.val(''); $preview.attr('src', '');
         openModal($modal);
     });
 
-    // 수정 모달 열기
+    // 수정 모달
     $(document).off('click.openAuthorEdit', '.btnEdit').on('click.openAuthorEdit', '.btnEdit', function () {
         const $tr = $(this).closest('tr');
         const row = {
@@ -89,7 +90,7 @@ $(function () {
         });
     });
 
-    // 작가 이름 클릭 시 책 목록 모달
+    // 작가 이름 클릭 → 책 목록 모달
     $(document).off('click.authorBooks', '.author-name').on('click.authorBooks', '.author-name', function () {
         const authorId = $(this).closest('tr').data('id');
         if (!authorId) return;
@@ -99,12 +100,8 @@ $(function () {
             method: 'GET',
             success: function (books) {
                 if (!books || books.length === 0) { alert('이 작가의 책이 없습니다.'); return; }
-
                 $booksList.empty();
-                books.forEach(b => {
-                    $booksList.append(`<li>${b.title}</li>`);
-                });
-
+                books.forEach(b => { $booksList.append(`<li>${b.title}</li>`); });
                 $('#booksModalTitle').text('작가 책 목록');
                 openModal($booksModal);
             },
@@ -112,6 +109,9 @@ $(function () {
         });
     });
 
-    // 검색/페이징 submit 유지
-    $('#authorSearchForm').on('submit', function () {/* submit 유지 */});
+    // (도서 페이지와 동일) 스크롤 초기화로 좌측부터 보이도록
+    $('.table-scroll').each(function () { this.scrollLeft = 0; });
+
+    // 검색/페이징은 서버 렌더를 유지(백엔드 변경 없이)
+    $('#authorSearchForm').on('submit', function () { /* 기본 submit 유지 */ });
 });
