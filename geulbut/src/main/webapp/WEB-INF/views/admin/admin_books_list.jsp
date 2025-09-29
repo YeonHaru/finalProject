@@ -82,9 +82,8 @@
                             <div class="title-ellipsis" title="${book.title}">${book.title}</div>
                         </td>
                         <td>
-                            <c:if test="${not empty book.imgUrl}">
-                                <img src="${book.imgUrl}" alt="${book.title}" class="book-thumb"/>
-                            </c:if>
+                            <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
+                                 alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
                         </td>
                         <!-- th: ISBN 에 hide-md → td 도 hide-md -->
                         <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
