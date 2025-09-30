@@ -45,5 +45,13 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     @EntityGraph(attributePaths = {"author", "publisher", "category"})
     List<Books> findByPublisher_PublisherId(Long publisherId);
 
-
+    @EntityGraph(attributePaths = {"author"})
+    @Query("""
+  SELECT b FROM Books b
+  WHERE COALESCE(b.orderCount,0) > 0
+  ORDER BY b.orderCount DESC,
+           COALESCE(b.updatedAt, b.createdAt) DESC,
+           b.bookId
+""")
+    List<Books> findBestSellers(Pageable pageable);
 }

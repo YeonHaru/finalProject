@@ -16,4 +16,6 @@ public class IntroductionDto {
     private String name;       // 작가 PK (AUTHOR_ID)
     private LocalDate publishedDate;  // 출판일 (PUBLISHED_DATE)
     private String description;  // 설명 (DESCRIPTION)
+
+    public String getImageUrl() {return imgUrl;}
 }

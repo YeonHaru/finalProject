@@ -39,30 +39,75 @@ public class BookApiService {
                 .queryParam("pageSize", pageSize == null ? 10 : pageSize);
 
         String url = builder.toUriString(); // 최종 URL
-
         // 3) API 호출 (원문 JSON)
         String json = restTemplate.getForObject(url, String.class);
-        System.out.println("API 최종 요청 URL: " + url);
-        System.out.println("API 응답 원본: " + json);
+
+        System.out.println("[BookApi] URL=" + url);
+        System.out.println("[BookApi] raw json length=" + (json == null ? "null" : json.length()));
         // 4) JSON 파싱 → DTO 매핑 (필요한 필드만)
         //    ObjectMapper는 JSON 데이터를 자바 객체로 변환해 주는 도구
         //    mapper.readTree(json) : JSON 문자열을 트리(Tree) 구조로 변환(파일 시스템의 폴더처럼 계층적으로 탐색할 수 있게 )
         //    .path("docs"): 변환된 JSON 트리에서 **docs라는 이름의 노드 찾기
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode resultArray = mapper.readTree(json).path("result");
+       List<BookApiDto> result = new ArrayList<>();
+       if (json == null || json.isBlank()) return result;
 
-        List<BookApiDto> result = new ArrayList<>();
-        for (JsonNode item : resultArray) {
-            result.add(new BookApiDto(
-                    item.path("titleInfo").asText(""),      // 제목
-                    item.path("authorInfo").asText(""),     // 저자
-                    item.path("pubInfo").asText(""),        // 발행자
-                    item.path("pubYearInfo").asText(""),    // 발행년도
-                    item.path("imageUrl").asText(""),      // 응답에 없으면 빈 문자열 처리
-                    item.path("description").asText("")     // 응답에 없으면 빈 문자열 처리
-            ));
+       ObjectMapper mapper = new ObjectMapper();
+       JsonNode root = mapper.readTree(json);
+
+//       1) 배열 후보 경로들을 순서대로 탐색
+        JsonNode array = null;
+        String hitPath = null;
+        String[] candidates = {
+                "result",
+                "result.docs",
+                "docs",
+                "items",
+                "data",
+                "response.docs"
+        };
+
+        for (String path : candidates) {
+            JsonNode cur = root;
+            for (String  p : path.split("\\.")) {
+                cur = cur.path(p);
+            }
+            if (cur != null && cur.isArray() && cur.size() > 0) {
+                array = cur;
+                hitPath = path;
+                break;
+            }
         }
+        System.out.println("[BookApi] array hit path=" + hitPath + ", size=" + (array == null ? 0 : array.size()));
+        if (array == null) {
+            System.out.println("[BookApi] root fieldNames=" + root.fieldNames().toString());
+            return result;
+        }
+//        2) 필드명 변동 대응
+        for (JsonNode item : array) {
+            String title = pick(item, "titleInfo", "title", "bookname", "bookTitle");
+            String author = pick(item, "authorInfo", "author", "authors", "writer");
+            String publisher = pick(item, "pubInfo", "publisher", "pub", "publishing");
+            String pubYear = pick(item, "pubYearInfo", "pubYear", "publication_year", "publishedDate");
+            String imageUrl = pick(item, "imageUrl", "bookImageURL", "cover", "thumbnailUrl", "image");
+            String description = pick(item, "description", "bookIntro", "overview", "contents", "desc");
 
-        return result;
+            result.add(new BookApiDto(
+                    nz(title), nz(author), nz(publisher), nz(pubYear), nz(imageUrl), nz(description)
+            ));
     }
+        System.out.println("[BookApi] mapped size=" + result.size());
+        return result;
+}
+//        편의 유틸
+private static String pick(JsonNode node, String... names) {
+    for (String n : names) {
+        JsonNode v = node.path(n);
+        if (!v.isMissingNode() && !v.isNull()) {
+        String s = v.asText();
+        if (s != null && !s.isBlank())return s;
+        }
+    }
+    return "";
+    }
+    private static String nz(String s) {return s == null ? "" : s;}
 }

@@ -6,7 +6,9 @@
    --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <html>
 <head>
     <title>추천 도서</title>
@@ -619,282 +621,119 @@
     </section>
 
     <!-- 이달의 주목도서 -->
+
     <section class="featured-books">
         <div class="featured-header">
             <div class="featured-title-area">
                 <div class="bookmark-icon">📑</div>
                 <div class="featured-title-text">
                     <h2 class="featured-main-title">이달의 주목도서</h2>
-                    <p class="featured-subtitle">편집부가 엄선한 9월의 추천 도서</p>
+                    <p class="featured-subtitle">
+                        <c:choose>
+                            <c:when test="${not empty featuredBooks}">
+                                편집부가 엄선한 ${fn:length(featuredBooks)}권
+                            </c:when>
+                            <c:otherwise>데이터 준비 중</c:otherwise>
+                        </c:choose>
+                    </p>
                 </div>
             </div>
             <div class="hot-indicator">🔥 Hot 5</div>
         </div>
 
-        <div class="featured-books-grid">
-            <!-- 추천 도서 카드 1 -->
-            <div class="featured-book-card">
-                <div class="book-info-top">
-                    <div class="discount-badge">10%</div>
-                    <div class="category-tag">육아 베스트</div>
-                </div>
-                <div class="featured-book-image">
-                    <img src="https://via.placeholder.com/160x220/ff6b6b/ffffff?text=부모의+태도가" alt="부모의 태도가 아이의 불안이 되지 않게">
-                </div>
-                <div class="featured-book-info">
-                    <h3 class="featured-book-title">부모의 태도가 아이의 불안이 되지 않게</h3>
-                    <p class="featured-book-author">예슬</p>
-                    <div class="book-rating">
-                        <span class="stars">★ 4.8</span>
-                        <span class="review-count">(115)</span>
+        <c:if test="${empty featuredBooks}">
+            <div class="featured-empty">등록된 주목도서가 없습니다. 곧 업데이트됩니다.</div>
+        </c:if>
+
+        <c:if test="${not empty featuredBooks}">
+            <div class="featured-books-grid">
+                <c:forEach var="b" items="${featuredBooks}">
+                    <div class="featured-book-card">
+                        <div class="book-info-top">
+                            <!-- 외부 API에는 할인/카테고리 정보가 없으니 뱃지는 숨기거나 고정 텍스트로 처리 -->
+                            <!-- <div class="discount-badge">10%</div> -->
+                            <!-- <div class="category-tag">화제의 신간</div> -->
+                        </div>
+
+                        <div class="featured-book-image">
+                            <img
+                                    src="${empty b.imgUrl ? 'https://via.placeholder.com/160x220/cccccc/000000?text=No+Image' : b.imgUrl}"
+                                    alt="${b.title}"
+                                    onerror="this.src='https://via.placeholder.com/160x220/cccccc/000000?text=No+Image'"/>
+                        </div>
+
+                        <div class="featured-book-info">
+                            <h3 class="featured-book-title"><c:out value="${b.title}"/></h3>
+
+                            <p class="featured-book-author">
+                                <c:out value="${b.name}"/>
+                            </p>
+
+                            <div class="book-rating">
+                                <!-- 외부 API에 평점/리뷰 없음 → UI 유지 위해 임시 숨김 -->
+                                <!-- <span class="stars">★ 4.8</span><span class="review-count">(115)</span> -->
+                            </div>
+
+                            <div class="book-price">
+                                <!-- 외부 API에 가격 없음 → 숨김 -->
+                                <!-- <span class="current-price">14,400원</span>
+                                     <span class="original-price">16,000원</span> -->
+                            </div>
+
+                            <p class="book-description">
+                                <c:out value="${b.description}"/>
+                            </p>
+
+                            <!-- 상세 링크가 없으니 버튼도 숨김 또는 검색 링크로 대체 -->
+                            <!-- <a class="detail-button" href="/search?kwd=${fn:escapeXml(b.title)}">자세히 보기</a> -->
+                        </div>
                     </div>
-                    <div class="book-price">
-                        <span class="current-price">14,400원</span>
-                        <span class="original-price">16,000원</span>
-                    </div>
-                    <p class="book-description">아이와의 건강한 소통법을 배울 수 있어요</p>
-                    <button class="detail-button">자세히 보기</button>
-                </div>
+                </c:forEach>
             </div>
 
-            <!-- 추천 도서 카드 2 -->
-            <div class="featured-book-card">
-                <div class="book-info-top">
-                    <div class="discount-badge">10%</div>
-                    <div class="category-tag">화제의 신간</div>
-                </div>
-                <div class="featured-book-image">
-                    <img src="https://via.placeholder.com/160x220/4ecdc4/ffffff?text=행운음원" alt="행운음원">
-                </div>
-                <div class="featured-book-info">
-                    <h3 class="featured-book-title">행운음원</h3>
-                    <p class="featured-book-author">차상동</p>
-                    <div class="book-rating">
-                        <span class="stars">★ 4.6</span>
-                        <span class="review-count">(592)</span>
-                    </div>
-                    <div class="book-price">
-                        <span class="current-price">13,500원</span>
-                        <span class="original-price">15,000원</span>
-                    </div>
-                    <p class="book-description">음악과 인생이 만나는 감동적인 이야기</p>
-                    <button class="detail-button">자세히 보기</button>
-                </div>
+            <div class="view-all-link">
+                <a href="/featured-books">⏰ 이달의 추천도서 전체보기</a>
             </div>
-
-            <!-- 추천 도서 카드 3 -->
-            <div class="featured-book-card">
-                <div class="book-info-top">
-                    <div class="discount-badge">20%</div>
-                    <div class="category-tag">사회적 고전</div>
-                </div>
-                <div class="featured-book-image">
-                    <img src="https://via.placeholder.com/160x220/45b7d1/ffffff?text=화이트칼라" alt="화이트칼라">
-                </div>
-                <div class="featured-book-info">
-                    <h3 class="featured-book-title">화이트칼라</h3>
-                    <p class="featured-book-author">찰스 라이트 밀스</p>
-                    <div class="book-rating">
-                        <span class="stars">★ 4.9</span>
-                        <span class="review-count">(515)</span>
-                    </div>
-                    <div class="book-price">
-                        <span class="current-price">14,400원</span>
-                        <span class="original-price">18,000원</span>
-                    </div>
-                    <p class="book-description">현대 사회의 중산층을 날카롭게 분석한 명작</p>
-                    <button class="detail-button">자세히 보기</button>
-                </div>
-            </div>
-
-            <!-- 추천 도서 카드 4 -->
-            <div class="featured-book-card">
-                <div class="book-info-top">
-                    <div class="discount-badge">10%</div>
-                    <div class="category-tag">AI 트렌드</div>
-                </div>
-                <div class="featured-book-image">
-                    <img src="https://via.placeholder.com/160x220/f9ca24/ffffff?text=AGI" alt="AGI, 천사인가 악마인가">
-                </div>
-                <div class="featured-book-info">
-                    <h3 class="featured-book-title">AGI, 천사인가 악마인가</h3>
-                    <p class="featured-book-author">김대식</p>
-                    <div class="book-rating">
-                        <span class="stars">★ 4.7</span>
-                        <span class="review-count">(275)</span>
-                    </div>
-                    <div class="book-price">
-                        <span class="current-price">15,300원</span>
-                        <span class="original-price">17,000원</span>
-                    </div>
-                    <p class="book-description">인공지능의 미래를 통찰한 있는 예측</p>
-                    <button class="detail-button">자세히 보기</button>
-                </div>
-            </div>
-
-            <!-- 추천 도서 카드 5 -->
-            <div class="featured-book-card">
-                <div class="book-info-top">
-                    <div class="discount-badge">10%</div>
-                    <div class="category-tag">시험 추천</div>
-                </div>
-                <div class="featured-book-image">
-                    <img src="https://via.placeholder.com/160x220/6c5ce7/ffffff?text=말뚝들" alt="말뚝들">
-                </div>
-                <div class="featured-book-info">
-                    <h3 class="featured-book-title">말뚝들</h3>
-                    <p class="featured-book-author">김홍</p>
-                    <div class="book-rating">
-                        <span class="stars">★ 4.5</span>
-                        <span class="review-count">(546)</span>
-                    </div>
-                    <div class="book-price">
-                        <span class="current-price">12,600원</span>
-                        <span class="original-price">14,000원</span>
-                    </div>
-                    <p class="book-description">깊이 있는 성찰과 철학이 담긴 시집</p>
-                    <button class="detail-button">자세히 보기</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="view-all-link">
-            <a href="/featured-books">⏰ 이달의 추천도서 전체보기</a>
-        </div>
+        </c:if>
     </section>
+
 
     <!-- 어제 베스트셀러 TOP 10 -->
     <section class="bestseller-section">
-        <h2 class="bestseller-title">어제 베스트셀러 TOP 10</h2>
-        <div class="bestseller-grid">
-            <!-- 1위 -->
-            <div class="bestseller-item">
-                <div class="rank-number rank-1">1</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/ffd700/000000?text=혼한남매20" alt="혼한남매 20">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">혼한남매 20</h3>
-                        <span class="bestseller-badge new">NEW</span>
-                    </div>
-                    <p class="bestseller-author">글 • 그림</p>
-                </div>
-            </div>
+        <h2 class="bestseller-title">
+            어제 베스트셀러 TOP 10
+            <small style="font-size:12px;color:#888;">(누적 판매 기준 v1)</small>
+        </h2>
 
-            <!-- 2위 -->
-            <div class="bestseller-item">
-                <div class="rank-number rank-2">2</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/c0c0c0/000000?text=절창" alt="절창">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">절창</h3>
-                        <span class="bestseller-badge down">▼1</span>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
+        <c:if test="${empty bestSellers}">
+            <div class="featured-empty">데이터 준비 중</div>
+        </c:if>
 
-            <!-- 3위 -->
-            <div class="bestseller-item">
-                <div class="rank-number rank-3">3</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/cd7f32/ffffff?text=호의에대하여" alt="호의에 대하여">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">호의에 대하여</h3>
-                        <span class="bestseller-badge up">▲2</span>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
+        <c:if test="${not empty bestSellers}">
+            <div class="bestseller-grid">
+                <c:forEach var="b" items="${bestSellers}" varStatus="s">
+                    <div class="bestseller-item">
+                        <div class="rank-number ${s.index lt 3 ? ('rank-' += (s.index + 1)) : ''}">
+                                ${s.index + 1}
+                        </div>
 
-            <!-- 4위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">4</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/667eea/ffffff?text=텟템이론" alt="텟템 이론">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">텟템 이론</h3>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
+                        <img class="bestseller-thumb"
+                             src="${empty b.imgUrl ? 'https://via.placeholder.com/60x80/cccccc/000000?text=No+Image' : b.imgUrl}"
+                             alt="${fn:escapeXml(b.title)}"
+                             onerror="this.src='https://via.placeholder.com/60x80/cccccc/000000?text=No+Image'"/>
 
-            <!-- 5위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">5</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/764ba2/ffffff?text=혼모노" alt="혼모노">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">혼모노</h3>
-                        <span class="bestseller-badge up">▲1</span>
+                        <div class="bestseller-info">
+                            <div class="bestseller-title-line">
+                                <h3 class="bestseller-book-title">${b.title}</h3>
+                                <!-- 등락/NEW 뱃지는 아직 로직 없음 → 숨김 또는 향후 확장 -->
+                            </div>
+                            <p class="bestseller-author">${b.authorName}</p>
+                            <div class="count">판매: ${b.orderCount}권</div>
+                        </div>
                     </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
+                </c:forEach>
             </div>
-
-            <!-- 6위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">6</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/f093fb/ffffff?text=천국대마경11" alt="천국대마경 11">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">천국대마경 11</h3>
-                        <span class="bestseller-badge new">NEW</span>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
-
-            <!-- 7위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">7</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/4facfe/ffffff?text=천국대마경가이드" alt="천국대마경 공식 코믹 가이드">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">천국대마경 공식 코믹 가이드</h3>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
-
-            <!-- 8위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">8</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/ff6b6b/ffffff?text=노인과바다" alt="노인과 바다 (멘슬리 클래식)">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">노인과 바다 (멘슬리 클래식)</h3>
-                        <span class="bestseller-badge down">▼5</span>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
-
-            <!-- 9위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">9</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/4ecdc4/ffffff?text=양명의조개껍데기" alt="양명의 조개껍데기">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">양명의 조개껍데기</h3>
-                        <span class="bestseller-badge up">▲4</span>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
-
-            <!-- 10위 -->
-            <div class="bestseller-item">
-                <div class="rank-number">10</div>
-                <img class="bestseller-thumb" src="https://via.placeholder.com/60x80/45b7d1/ffffff?text=2025큰별쌤" alt="2025 큰별쌤 최태성의 별★...">
-                <div class="bestseller-info">
-                    <div class="bestseller-title-line">
-                        <h3 class="bestseller-book-title">2025 큰별쌤 최태성의 별★...</h3>
-                        <span class="bestseller-badge down">▼8</span>
-                    </div>
-                    <p class="bestseller-author">저자 예시</p>
-                </div>
-            </div>
-        </div>
+        </c:if>
     </section>
 
     <!-- 전폭 슬라이더 광고 배너 -->

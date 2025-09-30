@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class BooksController {
 
-    @Autowired
-    private BooksService booksService;
+
+    private final BooksService booksService;
 
     @GetMapping("/book/{bookId}")
     public String bookDetail(@PathVariable long bookId, Model model) {
