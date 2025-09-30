@@ -39,8 +39,9 @@ $(function () {
               <div><label class="field-label">수령인</label><div>${o.recipient ?? '-'}</div></div>
               <div><label class="field-label">주소</label><div>${o.address ?? '-'}</div></div>
               <div><label class="field-label">주문/결제/배송</label>
-                   <div>${o.createdAt ?? '-'} / ${o.paidAt ?? '-'} / ${o.deliveredAt ?? '-'}</div>
-              </div>
+              <div>${o.createdAtFormatted ?? '-'} / ${o.paidAtFormatted ?? '-'} / ${o.deliveredAtFormattedShort ?? '-'}</div>
+            </div>
+
             `;
             } else {
                 html = res; // 서버가 HTML로 내려준 경우 그대로 삽입

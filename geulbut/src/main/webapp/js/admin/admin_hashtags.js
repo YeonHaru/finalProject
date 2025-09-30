@@ -398,5 +398,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
     }
-
+    // ESC 키로 두 모달 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (hashtagModal && hashtagModal.style.display === 'flex') {
+                closeModal();
+            }
+            if (booksModal && booksModal.style.display === 'flex') {
+                closeBooksModal();
+            }
+        }
+    });
 });
