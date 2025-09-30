@@ -101,9 +101,9 @@
                             <td>${order.merchantUid != null ? order.merchantUid : '-'}</td>
                             <td>${order.recipient != null ? order.recipient : '-'}</td>
                             <td class="t-left">${order.address != null ? order.address : '-'}</td>
-                            <td>${order.createdAt != null ? order.createdAt : '-'}</td>
-                            <td>${order.paidAt != null ? order.paidAt : '-'}</td>
-                            <td>${order.deliveredAt != null ? order.deliveredAt : '-'}</td>
+                            <td><c:out value="${order.createdAtFormatted}" /></td>
+                            <td><c:out value="${order.paidAtFormatted != null ? order.paidAtFormatted : '-'}" /></td>
+                            <td><c:out value="${order.deliveredAtFormattedShort != null ? order.deliveredAtFormattedShort : '-'}" /></td>
                             <td>
                                 <button class="btn btn-secondary btn--liquid-glass btn-detail" data-id="${order.orderId}">상세보기</button>
                             </td>
