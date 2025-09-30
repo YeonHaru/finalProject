@@ -1,12 +1,14 @@
+/* 날씨 + 미세먼지 ticker 공통 스타일 */
+#weather-dust-header,
 #dust-ticker {
-    font-weight: bold;
     padding: 5px;
 }
 
+/* 미세먼지 경보 / 주의보 색상 */
 .warning {
-    color: orange;
+    color: orange; /* 주의보 */
 }
 
 .danger {
-    color: red;
+    color: red;    /* 경보 */
 }
