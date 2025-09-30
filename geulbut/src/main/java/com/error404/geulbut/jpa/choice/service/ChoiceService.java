@@ -21,7 +21,6 @@ public class ChoiceService {
     public Page<ChoiceDto> getAllChoice(Pageable pageable) {
         return choiceRepository.findChoice(pageable);
 
-    public Page<ChoiceRepository> getAllIntroductions(Pageable pageable) {
-        return choiceRepository.findIntroductionList(pageable);
+
     }
 }
