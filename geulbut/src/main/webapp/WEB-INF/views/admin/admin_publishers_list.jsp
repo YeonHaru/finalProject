@@ -74,6 +74,7 @@
         </table>
     </div>
 
+
     <!-- 페이지네이션 -->
     <c:if test="${publishersPage.totalPages > 0}">
         <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
