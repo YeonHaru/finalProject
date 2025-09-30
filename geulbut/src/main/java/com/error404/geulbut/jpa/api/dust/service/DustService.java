@@ -13,6 +13,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -37,6 +38,8 @@ public class DustService {
 
     public Map<String, String> getMajorSidoDustSimple() {
         Map<String, String> result = new LinkedHashMap<>();
+        String[] fakeGrades = {"좋음", "보통", "나쁨", "매우나쁨"};
+        Random random = new Random();
 
         for (String sido : sidoList) {
             try {
@@ -54,8 +57,7 @@ public class DustService {
                         .toUri();
 
                 String responseStr = restTemplate.getForObject(uri, String.class);
-
-                String grade = "좋음"; // 기본값
+                String grade = null;
 
                 if (responseStr != null && !responseStr.isEmpty()) {
                     JsonNode rootNode = mapper.readTree(responseStr);
@@ -65,15 +67,21 @@ public class DustService {
                         JsonNode firstItem = itemsNode.get(0);
                         String informGrade = firstItem.path("informGrade").asText(null);
                         if (informGrade != null && !informGrade.isEmpty()) {
-                            grade = informGrade; // 경보/주의보 값
+                            grade = informGrade; // 실제 경보/주의보 값
                         }
                     }
+                }
+
+                // 🔹 실제 데이터 없으면 가짜 데이터 사용
+                if (grade == null || grade.isEmpty()) {
+                    grade = fakeGrades[random.nextInt(fakeGrades.length)];
                 }
 
                 result.put(sido, grade);
 
             } catch (Exception e) {
-                result.put(sido, null);
+                // 🔹 API 실패 시에도 가짜 데이터
+                result.put(sido, fakeGrades[random.nextInt(fakeGrades.length)]);
             }
         }
 
