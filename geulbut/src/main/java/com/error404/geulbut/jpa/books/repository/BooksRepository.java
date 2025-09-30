@@ -54,4 +54,8 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
            b.bookId
 """)
     List<Books> findBestSellers(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"author"})
+    @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
+    List<Books> findByIds(@Param("ids") List<Long> ids);
 }

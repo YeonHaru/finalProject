@@ -772,424 +772,54 @@
     <section class="hot-news-section">
         <h2 class="hot-news-title">화제의 책 소식</h2>
 
-        <div class="hot-news-slider">
-            <div class="hot-news-container">
-                <!-- 페이지 1 -->
-                <div class="hot-news-page active">
-                    <div class="hot-news-grid">
-                        <!-- 책 카드 1 -->
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-1">#1</span>
-                                <span class="status-badge hot">HOT</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/ff6b6b/ffffff?text=달러구트+꿈+백화점" alt="달러구트 꿈 백화점">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">달러구트 꿈 백화점</h3>
-                                <p class="book-author">이미예</p>
-                                <p class="book-description">꿈을 파는 신비한 백화점에서 벌어지는 따뜻한 이야기</p>
-                                <p class="book-genre">판타지</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.8</span>
-                                </div>
-                                <div class="book-price">13,500원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 15,847회</span>
-                                    <span class="likes">👁 52,672</span>
-                                    <span class="hearts">❤ 4,248</span>
-                                </div>
-                            </div>
-                        </div>
+        <c:choose>
+            <c:when test="${empty hotNews}">
+                <div class="featured-empty">데이터 준비 중</div>
+            </c:when>
 
-                        <!-- 책 카드 2 -->
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-2">#2</span>
-                                <span class="status-badge best">BEST</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/4ecdc4/ffffff?text=지구+끝의+온실" alt="지구 끝의 온실">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">지구 끝의 온실</h3>
-                                <p class="book-author">김초엽</p>
-                                <p class="book-description">기후 변화와 인간의 미래를 그린 SF 걸작</p>
-                                <p class="book-genre">SF소설</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.9</span>
-                                </div>
-                                <div class="book-price">16,200원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 12,632회</span>
-                                    <span class="likes">👁 41,941</span>
-                                    <span class="hearts">❤ 3,756</span>
-                                </div>
-                            </div>
-                        </div>
+            <c:otherwise>
+                <div class="hot-news-slider">
+                    <div class="hot-news-container">
+                        <!-- 한 페이지에 3권 (hotNews는 최대 3권으로 전달) -->
+                        <div class="hot-news-page active">
+                            <div class="hot-news-grid">
+                                <c:forEach var="b" items="${hotNews}" varStatus="s">
+                                    <div class="hot-news-card">
+                                        <div class="card-header">
+                                            <span class="rank-badge rank-${s.index + 1}">#${s.index + 1}</span>
+                                            <span class="status-badge ${s.index==0 ? 'hot' : (s.index==1 ? 'best' : 'new')}">
+                                                    ${s.index==0 ? 'HOT' : (s.index==1 ? 'BEST' : 'NEW')}
+                                            </span>
+                                        </div>
 
-                        <!-- 책 카드 3 -->
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-3">#3</span>
-                                <span class="status-badge new">NEW</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/6c5ce7/ffffff?text=보건교사+안은영" alt="보건교사 안은영">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">보건교사 안은영</h3>
-                                <p class="book-author">정세랑</p>
-                                <p class="book-description">학교에서 벌어지는 기묘하고 따뜻한 이야기</p>
-                                <p class="book-genre">환상소설</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.6</span>
-                                </div>
-                                <div class="book-price">14,400원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 9,284회</span>
-                                    <span class="likes">👁 31,117</span>
-                                    <span class="hearts">❤ 2,942</span>
-                                </div>
+                                        <div class="book-cover">
+                                            <img
+                                                    src="${empty b.imgUrl ? 'https://via.placeholder.com/200x280/cccccc/000000?text=No+Image' : b.imgUrl}"
+                                                    alt="<c:out value='${b.title}'/>"
+                                                    onerror="this.src='https://via.placeholder.com/200x280/cccccc/000000?text=No+Image'">
+                                        </div>
+
+                                        <div class="book-content">
+                                            <h3 class="book-title"><c:out value="${b.title}"/></h3>
+                                            <p class="book-author"><c:out value="${b.authorName}"/></p>
+
+                                            <p class="book-description"><c:out value="${b.description}"/></p>
+
+                                            <div class="book-meta">
+                                                <span class="meta-order">판매 ${b.orderCount}권</span>
+                                                <span class="meta-wish">위시 ${b.wishCount}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 페이지 2 -->
-                <div class="hot-news-page">
-                    <div class="hot-news-grid">
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-4">#4</span>
-                                <span class="status-badge trending">인기</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/f093fb/ffffff?text=트렌드+코리아+2025" alt="트렌드 코리아 2025">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">트렌드 코리아 2025</h3>
-                                <p class="book-author">김난도</p>
-                                <p class="book-description">2025년을 이끌어갈 소비 트렌드 분석서</p>
-                                <p class="book-genre">경제/경영</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.7</span>
-                                </div>
-                                <div class="book-price">17,100원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 11,456회</span>
-                                    <span class="likes">👁 38,891</span>
-                                    <span class="hearts">❤ 3,134</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-5">#5</span>
-                                <span class="status-badge hot">HOT</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/45b7d1/ffffff?text=불편한+편의점" alt="불편한 편의점">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">불편한 편의점</h3>
-                                <p class="book-author">김호연</p>
-                                <p class="book-description">청파동 골목길 편의점에서 펼쳐지는 인생 드라마</p>
-                                <p class="book-genre">소설</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.5</span>
-                                </div>
-                                <div class="book-price">13,950원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 8,789회</span>
-                                    <span class="likes">👁 29,456</span>
-                                    <span class="hearts">❤ 2,876</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-6">#6</span>
-                                <span class="status-badge best">BEST</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/ff9ff3/ffffff?text=아몬드" alt="아몬드">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">아몬드</h3>
-                                <p class="book-author">손원평</p>
-                                <p class="book-description">감정을 느끼지 못하는 소년의 성장 이야기</p>
-                                <p class="book-genre">청소년소설</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.4</span>
-                                </div>
-                                <div class="book-price">12,600원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 7,432회</span>
-                                    <span class="likes">👁 25,876</span>
-                                    <span class="hearts">❤ 2,567</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 페이지 3 -->
-                <div class="hot-news-page">
-                    <div class="hot-news-grid">
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-7">#7</span>
-                                <span class="status-badge new">NEW</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/54a0ff/ffffff?text=미드나잇+라이브러리" alt="미드나잇 라이브러리">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">미드나잇 라이브러리</h3>
-                                <p class="book-author">매트 헤이그</p>
-                                <p class="book-description">인생의 다른 선택들을 경험해 수 있는 신비한 도서관 이야기</p>
-                                <p class="book-genre">현대문학</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.9</span>
-                                </div>
-                                <div class="book-price">16,500원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 11,203회</span>
-                                    <span class="likes">👁 42,815</span>
-                                    <span class="hearts">❤ 3,074</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-8">#8</span>
-                                <span class="status-badge trending">명작</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/ff6348/ffffff?text=언어의+온도" alt="언어의 온도">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">언어의 온도</h3>
-                                <p class="book-author">이기주</p>
-                                <p class="book-description">말과 글에 숨겨진 따뜻함과 자가슴에 대한 아름다운 에세이</p>
-                                <p class="book-genre">에세이</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.6</span>
-                                </div>
-                                <div class="book-price">14,000원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 6,487회</span>
-                                    <span class="likes">👁 25,396</span>
-                                    <span class="hearts">❤ 1,639</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-9">#9</span>
-                                <span class="status-badge hot">스테디</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/2ed573/ffffff?text=코스모스" alt="코스모스">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">코스모스</h3>
-                                <p class="book-author">칼 세이건</p>
-                                <p class="book-description">우주에 대한 경이로움과 과학적 탐구 정신을 담은 불멸의 명저</p>
-                                <p class="book-genre">과학</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.8</span>
-                                </div>
-                                <div class="book-price">22,000원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 4,923회</span>
-                                    <span class="likes">👁 18,742</span>
-                                    <span class="hearts">❤ 1,256</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 페이지 4 -->
-                <div class="hot-news-page">
-                    <div class="hot-news-grid">
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-10">#10</span>
-                                <span class="status-badge trending">추천</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/9b59b6/ffffff?text=봄날의+서점" alt="봄날의 서점">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">봄날의 서점</h3>
-                                <p class="book-author">김수연</p>
-                                <p class="book-description">작은 서점에서 펼쳐지는 따뜻한 이야기들과 책을 사랑하는 사람들의 마음</p>
-                                <p class="book-genre">힐링/에세이</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.7</span>
-                                </div>
-                                <div class="book-price">16,000원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 6,749회</span>
-                                    <span class="likes">👁 34,856</span>
-                                    <span class="hearts">❤ 2,381</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-11">#11</span>
-                                <span class="status-badge hot">화제</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/e056fd/ffffff?text=숲속의+도서관" alt="숲속의 도서관">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">숲속의 도서관</h3>
-                                <p class="book-author">박민구</p>
-                                <p class="book-description">자연과 책이 어우러진 신비로운 공간에서 벌어지는 마법 같은 이야기</p>
-                                <p class="book-genre">판타지</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.5</span>
-                                </div>
-                                <div class="book-price">17,000원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 5,912회</span>
-                                    <span class="likes">👁 27,643</span>
-                                    <span class="hearts">❤ 1,756</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-12">#12</span>
-                                <span class="status-badge best">인기</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/ff7675/ffffff?text=달빛+카페의+비밀" alt="달빛 카페의 비밀">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">달빛 카페의 비밀</h3>
-                                <p class="book-author">정유정</p>
-                                <p class="book-description">밤에만 문을 여는 신비한 카페에서 일어나는 따뜻하고 신비로운 이야기들</p>
-                                <p class="book-genre">로맨스/판타지</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.8</span>
-                                </div>
-                                <div class="book-price">19,000원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 8,356회</span>
-                                    <span class="likes">👁 31,927</span>
-                                    <span class="hearts">❤ 2,194</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 페이지 5 -->
-                <div class="hot-news-page">
-                    <div class="hot-news-grid">
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-13">#13</span>
-                                <span class="status-badge new">NEW</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/00cec9/ffffff?text=시간+여행자의+일기" alt="시간 여행자의 일기">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">시간 여행자의 일기</h3>
-                                <p class="book-author">이상현</p>
-                                <p class="book-description">과거와 현재를 넘나드는 신비한 여행과 운명적 만남의 이야기</p>
-                                <p class="book-genre">SF/로맨스</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.6</span>
-                                </div>
-                                <div class="book-price">18,500원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 7,123회</span>
-                                    <span class="likes">👁 28,945</span>
-                                    <span class="hearts">❤ 2,067</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-14">#14</span>
-                                <span class="status-badge trending">화제</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/fd79a8/ffffff?text=마법사의+레시피북" alt="마법사의 레시피북">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">마법사의 레시피북</h3>
-                                <p class="book-author">윤서영</p>
-                                <p class="book-description">요리를 통해 마법을 부리는 젊은 마법사의 성장기와 모험</p>
-                                <p class="book-genre">판타지</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.4</span>
-                                </div>
-                                <div class="book-price">15,800원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 6,234회</span>
-                                    <span class="likes">👁 24,678</span>
-                                    <span class="hearts">❤ 1,834</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hot-news-card">
-                            <div class="card-header">
-                                <span class="rank-badge rank-15">#15</span>
-                                <span class="status-badge hot">HOT</span>
-                            </div>
-                            <div class="book-cover">
-                                <img src="https://via.placeholder.com/200x280/fdcb6e/ffffff?text=별이+빛나는+밤에" alt="별이 빛나는 밤에">
-                            </div>
-                            <div class="book-content">
-                                <h3 class="book-title">별이 빛나는 밤에</h3>
-                                <p class="book-author">강민호</p>
-                                <p class="book-description">도시의 소음을 벗어나 별빛 아래에서 찾은 진정한 자신의 이야기</p>
-                                <p class="book-genre">에세이</p>
-                                <div class="book-rating">
-                                    <span class="stars">⭐ 4.7</span>
-                                </div>
-                                <div class="book-price">13,200원</div>
-                                <div class="book-stats">
-                                    <span class="views">💬 5,487회</span>
-                                    <span class="likes">👁 21,356</span>
-                                    <span class="hearts">❤ 1,523</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 하단 내비게이션 -->
-        <div class="bottom-navigation">
-            <button class="slider-nav prev" id="prevBtn">‹이전</button>
-            <div class="pagination-dots">
-                <span class="dot active" data-page="0"></span>
-                <span class="dot" data-page="1"></span>
-                <span class="dot" data-page="2"></span>
-            </div>
-            <button class="slider-nav next" id="nextBtn">다음›</button>
-        </div>
+            </c:otherwise>
+        </c:choose>
     </section>
+
 
     <!-- 2칸씩 있는 도서 광고창 -->
     <section class="promotion-section">
