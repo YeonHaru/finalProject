@@ -49,8 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (/비|눈/.test(weatherState)) {
                 dust = '좋음';
             }
-
-
+            
             const div = document.createElement('div');
             div.className = 'ticker-item';
             div.innerHTML = '<div class="region-name">' + region + ' : ' + weatherState + '</div>' +
