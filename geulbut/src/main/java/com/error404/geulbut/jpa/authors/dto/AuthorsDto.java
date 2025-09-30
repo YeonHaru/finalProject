@@ -24,6 +24,12 @@ public class AuthorsDto {
         this.name = name;
         this.description = description;
     }
+//  등록날짜 통일을 위해 등록  2025-09-25 16:00 이렇게 보임
+    public String getCreatedAtFormatted() {
+        if (createdAt == null) return "";
+        return createdAt.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
 
 
 }

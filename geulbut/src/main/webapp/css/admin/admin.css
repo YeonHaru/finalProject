@@ -949,7 +949,7 @@ h1 {
 }
 
 .admin-authors-table col.col-created {
-    width: 140px
+    width: 160px
 }
 
 .admin-authors-table col.col-desc {
@@ -1012,7 +1012,7 @@ h1 {
 }
 
 .admin-publishers-table col.col-created {
-    width: 160px
+    width: 180px
 }
 
 .admin-publishers-table col.col-actions {
@@ -1310,7 +1310,7 @@ body.admin-categories .admin-categories-table col.col-name {
 }
 
 body.admin-categories .admin-categories-table col.col-created {
-    width: 160px;
+    width: 180px;
 }
 
 body.admin-categories .admin-categories-table col.col-actions {

@@ -57,7 +57,7 @@
                 <tr data-id="${category.categoryId}">
                     <td class="category-id t-center">${category.categoryId}</td>
                     <td class="category-name t-left" title="${category.name}">${category.name}</td>
-                    <td>${category.createdAt}</td>
+                    <td class="created-at-cell">${category.createdAtFormatted}</td>
                     <td class="actions-cell">
                         <button type="button" class="btn btn-secondary btn--liquid-glass btnEdit btn-edit">수정</button>
                         <button type="button" class="btn btn-danger btn--liquid-glass btnDelete btn-delete">삭제</button>

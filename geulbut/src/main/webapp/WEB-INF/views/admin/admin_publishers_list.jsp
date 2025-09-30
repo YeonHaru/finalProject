@@ -63,7 +63,7 @@
                     <td>${publisher.publisherId}</td>
                     <td class="t-left publisher-name">${publisher.name}</td>
                     <td class="t-left publisher-description">${publisher.description}</td>
-                    <td class="created-at-cell">${publisher.createdAt}</td>
+                    <td class="created-at-cell">${publisher.createdAtFormatted}</td>
                     <td>
                         <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
                         <button type="button" class="btn btn-danger  btn--liquid-glass btnDelete">삭제</button>
