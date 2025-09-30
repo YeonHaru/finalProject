@@ -28,4 +28,5 @@ public class HashtagsDto {
         if (createdAt == null) return "";
         return createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
+
 }
