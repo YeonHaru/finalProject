@@ -1,35 +1,65 @@
 // orders.js (권장: mypage-common.js 다음, cart.js 이전에 로드)
 window.Orders = (() => {
 
+        // ===== 페이징 상태 =====
+        let _page = 0;          // 0-based
+        let _size = 4;          // 페이지당 개수 (원하면 바꿔)
+        let _totalPages = 1;
+        let _cacheAll = null;   // 서버가 배열만 주면 여기에 캐싱해서 클라 페이징
+
     /** ========== 1) 주문 내역 SPA 렌더 ========== */
-    async function refreshOrders() {
-        const ordersContainer = document.querySelector('#v-pills-orders');
+    async function refreshOrders(page = _page) {
+        _page = page; // 최신페이지 유지
+        const ordersContainer = document.querySelector('#orders-root');
         try {
-            const res = await fetch('/orders/user', {
+            const url = `/orders/user?page=${encodeURIComponent(_page)}&size=${encodeURIComponent(_size)}`;
+            const res = await fetch(url, {
                 method: 'GET',
-                headers: {'X-CSRF-TOKEN': window.csrfToken}
+                headers: window.getCsrfHeaders?.(false) || ({'X-CSRF-TOKEN': window.csrfToken}),
+                credentials: 'include'
             });
-            const data = await res.json();
+            const raw = await res.json();
+
+            window.hideById && window.hideById('orders-skeleton');
+
+            let data = [];
+            if (raw && Array.isArray(raw.content)){
+                data = raw.content;
+                _totalPages = Math.max(1, raw.totalPages ?? 1);
+                _page = raw.number ?? _page;
+                _size = raw.size ?? _size;
+                _cacheAll = null;
+            } else if (Array.isArray(raw)){
+                _cacheAll = raw;
+                _totalPages = Math.max(1, Math.ceil(raw.length / _size));
+                const  start = _page * _size;
+                data = raw.slice(start, start + _size);
+            }else{
+                console.warn('[orders] unexpected response shape:', raw);
+                data = [];
+                _totalPages =1;
+                _page = 0;
+            }
 
             if (!data || !data.length) {
-                ordersContainer.innerHTML = `
-          <h2 class="mb-3 pb-2 border-bottom">주문 내역</h2>
-          <div class="alert alert-info">주문 내역이 없습니다.</div>`;
+                ordersContainer.innerHTML = `<div class="alert alert-info">주문 내역이 없습니다.</div>`;
+                renderPagination();
                 return;
             }
 
-            let html = `
-        <h2 class="mb-3 pb-2 border-bottom">주문 내역</h2>
-        <div class="orders-list">
-      `;
+            let html = ``;
 
             data.forEach(order => {
-                // 👉 대표 도서(첫 번째 아이템) 추출
-                const firstItem = order.items[0];
-                const firstTitle = escapeHtml(firstItem.title);
-                const thumbUrl = escapeHtml(firstItem.imageUrl || '');
-                const totalItems = order.items.length;
+                // 👉 아이템 배열 안전화
+                const items = Array.isArray(order.items) ? order.items : [];
+                // 👉 대표 도서(첫 번째 아이템) 추출 (없으면 빈 객체)
+                const firstItem = items[0] || {};
+                const firstTitle = window.escapeHtml(firstItem.title || '주문');
+                const thumbUrl = window.escapeHtml(firstItem.imageUrl || '');
+                const totalItems = items.length;
                 const createdAt = (order.createdAt || '').substring(0, 10);
+                // 👉 총액 필드 안전 처리
+                const grand = (order.totalPrice ?? order.paidAmount ?? order.itemsTotal ?? 0);
 
                 // 카드 요약 + 아코디언
                 html += `
@@ -40,8 +70,8 @@ window.Orders = (() => {
                                  style="width:60px; height:85px; object-fit:cover; border-radius:4px; margin-right:10px;">
                             <div class="flex-grow-1">
                                 <div class="fw-bold">${firstTitle}${totalItems > 1 ? ` 외 ${totalItems - 1}권` : ''}</div>
-                                <div class="small text-muted">주문일: ${escapeHtml((order.createdAt || '').substring(0,10))}</div>
-                                <div class="fw-bold text-primary">최종 결제금액: ${fmtKR(order.totalPrice)} 원</div>
+                                <div class="small text-muted">주문일: ${window.escapeHtml((order.createdAt || '').substring(0, 10))}</div>
+                               <div class="fw-bold text-primary">결제 금액: ${window.fmtKR(grand)} 원</div>
                             </div>
                             <div>
                                 ${renderOrderStatus(order)}
@@ -65,33 +95,33 @@ window.Orders = (() => {
                                      data-bs-parent="#orderAccordion-${order.orderId}">
                                     <div class="accordion-body">
                                         <div class="text-muted small mb-2">
-                                            주문번호: ${escapeHtml(order.merchantUid)} <br>
-                                            주문일: ${escapeHtml((order.createdAt || '').substring(0,10))}
+                                            주문번호: ${window.escapeHtml(order.merchantUid)} <br>
+                                            주문일: ${window.escapeHtml((order.createdAt || '').substring(0, 10))}
                                         </div>
-                                        ${order.items.map(item => {
+                                           ${items.map(item => {
                     const discountRate = item.price && item.discountedPrice
                         ? Math.round((item.price - item.discountedPrice) / item.price * 100)
                         : 0;
                     return `
                                                 <div class="mb-3">
                                                     <div>
-                                                        <strong>${escapeHtml(item.title)}</strong>
+                                                         <strong>${window.escapeHtml(item.title)}</strong>
                                                         <span class="text-muted ms-1">(${item.quantity}권)</span>
                                                     </div>
                                                     <div class="small text-muted">
                                                         ${discountRate > 0
-                        ? `정가: <span class="text-decoration-line-through">${fmtKR(item.price)}원</span>
+                        ? `정가: <span class="text-decoration-line-through">${window.fmtKR(item.price)}원</span>
                                                                <span class="badge bg-danger ms-2">${discountRate}% 할인</span>`
-                        : `정가: ${fmtKR(item.price)}원`}
+                        : `정가: ${window.fmtKR(item.price)}원`}
                                                     </div>
                                                     <div class="fw-bold text-success">
-                                                        가격: ${fmtKR(item.discountedPrice || item.price)}원
+                                                        가격: ${window.fmtKR(item.discountedPrice || item.price)}원
                                                     </div>
                                                 </div>
                                             `;
                 }).join("")}
                                         <div class="fw-bold text-primary mt-2">
-                                            총 결제 금액: ${fmtKR(order.totalPrice)} 원
+                                            결제 금액: ${window.fmtKR(grand)} 원
                                         </div>
                                     </div>
                                 </div>
@@ -103,11 +133,15 @@ window.Orders = (() => {
             `;
             });
 
-            html += `</div>`;
             ordersContainer.innerHTML = html;
+            renderPagination();
 
         } catch (err) {
             console.error("❌ 주문내역 갱신 실패:", err);
+            window.hideById && window.hideById('orders-skeleton');
+                        const root = document.querySelector('#orders-root');
+                        if (root) root.innerHTML = `<div class="alert alert-danger">주문 내역을 불러오지 못했습니다.</div>`;
+                        renderPagination();
         }
     }
 
@@ -187,9 +221,7 @@ window.Orders = (() => {
 
         const reason = prompt("취소 사유(선택):") || "";
 
-        const headers = { 'Accept': 'application/json' };
-        // CSRF 쓰면 헤더 추가
-        if (window.csrfToken) headers['X-CSRF-TOKEN'] = window.csrfToken;
+        const headers = Object.assign({ 'Accept': 'application/json' }, window.getCsrfHeaders?.(false) || {});
 
         try {
             const res = await fetch(`/payments/cancel/${orderId}?reason=${encodeURIComponent(reason)}`, {
@@ -211,14 +243,15 @@ window.Orders = (() => {
             alert('네트워크 오류로 취소에 실패했습니다.');
         }
     }
+
     /** ========== 3) 결제 모달 → prepare → 결제 → verify ========== */
 
     /** 모달 열기: 총액 세팅, 확인버튼 바인딩 */
     function openOrderInfoModal(total) {
 
         const latestEl = document.querySelector("#cart-total");
-        if (latestEl){
-            const latestAmount = parseInt(latestEl.textContent.replace(/[^0-9]/g,""))
+        if (latestEl) {
+            const latestAmount = parseInt(latestEl.textContent.replace(/[^0-9]/g, ""))
             total = latestAmount;
         }
 
@@ -281,7 +314,7 @@ window.Orders = (() => {
         const o = getOrderFormValues();
 
         const oiTotalEl = document.getElementById("oiTotal");
-        if (oiTotalEl){
+        if (oiTotalEl) {
             total = parseInt(oiTotalEl.textContent.replace(/[^0-9]/g, ""), 10);
         }
         const IMP = window.IMP;
@@ -367,6 +400,62 @@ window.Orders = (() => {
         if (tab) tab.addEventListener('shown.bs.tab', refreshOrders);
     }
 
+    // 페이지네이션 렌더
+    function renderPagination() {
+        let pager = document.getElementById('orders-pagination');
+        if (!pager){
+            pager = document.createElement('ul');
+            pager.id = 'orders-pagination';
+            pager.className = 'pagination pagination-sm justify-content-center mt-3';
+            const root = document.getElementById('orders-root');
+            if (root && root.parentNode) root.parentNode.insertBefore(pager, root.nextSibling);
+        }
+        // totalPages 1이면 비움
+                if (_totalPages <= 1) { pager.innerHTML = ''; return; }
+
+                    const mk = (label, targetPage, active = false, disabled = false, aria = '') => {
+                        const li = document.createElement('li');
+                        li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
+                        const a = document.createElement('a');
+                        a.className = 'page-link';
+                        a.href = '#';
+                        a.textContent = label;
+                        if (aria) a.setAttribute('aria-label', aria);
+                        a.onclick = (e) => {
+                                e.preventDefault();
+                                if (disabled || targetPage === _page) return;
+                                refreshOrders(targetPage);
+                                // 스크롤 살짝 올려주기(선택)
+                                    document.getElementById('v-pills-orders')?.scrollIntoView({behavior:'smooth', block:'start'});
+                            };
+                        li.appendChild(a);
+                        return li;
+                    };
+
+                    // 간단한 « ‹ 1 2 3 › »
+                        const ul = document.createDocumentFragment();
+                const isFirst = (_page === 0);
+                const isLast = (_page >= _totalPages - 1);
+                ul.appendChild(mk('«', 0, false, isFirst, 'First'));
+                ul.appendChild(mk('‹', Math.max(0, _page - 1), false, isFirst, 'Previous'));
+
+                    // 최대 5개 윈도우
+                        const span = 2;
+                let start = Math.max(0, _page - span);
+                let end = Math.min(_totalPages - 1, _page + span);
+                // 채우기
+                    while ((end - start) < 4 && end < _totalPages - 1) end++;
+                while ((end - start) < 4 && start > 0) start--;
+                for (let p = start; p <= end; p++) {
+                        ul.appendChild(mk(String(p + 1), p, p === _page, false, 'page'));
+                    }
+
+                    ul.appendChild(mk('›', Math.min(_totalPages - 1, _page + 1), false, isLast, 'Next'));
+                ul.appendChild(mk('»', _totalPages - 1, false, isLast, 'Last'));
+                pager.innerHTML = '';
+                pager.appendChild(ul);
+            }
+
     // 공개 API
     return {
         refreshOrders,
@@ -381,3 +470,8 @@ window.Orders = (() => {
         mount
     };
 })();
+
+// 무조건 js 한번은 노출
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('orders-root')) Orders.refreshOrders();
+});

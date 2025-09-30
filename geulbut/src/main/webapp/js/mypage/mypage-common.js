@@ -18,6 +18,28 @@ window.fmtKR = function (n) {
     return Number.isFinite(v) ? v.toLocaleString('ko-KR') : '0';
 };
 
+/** 공통: CSRF 헤더 빌더 (json=true면 Content-Type 추가) */
+    window.getCsrfHeaders = function (json = false) {
+        const headers = {};
+        if (json) headers['Content-Type'] = 'application/json';
+        // JSP 전역값 우선
+            if (window.csrfHeaderName && window.csrfToken) {
+                headers[window.csrfHeaderName] = window.csrfToken;
+            } else {
+                // 메타태그 fallback
+                const tk = document.querySelector('meta[name="_csrf"]')?.content;
+                const hn = document.querySelector('meta[name="_csrf_header"]')?.content;
+                if (tk && hn) headers[hn] = tk;
+            }
+        return headers;
+    };
+
+    /** 공통: 엘리먼트 숨기기 */
+        window.hideById = function (id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    };
+
 /** PortOne(아임포트) init (전역) — SDK 지연 대비, 1회 보장 */
 (function initPortOneOnce() {
     let tried = false;
@@ -50,6 +72,7 @@ window.fmtKR = function (n) {
         if (tryInit() || count >= 20) clearInterval(t); // 최대 2초 대기
     }, 100);
 })();
+
 
 /* 페이지 로드 시 탭 초기화 & 훅 */
 document.addEventListener("DOMContentLoaded", function () {
@@ -88,28 +111,36 @@ document.addEventListener("DOMContentLoaded", function () {
             window.Orders.refreshOrders();
         });
     }
+        const activePane = document.querySelector('.tab-pane.show.active');
+        if (activePane?.id === 'v-pills-orders' && window.Orders?.refreshOrders) {
+                window.Orders.refreshOrders();
+        }
 });
 
 
     document.addEventListener('DOMContentLoaded', () => {
     // 1) "내 정보" 탭 강제 활성화
-    const infoTab = document.getElementById('v-pills-info-tab');
-    if (infoTab) infoTab.click();
+        if (window.forceChangePw !== true) return;
+
+        const focusPw = () => {
+            const cur = document.getElementById('currentPw');
+            if (cur) { cur.scrollIntoView({behavior:'smooth', block:'center'}); cur.focus(); }
+            const form = document.querySelector('form[action$="/mypage/change-password"]');
+            if (form) {
+                form.classList.add('border','border-warning','rounded-3');
+                setTimeout(() => form.classList.remove('border','border-warning','rounded-3'), 3000);
+            }
+        };
 
     // 2) 비밀번호 변경 섹션으로 스크롤 + 현재 비번 입력창 포커스
-    const cur = document.getElementById('currentPw');
-    if (cur) {
-    cur.scrollIntoView({behavior: 'smooth', block: 'center'});
-    cur.focus();
-}
-
-    // 3) 시각 강조(선택)
-    const form = document.querySelector('form[action$="/mypage/change-password"]');
-    if (form) {
-    form.classList.add('border', 'border-warning', 'rounded-3');
-    setTimeout(() => form.classList.remove('border', 'border-warning', 'rounded-3'), 3000);
-}
-});
+        const btn = document.getElementById('v-pills-info-tab');
+        if (btn && window.bootstrap?.Tab && !btn.classList.contains('active')) {
+            btn.addEventListener('shown.bs.tab', focusPw, {once:true});
+            new bootstrap.Tab(btn).show();
+        } else {
+            focusPw();
+        }
+    });
 
 (function () {
     'use strict';

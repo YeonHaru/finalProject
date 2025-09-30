@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/mypage/mypage.css">
 </head>
-</head>
+
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
@@ -292,123 +292,41 @@
                             총합: <fmt:formatNumber value="${cartTotal}" pattern="#,##0"/> 원
                         </h5>
                         <button class="btn btn-primary"
-                                onclick="Orders.openOrderInfoModal(${cartTotal})">💳 결제하기</button>
+                                onclick="Orders.openOrderInfoModal(${cartTotal})">💳 결제하기
+                        </button>
                     </div>
                 </c:if>
             </div>
 
-
-            <!-- 주문 내역 -->
+            <!-- 주문 내역 (SSR 제거: 스켈레톤 + 렌더 타깃만 남김) -->
             <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
                 <h2 class="mb-3 pb-2 border-bottom">주문 내역</h2>
 
-                <c:if test="${empty orders}">
-                    <div class="alert alert-info">주문 내역이 없습니다.</div>
-                </c:if>
-
-                <c:if test="${not empty orders}">
-                    <div class="orders-list">
-                        <c:forEach var="order" items="${orders}">
-                            <div class="card mb-3 shadow-sm">
-                                <div class="card-body">
-
-                                    <!-- ✅ 상품 이미지들 -->
-                                    <div class="d-flex overflow-auto mb-2" style="gap:8px;">
-                                        <c:forEach var="item" items="${order.items}">
-                                            <img src="${item.imageUrl}" alt="${item.title}"
-                                                 style="width:60px; height:85px; object-fit:cover; border-radius:4px;">
-                                        </c:forEach>
-                                    </div>
-
-                                    <!-- ✅ 상품명 + 수량 -->
-                                    <c:forEach var="item" items="${order.items}">
-                                        <div>
-                                            <strong>${item.title}</strong>
-                                            <span class="text-muted">x ${item.quantity}</span>
-                                        </div>
-                                    </c:forEach>
-
-                                    <!-- ✅ 금액 -->
-                                    <div class="fw-bold text-primary mt-2">
-                                        <fmt:formatNumber value="${order.totalPrice}" pattern="#,##0"/> 원
-                                    </div>
-
-                                    <!-- ✅ 주문일 -->
-                                    <div class="text-muted small">
-                                        주문일: ${order.createdAt}
-                                    </div>
-
-                                    <!-- ✅ 상태 + 버튼 -->
-                                    <div class="mt-2">
-                                        <c:choose>
-                                            <c:when test="${order.status == 'PAID'}">
-                                                <span class="badge bg-primary">결제 완료</span>
-                                                <button class="btn btn-sm btn-outline-danger ms-2"
-                                                        onclick="Orders.updateOrderStatus(${order.orderId}, 'CANCELLED')">
-                                                    취소
-                                                </button>
-                                            </c:when>
-
-                                            <c:when test="${order.status == 'SHIPPED'}">
-                                                <span class="badge bg-info text-dark">배송중</span>
-                                            </c:when>
-
-                                            <c:when test="${order.status == 'DELIVERED'}">
-                                                <span class="badge bg-success">배송완료</span>
-                                                <button class="btn btn-sm btn-outline-warning ms-2"
-                                                        onclick="Orders.updateOrderStatus(${order.orderId}, 'REFUND_REQUEST')">
-                                                    환불 신청
-                                                </button>
-                                            </c:when>
-
-                                            <c:when test="${order.status == 'CANCELLED'}">
-                                                <span class="badge bg-secondary">취소됨</span>
-                                            </c:when>
-
-                                            <c:when test="${order.status == 'REFUND_REQUEST'}">
-                                                <span class="badge bg-warning text-dark">환불 신청 중</span>
-                                            </c:when>
-
-                                            <c:when test="${order.status == 'REFUNDED'}">
-                                                <span class="badge bg-dark">환불 완료</span>
-                                            </c:when>
-                                        </c:choose>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <c:choose>
-
-                                            <c:when test="${not empty order.pointsRevokedAt}">
-                                                <span class="badge bg-danger">포인트 회수됨</span>
-                                                <small> - <c:out value="${order.pointsAccrued}"/> P</small>
-                                            </c:when>
-
-
-                                            <c:when test="${not empty order.pointsAccrued}">
-                                                <span class="badge bg-success">포인트 적립</span>
-                                                <small> + <c:out value="${order.pointsAccrued}"/> P</small>
-                                                <c:if test="${not empty order.pointsAccruedAt}">
-                                                    <small class="text-muted"> · ${order.pointsAccruedAt}</small>
-                                                </c:if>
-                                            </c:when>
-
-
-                                            <c:when test="${order.status eq 'PAID'}">
-                                                <span class="badge bg-warning text-dark">포인트 적립 예정</span>
-                                            </c:when>
-
-                                            
-                                            <c:otherwise>
-                                                <span class="badge bg-light text-dark">포인트 대상 아님</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
-
-                                </div>
+                <!-- 스켈레톤: JS 로딩 전 잠깐 표시 -->
+                <div id="orders-skeleton">
+                    <div class="card mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3" style="width:60px;height:85px;border-radius:6px;background:#eee;"></div>
+                            <div class="flex-grow-1">
+                                <div class="placeholder-glow"><span class="placeholder col-6"></span></div>
+                                <div class="placeholder-glow"><span class="placeholder col-4"></span></div>
+                                <div class="placeholder-glow"><span class="placeholder col-3"></span></div>
                             </div>
-                        </c:forEach>
+                        </div>
                     </div>
-                </c:if>
+                </div>
+
+                <!-- 실제 렌더 타깃 (JS가 여기에 카드+아코디언을 그립니다) -->
+                <div id="orders-root" class="orders-list"></div>
+
+                <!-- 페이지네이션(선택) -->
+                <nav aria-label="주문 내역 페이지네이션" class="mt-3">
+                    <ul id="orders-pagination" class="pagination pagination-sm justify-content-center"></ul>
+                </nav>
+
+                <noscript>
+                    <div class="alert alert-warning mt-3">주문 내역을 보려면 자바스크립트를 활성화하세요.</div>
+                </noscript>
             </div>
         </div>
     </div>
@@ -422,6 +340,7 @@
     window.csrfHeaderName = "${_csrf.headerName}";
     window.csrfToken = "${_csrf.token}";
     window.currentUserId = "${user.userId}";
+    window.forceChangePw = ${forceChangePw};
 </script>
 
 <!-- 3) PortOne SDK -->
