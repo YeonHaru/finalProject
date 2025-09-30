@@ -28,6 +28,7 @@
         <!-- 편집장의 선택 컨텐츠 -->
         <div class="tab-content editor-choice active" id="editor-choice-content">
             <div class="books-grid">
+                <c:forEach var="data" items="${choices}">
                 <!-- 책 카드 1 -->
                 <div class="book-card">
                     <div class="book-badge recommend">추천</div>
@@ -35,11 +36,11 @@
                         <img src="https://via.placeholder.com/120x160/667eea/ffffff?text=Book1" alt="빼빼 롱스타킹">
                         <div class="book-number">1</div>
                     </div>
-                    <h3 class="book-title">빼빼 롱스타킹</h3>
-                    <p class="book-author">아스트리드 린드그렌</p>
+                    <h3 class="book-title"><c:out value="${data.title}" /></h3>
+                    <p class="book-author"><c:out value="${data.name}" /></p>
                     <div class="editor-comment">
-                        <h4 class="comment-title">편집장의 한마디</h4>
-                        <p class="comment-text">"어른이 되어 다시 읽는 몰락의 감동"</p>
+                        <h4 class="comment-title"><c:out value="${data.description}" /></h4>
+                        <p class="comment-text"><c:out value="${data.publishedDate}" /></p>
                     </div>
                     <div class="book-rating">
                         <span class="star">★</span>
@@ -48,73 +49,7 @@
                         <span class="star">★</span>
                         <span class="star">★</span>
                     </div>
-                </div>
-
-                <!-- 책 카드 2 -->
-                <div class="book-card">
-                    <div class="book-badge recommend">추천</div>
-                    <div class="book-image">
-                        <img src="https://via.placeholder.com/120x160/764ba2/ffffff?text=Book2" alt="헬바운드 하트">
-                        <div class="book-number">2</div>
-                    </div>
-                    <h3 class="book-title">헬바운드 하트</h3>
-                    <p class="book-author">클라이브 바커</p>
-                    <div class="editor-comment">
-                        <h4 class="comment-title">편집장의 한마디</h4>
-                        <p class="comment-text">"공포소설의 새로운 경지를 여는 작품"</p>
-                    </div>
-                    <div class="book-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                    </div>
-                </div>
-
-                <!-- 책 카드 3 -->
-                <div class="book-card">
-                    <div class="book-badge recommend">추천</div>
-                    <div class="book-image">
-                        <img src="https://via.placeholder.com/120x160/f093fb/ffffff?text=Book3" alt="이타미 준 나의 건축">
-                        <div class="book-number">3</div>
-                    </div>
-                    <h3 class="book-title">이타미 준 나의 건축</h3>
-                    <p class="book-author">이타미 준</p>
-                    <div class="editor-comment">
-                        <h4 class="comment-title">편집장의 한마디</h4>
-                        <p class="comment-text">"건축과 철학이 만나는 아름다운 순간"</p>
-                    </div>
-                    <div class="book-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                    </div>
-                </div>
-
-                <!-- 책 카드 4 -->
-                <div class="book-card">
-                    <div class="book-badge recommend">추천</div>
-                    <div class="book-image">
-                        <img src="https://via.placeholder.com/120x160/4facfe/ffffff?text=Book4" alt="롤랑 바르트가 쓴 롤랑 바르트">
-                        <div class="book-number">4</div>
-                    </div>
-                    <h3 class="book-title">롤랑 바르트가 쓴 롤랑 바르트</h3>
-                    <p class="book-author">롤랑 바르트</p>
-                    <div class="editor-comment">
-                        <h4 class="comment-title">편집장의 한마디</h4>
-                        <p class="comment-text">"현대 비평의 거장의 자기를 돌아보다"</p>
-                    </div>
-                    <div class="book-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                    </div>
-                </div>
+                </div></c:forEach>
             </div>
         </div>
 
@@ -1965,6 +1900,5 @@
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
 </script>
-
 </body>
 </html>
