@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="${ctx}/css/header.css" />
     <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
 
+
     <!-- (도서 페이지와 동일 버전) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
