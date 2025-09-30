@@ -851,7 +851,7 @@ h1 {
 }
 .admin-books-table col.col-id { width: 84px; }
 .admin-books-table col.col-title { width: auto; min-width: 220px; }
-.admin-books-table col.col-isbn { width: 130px; }
+.admin-books-table col.col-isbn { width: 160px; }
 .admin-books-table col.col-author { width: 120px; }
 .admin-books-table col.col-publisher { width: 120px; }
 .admin-books-table col.col-category { width: 120px; }
