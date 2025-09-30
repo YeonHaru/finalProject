@@ -7,6 +7,7 @@
 
 <!-- CSS -->
 <link rel="stylesheet" href="<c:url value='/css/admin/admin-header.css'/>">
+<link rel="stylesheet" href="<c:url value='/css/api/dustApi.css'/>">
 
 <!-- 추가 스타일 -->
 <style>

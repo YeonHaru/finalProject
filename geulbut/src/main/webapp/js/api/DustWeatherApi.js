@@ -31,7 +31,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!w || !w.districtName) return;
 
             const region = w.districtName.trim();
-            const weather = w.weather || '-';
+            let weatherState = w.weather || '-';
+
+            //  경북/경남/부산/울산 지역에서 눈 안오게 처리 - 추가
+            if (["경북", "경남", "부산", "울산"].includes(region) && /눈/.test(weatherState)) {
+                weatherState = weatherState.replace("눈", "맑음");
+            }
 
             // dust 매칭
             let dust = dustData[region];
@@ -40,10 +45,23 @@ document.addEventListener("DOMContentLoaded", async function () {
                 dust = dustData[norm] || '';
             }
 
+            //  날씨가 비/눈이면 미세먼지를 '좋음'으로 처리 - 추가
+            if (/비|눈/.test(weatherState)) {
+                dust = '좋음';
+            }
+
+            // 미세먼지 상태별 클래스 적용
+            let dustClass = '';
+            if (dust === '주의보') dustClass = 'warning';
+            else if (dust === '나쁨' || dust === '매우나쁨' || dust === '경보') dustClass = 'danger';
+
+
             const div = document.createElement('div');
             div.className = 'ticker-item';
-            div.innerHTML = '<div class="region-name">' + region + ' : ' + weather + '</div>' +
-                '<div>미세먼지 : ' + dust + '</div>';
+            div.innerHTML = `
+                <div class="region-name">${region} : ${weatherState}</div>
+                <div class="${dustClass}">미세먼지 : ${dust}</div>
+            `;
 
             items.push(div.innerHTML);
         });
