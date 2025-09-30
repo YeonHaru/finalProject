@@ -6,8 +6,12 @@ import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,4 +27,12 @@ public class BooksService {
         return mapStruct.toDto(books);
     }
 
+    @Transactional(readOnly = true)
+    public List<BooksDto> getBestSellersTop10() {
+        var page = PageRequest.of(0, 10);
+        return  booksRepository.findBestSellers(page)
+                .stream()
+                .map(mapStruct::toDto)
+                .toList();
+    }
 }

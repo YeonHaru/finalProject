@@ -1584,7 +1584,7 @@ body {
 
 .featured-books-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -1641,14 +1641,19 @@ body {
     margin-bottom: 12px;
     border-radius: 8px;
     overflow: hidden;
+    aspect-ratio: 8 / 11;
     box-shadow: 0 2px 8px rgba(90,122,74,0.1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f7f7f7;
 }
 
 .featured-book-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+    object-fit: contain;     /* cover → contain */
+    transition: transform .3s ease;
 }
 
 .featured-book-card:hover .featured-book-image img {
@@ -3366,7 +3371,7 @@ body {
     }
 
     .featured-books-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
 

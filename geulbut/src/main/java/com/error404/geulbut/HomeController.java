@@ -1,6 +1,7 @@
 package com.error404.geulbut;
 
 
+import com.error404.geulbut.jpa.books.service.BooksService;
 import com.error404.geulbut.jpa.introduction.dto.IntroductionDto;
 import com.error404.geulbut.jpa.introduction.service.IntroductionService;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeController {
     private final IntroductionService introductionService;
+    private final BooksService booksService;
 
     @GetMapping("/")
     public String home(Model model, @PageableDefault(page = 0, size = 4) Pageable pageable) {
         Page<IntroductionDto> pages = introductionService.getAllIntroductions(pageable);
 
-        model.addAttribute("introductions", pages.getContent());
+        model.addAttribute("featuredBooks", pages.getContent());
+        model.addAttribute("bestSellers", booksService.getBestSellersTop10());
         return "home";
     }
 }
