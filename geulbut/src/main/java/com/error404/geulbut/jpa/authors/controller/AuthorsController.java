@@ -22,14 +22,14 @@ public class AuthorsController {
 
     //	전체조회
     @GetMapping("/authors")
-    public String selectDeptList(@PageableDefault(page = 0, size = 3) Pageable pageable,
+    public String selectAuthorsList(@PageableDefault(page = 0, size = 20) Pageable pageable,
                                   Model model) {
 
         Page<AuthorsDto> pages=authorsService.findAllAuthors(pageable);
         log.info("테스트 : "+pages);
-        model.addAttribute("authors", pages.getContent());
-        model.addAttribute("pages", pages);
+        model.addAttribute("author", pages.getContent());
+        model.addAttribute("page", pages);
 
-        return "authors/authors_all";
+        return "authors/authors_list";
     }
 }
