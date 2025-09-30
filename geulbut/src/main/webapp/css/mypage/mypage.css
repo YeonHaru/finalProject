@@ -3,6 +3,7 @@
 ========================= */
 .mypage-wrapper {
     display: flex;
+    align-items: flex-start;
     gap: 24px; /* 사이드바와 컨텐츠 간격 */
 }
 
@@ -10,12 +11,17 @@
    📌 왼쪽 사이드바
 ========================= */
 .mypage-sidebar {
-    min-width: 220px;           /* 메뉴 고정 너비 */
-    background: #fff;           /* 흰색 배경 */
-    border: 1px solid #e9ecef;  /* 옅은 테두리 */
-    border-radius: 8px;
-    overflow: hidden;           /* 라운드 유지 */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  /* 레이아웃(고정폭 + sticky + 자체 스크롤) */
+  width: 220px;
+  flex: 0 0 220px;                  /* 본문과 어긋남 방지: 폭 고정 */
+  position: sticky;                 /* 스크롤해도 제자리 */
+  top: 40px;                        /* 헤더 높이에 맞춰 조절(필요 시 64~96px) */
+  max-height: calc(100vh - 100px);  /* 화면 높이 기준 높이 고정 */
+  overflow: auto;                   /* 사이드바 안에서만 스크롤 */
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .nav-pills .nav-link {
@@ -57,6 +63,7 @@
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #48C9B0;
+    min-width: 0;
 }
 
 /* =========================
@@ -160,7 +167,11 @@
     }
 
     .mypage-sidebar {
-        min-width: 100%;
+        position: static;   /* sticky 해제 */
+        width: 100%;
+        flex: 0 0 auto;
+        max-height: none;
+        overflow: visible;
         border-radius: 6px;
     }
 }

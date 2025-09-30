@@ -44,7 +44,7 @@ public class PaymentService {
     private Instant tokenExpiry;
 
     // 만료시간(백오프)
-    private static final long EXPIRY_DURATION_SECONDS = 3500;
+    private static final long EXPIRY_DURATION_SECONDS = 5000;
 
     public String getAccessToken() {
         try {
