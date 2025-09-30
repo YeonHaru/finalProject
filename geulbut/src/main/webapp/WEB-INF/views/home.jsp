@@ -30,19 +30,24 @@
         <!-- 편집장의 선택 컨텐츠 -->
         <div class="tab-content editor-choice active" id="editor-choice-content">
             <div class="books-grid">
-                <c:forEach var="data" items="${choices}">
+
+                <c:forEach var="data" items="${choice}">
+
                 <!-- 책 카드 1 -->
                 <div class="book-card">
-                    <div class="book-badge recommend">추천</div>
+<%--                    <div class="book-badge recommend">추천</div>--%>
                     <div class="book-image">
-                        <img src="https://via.placeholder.com/120x160/667eea/ffffff?text=Book1" alt="빼빼 롱스타킹">
+                        <img src="${data.imgUrl}" alt="${data.title}">
                         <div class="book-number">1</div>
                     </div>
                     <h3 class="book-title"><c:out value="${data.title}" /></h3>
                     <p class="book-author"><c:out value="${data.name}" /></p>
                     <div class="editor-comment">
-                        <h4 class="comment-title"><c:out value="${data.description}" /></h4>
+
+                        <h4 class="new-book-description"><c:out value="${data.description}" /></h4>
+                     
                         <p class="comment-text"><c:out value="${data.publishedDate}" /></p>
+
                     </div>
                     <div class="book-rating">
                         <span class="star">★</span>
