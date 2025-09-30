@@ -2,6 +2,8 @@ package com.error404.geulbut;
 
 
 import com.error404.geulbut.jpa.books.service.BooksService;
+import com.error404.geulbut.jpa.choice.dto.ChoiceDto;
+import com.error404.geulbut.jpa.choice.service.ChoiceService;
 import com.error404.geulbut.jpa.introduction.dto.IntroductionDto;
 import com.error404.geulbut.jpa.introduction.service.IntroductionService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,19 @@ import java.util.List;
 public class HomeController {
     private final IntroductionService introductionService;
     private final BooksService booksService;
+    private final ChoiceService choiceService;
 
     @GetMapping("/")
     public String home(Model model, @PageableDefault(page = 0, size = 4) Pageable pageable) {
+//        신간소개
         Page<IntroductionDto> pages = introductionService.getAllIntroductions(pageable);
 
-        model.addAttribute("featuredBooks", pages.getContent());
+        model.addAttribute("introductions", pages.getContent());
+//        편집장의 선택
+
+        Page<ChoiceDto> pages2 = choiceService.getAllChoice(pageable);
+        model.addAttribute("choice", pages2.getContent());
+//        model.addAttribute("featuredBooks", pages.getContent());
         model.addAttribute("bestSellers", booksService.getBestSellersTop10());
         return "home";
     }
