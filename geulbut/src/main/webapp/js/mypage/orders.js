@@ -10,7 +10,7 @@ window.Orders = (() => {
         }
     });
 
-    const DEFAULT_ORDERS_URL = "/users/mypage?tab=orders";
+    const DEFAULT_ORDERS_URL = "/mypage?tab=orders";
     let _afterPay = null;
 
     function setAfterPayRedirect(fnOrUrl) { _afterPay = fnOrUrl; }
@@ -321,7 +321,10 @@ window.Orders = (() => {
             recipient: (f.recipient?.value || '').trim(),
             address: (f.address?.value || '').trim(),
             memo: (f.memo?.value || '').trim(),
-            paymentMethod: (f.paymentMethod?.value || 'card')
+            paymentMethod: (f.paymentMethod?.value || 'card'),
+            mode: (f.mode?.value || 'CART'),
+            bookId: (f.bookId?.value || '').trim(),
+            quantity: Number(f.quantity?.value || '1')
         };
     }
 
@@ -383,7 +386,10 @@ window.Orders = (() => {
                     address: o.address,
                     memo: o.memo,
                     payMethod: 'card',
-                    amount: Number(total)
+                    amount: Number(total),
+                    mode: o.mode,
+                    bookId: o.bookId ? Number(o.bookId) : null,
+                    quantity: Number(o.quantity || 1)
                 }
             };
 

@@ -51,7 +51,10 @@ public class PaymentController {
                 String address,
                 String memo,
                 String payMethod,
-                Long amount
+                Long amount,
+                Long bookId,
+                Integer quantity,
+                String mode
         ) {}
     }
     @PostMapping("/verify")
@@ -63,20 +66,24 @@ public class PaymentController {
         String userId = authentication.getName();
 
         String token = paymentService.getAccessToken();
-
         Map<String, Object> paymentInfo = paymentService.verifyPayment(token, req.impUid());
-
         Long paidAmount = ((Number) paymentInfo.get("amount")).longValue();
-        if(!paidAmount.equals(req.ordersInfo().amount())){
+
+        VerifyReq.OrdersInfo info = req.ordersInfo();
+        if (info == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "ordersInfo is required"));
+        }
+        if (!paidAmount.equals(info.amount())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "amount mismatch"));
         }
+
         //  멱등 체크 (선조회)
         Orders existing = ordersRepository.findByMerchantUid(req.merchantUid()).orElse(null);
         if (existing != null) {
             if (!userId.equals(existing.getUserId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(Map.of("message", "amount mismatch"));
+                        .body(Map.of("message", "owner mismatch"));
             }
             return ResponseEntity.ok(Map.of(
                     "orderId", existing.getOrderId(),
@@ -88,25 +95,36 @@ public class PaymentController {
 
         //  신규 주문 생성
         try {
-            VerifyReq.OrdersInfo info = req.ordersInfo();
-            Orders order = cartService.checkout(userId, req.merchantUid(), info);
+            Orders order;
+            String mode = info.mode();
+            if ("BUY_NOW".equalsIgnoreCase(mode)) {
+                long bookId = (info.bookId() == null ? 0L : info.bookId());
+                int qty    = (info.quantity() == null || info.quantity() <= 0) ? 1 : info.quantity();
+
+                // ✅ 바로구매 전용 서비스 메서드 (CartService에 구현 필요)
+                //   "장바구니에 담지 않고 단건으로 주문아이템 구성" 로직
+                order = cartService.checkoutBuyNow(userId, req.merchantUid(), bookId, qty, info.amount());
+            } else {
+                // ✅ 장바구니 기반 결제 (기존 로직)
+                //   CartService에 "장바구니→주문 생성" 메서드가 따로 있다면 그걸 호출
+                order = cartService.checkoutFromCart(userId, req.merchantUid(), info.amount());
+                // 기존에 cartService.checkout(userId, req.merchantUid(), info) 사용 중이면 그대로 둬도 OK
+            }
+
             order.setImpUid(req.impUid());
             ordersRepository.save(order);
 
             return ResponseEntity.ok(Map.of(
                     "orderId", order.getOrderId(),
                     "total", order.getTotalPrice(),
-                    "status", order.getStatus(),
+                    "status", order.getStatus(), // 'PAID' 기대
                     "idempotent", false
             ));
         } catch (IllegalStateException e) {
-            // 장바구니 비었을 때 등
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (DataIntegrityViolationException race) {
-            // UNIQUE(MERCHANT_UID) 레이스: 재조회 후 기존 주문 반환
             log.warn("Idempotency race: {}", race.getMessage());
-            Orders after = ordersRepository.findByMerchantUid(req.merchantUid())
-                    .orElse(null);
+            Orders after = ordersRepository.findByMerchantUid(req.merchantUid()).orElse(null);
             if (after != null) {
                 return ResponseEntity.ok(Map.of(
                         "orderId", after.getOrderId(),
@@ -115,7 +133,6 @@ public class PaymentController {
                         "idempotent", true
                 ));
             }
-            // 정말 예외적 케이스
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", "duplicate merchantUid"));
         }
