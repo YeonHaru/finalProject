@@ -32,7 +32,7 @@
           <form action="${pageContext.request.contextPath}/noticeUpdateSubmit" method="post">
             <input type="hidden" name="id" value="${notice.noticeId}" />
 
-            <label for="title" class="ml-1">제목</label>
+            <label for="title" class="tt ml-1">제목</label>
             <input type="text" id="title" name="title" class="form-input mb-5 mt-3"
                    placeholder="제목을 입력하세요"
                    value="<c:out value='${notice.title}' />">

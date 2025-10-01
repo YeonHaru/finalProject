@@ -7,6 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
@@ -45,7 +46,6 @@
                     <div class="editor-comment">
 
                         <h4 class="new-book-description"><c:out value="${data.description}" /></h4>
-
 
                     </div>
                     <div class="book-rating">
@@ -204,10 +204,57 @@
                         <span class="original-price">22,000원</span>
                         <span class="sale-price">15,400원</span>
                     </div>
-                    <div class="hotdeal-time">장바구니🛒</div>
+                    <div class="hotdeal-time">⏰ 5일 8시간</div>
                     <button class="hotdeal-button">구매하기</button>
                 </div>
 
+                <!-- 핫딜 카드 2 -->
+                <div class="hotdeal-card">
+                    <div class="hotdeal-badge discount-30">30% OFF</div>
+                    <div class="hotdeal-image">
+                        <img src="https://via.placeholder.com/200x180/f093fb/ffffff?text=하마터면+열심히+살+뻔했다" alt="하마터면 열심히 살 뻔했다">
+                    </div>
+                    <h3 class="hotdeal-title">하마터면 열심히 살 뻔했다</h3>
+                    <p class="hotdeal-author">하완</p>
+                    <div class="hotdeal-prices">
+                        <span class="original-price">16,000원</span>
+                        <span class="sale-price">11,200원</span>
+                    </div>
+                    <div class="hotdeal-time">⏰ 3일 12시간</div>
+                    <button class="hotdeal-button">구매하기</button>
+                </div>
+
+                <!-- 핫딜 카드 3 -->
+                <div class="hotdeal-card">
+                    <div class="hotdeal-badge discount-30">30% OFF</div>
+                    <div class="hotdeal-image">
+                        <img src="https://via.placeholder.com/200x180/667eea/ffffff?text=재식주의자" alt="재식주의자">
+                    </div>
+                    <h3 class="hotdeal-title">재식주의자</h3>
+                    <p class="hotdeal-author">한강</p>
+                    <div class="hotdeal-prices">
+                        <span class="original-price">15,000원</span>
+                        <span class="sale-price">10,500원</span>
+                    </div>
+                    <div class="hotdeal-time">⏰ 2일 23시간</div>
+                    <button class="hotdeal-button">구매하기</button>
+                </div>
+
+                <!-- 핫딜 카드 4 -->
+                <div class="hotdeal-card">
+                    <div class="hotdeal-badge discount-30">30% OFF</div>
+                    <div class="hotdeal-image">
+                        <img src="https://via.placeholder.com/200x180/764ba2/ffffff?text=물끓일의+시절" alt="물끓일의 시절">
+                    </div>
+                    <h3 class="hotdeal-title">물끓일의 시절</h3>
+                    <p class="hotdeal-author">김은주</p>
+                    <div class="hotdeal-prices">
+                        <span class="original-price">18,000원</span>
+                        <span class="sale-price">12,600원</span>
+                    </div>
+                    <div class="hotdeal-time">⏰ 1일 15시간</div>
+                    <button class="hotdeal-button">구매하기</button>
+                </div>
             </div>
         </div>
 
@@ -356,87 +403,38 @@
         <!-- 이 주의 책 컨텐츠 -->
         <div class="tab-content" id="weekly-content">
             <div class="weekly-grid">
-                <!-- 주간 추천 책 1 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/667eea/ffffff?text=Book1" alt="소년이 온다">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">소년이 온다</h3>
-                        <p class="weekly-author">한강</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.8</span>
-                            <span class="rating-text">평점</span>
+                <c:forEach var="book" items="${weeklyBooks}">
+                    <div class="weekly-card">
+                        <div class="weekly-badge">이주의책</div>
+                        <div class="weekly-image">
+                            <img src="${book.imgUrl}" alt="${book.title}" />
                         </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">이주의 편집장 추천! 깊은 감동을 주는 작품</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 주간 추천 책 2 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/764ba2/ffffff?text=Book2" alt="82년생 김지영">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">82년생 김지영</h3>
-                        <p class="weekly-author">조남주</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.6</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">사회 현상을 날카롭게 다룬 화제작</p>
+                        <div class="weekly-info">
+                            <h3 class="weekly-title">
+                                <c:choose>
+                                    <c:when test="${fn:length(book.title) > 30}">
+                                        ${fn:substring(book.title, 0, 30)}...
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${book.title}
+                                    </c:otherwise>
+                                </c:choose>
+                            </h3>
+                            <p class="weekly-author"><c:out value="${book.authorName}" /></p>
+                            <div class="weekly-rating">
+                                <span class="star">⭐</span>
+                                <span class="rating-score">4.5</span>
+                                <span class="rating-text">평점</span>
+                            </div>
+                            <div class="weekly-comment">
+                                <p class="comment-text"><c:out value="${book.description}" /></p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- 주간 추천 책 3 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/4facfe/ffffff?text=Book3" alt="미드나잇 라이브러리">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">미드나잇 라이브러리</h3>
-                        <p class="weekly-author">매트 헤이그</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.7</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">인생의 선택에 대한 철학적 사유</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 주간 추천 책 4 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/f093fb/ffffff?text=Book4" alt="작별하지 않는다">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">작별하지 않는다</h3>
-                        <p class="weekly-author">한강</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.9</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">노벨문학상 수상작가의 최신작</p>
-                        </div>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
+
 
         <!-- 탭 메뉴 -->
         <div class="tab-menu">
@@ -830,117 +828,35 @@
                 <span class="special-icon">🏷️</span>
                 <div class="special-title-text">
                     <h2 class="special-main-title">이 주의 특가</h2>
-                    <p class="special-subtitle">% 최대 80% 할인</p>
+                    <p class="special-subtitle">최대 80% 할인</p>
                 </div>
             </div>
-            <a href="/special-deals" class="more-link">더보기 ></a>
         </div>
 
         <div class="special-books-grid">
             <!-- 특가 도서 카드 1 -->
+            <c:forEach var="b" items="${weeklySpecials}">
+            <c:set var="rate" value="${(b.price - b.discountedPrice) * 100.0 / b.price}" />
             <div class="special-book-card">
                 <div class="special-badges">
                     <div class="discount-percent">% 70%</div>
                     <div class="days-left">2일 남음</div>
                 </div>
                 <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/4a5568/ffffff?text=삼각지" alt="삼각지">
+                    <img src="${b.imgUrl}" alt="${fn:escapeXml(b.title)}">
                 </div>
                 <div class="special-book-info">
-                    <div class="book-category">소설</div>
-                    <h3 class="special-book-title">삼각지</h3>
-                    <p class="special-book-author">이미예</p>
+                    <div class="book-category">${fn:escapeXml(b.categoryName)}</div>
+                    <h3 class="special-book-title">${fn:escapeXml(b.title)}</h3>
+                    <p class="special-book-author">${fn:escapeXml(b.authorName)}</p>
                     <div class="special-price-info">
-                        <span class="original-price">13,000원</span>
-                        <span class="special-price">9,600원</span>
+                        <span class="original-price"><fmt:formatNumber value="${b.price}" pattern="#,##0"/>원</span>
+                        <span class="special-price"><fmt:formatNumber value="${b.discountedPrice}" pattern="#,##0"/>원</span>
                         <span class="price-label">적립</span>
                     </div>
                 </div>
             </div>
-
-            <!-- 특가 도서 카드 2 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">1일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/3182ce/ffffff?text=사피엔스" alt="사피엔스">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">인문</div>
-                    <h3 class="special-book-title">사피엔스</h3>
-                    <p class="special-book-author">유발 하라리</p>
-                    <div class="special-price-info">
-                        <span class="original-price">22,000원</span>
-                        <span class="special-price">15,400원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 특가 도서 카드 3 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 80%</div>
-                    <div class="days-left">3일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/8b4513/ffffff?text=나+홀로+유럽여행" alt="나 홀로 유럽여행">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">여행</div>
-                    <h3 class="special-book-title">나 홀로 유럽여행</h3>
-                    <p class="special-book-author">김영미</p>
-                    <div class="special-price-info">
-                        <span class="original-price">16,500원</span>
-                        <span class="special-price">13,200원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 특가 도서 카드 4 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">5일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/2d3748/ffffff?text=마술창업의+기술" alt="마술창업의 기술">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">자기계발</div>
-                    <h3 class="special-book-title">마술창업의 기술</h3>
-                    <p class="special-book-author">존 카맥진</p>
-                    <div class="special-price-info">
-                        <span class="original-price">18,000원</span>
-                        <span class="special-price">12,600원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 특가 도서 카드 5 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 75%</div>
-                    <div class="days-left">4일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/805ad5/ffffff?text=디자인의+디자인" alt="디자인의 디자인">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">예술</div>
-                    <h3 class="special-book-title">디자인의 디자인</h3>
-                    <p class="special-book-author">하라 겐야</p>
-                    <div class="special-price-info">
-                        <span class="original-price">25,000원</span>
-                        <span class="special-price">18,750원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
 
         <div class="special-notice">

@@ -38,7 +38,7 @@
                 </c:if>
 
                 <!-- 제목 -->
-                <label for="title" class="ml-1">제목</label>
+                <label for="title" class="tt ml-1">제목</label>
                 <input type="text" id="title" name="title" class="form-input mb-5 mt-3"
                        value="${qna.title}" placeholder="제목을 입력하세요" required>
 
