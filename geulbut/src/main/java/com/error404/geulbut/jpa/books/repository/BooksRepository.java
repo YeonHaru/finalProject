@@ -34,7 +34,7 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     List<Books> findByCategory_CategoryId(Long categoryId);
 
     // 작가별 책 조회 (저자/출판사/카테고리 포함)
-    @EntityGraph(attributePaths = {"author", "publisher", "category"})
+    @EntityGraph(attributePaths = {"author", "publisher", "category", "hashtags"})
     List<Books> findByAuthor_AuthorId(Long authorId);
 
 
