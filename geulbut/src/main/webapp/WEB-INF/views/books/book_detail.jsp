@@ -9,22 +9,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<c:url var="buyNowUrl" value="/orders/buy-now"/>
-<c:url var="loginUrl"  value="/users/login"/>
-<c:url var="checkoutUrl" value="/orders/checkout"/>
 <html>
 <head>
     <title>도서 상세</title>
     <meta name="_csrf" content="${_csrf.token}">
     <meta name="_csrf_header" content="${_csrf.headerName}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/book_detail/book_detail.css">
 </head>
 <body class="bg-main">
 <jsp:include page="/common/header.jsp"/>
-
+<jsp:include page="/WEB-INF/views/users/mypage/paymentModal.jsp"/>
 
 <main id="main" class="page py-4" role="main">
     <!-- 브레드크럼 -->
@@ -67,25 +67,10 @@
 
             <!-- 가격 영역 -->
             <div class="bg-main rounded p-3 border" aria-label="가격 정보">
-                <div class="row gap-2 align-items-center">
-                    <c:choose>
-                        <c:when test="${not empty book.discountedPrice && book.discountedPrice < book.price}">
-                            <p class="price-original text-light">
-                                정가: <del><fmt:formatNumber value="${book.price}" pattern="#,##0"/></del> 원
-                            </p>
-                            <p class="text-main m-0">
-                                <strong class="price-discount">
-                                    할인가: <fmt:formatNumber value="${book.discountedPrice}" pattern="#,##0"/> 원
-                                </strong>
-                            </p>
-                            <span class="badge bg-accent-dark text-invert">
-          <fmt:formatNumber value="${(1 - (book.discountedPrice * 1.0 / book.price)) * 100}" maxFractionDigits="0"/>% ↓
-        </span>
-                        </c:when>
-                        <c:otherwise>
-                            <p class="m-0">가격: <strong><fmt:formatNumber value="${book.price}" pattern="#,##0"/></strong> 원</p>
-                        </c:otherwise>
-                    </c:choose>
+                <div class="row gap-2">
+                    <p class="price-original">정가: ${book.price}</p>
+                    <p class="text-main"><strong class="price-discount">할인가: ${book.discountedPrice}</strong></p>
+                    <span class="badge bg-accent-dark text-invert">25%↓</span>
                 </div>
                 <p class="mt-1 text-light">재고: ${book.stock}</p>
             </div>
@@ -95,28 +80,27 @@
                 <h2 class="visually-hidden">해시태그</h2>
                 <ul class="tag-list">
                     <c:forEach var="tag" items="${book.hashtags}">
-                        <c:url var="tagUrl" value="/search">
-                            <c:param name="keyword" value="${fn:escapeXml(tag)}"/>
-                            <c:param name="page" value="0"/>
-                            <c:param name="size" value="20"/>
-                        </c:url>
-                        <li><a class="chip chip--tag" href="${tagUrl}">#${tag}</a></li>
+                        <li>${tag}</li>
                     </c:forEach>
                 </ul>
             </section>
 
             <!-- 액션 버튼 -->
             <div class="row gap-2 mt-2" role="group" aria-label="작업">
-                <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
-                        data-act="cart" data-id="${book.bookId}" data-qty="1">장바구니</button>
-                <button type="button" class="px-3 py-2 border rounded bg-surface"
-                        data-act="like" data-id="${book.bookId}">위시리스트</button>
                 <button type="button"
-                        class="px-3 py-2 border rounded bg-accent text-invert"
-                        id="buyNowBtn">바로구매</button>
-            </div>
-                </form>
+                        class="px-3 py-2 rounded bg-accent text-invert"
+                        data-act="cart" data-id="${book.bookId}" data-qty="1" id="btnAddCart">
+                    장바구니
+                </button>
 
+                <button type="button"
+                        class="px-3 py-2 border rounded bg-surface"
+                        data-act="like" data-id="${book.bookId}" id="btnWishlist">
+                    위시리스트
+                </button>
+
+                <button type="button" class="px-3 py-2 border rounded bg-surface"
+                        id="buyNowBtn">구매하기</button>
             </div>
 
             <!-- 추가 정보 -->
@@ -151,19 +135,39 @@
 <footer class="page py-4 text-light" role="contentinfo">
     <p class="mb-0">&copy; 2025 Geulbut</p>
 </footer>
+<!-- 1) Bootstrap bundle 먼저 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+<!-- 3) PortOne SDK -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script>
-    window.URLS = {
-        cart:        '<c:url value="/cart"/>',
-        payPrepare:  '<c:url value="/payments/prepare"/>',
-        payVerify:   '<c:url value="/payments/verify"/>',
-        ordersBase:  '<c:url value="/orders/"/>',
-        login:       '<c:url value="/users/login"/>'
-    };
-    window.csrfHeaderName = '${_csrf.headerName}';
-    window.csrfToken      = '${_csrf.token}';
+    if (window.IMP) {
+        IMP.init("${iamportCode}");
+    }
 </script>
+
+<!-- 4) imp_code 주입 (반드시 cart.js보다 먼저 존재) -->
+<div id="imp-root" data-imp-code="${iamportCode}"></div>
+
+<!-- 2) 결제/주문 공통 로직 -->
+<script src="/js/mypage/orders.js"></script>
+
+<!-- 3) 북 디테일 전용 전역 값 주입 -->
+<script>
+    window.PRODUCT = {
+        id: ${book.bookId},
+        price: ${book.price},
+        discountedPrice: <c:choose>
+            <c:when test="${empty book.discountedPrice}">null</c:when>
+        <c:otherwise>${book.discountedPrice}</c:otherwise>
+        </c:choose>
+    };
+</script>
+
+<!-- 4) 북 디테일 전용 스크립트 -->
 <script src="/js/book_detail/book_detail.js"></script>
 
 </body>
 </html>
-
