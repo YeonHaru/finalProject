@@ -10,6 +10,27 @@ window.Orders = (() => {
         }
     });
 
+    const DEFAULT_ORDERS_URL = "/users/mypage?tab=orders";
+    let _afterPay = null;
+
+    function setAfterPayRedirect(fnOrUrl) { _afterPay = fnOrUrl; }
+
+    function goAfterPay() {
+        if (typeof _afterPay === "function") { _afterPay(); return; }
+        if (typeof _afterPay === "string" && _afterPay) { location.href = _afterPay; return; }
+
+        const attr = document.querySelector("[data-after-pay]")?.getAttribute("data-after-pay")
+            || document.body?.dataset?.afterPay || "";
+
+        if (attr === "stay") return;
+        if (attr && (/^https?:|^\//.test(attr))) { location.href = attr; return; }
+
+        const ordersTabBtn = document.querySelector("#v-pills-orders-tab, #orders-tab");
+        if (ordersTabBtn && window.bootstrap?.Tab) { new bootstrap.Tab(ordersTabBtn).show(); return; }
+
+        location.href = DEFAULT_ORDERS_URL;
+    }
+
         // ===== 페이징 상태 =====
         let _page = 0;          // 0-based
         let _size = 4;          // 페이지당 개수 (원하면 바꿔)
@@ -390,6 +411,8 @@ window.Orders = (() => {
                         if (modal) modal.hide();
                     }
 
+                    goAfterPay();
+
                     // 주문 탭으로 자동 전환(선택)
                     const ordersTabBtn = document.querySelector('#v-pills-orders-tab');
                     if (ordersTabBtn && window.bootstrap?.Tab) new bootstrap.Tab(ordersTabBtn).show();
@@ -476,7 +499,8 @@ window.Orders = (() => {
         requestDemoPay,
         preparePay,
         cancelPay,
-        mount
+        mount,
+        setAfterPayRedirect
     };
 })();
 
