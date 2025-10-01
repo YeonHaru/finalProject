@@ -19,7 +19,6 @@ public class ChoiceService {
     // 전체 조회 (검색/페이징 없음)
 
     public Page<ChoiceDto> getAllChoice(Pageable pageable) {
-        return choiceRepository.findChoice(pageable)
-
+        return choiceRepository.findChoice(pageable);
     }
 }
