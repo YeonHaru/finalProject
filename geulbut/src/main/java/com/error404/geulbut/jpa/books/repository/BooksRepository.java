@@ -58,4 +58,9 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     @EntityGraph(attributePaths = {"author"})
     @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
     List<Books> findByIds(@Param("ids") List<Long> ids);
+    
+//  작가 작품보기 버튼 클릭용
+    @Query("SELECT b FROM Books b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :authorName, '%'))")
+    List<Books> findByAuthorNameContaining(@Param("authorName") String authorName);
+
 }
