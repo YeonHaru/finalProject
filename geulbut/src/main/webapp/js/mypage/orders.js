@@ -1,6 +1,15 @@
 // orders.js (권장: mypage-common.js 다음, cart.js 이전에 로드)
 window.Orders = (() => {
 
+    const fmtKR = window.fmtKR ?? (window.fmtKR = function (n) {
+        const num = Number(n || 0);
+        try {
+            return new Intl.NumberFormat('ko-KR').format(num);
+        } catch {
+            return String(num);
+        }
+    });
+
         // ===== 페이징 상태 =====
         let _page = 0;          // 0-based
         let _size = 4;          // 페이지당 개수 (원하면 바꿔)
