@@ -35,32 +35,33 @@
 
                 <c:forEach var="data" items="${choice}">
 
-                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
-                <!-- 책 카드 1 -->
-                <div class="book-card">
-<%--                    <div class="book-badge recommend">추천</div>--%>
-                    <div class="book-image">
-                        <img src="${data.imgUrl}" alt="${data.title}">
-                        <div class="book-number">1</div>
-                    </div>
-                    <h3 class="book-title"><c:out value="${data.title}" /></h3>
-                    <p class="book-author"><c:out value="${data.name}" /></p>
-                    <div class="editor-comment">
+                <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
+                    <!-- 책 카드 1 -->
+                    <div class="book-card">
+                            <%--                    <div class="book-badge recommend">추천</div>--%>
+                        <div class="book-image">
+                            <img src="${data.imgUrl}" alt="${data.title}">
+                            <div class="book-number">1</div>
+                        </div>
+                        <h3 class="book-title"><c:out value="${data.title}"/></h3>
+                        <p class="book-author"><c:out value="${data.name}"/></p>
+                        <div class="editor-comment">
 
 
                             <h4 class="new-book-description"><c:out value="${data.description}"/></h4>
 
                         </div>
 
-                    <div class="book-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
+                        <div class="book-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
                     </div>
-                </div></c:forEach>
-            </a>
+                    </c:forEach>
+                </a>
 
             </div>
 
@@ -81,10 +82,10 @@
                             </div>
                         </a>
 
-                        <h3 class="new-book-title"><c:out value="${data.title}" /></h3>
-                        <p class="new-book-author"><c:out value="${data.name}" /></p>
-                        <div class="new-book-date"><c:out value="${data.publishedDate}" /></div>
-                        <p class="new-book-description"><c:out value="${data.description}" /></p>
+                        <h3 class="new-book-title"><c:out value="${data.title}"/></h3>
+                        <p class="new-book-author"><c:out value="${data.name}"/></p>
+                        <div class="new-book-date"><c:out value="${data.publishedDate}"/></div>
+                        <p class="new-book-description"><c:out value="${data.description}"/></p>
 
                         <button class="new-book-button">예약구매</button>
                     </div>
@@ -378,7 +379,7 @@
                         <!-- 이미지 영역 클릭 시 책 디테일 페이지로 이동 -->
                         <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-image-link">
                             <div class="weekly-image">
-                                <img src="${book.imgUrl}" alt="${book.title}" />
+                                <img src="${book.imgUrl}" alt="${book.title}"/>
                             </div>
                         </a>
 
@@ -395,14 +396,14 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </h3>
-                                <p class="weekly-author"><c:out value="${book.authorName}" /></p>
+                                <p class="weekly-author"><c:out value="${book.authorName}"/></p>
                                 <div class="weekly-rating">
                                     <span class="star">⭐</span>
                                     <span class="rating-score">4.5</span>
                                     <span class="rating-text">평점</span>
                                 </div>
                                 <div class="weekly-comment">
-                                    <p class="comment-text"><c:out value="${book.description}" /></p>
+                                    <p class="comment-text"><c:out value="${book.description}"/></p>
                                 </div>
 
                             </div>
@@ -411,7 +412,6 @@
                 </c:forEach>
             </div>
         </div>
-
 
 
         <!-- 탭 메뉴 -->
@@ -568,7 +568,6 @@
     </section>
 
 
-
     <!-- 어제 베스트셀러 TOP 10 -->
     <section class="bestseller-section">
         <h2 class="bestseller-title">
@@ -649,6 +648,7 @@
                 <div class="featured-empty">데이터 준비 중</div>
             </c:when>
 
+
             <c:otherwise>
                 <div class="hot-news-slider">
                     <div class="hot-news-container">
@@ -667,10 +667,10 @@
 
                                         <div class="book-cover">
                                             <a href="${detailUrl}" aria-label="${fn:escapeXml(b.title)} 상세보기">
-                                            <img
-                                                    src="${empty b.imgUrl ? 'https://via.placeholder.com/200x280/cccccc/000000?text=No+Image' : b.imgUrl}"
-                                                    alt="<c:out value='${b.title}'/>"
-                                                    onerror="this.src='https://via.placeholder.com/200x280/cccccc/000000?text=No+Image'">
+                                                <img
+                                                        src="${empty b.imgUrl ? 'https://via.placeholder.com/200x280/cccccc/000000?text=No+Image' : b.imgUrl}"
+                                                        alt="<c:out value='${b.title}'/>"
+                                                        onerror="this.src='https://via.placeholder.com/200x280/cccccc/000000?text=No+Image'">
                                             </a>
                                         </div>
 
@@ -698,11 +698,11 @@
     </section>
 
 
-    <!-- 2칸씩 있는 도서 광고창 -->
+    <!-- 프로모션 세션 2칸씩 있는 도서 광고창 -->
     <section class="promotion-section">
         <div class="promotion-slider">
             <!-- 슬라이더 화살표 -->
-            <button class="promo-slider-btn prev" id="promoPrevBtn">></button>
+            <button class="promo-slider-btn prev" id="promoPrevBtn"><</button>
             <button class="promo-slider-btn next" id="promoNextBtn">></button>
 
             <div class="promotion-container">
@@ -1046,9 +1046,8 @@
         </div>
     </section>
 </div>
-</section>
-</div>
-<%--<script src="/js/theme.js"></script>--%>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -1244,6 +1243,37 @@
 
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
+    /*** === 2칸 프로모션 슬라이드 (active 토글 방식) === ***/
+    (function initPromotionSliderByActive(){
+        const pages = Array.from(document.querySelectorAll('.promotion-page'));
+        const prevBtn = document.getElementById('promoPrevBtn');
+        const nextBtn = document.getElementById('promoNextBtn');
+        if (!pages.length || !prevBtn || !nextBtn) return;
+
+        // 현재 인덱스 계산 (없으면 0)
+        let idx = Math.max(0, pages.findIndex(p => p.classList.contains('active')));
+        if (idx === -1) { idx = 0; pages[0].classList.add('active'); }
+
+        const show = (n) => {
+            pages[idx].classList.remove('active');
+            idx = (n + pages.length) % pages.length;   // 순환
+            pages[idx].classList.add('active');
+        };
+
+        // 버튼
+        prevBtn.addEventListener('click', () => { show(idx - 1); bounce(); });
+        nextBtn.addEventListener('click', () => { show(idx + 1); bounce(); });
+
+        // 마우스 오버 시 일시정지(선택)
+        const container = document.querySelector('.promotion-slider');
+        if (container) {
+            container.addEventListener('mouseenter', stop);
+            container.addEventListener('mouseleave', () => { if (!timer) start(); });
+        }
+
+        start(); // 시작
+    })();
+
 </script>
 <jsp:include page="/common/footer.jsp"></jsp:include>
 </body>
