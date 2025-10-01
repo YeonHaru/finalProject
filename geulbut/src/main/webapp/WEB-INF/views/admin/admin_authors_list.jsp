@@ -72,7 +72,7 @@
                             <img src="${author.imgUrl}" class="author-thumb" alt="${author.name}" />
                         </c:if>
                     </td>
-                    <td class="created-at-cell hide-lg">${author.createdAt}</td>
+                    <td class="created-at-cell hide-lg">${author.createdAtFormatted}</td>
                     <td class="t-left author-description">${author.description}</td>
                     <td>
                         <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>

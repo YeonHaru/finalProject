@@ -40,5 +40,10 @@ public class BooksDto {
     // 해시태그 추가
     private List<String> hashtags;
 
+    //  출력 날짜 변환
+    public String getCreatedAtFormatted() {
+        if (createdAt == null) return "";
+        return createdAt.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
 
 }

@@ -55,9 +55,13 @@
             <tbody>
             <c:forEach var="h" items="${hashtagsPage.content}">
                 <tr class="data-row" data-id="${h.hashtagId}">
-                    <td class="hashtag-id" data-id="${h.hashtagId}">${h.hashtagId}</td>
-                    <td class="t-left">${h.name}</td>
-                    <td>${h.createdAt}</td>
+                    <!-- ID는 클릭 제거, 그냥 표시 -->
+                    <td class="hashtag-id">${h.hashtagId}</td>
+
+                    <!-- 이름만 클릭 가능 -->
+                    <td class="t-left hashtag-name">${h.name}</td>
+
+                    <td>${h.createdAtFormatted}</td>
                     <td class="t-left">
                         <c:choose>
                             <c:when test="${not empty h.books}">
@@ -73,19 +77,17 @@
                         </c:choose>
                     </td>
                     <td class="actions-cell">
-                        <button type="button" class="btn btn-primary  btn--liquid-glass btnEdit">수정</button>
-                        <button type="button" class="btn btn-danger   btn--liquid-glass btnDelete">삭제</button>
+                        <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
+                        <button type="button" class="btn btn-danger btn--liquid-glass btnDelete">삭제</button>
                         <button type="button" class="btn btn-secondary btn--liquid-glass btn-manage-books">도서 관리</button>
                     </td>
-
                 </tr>
             </c:forEach>
             </tbody>
         </table>
     </div>
 
-    <!-- 페이지네이션 (카테고리/공통 톤과 동일: #pagination .page-btn) -->
-    <%-- 안전 기본값 세팅 --%>
+    <!-- 페이지네이션 -->
     <c:set var="hp" value="${hashtagsPage}" />
     <c:set var="isFirst" value="${not empty hp and hp.first}" />
     <c:set var="isLast"  value="${not empty hp and hp.last}" />
@@ -94,8 +96,6 @@
 
     <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
         <div class="btn-group" role="group" aria-label="페이지">
-
-            <!-- 이전 («) -->
             <c:choose>
                 <c:when test="${isFirst or totalPages == 0}">
                     <a class="btn btn-secondary btn-nav" aria-label="이전" aria-disabled="true">&laquo;</a>
@@ -107,7 +107,6 @@
                 </c:otherwise>
             </c:choose>
 
-            <!-- 숫자들 (페이지가 1개 이상일 때만) -->
             <c:if test="${totalPages > 0}">
                 <c:forEach var="i" begin="0" end="${totalPages - 1}">
                     <a class="btn btn-secondary ${i == pageNo ? 'active' : ''}"
@@ -116,7 +115,6 @@
                 </c:forEach>
             </c:if>
 
-            <!-- 다음 (») -->
             <c:choose>
                 <c:when test="${isLast or totalPages == 0}">
                     <a class="btn btn-secondary btn-nav" aria-label="다음" aria-disabled="true">&raquo;</a>
@@ -127,16 +125,13 @@
                        aria-label="다음">&raquo;</a>
                 </c:otherwise>
             </c:choose>
-
         </div>
     </div>
-
 </div>
 
 <p class="ht-footnote">© Geulbut Admin Hashtags List</p>
 
-
-<!-- 해시태그 등록/수정 모달: 공통 모달 톤 사용 -->
+<!-- 해시태그 등록/수정 모달 -->
 <div class="modal" id="hashtagModal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-content" role="document">
         <h2 id="modalTitle" class="modal-title">해시태그 등록</h2>
@@ -145,8 +140,8 @@
             <input type="text" id="hashtagName" placeholder="해시태그 이름" />
         </label>
         <div class="modal-actions t-right">
-            <button id="modalSaveBtn"  type="button" class="btn btn-primary btn--liquid-glass save-btn">저장</button>
-            <button id="modalCloseBtn" type="button" class="btn btn-danger  btn--liquid-glass delete-btn">닫기</button>
+            <button id="modalSaveBtn" type="button" class="btn btn-primary btn--liquid-glass save-btn">저장</button>
+            <button id="modalCloseBtn" type="button" class="btn btn-danger btn--liquid-glass delete-btn">닫기</button>
         </div>
     </div>
 </div>
@@ -156,7 +151,7 @@
     <div class="modal-content" role="document">
         <h2 id="booksModalTitle" class="modal-title">해시태그 등록 도서</h2>
 
-        <!-- 검색창 (공통 검색폼 톤) -->
+        <!-- 검색창 -->
         <div class="search-wrapper">
             <form id="bookSearchForm" class="search-form">
                 <input type="text" id="bookKeyword" name="bookKeyword" placeholder="도서 검색..." />
@@ -167,16 +162,15 @@
         <!-- 검색 결과 리스트 -->
         <div id="booksList" class="modal__scroll"></div>
 
-        <!-- 모달 내부 전용 페이지네이션 -->
+        <!-- 모달 페이지네이션 -->
         <div id="booksPager" class="pagination modal-pagination"></div>
 
-        <!-- 우하단 정렬 푸터 -->
         <div class="modal__footer" id="booksModalFooter">
-            <!-- 저장 버튼은 JS가 필요할 때 주입합니다 -->
             <button id="booksModalClose" type="button" class="btn btn-danger btn--liquid-glass delete-btn">닫기</button>
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="${ctx}/js/admin/admin_hashtags.js"></script>
 <script src="${ctx}/js/admin/admin_page_header.js" defer></script>

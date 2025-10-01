@@ -55,7 +55,34 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
 """)
     List<Books> findBestSellers(Pageable pageable);
 
+
+//    메인페이지 이주의 특가
+    @EntityGraph(attributePaths = {"author", "publisher", "category"})
+    @Query("""
+        SELECT b FROM Books b
+        WHERE b.price > 0
+          AND b.discountedPrice IS NOT NULL
+          AND b.discountedPrice < b.price
+          AND b.imgUrl IS NOT NULL
+        ORDER BY ((b.price - b.discountedPrice) * 1.0 / b.price) DESC,
+                 b.discountedPrice ASC
+    """)
+    List<Books> findTopDiscount(Pageable pageable);
+
     @EntityGraph(attributePaths = {"author"})
     @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
     List<Books> findByIds(@Param("ids") List<Long> ids);
+
+    
+//  작가 작품보기 버튼 클릭용
+    @Query("SELECT b FROM Books b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :authorName, '%'))")
+    List<Books> findByAuthorNameContaining(@Param("authorName") String authorName);
+
+    // 1) 활성화된 모든 책을 BookId 기준으로 정렬해서 가져오기
+    List<Books> findByEsDeleteFlagOrderByBookIdAsc(String esDeleteFlag);
+
+    // 2) Native Query로 랜덤 4권 가져오기 (DB 지원 시)
+    @Query(value = "SELECT * FROM BOOKS WHERE ES_DELETE_FLAG = 'N' ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY", nativeQuery = true)
+    List<Books> findRandom4Native();
+
 }

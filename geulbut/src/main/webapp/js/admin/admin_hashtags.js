@@ -13,30 +13,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const keywordInput = document.getElementById('keyword');
     const searchForm = document.getElementById('searchForm');
 
-    // 책 모달
     const booksModal = document.getElementById('booksModal');
     const booksModalClose = document.getElementById('booksModalClose');
     const booksList = document.getElementById('booksList');
     const booksModalTitle = document.getElementById('booksModalTitle');
     const bookSearchForm = document.getElementById('bookSearchForm');
     const bookKeywordInput = document.getElementById('bookKeyword');
-
-    const BOOKS_SAVE_BTN_ID = 'booksModalSaveBtn';
-
-    // 추가: 모달 전용 요소 참조 & 상태
     const booksPager = document.getElementById('booksPager');
     const booksModalFooter = document.getElementById('booksModalFooter');
 
+    const BOOKS_SAVE_BTN_ID = 'booksModalSaveBtn';
     const PAGE_SIZE = 20;
+
     let paging = { page: 1, size: PAGE_SIZE, total: 0, pages: 0 };
-    let allBooksCache = [];                 // 검색 결과 전체 (클라이언트 페이징)
-    let originalLinkedIds = new Set();      // 서버에서 가져온 최초 연결 상태
-    let selectedBookIds  = new Set();       // 사용자가 체크로 만든 현재 상태(페이지 간 유지)
-
-
+    let allBooksCache = [];
+    let originalLinkedIds = new Set();
+    let selectedBookIds  = new Set();
     let currentEditId = null;
     let currentManageHashtagId = null;
 
+    // toast
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.textContent = message;
@@ -49,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 2000);
     }
 
-    // 모달 헬퍼
+    // 모달 열기
     function openModal(edit = false, name = '', id = null) {
         if (!hashtagModal) return;
         hashtagModal.style.display = 'flex';
@@ -58,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
         currentEditId = id;
         modalTitle.textContent = edit ? '해시태그 수정' : '해시태그 등록';
     }
+
+    // 모달 닫기
     function closeModal() {
         if (!hashtagModal) return;
         hashtagModal.style.display = 'none';
@@ -65,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
         hashtagNameInput.value = '';
         currentEditId = null;
     }
+
+    // 도서 모달 열기
     function openBooksModal(title) {
         if (!booksModal) return;
         booksModal.style.display = 'flex';
@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (booksList) booksList.innerHTML = '';
     }
 
+    // 도서 모달 닫기
     function closeBooksModal() {
         if (!booksModal) return;
         booksModal.style.display = 'none';
@@ -83,15 +84,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const saveBtn = document.getElementById(BOOKS_SAVE_BTN_ID);
         if (saveBtn) saveBtn.remove();
         if (bookKeywordInput) bookKeywordInput.value = '';
-
-        // 상태 초기화
         allBooksCache = [];
         originalLinkedIds = new Set();
         selectedBookIds = new Set();
         paging = { page: 1, size: PAGE_SIZE, total: 0, pages: 0 };
     }
 
-    // 바인딩
+    // 버튼 바인딩
     btnAddHashtag?.addEventListener('click', () => openModal());
     modalCloseBtn?.addEventListener('click', closeModal);
     booksModalClose?.addEventListener('click', closeBooksModal);
@@ -100,33 +99,19 @@ document.addEventListener('DOMContentLoaded', function () {
     modalSaveBtn?.addEventListener('click', () => {
         const name = (hashtagNameInput?.value || '').trim();
         if (!name) { showToast('해시태그 이름을 입력해주세요', 'error'); return; }
-
-        const url = currentEditId
-            ? `${ctx}/admin/hashtags/${currentEditId}`
-            : `${ctx}/admin/hashtags`;
+        const url = currentEditId ? `${ctx}/admin/hashtags/${currentEditId}` : `${ctx}/admin/hashtags`;
         const method = currentEditId ? 'PUT' : 'POST';
-
         fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name })
         })
-            .then(res => {
-                if (!res.ok) throw new Error('요청 실패');
-                return res.json();
-            })
-            .then(() => {
-                closeModal();
-                showToast(currentEditId ? '해시태그가 수정되었습니다' : '해시태그가 등록되었습니다');
-                setTimeout(() => location.reload(), 800);
-            })
-            .catch(err => {
-                console.error(err);
-                showToast(currentEditId ? '수정에 실패했습니다' : '등록에 실패했습니다', 'error');
-            });
+            .then(res => { if (!res.ok) throw new Error('요청 실패'); return res.json(); })
+            .then(() => { closeModal(); showToast(currentEditId ? '해시태그가 수정되었습니다' : '해시태그가 등록되었습니다'); setTimeout(() => location.reload(), 800); })
+            .catch(err => { console.error(err); showToast(currentEditId ? '수정에 실패했습니다' : '등록에 실패했습니다', 'error'); });
     });
 
-    // 테이블 위임 처리 (수정/삭제/도서관리/ID클릭)
+    // 테이블 클릭 이벤트 위임
     tableBody?.addEventListener('click', async (e) => {
         const tr = e.target.closest('tr');
         if (!tr) return;
@@ -150,44 +135,30 @@ document.addEventListener('DOMContentLoaded', function () {
             openModal(true, name, hashtagId);
         }
 
-        // ID 클릭 → 등록 도서 보기
-        if (e.target.classList.contains('hashtag-id')) {
+        // 이름 클릭 → 등록 도서 보기
+        if (e.target.classList.contains('hashtag-name')) {
             try {
                 const res = await fetch(`${ctx}/admin/hashtags/${hashtagId}/books`);
                 if (!res.ok) throw new Error('도서를 불러오는 중 오류 발생');
                 const books = await res.json();
                 openBooksModal(`해시태그 [${e.target.textContent}] 등록 도서`);
-                if (!books || books.length === 0) {
-                    booksList.innerHTML = '<p>등록된 도서가 없습니다.</p>';
-                } else {
+                if (!books || books.length === 0) booksList.innerHTML = '<p>등록된 도서가 없습니다.</p>';
+                else {
                     const ul = document.createElement('ul');
-                    books.forEach(b => {
-                        const li = document.createElement('li');
-                        li.textContent = `${b.title} (${b.isbn})`;
-                        ul.appendChild(li);
-                    });
+                    books.forEach(b => { const li = document.createElement('li'); li.textContent = `${b.title} (${b.isbn})`; ul.appendChild(li); });
                     booksList.appendChild(ul);
                 }
-            } catch (err) {
-                console.error(err);
-                showToast(`도서를 불러오는 중 오류 발생: ${err.message}`, 'error');
-            }
+            } catch (err) { console.error(err); showToast(`도서를 불러오는 중 오류 발생: ${err.message}`, 'error'); }
         }
 
         // 도서 관리
         if (e.target.classList.contains('btn-manage-books')) {
-            try {
-                currentManageHashtagId = hashtagId;
-                openBooksModal(`해시태그 [${tr.children[1]?.textContent || ''}] 도서 관리`);
-                await loadBooks(hashtagId, '');
-            } catch (err) {
-                console.error(err);
-                showToast(`도서 관리 중 오류 발생: ${err.message}`, 'error');
-            }
+            try { currentManageHashtagId = hashtagId; openBooksModal(`해시태그 [${tr.children[1]?.textContent || ''}] 도서 관리`); await loadBooks(hashtagId, ''); }
+            catch (err) { console.error(err); showToast(`도서 관리 중 오류 발생: ${err.message}`, 'error'); }
         }
     });
 
-    // 검색 (GET 유지)
+    // 해시태그 검색
     searchForm?.addEventListener('submit', e => {
         e.preventDefault();
         const keyword = (keywordInput?.value || '').trim();
@@ -199,91 +170,61 @@ document.addEventListener('DOMContentLoaded', function () {
     // 모달 내 도서 검색
     bookSearchForm?.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (!currentManageHashtagId) {
-            showToast('먼저 관리할 해시태그를 선택하세요', 'error');
-            return;
-        }
+        if (!currentManageHashtagId) { showToast('먼저 관리할 해시태그를 선택하세요', 'error'); return; }
         const kw = (bookKeywordInput?.value || '').trim();
         loadBooks(currentManageHashtagId, kw);
     });
 
-    // 도서 로드 & 저장
+    // 도서 로드
     async function loadBooks(hashtagId, keyword = '') {
         if (!hashtagId) return;
         try {
-            // 1) 전체 후보 도서
             const resAll = await fetch(`${ctx}/admin/books/all?keyword=${encodeURIComponent(keyword)}`);
             if (!resAll.ok) throw new Error('도서를 불러오는 중 오류 발생');
             allBooksCache = await resAll.json();
-
-            // 2) 연결된 도서
             const resLinked = await fetch(`${ctx}/admin/hashtags/${hashtagId}/books`);
             if (!resLinked.ok) throw new Error('연결된 도서를 불러오는 중 오류 발생');
             const linkedBooks = await resLinked.json();
-
             originalLinkedIds = new Set(linkedBooks.map(b => Number(b.bookId)));
-            selectedBookIds   = new Set(originalLinkedIds); // 시작 상태 = 서버 상태
-
-            // 3) 페이징 설정 + 첫 페이지 렌더
+            selectedBookIds   = new Set(originalLinkedIds);
             paging.total = allBooksCache.length;
             paging.pages = Math.max(1, Math.ceil(paging.total / paging.size));
             paging.page  = 1;
-
-            renderBooksPage();           // ← 아래 함수가 리스트 + 페이저를 그립니다.
-            ensureBooksSaveButton();     // 저장 버튼 표시/핸들러 연결
-
-        } catch (err) {
-            console.error(err);
-            showToast(err.message || '도서 로드 중 오류', 'error');
-        }
+            renderBooksPage();
+            ensureBooksSaveButton();
+        } catch (err) { console.error(err); showToast(err.message || '도서 로드 중 오류', 'error'); }
     }
+
+    // 도서 페이지 렌더
     function renderBooksPage() {
-        // slice
         const start = (paging.page - 1) * paging.size;
         const end   = Math.min(start + paging.size, paging.total);
         const pageItems = allBooksCache.slice(start, end);
-
-        // 리스트 DOM
         booksList.innerHTML = '';
         const ul = document.createElement('ul');
-
         pageItems.forEach(book => {
             const idNum = Number(book.bookId);
             const li = document.createElement('li');
-
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = idNum;
             checkbox.className = 'book-checkbox';
             checkbox.checked = selectedBookIds.has(idNum);
-
-            checkbox.addEventListener('change', (ev) => {
-                // 버블링 억제(페이저/리스트 클릭 간섭 방지)
-                ev.stopPropagation();
-                if (checkbox.checked) selectedBookIds.add(idNum);
-                else selectedBookIds.delete(idNum);
-            });
-
+            checkbox.addEventListener('change', (ev) => { ev.stopPropagation(); checkbox.checked ? selectedBookIds.add(idNum) : selectedBookIds.delete(idNum); });
             li.appendChild(checkbox);
             li.appendChild(document.createTextNode(` ${book.title} (${book.isbn})`));
             ul.appendChild(li);
         });
-
         booksList.appendChild(ul);
-
-        // 새 페이저 구성
-        if (booksPager) {
-            renderBooksPager();
-        }
+        if (booksPager) renderBooksPager();
     }
+
+    // 도서 페이저 렌더
     function renderBooksPager() {
         booksPager.innerHTML = '';
-
         const group = document.createElement('div');
         group.className = 'btn-group';
         booksPager.appendChild(group);
-
-        // « prev
         const prev = document.createElement('a');
         prev.href = '#';
         prev.className = 'btn btn-secondary btn-nav';
@@ -291,15 +232,12 @@ document.addEventListener('DOMContentLoaded', function () {
         prev.textContent = '«';
         if (paging.page === 1) prev.setAttribute('aria-disabled', 'true');
         group.appendChild(prev);
-
-        // 가운데 숫자 윈도우(최대 7개: 현재±2 + 양끝 보정)
         const total = paging.pages;
         const cur   = paging.page;
         const windowSize = 7;
         let start = Math.max(1, cur - 2);
         let end   = Math.min(total, start + windowSize - 1);
         start     = Math.max(1, Math.min(start, end - windowSize + 1));
-
         for (let i = start; i <= end; i++) {
             const a = document.createElement('a');
             a.href = '#';
@@ -309,8 +247,6 @@ document.addEventListener('DOMContentLoaded', function () {
             a.textContent = String(i);
             group.appendChild(a);
         }
-
-        // » next
         const next = document.createElement('a');
         next.href = '#';
         next.className = 'btn btn-secondary btn-nav';
@@ -319,34 +255,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (paging.page === total || total === 0) next.setAttribute('aria-disabled', 'true');
         group.appendChild(next);
     }
+
+    // 도서 페이저 클릭
     booksPager?.addEventListener('click', (e) => {
         const btn = e.target.closest('a.btn');
         if (!btn) return;
         e.preventDefault();
         e.stopPropagation();
-
         if (btn.hasAttribute('aria-disabled')) return;
-
         if (btn.classList.contains('btn-nav')) {
-            // « 또는 »
-            const isPrev = btn.textContent?.includes('«');
-            const target = isPrev ? paging.page - 1 : paging.page + 1;
-            if (target >= 1 && target <= paging.pages) {
-                paging.page = target;
-                renderBooksPage();
-            }
+            paging.page += btn.textContent.includes('«') ? -1 : 1;
+            if (paging.page >= 1 && paging.page <= paging.pages) renderBooksPage();
             return;
         }
-
         if (btn.classList.contains('page-btn')) {
             const p = Number(btn.dataset.page || '1');
-            if (p >= 1 && p <= paging.pages && p !== paging.page) {
-                paging.page = p;
-                renderBooksPage();
-            }
+            if (p >= 1 && p <= paging.pages && p !== paging.page) { paging.page = p; renderBooksPage(); }
         }
     });
 
+    // 도서 저장 버튼 생성 및 핸들러
     function ensureBooksSaveButton(){
         let saveBtn = document.getElementById(BOOKS_SAVE_BTN_ID);
         if (!saveBtn){
@@ -354,59 +282,35 @@ document.addEventListener('DOMContentLoaded', function () {
             saveBtn.id = BOOKS_SAVE_BTN_ID;
             saveBtn.type = 'button';
             saveBtn.textContent = '저장';
-            // 기존: 'btn btn-outline-success btn--liquid-glass'
             saveBtn.className = 'btn btn-primary btn--liquid-glass';
-
             const container = (booksModalFooter || booksList.parentElement);
             const closeBtn  = document.getElementById('booksModalClose');
-            if (container && closeBtn && closeBtn.parentElement === container) {
-                container.insertBefore(saveBtn, closeBtn); // [저장][닫기] 순서
-            } else {
-                container.appendChild(saveBtn);
-            }
+            if (container && closeBtn && closeBtn.parentElement === container) container.insertBefore(saveBtn, closeBtn);
+            else container.appendChild(saveBtn);
         }
 
         saveBtn.onclick = async () => {
             saveBtn.disabled = true;
             try {
-                // 전체 선택 상태 vs 원본 상태를 비교 (페이지와 무관)
                 const toAdd = [];
                 const toRemove = [];
-
-                // 추가: selected - original
                 selectedBookIds.forEach(id => { if (!originalLinkedIds.has(id)) toAdd.push(id); });
-                // 제거: original - selected
                 originalLinkedIds.forEach(id => { if (!selectedBookIds.has(id)) toRemove.push(id); });
-
-                for (const id of toAdd) {
-                    const r = await fetch(`${ctx}/admin/hashtags/${currentManageHashtagId}/books/${id}`, { method: 'POST' });
-                    if (!r.ok) console.error('추가 실패', id);
-                }
-                for (const id of toRemove) {
-                    const r = await fetch(`${ctx}/admin/hashtags/${currentManageHashtagId}/books/${id}`, { method: 'DELETE' });
-                    if (!r.ok) console.error('삭제 실패', id);
-                }
-
+                for (const id of toAdd) { const r = await fetch(`${ctx}/admin/hashtags/${currentManageHashtagId}/books/${id}`, { method: 'POST' }); if (!r.ok) console.error('추가 실패', id); }
+                for (const id of toRemove) { const r = await fetch(`${ctx}/admin/hashtags/${currentManageHashtagId}/books/${id}`, { method: 'DELETE' }); if (!r.ok) console.error('삭제 실패', id); }
                 showToast('도서 연결이 업데이트되었습니다');
                 closeBooksModal();
                 setTimeout(() => location.reload(), 800);
-            } catch (err) {
-                console.error(err);
-                showToast('도서 연결 업데이트 중 오류 발생', 'error');
-            } finally {
-                saveBtn.disabled = false;
-            }
+            } catch (err) { console.error(err); showToast('도서 연결 업데이트 중 오류 발생', 'error'); }
+            finally { saveBtn.disabled = false; }
         };
     }
-    // ESC 키로 두 모달 닫기
+
+    // ESC 키로 모달 닫기
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            if (hashtagModal && hashtagModal.style.display === 'flex') {
-                closeModal();
-            }
-            if (booksModal && booksModal.style.display === 'flex') {
-                closeBooksModal();
-            }
+            if (hashtagModal && hashtagModal.style.display === 'flex') closeModal();
+            if (booksModal && booksModal.style.display === 'flex') closeBooksModal();
         }
     });
 });

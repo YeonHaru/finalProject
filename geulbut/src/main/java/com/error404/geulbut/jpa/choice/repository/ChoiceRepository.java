@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository;
 public interface ChoiceRepository extends JpaRepository<Books, Long> {
 
     @Query("SELECT new com.error404.geulbut.jpa.choice.dto.ChoiceDto(" +
-            "b.imgUrl, b.title, b.author.name, b.description) " +
+            "b.bookId, b.imgUrl, b.title, b.author.name, b.description) " +
             "FROM Books b " +
             "WHERE b.publishedDate IS NOT NULL " +
             "ORDER BY b.publishedDate DESC")
     Page<ChoiceDto> findChoice(Pageable pageable);
 
     @Query("SELECT new com.error404.geulbut.jpa.introduction.dto.IntroductionDto(" +
-            "b.imgUrl, b.title, b.author.name, b.publishedDate, b.description) " +
+            "b.imgUrl, b.title, b.author.name, b.publishedDate, b.description, b.bookId) " +
             "FROM Books b " +
             "WHERE b.publishedDate IS NOT NULL " +
             "ORDER BY b.publishedDate DESC")

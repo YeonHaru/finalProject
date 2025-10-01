@@ -31,8 +31,9 @@ public class HomeController {
 //        신간소개
         Page<IntroductionDto> pages = introductionService.getAllIntroductions(pageable);
 
+//        메인페이지 화제의소식 (bookId로 넘김)
         model.addAttribute("hotNews", booksService.getHotNewsBooks(
-                List.of(157L, 42L, 15L)
+                List.of(157L, 42L, 15L,4L)
         ));
         model.addAttribute("introductions", pages.getContent());
         model.addAttribute("featuredBooks", pages.getContent());
@@ -41,6 +42,18 @@ public class HomeController {
         Page<ChoiceDto> pages2 = choiceService.getAllChoice(pageable);
         model.addAttribute("choice", pages2.getContent());
         model.addAttribute("bestSellers", booksService.getBestSellersTop10());
+
+//       이주간 책
+        List<BooksDto> weeklyBooks = booksService.getWeeklyRandom4Books();
+        model.addAttribute("weeklyBooks", weeklyBooks);
+
+        // 이달의 주목도서 → BooksDto
+        List<BooksDto> featuredBooks = booksService.getFeaturedBooks();
+        model.addAttribute("featuredBooks", featuredBooks);
+
+//        이주의 특가
+        model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
+
         return "home";
     }
 }

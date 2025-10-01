@@ -7,6 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
@@ -14,6 +15,7 @@
     <title>추천 도서</title>
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/home.css">
 
 </head>
@@ -33,6 +35,7 @@
 
                 <c:forEach var="data" items="${choice}">
 
+                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
                 <!-- 책 카드 1 -->
                 <div class="book-card">
 <%--                    <div class="book-badge recommend">추천</div>--%>
@@ -44,10 +47,11 @@
                     <p class="book-author"><c:out value="${data.name}" /></p>
                     <div class="editor-comment">
 
-                        <h4 class="new-book-description"><c:out value="${data.description}" /></h4>
 
+                            <h4 class="new-book-description"><c:out value="${data.description}"/></h4>
 
-                    </div>
+                        </div>
+
                     <div class="book-rating">
                         <span class="star">★</span>
                         <span class="star">★</span>
@@ -56,29 +60,38 @@
                         <span class="star">★</span>
                     </div>
                 </div></c:forEach>
+            </a>
+
             </div>
+
         </div>
 
         <!-- 신간 소개 컨텐츠 -->
         <div class="tab-content" id="new-books-content">
 
-                <div class="new-books-grid">
-                    <!-- 신간 카드 1 -->
-                    <c:forEach var="data" items="${introductions}">
+            <div class="new-books-grid">
+                <c:forEach var="data" items="${introductions}">
                     <div class="new-book-card">
                         <div class="new-book-badge">NEW</div>
-                        <div class="new-book-image">
-                            <img src="${data.imgUrl}" alt="${data.title}">
-                        </div>
+
+                        <!-- 책 이미지를 눌렀을 때 bookId 기반 디테일 페이지 -->
+                        <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="new-book-link">
+                            <div class="new-book-image">
+                                <img src="${data.imgUrl}" alt="${data.title}">
+                            </div>
+                        </a>
+
                         <h3 class="new-book-title"><c:out value="${data.title}" /></h3>
                         <p class="new-book-author"><c:out value="${data.name}" /></p>
                         <div class="new-book-date"><c:out value="${data.publishedDate}" /></div>
                         <p class="new-book-description"><c:out value="${data.description}" /></p>
+
                         <button class="new-book-button">예약구매</button>
                     </div>
-                    </c:forEach>
-                </div>
+                </c:forEach>
+            </div>
         </div>
+
 
         <!-- 화제의 책 컨텐츠 -->
         <div class="tab-content" id="trending-content">
@@ -204,10 +217,11 @@
                         <span class="original-price">22,000원</span>
                         <span class="sale-price">15,400원</span>
                     </div>
+
                     <div class="hotdeal-time">장바구니🛒</div>
+
                     <button class="hotdeal-button">구매하기</button>
                 </div>
-
             </div>
         </div>
 
@@ -356,87 +370,49 @@
         <!-- 이 주의 책 컨텐츠 -->
         <div class="tab-content" id="weekly-content">
             <div class="weekly-grid">
-                <!-- 주간 추천 책 1 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/667eea/ffffff?text=Book1" alt="소년이 온다">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">소년이 온다</h3>
-                        <p class="weekly-author">한강</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.8</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">이주의 편집장 추천! 깊은 감동을 주는 작품</p>
-                        </div>
-                    </div>
-                </div>
+                <c:forEach var="book" items="${weeklyBooks}">
+                    <div class="weekly-card">
+                        <div class="weekly-badge">이주의책</div>
 
-                <!-- 주간 추천 책 2 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/764ba2/ffffff?text=Book2" alt="82년생 김지영">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">82년생 김지영</h3>
-                        <p class="weekly-author">조남주</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.6</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">사회 현상을 날카롭게 다룬 화제작</p>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 주간 추천 책 3 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/4facfe/ffffff?text=Book3" alt="미드나잇 라이브러리">
-                    </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">미드나잇 라이브러리</h3>
-                        <p class="weekly-author">매트 헤이그</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.7</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">인생의 선택에 대한 철학적 사유</p>
-                        </div>
-                    </div>
-                </div>
+                        <!-- 이미지 영역 클릭 시 책 디테일 페이지로 이동 -->
+                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-image-link">
+                            <div class="weekly-image">
+                                <img src="${book.imgUrl}" alt="${book.title}" />
+                            </div>
+                        </a>
 
-                <!-- 주간 추천 책 4 -->
-                <div class="weekly-card">
-                    <div class="weekly-badge">이주의책</div>
-                    <div class="weekly-image">
-                        <img src="https://via.placeholder.com/180x240/f093fb/ffffff?text=Book4" alt="작별하지 않는다">
+                        <!-- 정보 영역 클릭 시 책 디테일 페이지로 이동 -->
+                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-info-link">
+                            <div class="weekly-info">
+                                <h3 class="weekly-title">
+                                    <c:choose>
+                                        <c:when test="${fn:length(book.title) > 30}">
+                                            ${fn:substring(book.title, 0, 30)}...
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${book.title}
+                                        </c:otherwise>
+                                    </c:choose>
+                                </h3>
+                                <p class="weekly-author"><c:out value="${book.authorName}" /></p>
+                                <div class="weekly-rating">
+                                    <span class="star">⭐</span>
+                                    <span class="rating-score">4.5</span>
+                                    <span class="rating-text">평점</span>
+                                </div>
+                                <div class="weekly-comment">
+                                    <p class="comment-text"><c:out value="${book.description}" /></p>
+                                </div>
+
+                            </div>
+                        </a>
                     </div>
-                    <div class="weekly-info">
-                        <h3 class="weekly-title">작별하지 않는다</h3>
-                        <p class="weekly-author">한강</p>
-                        <div class="weekly-rating">
-                            <span class="star">⭐</span>
-                            <span class="rating-score">4.9</span>
-                            <span class="rating-text">평점</span>
-                        </div>
-                        <div class="weekly-comment">
-                            <p class="comment-text">노벨문학상 수상작가의 최신작</p>
-                        </div>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
+
+
 
         <!-- 탭 메뉴 -->
         <div class="tab-menu">
@@ -547,18 +523,20 @@
                             <!-- <div class="category-tag">화제의 신간</div> -->
                         </div>
 
-                        <div class="featured-book-image">
-                            <img
-                                    src="${empty b.imgUrl ? 'https://via.placeholder.com/160x220/cccccc/000000?text=No+Image' : b.imgUrl}"
-                                    alt="${b.title}"
-                                    onerror="this.src='https://via.placeholder.com/160x220/cccccc/000000?text=No+Image'"/>
-                        </div>
+                        <a href="${pageContext.request.contextPath}/book/${b.bookId}" class="featured-book-link">
+                            <div class="featured-book-image">
+                                <img
+                                        src="${empty b.imgUrl ? 'https://via.placeholder.com/160x220/cccccc/000000?text=No+Image' : b.imgUrl}"
+                                        alt="${b.title}"
+                                        onerror="this.src='https://via.placeholder.com/160x220/cccccc/000000?text=No+Image'"/>
+                            </div>
+                        </a>
 
                         <div class="featured-book-info">
                             <h3 class="featured-book-title"><c:out value="${b.title}"/></h3>
 
                             <p class="featured-book-author">
-                                <c:out value="${b.name}"/>
+                                <c:out value="${b.authorName}"/>
                             </p>
 
                             <div class="book-rating">
@@ -590,6 +568,7 @@
     </section>
 
 
+
     <!-- 어제 베스트셀러 TOP 10 -->
     <section class="bestseller-section">
         <h2 class="bestseller-title">
@@ -604,7 +583,9 @@
         <c:if test="${not empty bestSellers}">
             <div class="bestseller-grid">
                 <c:forEach var="b" items="${bestSellers}" varStatus="s">
-                    <div class="bestseller-item">
+                    <c:url var="detailUrl" value="/book/${b.bookId}"/>
+
+                    <a class="bestseller-item" href="${detailUrl}">
                         <div class="rank-number ${s.index lt 3 ? ('rank-' += (s.index + 1)) : ''}">
                                 ${s.index + 1}
                         </div>
@@ -617,12 +598,11 @@
                         <div class="bestseller-info">
                             <div class="bestseller-title-line">
                                 <h3 class="bestseller-book-title">${b.title}</h3>
-                                <!-- 등락/NEW 뱃지는 아직 로직 없음 → 숨김 또는 향후 확장 -->
                             </div>
                             <p class="bestseller-author">${b.authorName}</p>
                             <div class="count">판매: ${b.orderCount}권</div>
                         </div>
-                    </div>
+                    </a>
                 </c:forEach>
             </div>
         </c:if>
@@ -672,10 +652,11 @@
             <c:otherwise>
                 <div class="hot-news-slider">
                     <div class="hot-news-container">
-                        <!-- 한 페이지에 3권 (hotNews는 최대 3권으로 전달) -->
                         <div class="hot-news-page active">
                             <div class="hot-news-grid">
                                 <c:forEach var="b" items="${hotNews}" varStatus="s">
+                                    <c:url var="detailUrl" value="/book/${b.bookId}"/>
+
                                     <div class="hot-news-card">
                                         <div class="card-header">
                                             <span class="rank-badge rank-${s.index + 1}">#${s.index + 1}</span>
@@ -685,14 +666,18 @@
                                         </div>
 
                                         <div class="book-cover">
+                                            <a href="${detailUrl}" aria-label="${fn:escapeXml(b.title)} 상세보기">
                                             <img
                                                     src="${empty b.imgUrl ? 'https://via.placeholder.com/200x280/cccccc/000000?text=No+Image' : b.imgUrl}"
                                                     alt="<c:out value='${b.title}'/>"
                                                     onerror="this.src='https://via.placeholder.com/200x280/cccccc/000000?text=No+Image'">
+                                            </a>
                                         </div>
 
                                         <div class="book-content">
-                                            <h3 class="book-title"><c:out value="${b.title}"/></h3>
+                                            <h3 class="book-title">
+                                                <a href="${detailUrl}"><c:out value="${b.title}"/></a>
+                                            </h3>
                                             <p class="book-author"><c:out value="${b.authorName}"/></p>
 
                                             <p class="book-description"><c:out value="${b.description}"/></p>
@@ -727,7 +712,8 @@
                         <!-- 베스트셀러 프로모션 -->
                         <div class="promotion-card bestseller-promo">
                             <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                                 </svg>
                                 <span>선간</span>
@@ -739,14 +725,16 @@
                                 <button class="promo-button">자세히 보기 ></button>
                             </div>
                             <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/667eea/ffffff?text=달러구트+꿈의+서점" alt="달러구트 꿈의 서점">
+                                <img src="https://via.placeholder.com/120x160/667eea/ffffff?text=달러구트+꿈의+서점"
+                                     alt="달러구트 꿈의 서점">
                             </div>
                         </div>
 
                         <!-- MD 추천 프로모션 -->
                         <div class="promotion-card md-promo">
                             <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2">
                                     <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
                                 </svg>
                                 <span>MD추천</span>
@@ -758,7 +746,8 @@
                                 <button class="promo-button">자세히 보기 ></button>
                             </div>
                             <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/f97316/ffffff?text=아주+작은+습관의+힘" alt="아주 작은 습관의 힘">
+                                <img src="https://via.placeholder.com/120x160/f97316/ffffff?text=아주+작은+습관의+힘"
+                                     alt="아주 작은 습관의 힘">
                             </div>
                         </div>
                     </div>
@@ -770,7 +759,8 @@
                         <!-- 신간 프로모션 -->
                         <div class="promotion-card new-book-promo">
                             <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                     <polyline points="14,2 14,8 20,8"></polyline>
                                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -786,14 +776,16 @@
                                 <button class="promo-button">자세히 보기 ></button>
                             </div>
                             <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/10b981/ffffff?text=미드나잇+라이브러리" alt="미드나잇 라이브러리">
+                                <img src="https://via.placeholder.com/120x160/10b981/ffffff?text=미드나잇+라이브러리"
+                                     alt="미드나잇 라이브러리">
                             </div>
                         </div>
 
                         <!-- 오디오북 프로모션 -->
                         <div class="promotion-card audiobook-promo">
                             <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2">
                                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                                     <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
                                     <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
@@ -807,7 +799,8 @@
                                 <button class="promo-button">자세히 보기 ></button>
                             </div>
                             <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/6366f1/ffffff?text=사피엔스+오디오북" alt="사피엔스 오디오북">
+                                <img src="https://via.placeholder.com/120x160/6366f1/ffffff?text=사피엔스+오디오북"
+                                     alt="사피엔스 오디오북">
                             </div>
                         </div>
                     </div>
@@ -830,117 +823,43 @@
                 <span class="special-icon">🏷️</span>
                 <div class="special-title-text">
                     <h2 class="special-main-title">이 주의 특가</h2>
-                    <p class="special-subtitle">% 최대 80% 할인</p>
+                    <p class="special-subtitle">최대 80% 할인</p>
                 </div>
             </div>
-            <a href="/special-deals" class="more-link">더보기 ></a>
         </div>
 
         <div class="special-books-grid">
             <!-- 특가 도서 카드 1 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">2일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/4a5568/ffffff?text=삼각지" alt="삼각지">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">소설</div>
-                    <h3 class="special-book-title">삼각지</h3>
-                    <p class="special-book-author">이미예</p>
-                    <div class="special-price-info">
-                        <span class="original-price">13,000원</span>
-                        <span class="special-price">9,600원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
+            <c:forEach var="b" items="${weeklySpecials}">
+                <c:set var="rate" value="${(b.price - b.discountedPrice) * 100.0 / b.price}"/>
+                <c:url var="detailUrl" value="/book/${b.bookId}"/>
 
-            <!-- 특가 도서 카드 2 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">1일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/3182ce/ffffff?text=사피엔스" alt="사피엔스">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">인문</div>
-                    <h3 class="special-book-title">사피엔스</h3>
-                    <p class="special-book-author">유발 하라리</p>
-                    <div class="special-price-info">
-                        <span class="original-price">22,000원</span>
-                        <span class="special-price">15,400원</span>
-                        <span class="price-label">적립</span>
+                <div class="special-book-card">
+                    <div class="special-badges">
+                        <div class="discount-percent">% 70%</div>
+                        <div class="days-left">2일 남음</div>
                     </div>
-                </div>
-            </div>
 
-            <!-- 특가 도서 카드 3 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 80%</div>
-                    <div class="days-left">3일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/8b4513/ffffff?text=나+홀로+유럽여행" alt="나 홀로 유럽여행">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">여행</div>
-                    <h3 class="special-book-title">나 홀로 유럽여행</h3>
-                    <p class="special-book-author">김영미</p>
-                    <div class="special-price-info">
-                        <span class="original-price">16,500원</span>
-                        <span class="special-price">13,200원</span>
-                        <span class="price-label">적립</span>
+                    <div class="special-book-image">
+                        <a href="${detailUrl}">
+                            <img src="${b.imgUrl}" alt="${fn:escapeXml(b.title)}">
+                        </a>
                     </div>
-                </div>
-            </div>
 
-            <!-- 특가 도서 카드 4 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">5일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/2d3748/ffffff?text=마술창업의+기술" alt="마술창업의 기술">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">자기계발</div>
-                    <h3 class="special-book-title">마술창업의 기술</h3>
-                    <p class="special-book-author">존 카맥진</p>
-                    <div class="special-price-info">
-                        <span class="original-price">18,000원</span>
-                        <span class="special-price">12,600원</span>
-                        <span class="price-label">적립</span>
+                    <div class="special-book-info">
+                        <div class="book-category">${fn:escapeXml(b.categoryName)}</div>
+                        <h3 class="special-book-title">
+                            <a href="${detailUrl}"> ${fn:escapeXml(b.title)}</a>
+                        </h3>
+                        <p class="special-book-author">${fn:escapeXml(b.authorName)}</p>
+                        <div class="special-price-info">
+                            <span class="original-price"><fmt:formatNumber value="${b.price}" pattern="#,##0"/>원</span>
+                            <span class="special-price"><fmt:formatNumber value="${b.discountedPrice}" pattern="#,##0"/>원</span>
+                            <span class="price-label">적립</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- 특가 도서 카드 5 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 75%</div>
-                    <div class="days-left">4일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/805ad5/ffffff?text=디자인의+디자인" alt="디자인의 디자인">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">예술</div>
-                    <h3 class="special-book-title">디자인의 디자인</h3>
-                    <p class="special-book-author">하라 겐야</p>
-                    <div class="special-price-info">
-                        <span class="original-price">25,000원</span>
-                        <span class="special-price">18,750원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
 
         <div class="special-notice">
@@ -1131,7 +1050,7 @@
 </div>
 <%--<script src="/js/theme.js"></script>--%>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
 
         /*** === 편집장의 선택 (탭 자동 슬라이드) === ***/
         let currentTabIndex = 0;
@@ -1220,7 +1139,7 @@
         }
 
         if (playButton) {
-            playButton.addEventListener('click', function() {
+            playButton.addEventListener('click', function () {
                 if (isPlaying) {
                     stopAutoSlide();
                 } else {
@@ -1231,7 +1150,7 @@
 
         if (tabItems.length > 0) {
             tabItems.forEach((tab, index) => {
-                tab.addEventListener('click', function() {
+                tab.addEventListener('click', function () {
                     if (isPlaying) {
                         stopAutoSlide();
                     }
@@ -1241,12 +1160,12 @@
         }
 
         // === 탭용 전역 함수 등록 ===
-        window.nextTab = function() {
+        window.nextTab = function () {
             if (isPlaying) stopAutoSlide();
             nextTabSlide();
         };
 
-        window.prevTab = function() {
+        window.prevTab = function () {
             if (isPlaying) stopAutoSlide();
             prevTabSlide();
         };
@@ -1304,14 +1223,14 @@
         }
 
         // 전역 등록 (HTML 버튼에서 호출 가능)
-        window.nextBanner = function() {
+        window.nextBanner = function () {
             userInteracting = true;
             stopBannerAutoSlide();
             nextBannerSlide();
             resetBannerAutoSlide();
         }
 
-        window.prevBanner = function() {
+        window.prevBanner = function () {
             userInteracting = true;
             stopBannerAutoSlide();
             prevBannerSlide();
@@ -1326,5 +1245,6 @@
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
 </script>
+<jsp:include page="/common/footer.jsp"></jsp:include>
 </body>
 </html>
