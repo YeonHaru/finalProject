@@ -45,8 +45,7 @@
                     <div class="editor-comment">
 
                         <h4 class="new-book-description"><c:out value="${data.description}" /></h4>
-                     
-                        <p class="comment-text"><c:out value="${data.publishedDate}" /></p>
+
 
                     </div>
                     <div class="book-rating">
