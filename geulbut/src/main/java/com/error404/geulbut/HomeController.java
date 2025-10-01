@@ -42,6 +42,10 @@ public class HomeController {
 //       이주간 책
         List<BooksDto> weeklyBooks = booksService.getWeeklyRandom4Books();
         model.addAttribute("weeklyBooks", weeklyBooks);
+
+//        이주의 특가
+        model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
+
         return "home";
     }
 }
