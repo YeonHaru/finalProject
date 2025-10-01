@@ -1,6 +1,7 @@
 package com.error404.geulbut;
 
 
+import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.service.BooksService;
 import com.error404.geulbut.jpa.choice.dto.ChoiceDto;
 import com.error404.geulbut.jpa.choice.service.ChoiceService;
@@ -30,12 +31,15 @@ public class HomeController {
 //        신간소개
         Page<IntroductionDto> pages = introductionService.getAllIntroductions(pageable);
 
+        model.addAttribute("hotNews", booksService.getHotNewsBooks(
+                List.of(157L, 42L, 15L)
+        ));
         model.addAttribute("introductions", pages.getContent());
+        model.addAttribute("featuredBooks", pages.getContent());
 //        편집장의 선택
 
         Page<ChoiceDto> pages2 = choiceService.getAllChoice(pageable);
         model.addAttribute("choice", pages2.getContent());
-//        model.addAttribute("featuredBooks", pages.getContent());
         model.addAttribute("bestSellers", booksService.getBestSellersTop10());
         return "home";
     }

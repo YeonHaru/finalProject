@@ -10,7 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +35,19 @@ public class BooksService {
         var page = PageRequest.of(0, 10);
         return  booksRepository.findBestSellers(page)
                 .stream()
+                .map(mapStruct::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BooksDto> getHotNewsBooks(List<Long> ids) {
+        List<Books> found = booksRepository.findByIds(ids);
+
+        Map<Long, Integer> order = new HashMap<>();
+        for ( int i = 0; i < ids.size(); i++ ) order.put(ids.get(i), i);
+
+        return found.stream()
+                .sorted(Comparator.comparing(b -> order.getOrDefault(b.getBookId(), Integer.MAX_VALUE)))
                 .map(mapStruct::toDto)
                 .toList();
     }
