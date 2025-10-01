@@ -357,6 +357,7 @@
 <!-- 6) 방금 교체한 cart.js (마지막에) -->
 <script src="/js/mypage/cart.js"></script>
 
+
 <!-- 7) 위시리스트 -->
 <script src="/js/mypage/wishlist.js"></script>
 <%-- 버튼 클릭시 이동 경로 --%>
