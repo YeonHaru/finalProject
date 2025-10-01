@@ -782,31 +782,31 @@
                         </div>
 
                         <!-- 오디오북 프로모션 -->
-                        <div class="promotion-card audiobook-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                                    <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
-                                    <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
-                                </svg>
-                                <span>오디오</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">오디오북 특가</h3>
-                                <h4 class="promo-subtitle">「사피엔스」 오디오북</h4>
-                                <p class="promo-description">성우 김영철 낭독! 첫 구매 고객 50% 할인 혜택</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/6366f1/ffffff?text=사피엔스+오디오북"
-                                     alt="사피엔스 오디오북">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="promotion-card audiobook-promo">
+            <div class="promo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
+                    <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
+                </svg>
+                <span>오디오</span>
+            </div>
+            <div class="promo-content">
+                <h3 class="promo-title">오디오북 특가</h3>
+                <h4 class="promo-subtitle">「사피엔스」 오디오북</h4>
+                <p class="promo-description">성우 김영철 낭독! 첫 구매 고객 50% 할인 혜택</p>
+                <button class="promo-button">자세히 보기 ></button>
+            </div>
+            <div class="promo-image">
+                <img src="https://via.placeholder.com/120x160/6366f1/ffffff?text=사피엔스+오디오북"
+                     alt="사피엔스 오디오북">
             </div>
         </div>
+</div>
+</div>
+</div>
+</div>
 
         <div class="promotion-footer">
             <p class="promotion-notice">
