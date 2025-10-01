@@ -41,6 +41,10 @@ public class HomeController {
         Page<ChoiceDto> pages2 = choiceService.getAllChoice(pageable);
         model.addAttribute("choice", pages2.getContent());
         model.addAttribute("bestSellers", booksService.getBestSellersTop10());
+
+//        이주의 특가
+        model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
+
         return "home";
     }
 }

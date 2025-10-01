@@ -7,6 +7,7 @@ import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,16 @@ public class BooksService {
     }
 
     @Transactional(readOnly = true)
+
+    public List<BooksDto> findTopDiscount(int limit){
+        int size = Math.max(1, Math.min(limit, 12));
+        Pageable page = PageRequest.of(0, size);
+        return booksRepository.findTopDiscount(page)
+                .stream()
+                .map(mapStruct::toDto)
+                .toList();
+    }
+
     public List<BooksDto> getHotNewsBooks(List<Long> ids) {
         List<Books> found = booksRepository.findByIds(ids);
 
@@ -83,4 +94,5 @@ public class BooksService {
         cachedWeek = currentWeek; // 캐시된 주 갱신
         return weeklyBooksCache;
     }
+
 }
