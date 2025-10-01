@@ -17,6 +17,7 @@
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
 
+
 <div class="container my-5">
     <h1 class="mb-4 text-accent-dark">마이페이지</h1>
 
