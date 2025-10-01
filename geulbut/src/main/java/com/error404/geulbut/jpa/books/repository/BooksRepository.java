@@ -73,6 +73,10 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
     List<Books> findByIds(@Param("ids") List<Long> ids);
 
+    
+//  작가 작품보기 버튼 클릭용
+    @Query("SELECT b FROM Books b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :authorName, '%'))")
+    List<Books> findByAuthorNameContaining(@Param("authorName") String authorName);
 
     // 1) 활성화된 모든 책을 BookId 기준으로 정렬해서 가져오기
     List<Books> findByEsDeleteFlagOrderByBookIdAsc(String esDeleteFlag);

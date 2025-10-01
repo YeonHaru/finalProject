@@ -80,8 +80,8 @@
 
         <!-- 하단: 액션 -->
         <div class="row justify-end mt-3">
-          <a href="/authors/${a.authorId}" class="btn bg-accent text-invert rounded px-3 py-2">
-            상세 보기
+          <a href="/books/search?q=${a.name}" class="btn bg-accent text-invert rounded px-3 py-2">
+            작품 목록
           </a>
         </div>
       </article>
