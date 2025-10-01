@@ -33,7 +33,7 @@
             <div class="books-grid">
 
                 <c:forEach var="data" items="${choice}">
-
+                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
                 <!-- 책 카드 1 -->
                 <div class="book-card">
 <%--                    <div class="book-badge recommend">추천</div>--%>
@@ -56,7 +56,9 @@
                         <span class="star">★</span>
                     </div>
                 </div></c:forEach>
+            </a>
             </div>
+
         </div>
 
         <!-- 신간 소개 컨텐츠 -->
@@ -208,55 +210,7 @@
                         <span class="original-price">22,000원</span>
                         <span class="sale-price">15,400원</span>
                     </div>
-                    <div class="hotdeal-time">⏰ 5일 8시간</div>
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
-
-                <!-- 핫딜 카드 2 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/f093fb/ffffff?text=하마터면+열심히+살+뻔했다" alt="하마터면 열심히 살 뻔했다">
-                    </div>
-                    <h3 class="hotdeal-title">하마터면 열심히 살 뻔했다</h3>
-                    <p class="hotdeal-author">하완</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">16,000원</span>
-                        <span class="sale-price">11,200원</span>
-                    </div>
-                    <div class="hotdeal-time">⏰ 3일 12시간</div>
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
-
-                <!-- 핫딜 카드 3 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/667eea/ffffff?text=재식주의자" alt="재식주의자">
-                    </div>
-                    <h3 class="hotdeal-title">재식주의자</h3>
-                    <p class="hotdeal-author">한강</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">15,000원</span>
-                        <span class="sale-price">10,500원</span>
-                    </div>
-                    <div class="hotdeal-time">⏰ 2일 23시간</div>
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
-
-                <!-- 핫딜 카드 4 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/764ba2/ffffff?text=물끓일의+시절" alt="물끓일의 시절">
-                    </div>
-                    <h3 class="hotdeal-title">물끓일의 시절</h3>
-                    <p class="hotdeal-author">김은주</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">18,000원</span>
-                        <span class="sale-price">12,600원</span>
-                    </div>
-                    <div class="hotdeal-time">⏰ 1일 15시간</div>
+                    <div class="hotdeal-time">장바구니🛒</div>
                     <button class="hotdeal-button">구매하기</button>
                 </div>
             </div>
