@@ -7,6 +7,7 @@ import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,16 @@ public class BooksService {
     public List<BooksDto> getBestSellersTop10() {
         var page = PageRequest.of(0, 10);
         return  booksRepository.findBestSellers(page)
+                .stream()
+                .map(mapStruct::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BooksDto> findTopDiscount(int limit){
+        int size = Math.max(1, Math.min(limit, 12));
+        Pageable page = PageRequest.of(0, size);
+        return booksRepository.findTopDiscount(page)
                 .stream()
                 .map(mapStruct::toDto)
                 .toList();

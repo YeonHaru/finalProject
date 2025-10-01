@@ -54,4 +54,17 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
            b.bookId
 """)
     List<Books> findBestSellers(Pageable pageable);
+
+//    메인페이지 이주의 특가
+    @EntityGraph(attributePaths = {"author", "publisher", "category"})
+    @Query("""
+        SELECT b FROM Books b
+        WHERE b.price > 0
+          AND b.discountedPrice IS NOT NULL
+          AND b.discountedPrice < b.price
+          AND b.imgUrl IS NOT NULL
+        ORDER BY ((b.price - b.discountedPrice) * 1.0 / b.price) DESC,
+                 b.discountedPrice ASC
+    """)
+    List<Books> findTopDiscount(Pageable pageable);
 }

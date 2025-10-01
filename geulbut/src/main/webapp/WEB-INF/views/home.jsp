@@ -7,6 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
@@ -45,8 +46,6 @@
                     <div class="editor-comment">
 
                         <h4 class="new-book-description"><c:out value="${data.description}" /></h4>
-                     
-                        <p class="comment-text"><c:out value="${data.publishedDate}" /></p>
 
                     </div>
                     <div class="book-rating">
@@ -1248,117 +1247,35 @@
                 <span class="special-icon">🏷️</span>
                 <div class="special-title-text">
                     <h2 class="special-main-title">이 주의 특가</h2>
-                    <p class="special-subtitle">% 최대 80% 할인</p>
+                    <p class="special-subtitle">최대 80% 할인</p>
                 </div>
             </div>
-            <a href="/special-deals" class="more-link">더보기 ></a>
         </div>
 
         <div class="special-books-grid">
             <!-- 특가 도서 카드 1 -->
+            <c:forEach var="b" items="${weeklySpecials}">
+            <c:set var="rate" value="${(b.price - b.discountedPrice) * 100.0 / b.price}" />
             <div class="special-book-card">
                 <div class="special-badges">
                     <div class="discount-percent">% 70%</div>
                     <div class="days-left">2일 남음</div>
                 </div>
                 <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/4a5568/ffffff?text=삼각지" alt="삼각지">
+                    <img src="${b.imgUrl}" alt="${fn:escapeXml(b.title)}">
                 </div>
                 <div class="special-book-info">
-                    <div class="book-category">소설</div>
-                    <h3 class="special-book-title">삼각지</h3>
-                    <p class="special-book-author">이미예</p>
+                    <div class="book-category">${fn:escapeXml(b.categoryName)}</div>
+                    <h3 class="special-book-title">${fn:escapeXml(b.title)}</h3>
+                    <p class="special-book-author">${fn:escapeXml(b.authorName)}</p>
                     <div class="special-price-info">
-                        <span class="original-price">13,000원</span>
-                        <span class="special-price">9,600원</span>
+                        <span class="original-price"><fmt:formatNumber value="${b.price}" pattern="#,##0"/>원</span>
+                        <span class="special-price"><fmt:formatNumber value="${b.discountedPrice}" pattern="#,##0"/>원</span>
                         <span class="price-label">적립</span>
                     </div>
                 </div>
             </div>
-
-            <!-- 특가 도서 카드 2 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">1일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/3182ce/ffffff?text=사피엔스" alt="사피엔스">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">인문</div>
-                    <h3 class="special-book-title">사피엔스</h3>
-                    <p class="special-book-author">유발 하라리</p>
-                    <div class="special-price-info">
-                        <span class="original-price">22,000원</span>
-                        <span class="special-price">15,400원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 특가 도서 카드 3 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 80%</div>
-                    <div class="days-left">3일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/8b4513/ffffff?text=나+홀로+유럽여행" alt="나 홀로 유럽여행">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">여행</div>
-                    <h3 class="special-book-title">나 홀로 유럽여행</h3>
-                    <p class="special-book-author">김영미</p>
-                    <div class="special-price-info">
-                        <span class="original-price">16,500원</span>
-                        <span class="special-price">13,200원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 특가 도서 카드 4 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 70%</div>
-                    <div class="days-left">5일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/2d3748/ffffff?text=마술창업의+기술" alt="마술창업의 기술">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">자기계발</div>
-                    <h3 class="special-book-title">마술창업의 기술</h3>
-                    <p class="special-book-author">존 카맥진</p>
-                    <div class="special-price-info">
-                        <span class="original-price">18,000원</span>
-                        <span class="special-price">12,600원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 특가 도서 카드 5 -->
-            <div class="special-book-card">
-                <div class="special-badges">
-                    <div class="discount-percent">% 75%</div>
-                    <div class="days-left">4일 남음</div>
-                </div>
-                <div class="special-book-image">
-                    <img src="https://via.placeholder.com/160x220/805ad5/ffffff?text=디자인의+디자인" alt="디자인의 디자인">
-                </div>
-                <div class="special-book-info">
-                    <div class="book-category">예술</div>
-                    <h3 class="special-book-title">디자인의 디자인</h3>
-                    <p class="special-book-author">하라 겐야</p>
-                    <div class="special-price-info">
-                        <span class="original-price">25,000원</span>
-                        <span class="special-price">18,750원</span>
-                        <span class="price-label">적립</span>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
 
         <div class="special-notice">
