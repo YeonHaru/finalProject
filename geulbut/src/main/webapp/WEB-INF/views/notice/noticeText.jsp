@@ -50,7 +50,7 @@
                 </div>
             </h2>
 
-            <p>제목 : <c:out value="${notice.title}" /></p>
+            <p class="tt">제목 : <c:out value="${notice.title}" /></p>
 
             <!-- 아이콘 + 텍스트 메타 정보 -->
             <div class="notice-meta px-3">

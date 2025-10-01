@@ -48,7 +48,7 @@
                 </div>
             </h2>
 
-            <p>제목 : ${qna.title}</p>
+            <p class="tt">제목 : ${qna.title}</p>
 
             <!-- 메타 정보 -->
             <div class="qna-meta px-3">

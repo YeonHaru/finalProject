@@ -58,4 +58,12 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     @EntityGraph(attributePaths = {"author"})
     @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
     List<Books> findByIds(@Param("ids") List<Long> ids);
+
+
+    // 1) 활성화된 모든 책을 BookId 기준으로 정렬해서 가져오기
+    List<Books> findByEsDeleteFlagOrderByBookIdAsc(String esDeleteFlag);
+
+    // 2) Native Query로 랜덤 4권 가져오기 (DB 지원 시)
+    @Query(value = "SELECT * FROM BOOKS WHERE ES_DELETE_FLAG = 'N' ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY", nativeQuery = true)
+    List<Books> findRandom4Native();
 }

@@ -38,6 +38,11 @@ aside nav a:hover {
     border-bottom: 2px solid #333; /* 밑줄 색상/두께 */
     margin-bottom: 2rem;      /* 밑줄 아래 여백 */
 }
+.tt{
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
 /* 제목, 내용 label 강조 */
 .qna-write label {
     font-weight: 600;                  /* 글자 굵게 */

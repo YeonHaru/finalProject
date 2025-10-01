@@ -231,7 +231,12 @@ aside nav a:hover {
     font-weight: bold;        /* 강조 */
     padding-bottom: 0.75rem;   /* 밑줄과 텍스트 사이 간격 */
     border-bottom: 2px solid #333; /* 밑줄 색상/두께 */
-    margin-bottom: 2rem;      /* 밑줄 아래 여백 */
+    margin-bottom: 1.5rem;      /* 밑줄 아래 여백 */
+}
+.tt{
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
 }
 .btn-main {
 
