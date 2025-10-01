@@ -31,8 +31,9 @@ public class HomeController {
 //        신간소개
         Page<IntroductionDto> pages = introductionService.getAllIntroductions(pageable);
 
+//        메인페이지 화제의소식 (bookId로 넘김)
         model.addAttribute("hotNews", booksService.getHotNewsBooks(
-                List.of(157L, 42L, 15L)
+                List.of(157L, 42L, 15L,4L)
         ));
         model.addAttribute("introductions", pages.getContent());
         model.addAttribute("featuredBooks", pages.getContent());
