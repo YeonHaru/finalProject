@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
+
 
 <html>
 <head>
@@ -25,8 +29,7 @@
                 <span>전체선택</span>
             </label>
             <button type="button" class="px-2 py-1 border rounded-sm bg-surface" data-bulk="cart">장바구니 담기</button>
-            <button type="button" class="px-2 py-1 border rounded-sm bg-surface" data-bulk="wish">보관함 담기</button>
-            <button type="button" class="px-2 py-1 border rounded-sm bg-surface" data-bulk="like">마이리스트 담기</button>
+            <button type="button" class="px-2 py-1 border rounded-sm bg-surface" data-bulk="like">위시리스트 담기</button>
         </div>
     </div>
 
@@ -109,20 +112,20 @@
                                 <!-- 배송/뱃지 -->
                                 <div class="row gap-1 mb-2 text-light">
                                     <span class="chip chip--soft">알뜰배송</span>
-                                    <span>밤 11시 잠들기전 배송</span>
+                                    <span>내일 도착 보장</span>
                                 </div>
 
                                 <!-- 해시태그 -->
                                 <c:if test="${not empty data.hashtags}">
                                     <ul class="row gap-1 mb-2">
                                         <c:forEach var="tag" items="${data.hashtags}">
+                                            <c:url var="tagUrl" value="/search">
+                                                <c:param name="keyword" value="${fn:escapeXml(tag)}"/>
+                                                <c:param name="page" value="0"/>
+                                                <c:param name="size" value="${size}"/>
+                                            </c:url>
                                             <li>
-                                                <a class="chip chip--tag"
-                                                   href="<c:url value='/search'>
-                                                            <c:param name='keyword' value='${fn:escapeXml(tag)}'/>
-                                                            <c:param name='page' value='0'/>
-                                                            <c:param name='size' value='${size}'/>
-                                                        </c:url>">#${tag}</a>
+                                                <a class="chip chip--tag" href="${tagUrl}">#${tag}</a>
                                             </li>
                                         </c:forEach>
                                     </ul>
@@ -133,11 +136,7 @@
                                     <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
                                             data-act="cart" data-id="${data.bookId}">장바구니</button>
                                     <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                            data-act="buy" data-id="${data.bookId}">바로구매</button>
-                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                            data-act="wish" data-id="${data.bookId}">보관함</button>
-                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                            data-act="like" data-id="${data.bookId}">마이리스트</button>
+                                            data-act="like" data-id="${data.bookId}">위시리스트</button>
                                 </div>
                             </div>
                         </li>

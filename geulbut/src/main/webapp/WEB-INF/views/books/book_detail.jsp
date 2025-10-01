@@ -9,15 +9,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<c:url var="buyNowUrl" value="/orders/buy-now"/>
+<c:url var="loginUrl"  value="/users/login"/>
+<c:url var="checkoutUrl" value="/orders/checkout"/>
 <html>
 <head>
     <title>도서 상세</title>
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
     <link rel="stylesheet" href="/css/00_common.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/book_detail/book_detail.css">
 </head>
 <body class="bg-main">
 <jsp:include page="/common/header.jsp"/>
+
 
 <main id="main" class="page py-4" role="main">
     <!-- 브레드크럼 -->
@@ -37,7 +44,7 @@
         <section class="grid gap-3" aria-label="도서 이미지">
             <figure class="book-cover">
                 <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
-                     alt="${fn:escapeXml(data.title)} 표지">
+                     alt="${fn:escapeXml(book.title)} 표지">
             </figure>
 
             <!-- 작은 카드: 배송/재고 안내 등 -->
@@ -60,10 +67,25 @@
 
             <!-- 가격 영역 -->
             <div class="bg-main rounded p-3 border" aria-label="가격 정보">
-                <div class="row gap-2">
-                    <p class="price-original">정가: ${book.price}</p>
-                    <p class="text-main"><strong class="price-discount">할인가: ${book.discountedPrice}</strong></p>
-                    <span class="badge bg-accent-dark text-invert">25%↓</span>
+                <div class="row gap-2 align-items-center">
+                    <c:choose>
+                        <c:when test="${not empty book.discountedPrice && book.discountedPrice < book.price}">
+                            <p class="price-original text-light">
+                                정가: <del><fmt:formatNumber value="${book.price}" pattern="#,##0"/></del> 원
+                            </p>
+                            <p class="text-main m-0">
+                                <strong class="price-discount">
+                                    할인가: <fmt:formatNumber value="${book.discountedPrice}" pattern="#,##0"/> 원
+                                </strong>
+                            </p>
+                            <span class="badge bg-accent-dark text-invert">
+          <fmt:formatNumber value="${(1 - (book.discountedPrice * 1.0 / book.price)) * 100}" maxFractionDigits="0"/>% ↓
+        </span>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="m-0">가격: <strong><fmt:formatNumber value="${book.price}" pattern="#,##0"/></strong> 원</p>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <p class="mt-1 text-light">재고: ${book.stock}</p>
             </div>
@@ -73,21 +95,28 @@
                 <h2 class="visually-hidden">해시태그</h2>
                 <ul class="tag-list">
                     <c:forEach var="tag" items="${book.hashtags}">
-                        <li>${tag}</li>
+                        <c:url var="tagUrl" value="/search">
+                            <c:param name="keyword" value="${fn:escapeXml(tag)}"/>
+                            <c:param name="page" value="0"/>
+                            <c:param name="size" value="20"/>
+                        </c:url>
+                        <li><a class="chip chip--tag" href="${tagUrl}">#${tag}</a></li>
                     </c:forEach>
                 </ul>
             </section>
 
             <!-- 액션 버튼 -->
             <div class="row gap-2 mt-2" role="group" aria-label="작업">
-                <form action="/cart" method="post" class="row gap-2">
-                    <input type="hidden" name="bno" value="123"/>
-                    <button type="submit" class="border rounded px-3 py-2 bg-accent-dark text-invert">장바구니 담기</button>
+                <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
+                        data-act="cart" data-id="${book.bookId}" data-qty="1">장바구니</button>
+                <button type="button" class="px-3 py-2 border rounded bg-surface"
+                        data-act="like" data-id="${book.bookId}">위시리스트</button>
+                <button type="button"
+                        class="px-3 py-2 border rounded bg-accent text-invert"
+                        id="buyNowBtn">바로구매</button>
+            </div>
                 </form>
-                <form action="/wish" method="post" class="row gap-2">
-                    <input type="hidden" name="bno" value="123"/>
-                    <button type="submit" class="border rounded px-3 py-2">위시리스트</button>
-                </form>
+
             </div>
 
             <!-- 추가 정보 -->
@@ -122,7 +151,19 @@
 <footer class="page py-4 text-light" role="contentinfo">
     <p class="mb-0">&copy; 2025 Geulbut</p>
 </footer>
+<script>
+    window.URLS = {
+        cart:        '<c:url value="/cart"/>',
+        payPrepare:  '<c:url value="/payments/prepare"/>',
+        payVerify:   '<c:url value="/payments/verify"/>',
+        ordersBase:  '<c:url value="/orders/"/>',
+        login:       '<c:url value="/users/login"/>'
+    };
+    window.csrfHeaderName = '${_csrf.headerName}';
+    window.csrfToken      = '${_csrf.token}';
+</script>
+<script src="/js/book_detail/book_detail.js"></script>
+
 </body>
 </html>
-</body>
-</html>
+
