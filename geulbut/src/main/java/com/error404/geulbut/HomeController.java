@@ -3,6 +3,8 @@ package com.error404.geulbut;
 
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.service.BooksService;
+import com.error404.geulbut.jpa.choice.dto.ChoiceDto;
+import com.error404.geulbut.jpa.choice.service.ChoiceService;
 import com.error404.geulbut.jpa.introduction.dto.IntroductionDto;
 import com.error404.geulbut.jpa.introduction.service.IntroductionService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ import java.util.List;
 public class HomeController {
     private final IntroductionService introductionService;
     private final BooksService booksService;
-//    private final ChoiceService choiceService;
+    private final ChoiceService choiceService;
 
     @GetMapping("/")
     public String home(Model model, @PageableDefault(page = 0, size = 4) Pageable pageable) {
@@ -36,9 +38,10 @@ public class HomeController {
         model.addAttribute("featuredBooks", pages.getContent());
 //        편집장의 선택
 
-//        Page<ChoiceDto> pages2 = choiceService.getAllChoice(pageable);
-//        model.addAttribute("choice", pages2.getContent());
+        Page<ChoiceDto> pages2 = choiceService.getAllChoice(pageable);
+        model.addAttribute("choice", pages2.getContent());
         model.addAttribute("bestSellers", booksService.getBestSellersTop10());
+
 //       이주간 책
         List<BooksDto> weeklyBooks = booksService.getWeeklyRandom4Books();
         model.addAttribute("weeklyBooks", weeklyBooks);
