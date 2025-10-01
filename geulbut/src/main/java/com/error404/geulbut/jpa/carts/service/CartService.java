@@ -137,4 +137,95 @@ public class CartService {
         cartRepository.deleteByUserId(userId); // 장바구니 비우기
         return order;
     }
+
+    @Transactional
+    public Orders checkoutFromCart(String userId, String merchantUid, Long expectedAmount) {
+        List<Cart> items = cartRepository.findAllWithBookByUserId(userId);
+        if (items.isEmpty()) throw new IllegalStateException("장바구니가 비어있습니다.");
+
+        Users userRef = usersRepository.getReferenceById(userId);
+
+        Orders order = Orders.builder()
+                .userId(userId)
+                .merchantUid(merchantUid)
+                .status(STATUS_PAID)
+                .paidAt(LocalDateTime.now())
+                .recipient(userRef.getName())
+                .phone(userRef.getPhone())
+                .address(userRef.getAddress())
+                .paymentMethod("CARD")
+                .build();
+
+        long total = 0L;
+        for (Cart c : items) {
+            long unitPrice = (c.getBook().getDiscountedPrice() != null && c.getBook().getDiscountedPrice() > 0)
+                    ? c.getBook().getDiscountedPrice()
+                    : c.getBook().getPrice();
+            int qty = c.getQuantity();
+            total += unitPrice * qty;
+
+            order.addItem(OrderItem.builder()
+                    .order(order)
+                    .book(c.getBook())
+                    .price(c.getBook().getPrice())
+                    .discountedPrice(c.getBook().getDiscountedPrice())
+                    .quantity(qty)
+                    .build());
+        }
+
+        // (선택) 금액 무결성 체크
+        if (expectedAmount != null && total != expectedAmount) {
+            throw new IllegalStateException("주문 금액 불일치");
+        }
+
+        order.setTotalPrice(total);
+
+        // 장바구니 비우기
+        cartRepository.deleteByUserId(userId);
+
+        return order;
+    }
+
+//      컨트롤러 분기용: 바로구매(장바구니 사용 안 함, 단건 아이템)
+    @Transactional
+    public Orders checkoutBuyNow(String userId, String merchantUid, long bookId, int quantity, Long expectedAmount) {
+        if (quantity <= 0) quantity = 1;
+
+        Books book = booksRepository.findById(bookId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책 ID: " + bookId));
+
+        Users userRef = usersRepository.getReferenceById(userId);
+
+        long unitPrice = (book.getDiscountedPrice() != null && book.getDiscountedPrice() > 0)
+                ? book.getDiscountedPrice()
+                : book.getPrice();
+        long total = unitPrice * quantity;
+
+        // (선택) 금액 무결성 체크
+        if (expectedAmount != null && total != expectedAmount) {
+            throw new IllegalStateException("주문 금액 불일치");
+        }
+
+        Orders order = Orders.builder()
+                .userId(userId)
+                .merchantUid(merchantUid)
+                .status(STATUS_PAID)
+                .paidAt(LocalDateTime.now())
+                .recipient(userRef.getName())
+                .phone(userRef.getPhone())
+                .address(userRef.getAddress())
+                .paymentMethod("CARD")
+                .totalPrice(total)
+                .build();
+
+        order.addItem(OrderItem.builder()
+                .order(order)
+                .book(book)
+                .price(book.getPrice())
+                .discountedPrice(book.getDiscountedPrice())
+                .quantity(quantity)
+                .build());
+
+        return order;
+    }
 }

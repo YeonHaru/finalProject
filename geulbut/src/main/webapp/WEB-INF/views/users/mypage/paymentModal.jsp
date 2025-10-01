@@ -18,6 +18,9 @@
           <input type="hidden" name="userName" value="${fn:escapeXml(user.userName)}"/>
           <input type="hidden" name="email"    value="${fn:escapeXml(user.email)}"/>
           <input type="hidden" name="phone"    value="${fn:escapeXml(user.phone)}"/>
+          <input type="hidden" name="mode" id="oiMode" value="CART"/>
+          <input type="hidden" name="bookId" id="oiBookId" value=""/>
+          <input type="hidden" name="quantity" id="oiQty" value=""/>
 
           <!-- 주문ID: 표시용(제출 안 함) -->
           <div class="col-12 col-md-6">

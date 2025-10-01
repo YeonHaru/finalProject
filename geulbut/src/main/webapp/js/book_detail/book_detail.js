@@ -143,8 +143,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!buyBtn) return;
 
     buyBtn.addEventListener('click', () => {
+        const f = document.getElementById('orderForm');
+        if (!f) return;
         // (선택) 구매 확인창
         if (!window.confirm('구매하시겠습니까?')) return;
+
+        f.querySelector('#oiMode').value = 'BUY_NOW';
+        f.querySelector('#oiBookId').value = String(window.PRODUCT?.id || '');
+        f.querySelector('#oiQty').value    = String(1);
+
+
 
         // ✅ JSP EL 대신 전역 값 사용
         const total = Number(
