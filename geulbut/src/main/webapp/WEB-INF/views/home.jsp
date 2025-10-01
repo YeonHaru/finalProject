@@ -35,52 +35,63 @@
 
                 <c:forEach var="data" items="${choice}">
 
-                    <!-- 책 카드 1 -->
-                    <div class="book-card">
-                            <%--                    <div class="book-badge recommend">추천</div>--%>
-                        <div class="book-image">
-                            <img src="${data.imgUrl}" alt="${data.title}">
-                            <div class="book-number">1</div>
-                        </div>
-                        <h3 class="book-title"><c:out value="${data.title}"/></h3>
-                        <p class="book-author"><c:out value="${data.name}"/></p>
-                        <div class="editor-comment">
+                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
+                <!-- 책 카드 1 -->
+                <div class="book-card">
+<%--                    <div class="book-badge recommend">추천</div>--%>
+                    <div class="book-image">
+                        <img src="${data.imgUrl}" alt="${data.title}">
+                        <div class="book-number">1</div>
+                    </div>
+                    <h3 class="book-title"><c:out value="${data.title}" /></h3>
+                    <p class="book-author"><c:out value="${data.name}" /></p>
+                    <div class="editor-comment">
+
 
                             <h4 class="new-book-description"><c:out value="${data.description}"/></h4>
 
                         </div>
-                        <div class="book-rating">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
+
+                    <div class="book-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
                     </div>
-                </c:forEach>
+                </div></c:forEach>
+            </a>
+
             </div>
+
         </div>
 
         <!-- 신간 소개 컨텐츠 -->
         <div class="tab-content" id="new-books-content">
 
             <div class="new-books-grid">
-                <!-- 신간 카드 1 -->
                 <c:forEach var="data" items="${introductions}">
                     <div class="new-book-card">
                         <div class="new-book-badge">NEW</div>
-                        <div class="new-book-image">
-                            <img src="${data.imgUrl}" alt="${data.title}">
-                        </div>
-                        <h3 class="new-book-title"><c:out value="${data.title}"/></h3>
-                        <p class="new-book-author"><c:out value="${data.name}"/></p>
-                        <div class="new-book-date"><c:out value="${data.publishedDate}"/></div>
-                        <p class="new-book-description"><c:out value="${data.description}"/></p>
+
+                        <!-- 책 이미지를 눌렀을 때 bookId 기반 디테일 페이지 -->
+                        <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="new-book-link">
+                            <div class="new-book-image">
+                                <img src="${data.imgUrl}" alt="${data.title}">
+                            </div>
+                        </a>
+
+                        <h3 class="new-book-title"><c:out value="${data.title}" /></h3>
+                        <p class="new-book-author"><c:out value="${data.name}" /></p>
+                        <div class="new-book-date"><c:out value="${data.publishedDate}" /></div>
+                        <p class="new-book-description"><c:out value="${data.description}" /></p>
+
                         <button class="new-book-button">예약구매</button>
                     </div>
                 </c:forEach>
             </div>
         </div>
+
 
         <!-- 화제의 책 컨텐츠 -->
         <div class="tab-content" id="trending-content">
@@ -206,56 +217,9 @@
                         <span class="original-price">22,000원</span>
                         <span class="sale-price">15,400원</span>
                     </div>
-                    <div class="hotdeal-time">⏰ 5일 8시간</div>
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
 
-                <!-- 핫딜 카드 2 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/f093fb/ffffff?text=하마터면+열심히+살+뻔했다"
-                             alt="하마터면 열심히 살 뻔했다">
-                    </div>
-                    <h3 class="hotdeal-title">하마터면 열심히 살 뻔했다</h3>
-                    <p class="hotdeal-author">하완</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">16,000원</span>
-                        <span class="sale-price">11,200원</span>
-                    </div>
-                    <div class="hotdeal-time">⏰ 3일 12시간</div>
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
+                    <div class="hotdeal-time">장바구니🛒</div>
 
-                <!-- 핫딜 카드 3 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/667eea/ffffff?text=재식주의자" alt="재식주의자">
-                    </div>
-                    <h3 class="hotdeal-title">재식주의자</h3>
-                    <p class="hotdeal-author">한강</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">15,000원</span>
-                        <span class="sale-price">10,500원</span>
-                    </div>
-                    <div class="hotdeal-time">⏰ 2일 23시간</div>
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
-
-                <!-- 핫딜 카드 4 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/764ba2/ffffff?text=물끓일의+시절" alt="물끓일의 시절">
-                    </div>
-                    <h3 class="hotdeal-title">물끓일의 시절</h3>
-                    <p class="hotdeal-author">김은주</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">18,000원</span>
-                        <span class="sale-price">12,600원</span>
-                    </div>
-                    <div class="hotdeal-time">⏰ 1일 15시간</div>
                     <button class="hotdeal-button">구매하기</button>
                 </div>
             </div>
@@ -409,34 +373,45 @@
                 <c:forEach var="book" items="${weeklyBooks}">
                     <div class="weekly-card">
                         <div class="weekly-badge">이주의책</div>
-                        <div class="weekly-image">
-                            <img src="${book.imgUrl}" alt="${book.title}"/>
-                        </div>
-                        <div class="weekly-info">
-                            <h3 class="weekly-title">
-                                <c:choose>
-                                    <c:when test="${fn:length(book.title) > 30}">
-                                        ${fn:substring(book.title, 0, 30)}...
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${book.title}
-                                    </c:otherwise>
-                                </c:choose>
-                            </h3>
-                            <p class="weekly-author"><c:out value="${book.authorName}"/></p>
-                            <div class="weekly-rating">
-                                <span class="star">⭐</span>
-                                <span class="rating-score">4.5</span>
-                                <span class="rating-text">평점</span>
+
+
+                        <!-- 이미지 영역 클릭 시 책 디테일 페이지로 이동 -->
+                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-image-link">
+                            <div class="weekly-image">
+                                <img src="${book.imgUrl}" alt="${book.title}" />
                             </div>
-                            <div class="weekly-comment">
-                                <p class="comment-text"><c:out value="${book.description}"/></p>
+                        </a>
+
+                        <!-- 정보 영역 클릭 시 책 디테일 페이지로 이동 -->
+                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-info-link">
+                            <div class="weekly-info">
+                                <h3 class="weekly-title">
+                                    <c:choose>
+                                        <c:when test="${fn:length(book.title) > 30}">
+                                            ${fn:substring(book.title, 0, 30)}...
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${book.title}
+                                        </c:otherwise>
+                                    </c:choose>
+                                </h3>
+                                <p class="weekly-author"><c:out value="${book.authorName}" /></p>
+                                <div class="weekly-rating">
+                                    <span class="star">⭐</span>
+                                    <span class="rating-score">4.5</span>
+                                    <span class="rating-text">평점</span>
+                                </div>
+                                <div class="weekly-comment">
+                                    <p class="comment-text"><c:out value="${book.description}" /></p>
+                                </div>
+
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </c:forEach>
             </div>
         </div>
+
 
 
         <!-- 탭 메뉴 -->
@@ -548,18 +523,20 @@
                             <!-- <div class="category-tag">화제의 신간</div> -->
                         </div>
 
-                        <div class="featured-book-image">
-                            <img
-                                    src="${empty b.imgUrl ? 'https://via.placeholder.com/160x220/cccccc/000000?text=No+Image' : b.imgUrl}"
-                                    alt="${b.title}"
-                                    onerror="this.src='https://via.placeholder.com/160x220/cccccc/000000?text=No+Image'"/>
-                        </div>
+                        <a href="${pageContext.request.contextPath}/book/${b.bookId}" class="featured-book-link">
+                            <div class="featured-book-image">
+                                <img
+                                        src="${empty b.imgUrl ? 'https://via.placeholder.com/160x220/cccccc/000000?text=No+Image' : b.imgUrl}"
+                                        alt="${b.title}"
+                                        onerror="this.src='https://via.placeholder.com/160x220/cccccc/000000?text=No+Image'"/>
+                            </div>
+                        </a>
 
                         <div class="featured-book-info">
                             <h3 class="featured-book-title"><c:out value="${b.title}"/></h3>
 
                             <p class="featured-book-author">
-                                <c:out value="${b.name}"/>
+                                <c:out value="${b.authorName}"/>
                             </p>
 
                             <div class="book-rating">
@@ -589,6 +566,7 @@
             </div>
         </c:if>
     </section>
+
 
 
     <!-- 어제 베스트셀러 TOP 10 -->

@@ -21,7 +21,7 @@ import java.util.List;
 public interface IntroductionRepository extends JpaRepository<Books, Long> {
 
     @Query("SELECT new com.error404.geulbut.jpa.introduction.dto.IntroductionDto(" +
-            "b.imgUrl, b.title, b.author.name, b.publishedDate, b.description) " +
+            "b.imgUrl, b.title, b.author.name, b.publishedDate, b.description,b.bookId) " +
             "FROM Books b " +
             "WHERE b.publishedDate IS NOT NULL " +
             "ORDER BY b.publishedDate DESC")

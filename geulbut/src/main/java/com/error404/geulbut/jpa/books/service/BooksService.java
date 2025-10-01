@@ -37,7 +37,7 @@ public class BooksService {
     @Transactional(readOnly = true)
     public List<BooksDto> getBestSellersTop10() {
         var page = PageRequest.of(0, 10);
-        return  booksRepository.findBestSellers(page)
+        return booksRepository.findBestSellers(page)
                 .stream()
                 .map(mapStruct::toDto)
                 .toList();
@@ -45,7 +45,7 @@ public class BooksService {
 
     @Transactional(readOnly = true)
 
-    public List<BooksDto> findTopDiscount(int limit){
+    public List<BooksDto> findTopDiscount(int limit) {
         int size = Math.max(1, Math.min(limit, 12));
         Pageable page = PageRequest.of(0, size);
         return booksRepository.findTopDiscount(page)
@@ -58,13 +58,14 @@ public class BooksService {
         List<Books> found = booksRepository.findByIds(ids);
 
         Map<Long, Integer> order = new HashMap<>();
-        for ( int i = 0; i < ids.size(); i++ ) order.put(ids.get(i), i);
+        for (int i = 0; i < ids.size(); i++) order.put(ids.get(i), i);
 
         return found.stream()
                 .sorted(Comparator.comparing(b -> order.getOrDefault(b.getBookId(), Integer.MAX_VALUE)))
                 .map(mapStruct::toDto)
                 .toList();
     }
+
     /**
      * 매주 다른(같은 주에 고정) 4권 추천 반환
      */
@@ -93,6 +94,25 @@ public class BooksService {
 
         cachedWeek = currentWeek; // 캐시된 주 갱신
         return weeklyBooksCache;
+    }
+
+    //    이달의 주목도서 → 오늘 기준 랜덤
+    @Transactional(readOnly = true)
+    public List<BooksDto> getFeaturedBooks() {
+        List<Books> allBooks = booksRepository.findByEsDeleteFlagOrderByBookIdAsc("N");
+        if (allBooks.isEmpty()) return List.of();
+
+        // 오늘 날짜 기준 시드 (하루마다 랜덤)
+        int seed = LocalDate.now().getDayOfYear(); // 1~365
+        Random random = new Random(seed);
+
+        List<Books> shuffled = new ArrayList<>(allBooks);
+        Collections.shuffle(shuffled, random);
+
+        return shuffled.stream()
+                .limit(Math.min(4, shuffled.size()))
+                .map(mapStruct::toDto)
+                .toList();
     }
 
 }
