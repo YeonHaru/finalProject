@@ -649,6 +649,8 @@
                 <div class="featured-empty">데이터 준비 중</div>
             </c:when>
 
+
+            
             <c:otherwise>
                 <div class="hot-news-slider">
                     <div class="hot-news-container">
