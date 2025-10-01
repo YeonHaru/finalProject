@@ -81,27 +81,16 @@
                         <td class="t-left">
                             <div class="title-ellipsis" title="${book.title}">${book.title}</div>
                         </td>
-<%--                    책 이미지가 없으면 디폴트 이미지로 바꿈    --%>
                         <td>
                             <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
                                  alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
                         </td>
-                        <!-- th: ISBN 에 hide-md → td 도 hide-md -->
                         <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
-
                         <td>${book.authorName}</td>
-
-                        <!-- th: 출판사 에 hide-lg → td 도 hide-lg -->
                         <td class="hide-lg">${book.publisherName}</td>
-
-                        <!-- th: 카테고리 에 hide-lg → td 도 hide-lg -->
                         <td class="hide-lg">${book.categoryName}</td>
-
                         <td class="t-right"><c:out value="${book.price}"/></td>
-
-                        <!-- th: 할인가 에 hide-lg → td 도 hide-lg -->
                         <td class="t-right hide-lg"><c:out value="${book.discountedPrice}"/></td>
-
                         <td>
                             <c:choose>
                                 <c:when test="${book.stock gt 0}">
@@ -112,10 +101,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-
-                        <!-- th: 생성일 에 hide-lg → td 도 hide-lg -->
-                        <td class="hide-lg">${book.createdAt}</td>
-
+                        <td class="hide-lg">${book.createdAtFormatted}</td>
                         <td>
                             <button type="button" class="btn btn-secondary btn--liquid-glass btnView">상세보기</button>
                             <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
@@ -133,14 +119,11 @@
         </table>
     </div>
 
-    <!-- 페이징 (Materia 버튼그룹) -->
+    <!-- 페이징 -->
     <div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
         <div class="btn-group" role="group" aria-label="페이지">
-
-            <!-- 이전 («) -->
             <c:choose>
                 <c:when test="${booksPage.first}">
-                    <!-- 맨 앞 페이지면 비활성 (링크 제거) -->
                     <a class="btn btn-secondary btn-nav" aria-label="이전" aria-disabled="true">&laquo;</a>
                 </c:when>
                 <c:otherwise>
@@ -149,8 +132,6 @@
                        aria-label="이전">&laquo;</a>
                 </c:otherwise>
             </c:choose>
-
-            <!-- 숫자들 -->
             <c:forEach var="i" begin="0" end="${booksPage.totalPages - 1}">
                 <a class="btn btn-secondary ${i == booksPage.number ? 'active' : ''}"
                    href="?page=${i}&keyword=${param.keyword}"
@@ -158,11 +139,8 @@
                         ${i + 1}
                 </a>
             </c:forEach>
-
-            <!-- 다음 (») -->
             <c:choose>
                 <c:when test="${booksPage.last}">
-                    <!-- 맨 끝 페이지면 비활성 (링크 제거) -->
                     <a class="btn btn-secondary btn-nav" aria-label="다음" aria-disabled="true">&raquo;</a>
                 </c:when>
                 <c:otherwise>
@@ -171,7 +149,6 @@
                        aria-label="다음">&raquo;</a>
                 </c:otherwise>
             </c:choose>
-
         </div>
     </div>
 
@@ -189,9 +166,6 @@
 
         <form id="bookForm" class="modal__form">
             <input type="hidden" name="bookId" id="bookId"/>
-
-            <!-- 추가된 hidden 필드 -->
-            <input type="hidden" name="discountedPrice" id="discountedPrice" value="0"/>
             <input type="hidden" name="orderCount" id="orderCount" value="0"/>
             <input type="hidden" name="wishCount" id="wishCount" value="0"/>
 
@@ -199,6 +173,7 @@
                 <label>제목 <input type="text" name="title" id="title" required/></label>
                 <label>ISBN <input type="text" name="isbn" id="isbn" required/></label>
                 <label>가격 <input type="number" name="price" id="price" min="0" step="1" required/></label>
+                <label>할인가 <input type="number" name="discountedPrice" id="discountedPrice" min="0" step="1"/></label>
                 <label>재고 <input type="number" name="stock" id="stock" min="0" step="1" required/></label>
                 <label>저자 <select id="authorId" name="authorId">
                     <option value="">선택</option>
@@ -227,4 +202,3 @@
 <script src="${ctx}/js/admin/admin_page_header.js" defer></script>
 </body>
 </html>
-

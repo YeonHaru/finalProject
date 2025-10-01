@@ -200,7 +200,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
+    background: linear-gradient(90deg, #fbea93 0%, #fbf2d7 100%);
 }
 
 .book-card:hover {
@@ -265,14 +265,14 @@ body {
 .book-title {
     font-size: 16px;
     font-weight: 600;
-    color: #5A7A4A;
+    color: #9c9a9a;
     margin-bottom: 6px;
     line-height: 1.3;
 }
 
 .book-author {
     font-size: 13px;
-    color: #7A8B6E;
+    color: #b2b5b1;
     margin-bottom: 12px;
 }
 
@@ -463,7 +463,7 @@ body {
 .book-title {
     font-size: 12px;
     font-weight: 600;
-    color: #5A7A4A;
+    color: #9c9a9a;
     margin-bottom: 3px;
     line-height: 1.2;
     height: 29px;
@@ -475,7 +475,7 @@ body {
 
 .book-author {
     font-size: 10px;
-    color: #7A8B6E;
+    color: rgba(181, 181, 181, 0.48);
     margin-bottom: 6px;
 }
 
@@ -570,6 +570,7 @@ body {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
+    background: linear-gradient(90deg, #fef9e7 0%, #f4e29c 100%);
 }
 
 .new-book-card:hover {
@@ -690,7 +691,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
+    background: linear-gradient(90deg, #5a7a4a 0%, #96cf7a 100%);
 }
 
 .trending-card:hover {
@@ -2471,14 +2472,14 @@ body {
 .book-title {
     font-size: 18px;
     font-weight: 600;
-    color: #5A7A4A;
+    color: rgba(0, 0, 0, 0.61);
     margin-bottom: 8px;
     line-height: 1.3;
 }
 
 .book-author {
     font-size: 14px;
-    color: #7A8B6E;
+    color: #b3b3b3;
     margin-bottom: 12px;
 }
 

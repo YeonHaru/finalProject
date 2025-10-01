@@ -1,6 +1,6 @@
 // /js/admin/admin_categories.js
 $(function () {
-    const ctx = (typeof window.ctx !== 'undefined' && window.ctx) ? window.ctx : '';
+    const ctx = window.ctx || '';
 
     const $modal = $('#categoryModal');
     const $modalTitle = $('#modalTitle');
@@ -15,24 +15,39 @@ $(function () {
     // ---------- 공통 모달 open/close ----------
     const openModal = ($targetModal) => {
         $targetModal.css('display', 'flex').attr('aria-hidden', 'false');
-        $targetModal.find('.modal-content').scrollTop(0);
+        $targetModal.find('.modal__dialog, .modal-content').scrollTop(0);
     };
-    const closeModal = ($targetModal) => {$targetModal.hide().attr('aria-hidden', 'true');};
 
-    // 버튼/배경 클릭 닫기
-    $modal.off('click.cat').on('click.cat', e => { if (e.target.id === 'categoryModal') closeModal($modal); });
+    const closeModal = ($targetModal) => {
+        $targetModal.css('display', 'none').attr('aria-hidden', 'true');
+    };
 
-    $('#modalCloseBtn, #modalCancelBtn').off('click.cat').on('click.cat', () => closeModal($modal));
-    $booksModal.off('click.cat').on('click.cat', e => { if (e.target.id === 'booksModal') closeModal($booksModal); });
+    // ---------- 버튼/배경 클릭 닫기 (이벤트 위임) ----------
+    $(document).on('click', '#modalCloseBtn, #modalCancelBtn', function () {
+        closeModal($modal);
+    });
 
-    // ESC로 두 모달 모두 닫기
-    $(document).off('keydown.catmod').on('keydown.catmod', e => {
+    $modal.on('click', function (e) {
+        if (e.target.id === 'categoryModal') closeModal($modal);
+    });
+
+    $(document).on('click', '#booksModalCloseBtn', function () {
+        closeModal($booksModal);
+    });
+
+    $booksModal.on('click', function (e) {
+        if (e.target.id === 'booksModal') closeModal($booksModal);
+    });
+
+    // ---------- ESC 키 닫기 ----------
+    $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
             if ($modal.is(':visible')) closeModal($modal);
             if ($booksModal.is(':visible')) closeModal($booksModal);
         }
     });
-    // 등록 버튼
+
+    // ---------- 등록 버튼 ----------
     $('#btnAddCategory').on('click', function () {
         openModal($modal);
         $modalTitle.text('카테고리 등록');
@@ -41,7 +56,7 @@ $(function () {
     });
 
     // ---------- 저장 ----------
-    $('#categoryForm').off('submit.cat').on('submit.cat', function(e) {
+    $(document).on('submit', '#categoryForm', function (e) {
         e.preventDefault();
         const $btn = $('#modalSaveBtn');
         if ($btn.prop('disabled')) return;
@@ -65,7 +80,7 @@ $(function () {
     });
 
     // ---------- 수정/삭제 ----------
-    $tbody.on('click', '.btn-edit, .btnEdit', function (){
+    $tbody.on('click', '.btn-edit, .btnEdit', function () {
         const $row = $(this).closest('tr');
         const id = $row.data('id');
         const name = $row.find('.category-name').text();
@@ -75,7 +90,7 @@ $(function () {
         openModal($modal);
     });
 
-    $tbody.on('click', '.btn-delete, .btnDelete', function (){
+    $tbody.on('click', '.btn-delete, .btnDelete', function () {
         if (!confirm('정말 삭제하시겠습니까?')) return;
         const id = $(this).closest('tr').data('id');
         $.ajax({
@@ -88,11 +103,10 @@ $(function () {
 
     // ---------- 검색 ----------
     $('#searchForm').on('submit', function (e) {
-        // GET 그대로 전송 (action/form 으로 처리)
-        // e.preventDefault();
+        // GET 그대로 전송
     });
 
-    // ---------- 카테고리 ID/이름 클릭 → 속한 책 조회 ----------
+    // ---------- 카테고리 클릭 → 속한 책 조회 ----------
     $tbody.on('click', 'td.category-id, td.category-name', function () {
         const categoryId = $(this).closest('tr').data('id');
         $.ajax({
@@ -104,7 +118,6 @@ $(function () {
                     $booksTbody.append('<tr><td colspan="5" class="t-center">등록된 책이 없습니다.</td></tr>');
                 } else {
                     books.forEach(b => {
-                        // DTO 기준으로 authorName/publisherName 가져오기
                         const authorName = b.authorName || '-';
                         const publisherName = b.publisherName || '-';
                         $booksTbody.append(`

@@ -20,7 +20,5 @@ public class ChoiceService {
 
     public Page<ChoiceDto> getAllChoice(Pageable pageable) {
         return choiceRepository.findChoice(pageable);
-
-
     }
 }
