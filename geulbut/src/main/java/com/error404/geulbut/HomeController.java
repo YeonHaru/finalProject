@@ -43,6 +43,10 @@ public class HomeController {
         List<BooksDto> weeklyBooks = booksService.getWeeklyRandom4Books();
         model.addAttribute("weeklyBooks", weeklyBooks);
 
+        // 이달의 주목도서 → BooksDto
+        List<BooksDto> featuredBooks = booksService.getFeaturedBooks();
+        model.addAttribute("featuredBooks", featuredBooks);
+
 //        이주의 특가
         model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
 
