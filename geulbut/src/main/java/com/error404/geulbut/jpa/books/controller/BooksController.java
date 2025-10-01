@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 
 @Log4j2
@@ -82,5 +83,12 @@ public class BooksController {
         model.addAttribute("keyword", q); // 검색창에 표시
         return "authors/authors_search"; // JSP
     }
+
+    @GetMapping("/books-for-cards")
+    public List<Map<String, Object>> getBooksForCards() {
+        return booksService.getBooksForAudiobookCards(5); // 최대 5권
+    }
+
+
 
 }

@@ -115,4 +115,34 @@ public class BooksService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getBooksForAudiobookCards(int limit) {
+        // DB에서 삭제되지 않은 책 조회
+        List<Books> allBooks = booksRepository.findByEsDeleteFlagOrderByBookIdAsc("N");
+
+        // limit 만큼만 가져오기
+        List<Books> selectedBooks = allBooks.stream()
+                .limit(limit)
+                .toList();
+
+        // BooksDto → 카드용 Map 변환
+        return selectedBooks.stream()
+                .map(book -> {
+                    BooksDto dto = mapStruct.toDto(book);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("title", dto.getTitle());
+                    map.put("authorName", dto.getAuthorName());
+                    map.put("categoryName", dto.getCategoryName());
+                    map.put("imgUrl", dto.getImgUrl());
+
+                    // 오디오북 카드 전용 필드 (임시)
+                    map.put("badge", "");          // NEW/인기 표시 없거나 조건부 설정 가능
+                    map.put("playTime", "0시간 0분"); // 임시 값
+                    map.put("narrator", "");       // 임시 값
+
+                    return map;
+                })
+                .toList();
+    }
+
 }

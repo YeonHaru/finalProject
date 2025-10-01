@@ -20,7 +20,7 @@ public interface ChoiceRepository extends JpaRepository<Books, Long> {
     Page<ChoiceDto> findChoice(Pageable pageable);
 
     @Query("SELECT new com.error404.geulbut.jpa.introduction.dto.IntroductionDto(" +
-            "b.imgUrl, b.title, b.author.name, b.publishedDate, b.description, b.bookId) " +
+            "b.imgUrl, b.title, b.author.name, b.publishedDate, b.description,b.bookId) " +
             "FROM Books b " +
             "WHERE b.publishedDate IS NOT NULL " +
             "ORDER BY b.publishedDate DESC")
