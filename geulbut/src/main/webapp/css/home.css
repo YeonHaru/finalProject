@@ -571,6 +571,7 @@ body {
     height: 4px;
     background: linear-gradient(90deg, #D4A574 0%, #E8C18E 100%);
     background: linear-gradient(90deg, #fef9e7 0%, #f4e29c 100%);
+    background: linear-gradient(90deg, #9bbf82 0%, #d8eccb 100%);
 }
 
 .new-book-card:hover {
