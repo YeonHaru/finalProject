@@ -16,4 +16,10 @@ public class CategoriesDto {
     private String name;
     private LocalDateTime createdAt;
 
+//  출력 날짜 변환
+    public String getCreatedAtFormatted() {
+        if (createdAt == null) return "";
+        return createdAt.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+    
 }
