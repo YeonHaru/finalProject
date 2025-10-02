@@ -13,6 +13,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: all 0.2s ease;
     max-width: 100%;
+    position: relative; /* 아이콘 위치 기준 */
 }
 
 @media (max-width: 768px) {
@@ -272,6 +273,25 @@
     color: #2C3E50;
 }
 
+/* 품절 버튼 스타일 */
+.bg-disabled {
+    background: #E9ECEF;
+    cursor: not-allowed;
+}
+
+.text-muted {
+    color: #ADB5BD;
+}
+
+.srch-info button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.srch-info button[disabled]:hover {
+    background: #E9ECEF;
+}
+
 /* 베스트셀러 컨테이너 */
 .bestseller-container {
     max-width: 1200px;
@@ -413,6 +433,24 @@
     color: #2C3E50;
 }
 
+
+/* 태블릿(1024px 이하) : 4칸 */
+@media (max-width: 1024px) {
+    .category-grid-weekly,
+    .category-grid-monthly {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* 모바일(600px 이하) : 2칸 */
+@media (max-width: 600px) {
+    .category-grid-weekly,
+    .category-grid-monthly {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
 /* 전체선택 체크박스 */
 #checkAll {
     width: 18px;
@@ -483,6 +521,41 @@ nav[aria-label="페이지 네비게이션"] .is-active {
 .container > p.text-light strong {
     color: #2C3E50;
     font-weight: 700;
+}
+
+.srch-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.srch-actions button {
+    flex: 1 1 auto;
+    min-width: 120px;
+}
+
+/* 아이콘 영역 (공유, 재입고만 표시) */
+.srch-icons {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.85;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.icon-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 /* 반응형 - 태블릿 */
