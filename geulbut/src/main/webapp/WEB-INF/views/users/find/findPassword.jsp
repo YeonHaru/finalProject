@@ -87,7 +87,7 @@
         return { token: t, header: h };
     }
 
-    /* --- 공통: POST(JSON) --- */
+    /* --- 공통: POST(JSON) (세션 쿠키 포함) --- */
     async function postJson(url, body) {
         const headers = { 'Content-Type': 'application/json' };
         const { token, header } = csrf();
@@ -95,36 +95,63 @@
         return fetch(url, {
             method: 'POST',
             headers,
+            credentials: 'same-origin',   // 세션 쿠키 전송
+            redirect: 'follow',
             body: JSON.stringify(body)
         });
     }
 
-    /* --- 타이머/쿨타임 (이메일 전송용) --- */
-    function startTimer(spanEl, buttonEl, ttlSec = 180, cooldownSec = 60) {
+    /* --- 타이머/쿨타임 유틸 (JSP-EL 충돌 방지 버전) --- */
+    function clearTimer(spanEl, btnEl, origText){
+        if (spanEl && spanEl._timer) { clearInterval(spanEl._timer); spanEl._timer = null; }
+        if (btnEl && btnEl._cool) { clearInterval(btnEl._cool); btnEl._cool = null; }
+        if (btnEl){ btnEl.disabled = false; btnEl.innerText = origText || '인증코드 전송'; }
+        if (spanEl){ spanEl.textContent = ''; }
+    }
+
+    function startTimer(spanEl, buttonEl, ttlSec = 180, cooldownSec = 60, label = '남은시간'){
         const startedAt = Date.now();
-        clearInterval(spanEl._timer);
-        spanEl._timer = setInterval(() => {
-            const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-            const remain = Math.max(0, ttlSec - elapsed);
+
+        // --- 남은시간 표시 (즉시 1회 + 주기적 갱신) ---
+        function setRemain(remain){
             const mm = String(Math.floor(remain / 60)).padStart(2, '0');
             const ss = String(remain % 60).padStart(2, '0');
-            spanEl.textContent = remain > 0 ? `남은시간 ${mm}:${ss}` : '';
+            spanEl.textContent = remain > 0 ? (label + ' ' + mm + ':' + ss) : '';
+        }
+        if (spanEl && spanEl._timer) clearInterval(spanEl._timer);
+        setRemain(ttlSec); // 버튼 누르자마자 보이게
+
+        spanEl._timer = setInterval(function(){
+            const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+            const remain = Math.max(0, ttlSec - elapsed);
+            setRemain(remain);
             if (remain <= 0) clearInterval(spanEl._timer);
         }, 250);
 
+        // --- 재전송 카운트다운 ---
         buttonEl.disabled = true;
-        let cd = cooldownSec;
-        const origText = buttonEl.textContent;
-        buttonEl.textContent = `재전송(${cd})`;
-        clearInterval(buttonEl._cool);
-        buttonEl._cool = setInterval(() => {
+        var cd = cooldownSec;
+        var origText = buttonEl.innerText;
+
+        // 첫 화면부터 숫자 보이게 즉시 반영
+        buttonEl.innerText = '재전송(' + cd + ')';
+
+        if (buttonEl._cool) clearInterval(buttonEl._cool);
+        buttonEl._cool = setInterval(function(){
             cd--;
-            buttonEl.textContent = cd > 0 ? `재전송(${cd})` : origText;
-            if (cd <= 0) { buttonEl.disabled = false; clearInterval(buttonEl._cool); }
+            if (cd > 0){
+                buttonEl.innerText = '재전송(' + cd + ')';
+            } else {
+                buttonEl.innerText = origText;
+                buttonEl.disabled = false;
+                clearInterval(buttonEl._cool);
+            }
         }, 1000);
+
+        return origText; // 실패 시 복원용
     }
 
-    /* --- 이메일 코드 전송 --- */
+    /* --- 이메일 코드 전송 (낙관적 시작 + 실패 롤백) --- */
     async function sendEmailCode() {
         const emailField = document.querySelector('#emailVerifyForm [name=email]');
         const email = emailField.value.trim();
@@ -135,24 +162,47 @@
         msg.className = 'msg'; msg.textContent = '';
         if (!email) { msg.classList.add('error'); msg.textContent = '이메일을 입력해주세요.'; return; }
 
-        const res = await postJson('<c:url value="/find-password/email/code"/>', { email });
-        const text = await res.text();
-        if (res.ok) {
-            msg.classList.add('success');
-            msg.textContent = '인증코드를 전송했습니다. 3분 내에 입력하세요.';
-            startTimer(timer, btn, 180, 60);
-        } else {
+        // 1) 즉시 타이머 시작
+        const origBtnText = startTimer(timer, btn, 180, 60);
+
+        try {
+            const res = await postJson('<c:url value="/find-password/email/code"/>', { email });
+            const text = await res.text();
+
+            if (res.ok) {
+                msg.classList.add('success');
+                msg.textContent = '인증코드를 전송했습니다. 3분 내에 입력하세요.';
+                return; // 타이머 유지
+            }
+
+            // 2) 실패: 롤백 + 에러
+            clearTimer(timer, btn, origBtnText);
             msg.classList.add('error');
-            msg.textContent = text || '전송에 실패했습니다.';
+            if (res.status === 403) msg.textContent = '요청이 거부되었습니다(403). CSRF 또는 로그인 세션을 확인해주세요.';
+            else if (res.status === 429) msg.textContent = '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.';
+            else msg.textContent = text || '전송에 실패했습니다.';
+        } catch (e) {
+            clearTimer(timer, btn, origBtnText);
+            msg.classList.add('error');
+            msg.textContent = '네트워크 오류로 전송에 실패했습니다.';
         }
     }
 
+    /* --- (선택) 이메일 필드에서 Enter 눌러도 전송 버튼 로직 실행 --- */
+    document.getElementById('emailVerifyForm')?.addEventListener('keydown', (e)=>{
+        if (e.key === 'Enter' && e.target?.name === 'email') {
+            e.preventDefault();
+            sendEmailCode();
+        }
+    });
+
     /* --- 임시비밀번호 복사 --- */
     function copyTempPw(){
-        const el=document.getElementById('issuedTempPw');
+        const el = document.getElementById('issuedTempPw');
         if(!el) return;
-        el.select(); el.setSelectionRange(0,99999);
-        try{ navigator.clipboard.writeText(el.value); }catch(e){ document.execCommand('copy'); }
+        el.select(); el.setSelectionRange(0, 99999);
+        try { navigator.clipboard.writeText(el.value); }
+        catch(e) { document.execCommand('copy'); }
         alert('복사되었습니다.');
     }
 </script>

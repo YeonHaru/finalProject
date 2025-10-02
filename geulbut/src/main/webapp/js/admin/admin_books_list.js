@@ -27,11 +27,13 @@ $(function () {
         $('#bookId').val('');
         $('#imgPreview').attr('src', '').hide();
         $('#discountedPrice').val(0);
+        $('#orderCount').val(0);  // 🔹 추가
+        $('#wishCount').val(0);   // 🔹 추가
 
         loadOptions();
         $('#bookModal').css('display', 'flex').attr('aria-hidden', 'false');
     });
-    
+
     // 🔹 모달 닫기
     function closeBookModal() {
         $('#bookModal').hide().attr('aria-hidden', 'true');
@@ -70,7 +72,9 @@ $(function () {
             authorId: parseInt(authorVal, 10),
             publisherId: parseInt(publisherVal, 10),
             categoryId: parseInt(categoryVal, 10),
-            imgUrl: $('#imgUrl').val().trim()
+            imgUrl: $('#imgUrl').val().trim(),
+            orderCount: parseInt($('#orderCount').val(), 10) || 0, // 🔹 추가
+            wishCount: parseInt($('#wishCount').val(), 10) || 0    // 🔹 추가
         };
 
         if (!data.title) { alert('제목을 입력해주세요.'); return; }
@@ -115,6 +119,8 @@ $(function () {
                 $('#stock').val(book.stock);
                 $('#imgUrl').val(book.imgUrl || '');
                 $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
+                $('#orderCount').val(book.orderCount || 0);  // 🔹 추가
+                $('#wishCount').val(book.wishCount || 0);    // 🔹 추가
 
                 let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
                 let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
@@ -152,7 +158,7 @@ $(function () {
             tbody.empty();
 
             if (!res.content || res.content.length === 0) {
-                tbody.append('<tr><td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
+                tbody.append('<tr><td colspan="14" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
                 $('.pagination, .pagination-toolbar').remove();
                 return;
             }
@@ -171,6 +177,8 @@ $(function () {
   <td class="t-right">${book.price}</td>
   <td class="t-right hide-lg">${book.discountedPrice ?? ''}</td>
   <td>${book.stock}</td>
+  <td>${book.orderCount ?? 0}</td>     <!-- 🔹 추가 -->
+  <td>${book.wishCount ?? 0}</td>      <!-- 🔹 추가 -->
   <td class="hide-lg">${book.createdAt}</td>
   <td>
     <button type="button" class="btn btn-secondary btnView">상세보기</button>

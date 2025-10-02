@@ -682,10 +682,7 @@
 
                                             <p class="book-description"><c:out value="${b.description}"/></p>
 
-                                            <div class="book-meta">
-                                                <span class="meta-order">판매 ${b.orderCount}권</span>
-                                                <span class="meta-wish">위시 ${b.wishCount}</span>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </c:forEach>
@@ -922,100 +919,59 @@
         </div>
 
         <div class="audiobook-grid">
-            <!-- 오디오북 카드 1 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge new">NEW</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/667eea/ffffff?text=미스터리+카페의+비밀" alt="미스터리 카페의 비밀">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">7시간 32분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.8</span>
-                        <span class="audiobook-category">스릴러</span>
-                    </div>
-                    <h3 class="audiobook-title">미스터리 카페의 비밀</h3>
-                    <p class="audiobook-author">저자: 김수진</p>
-                    <p class="audiobook-narrator">낭독: 박지혜</p>
-                </div>
-            </div>
+            <c:forEach var="book" items="${audiobooks}" varStatus="status">
+                <a href="/book/${book.bookId}" class="audiobook-card-link">
+                    <div class="audiobook-card">
+                        <!-- 배지 하드코딩 -->
+                        <div class="audiobook-badge">
+                            <c:choose>
+                                <c:when test="${status.index == 0}">NEW</c:when>
+                                <c:when test="${status.index == 1}">인기</c:when>
+                                <c:otherwise>BEST</c:otherwise>
+                            </c:choose>
+                        </div>
 
-            <!-- 오디오북 카드 2 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/2d3748/ffffff?text=심야+추리소설" alt="심야 추리소설">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">9시간 15분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.6</span>
-                        <span class="audiobook-category">미스터리</span>
-                    </div>
-                    <h3 class="audiobook-title">심야 추리소설</h3>
-                    <p class="audiobook-author">저자: 이정민</p>
-                    <p class="audiobook-narrator">낭독: 김동원</p>
-                </div>
-            </div>
+                        <div class="audiobook-cover">
+                            <!-- 디폴트 이미지 추가 -->
+                            <img src="${book.imgUrl != null && !book.imgUrl.isEmpty() ? book.imgUrl : '/images/thumb_ing.gif'}"
+                                 alt="${book.title}">
+                            <div class="audio-icon">🎧</div>
+                            <div class="play-time">
+                                <c:choose>
+                                    <c:when test="${status.index == 0}">7시간 32분</c:when>
+                                    <c:when test="${status.index == 1}">5시간 15분</c:when>
+                                    <c:when test="${status.index == 2}">6시간</c:when>
+                                    <c:otherwise>6시간 40분</c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
 
-            <!-- 오디오북 카드 3 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge new">NEW</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/4ecdc4/ffffff?text=라자+센빌리티" alt="라자 센빌리티">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">6시간 48분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.9</span>
-                        <span class="audiobook-category">로맨스</span>
+                        <div class="audiobook-info">
+                            <div class="audiobook-rating">
+                        <span class="rating-stars">
+                            <c:choose>
+                                <c:when test="${status.index == 0}">⭐ 4.8</c:when>
+                                <c:when test="${status.index == 1}">⭐ 4.5</c:when>
+                                <c:when test="${status.index == 2}">⭐ 4.9</c:when>
+                                <c:otherwise>⭐ 4.7</c:otherwise>
+                            </c:choose>
+                        </span>
+                                <span class="audiobook-category">${book.categoryName}</span>
+                            </div>
+                            <h3 class="audiobook-title">${book.title}</h3>
+                            <p class="audiobook-author">저자: ${book.authorName}</p>
+                            <p class="audiobook-narrator">
+                                <c:choose>
+                                    <c:when test="${status.index == 0}">낭독: 최종일</c:when>
+                                    <c:when test="${status.index == 1}">낭독: 서덕규</c:when>
+                                    <c:when test="${status.index == 2}">낭독: 신승화</c:when>
+                                    <c:otherwise>낭독: 문려경</c:otherwise>
+                                </c:choose>
+                            </p>
+                        </div>
                     </div>
-                    <h3 class="audiobook-title">라자 센빌리티</h3>
-                    <p class="audiobook-author">저자: 박소영</p>
-                    <p class="audiobook-narrator">낭독: 최향울</p>
-                </div>
-            </div>
-
-            <!-- 오디오북 카드 4 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/f9ca24/ffffff?text=창업가의+회고록" alt="창업가의 회고록">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">8시간 22분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.7</span>
-                        <span class="audiobook-category">자서전</span>
-                    </div>
-                    <h3 class="audiobook-title">창업가의 회고록</h3>
-                    <p class="audiobook-author">저자: 정태호</p>
-                    <p class="audiobook-narrator">낭독: 김영우</p>
-                </div>
-            </div>
-
-            <!-- 오디오북 카드 5 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/805ad5/ffffff?text=우주+탐험기" alt="우주 탐험기">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">10시간 5분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.5</span>
-                        <span class="audiobook-category">SF</span>
-                    </div>
-                    <h3 class="audiobook-title">우주 탐험기</h3>
-                    <p class="audiobook-author">저자: 김과학</p>
-                    <p class="audiobook-narrator">낭독: 이우주</p>
-                </div>
-            </div>
+                </a>
+            </c:forEach>
         </div>
 
         <!-- 오디오북 프로모션 -->
@@ -1031,6 +987,9 @@
             <a href="/audiobooks-all" class="more-audiobooks-link">더 많은 오디오북 보기</a>
         </div>
     </section>
+
+
+
 
     <!-- 수상 섹션 -->
     <section class="awards-section">
