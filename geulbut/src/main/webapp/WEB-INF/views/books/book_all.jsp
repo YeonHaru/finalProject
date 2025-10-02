@@ -21,6 +21,36 @@
 
 <div class="page py-4">
 
+    <%--    주간/월간 베스트 셀러 --%>
+    <div class="bestseller-container">
+        <!-- 탭 버튼 -->
+        <div class="tab-buttons">
+
+            <button class="tab-btn active" onclick="switchTab(this, 'weekly')">카테고리</button>
+            <button class="tab-btn" onclick="switchTab(this, 'monthly')">해시태그</button>
+        </div>
+
+      <!-- 카테고리 -->
+<div class="category-grid-weekly">
+    <div class="category-item featured">종합</div>
+    <div class="category-item">소설</div>
+    <div class="category-item">교육</div>
+    <div class="category-item">자기계발</div>
+    <div class="category-item">종교</div>
+    <div class="category-item">에세이</div>
+</div>
+
+<!-- 해시태그 -->
+<div class="category-grid-monthly">
+    <div class="category-item">자기계발</div>
+    <div class="category-item">인문과학</div>
+    <div class="category-item">역사/문화</div>
+    <div class="category-item">정치/법률</div>
+    <div class="category-item">종교</div>
+    <div class="category-item">예술</div>
+</div>
+    </div>
+
     <!-- 상단 툴바(체크/일괄 버튼만 유지, 페이징 링크는 하단으로 이동) -->
     <div class="row gap-2 mb-3 container">
         <div class="row gap-1 ml-3 text-light">
@@ -51,7 +81,7 @@
             </c:when>
             <c:otherwise>
                 <ol class="grid gap-3">
-                    <c:forEach var="data" items="${searches}">
+                    <c:forEach var="data" items="${searches}" varStatus="status">
                         <li class="srch-item bg-surface border rounded shadow-sm p-3">
                             <!-- 체크박스 -->
                             <div class="srch-col-check row">
@@ -61,6 +91,10 @@
                             <!-- 썸네일 -->
                             <a class="srch-thumb rounded-sm border bg-main"
                                href="${pageContext.request.contextPath}/book/${data.bookId}">
+                                <!-- 순위 뱃지 추가 (상위 3개만) -->
+                                <c:if test="${status.index < 3}">
+                                    <span class="rank-badge rank-${status.index + 1}">${status.index + 1}위</span>
+                                </c:if>
                                 <img src="${empty data.bookImgUrl ? '/images/thumb_ing.gif' : data.bookImgUrl}"
                                      alt="${fn:escapeXml(data.title)} 표지">
                             </a>

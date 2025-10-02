@@ -1,18 +1,45 @@
 /* ===================================================================
-   Book Detail (도서 상세 전용) — 하드코딩 컬러 버전
+   Book Detail (도서 상세 전용) — 스코프/충돌 최소화 버전
+   - Bootstrap과의 충돌을 피하기 위해 가능한 한 .book-detail 내부로 스코프
+   - 브레드크럼은 DOM 구조(nav 바로 다음에 article.book-detail) 기준으로 제한
+   - 모달(.modal) 내부는 Bootstrap 그리드 동작 보장(이 페이지에서만)
 =================================================================== */
 
-/* 1) 리스트 초기화 */
-.list-reset {
-    padding-left: 0 !important;
-    margin: 0 !important;
-    list-style: none !important;
+/* 0) (선택) 브레드크럼/리스트 리셋: nav(경로)가 바로 뒤에 .book-detail이 올 때만 적용 */
+@supports selector(nav:has(+ .book-detail)) {
+    nav:has(+ .book-detail) .list-reset {
+        padding-left: 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
+    }
+    nav:has(+ .book-detail) .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #666;
+    }
+    nav:has(+ .book-detail) .breadcrumb a:hover { color: #1d4ed8; }
+}
+/* 구형 브라우저 fallback: 페이지 메인 내 '경로' nav에만 제한 */
+@supports not selector(nav:has(+ .book-detail)) {
+    main.page > nav[aria-label="경로"] .list-reset {
+        padding-left: 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
+    }
+    main.page > nav[aria-label="경로"] .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #666;
+    }
+    main.page > nav[aria-label="경로"] .breadcrumb a:hover { color: #1d4ed8; }
 }
 
-/* 2) 상세 레이아웃 프리셋 */
-.book-detail { }
+/* 1) 상세 레이아웃 프리셋 */
+.book-detail { /* 필요시 페이지 전용 레이아웃 추가 */ }
 
-/* 3) 커버 영역 */
+/* 2) 커버 영역 */
 .book-detail .book-cover {
     background: #f9f9f9;            /* 밝은 회색 배경 */
     border: 1px solid #e0e0e0;      /* 연한 회색 라인 */
@@ -28,19 +55,19 @@
     border-radius: 6px;
 }
 
-/* 4) 가격 영역 */
-.price-original {
+/* 3) 가격 영역 */
+.book-detail .price-original {
     color: #888;                    /* 연한 회색 */
     text-decoration: line-through;
 }
-.price-discount {
+.book-detail .price-discount {
     font-size: 1.25rem;
     font-weight: 700;
     color: #222;                    /* 진한 회색/검정 */
 }
 
-/* 5) 배지 */
-.badge {
+/* 4) 배지 (Bootstrap .badge 전역과 충돌 방지: .book-detail 내부로 한정) */
+.book-detail .badge {
     display: inline-block;
     line-height: 1;
     font-weight: 600;
@@ -48,11 +75,11 @@
     padding: 0.25rem 0.5rem;
     border: 1px solid #e0e0e0;
     background: #2d6cdf;           /* 파란 배경 */
-    color: #fff;                   /* 흰색 글자 */
+    color: #fff;                    /* 흰색 글자 */
 }
 
-/* 6) 해시태그 리스트 */
-.tag-list {
+/* 5) 해시태그 리스트 */
+.book-detail .tag-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -60,7 +87,7 @@
     margin: 0;
     list-style: none;
 }
-.tag-list li {
+.book-detail .tag-list li {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -72,46 +99,105 @@
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
-.tag-list li::before {
+.book-detail .tag-list li::before {
     content: "#";
     position: absolute;
     left: 0.5rem;
     color: #1d4ed8;
     font-weight: 600;
 }
-.tag-list li:hover {
+.book-detail .tag-list li:hover {
     background: #1d4ed8;
     color: #fff;
 }
 
-/* 7) 브레드크럼 */
-.breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #666;
-}
-.breadcrumb a:hover {
-    color: #1d4ed8;
-}
-
-/* 8) 정보 카드 */
-.info-card {
+/* 6) 정보 카드 */
+.book-detail .info-card {
     background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 1rem;
 }
 
-/* 9) 추가 정보 테이블풍 레이아웃 */
-.meta-grid {
+/* 7) 추가 정보 테이블풍 레이아웃 */
+.book-detail .meta-grid {
     display: grid;
     grid-template-columns: 120px 1fr;
     gap: 0.5rem;
 }
-.meta-grid .label {
+.book-detail .meta-grid .label {
     color: #666;
 }
 @media (max-width: 767px) {
-    .meta-grid { grid-template-columns: 1fr; }
+    .book-detail .meta-grid { grid-template-columns: 1fr; }
+}
+
+/* 8) (중요) 이 페이지의 모달 내부에서는 Bootstrap row 동작을 보장
+   - 공통 CSS의 .row 유틸이 Bootstrap .row를 덮어써 모달 폼이 깨지는 것을 방지 */
+.modal .row{
+    display: flex !important;
+    flex-wrap: wrap !important;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    margin-right: calc(-.5 * var(--bs-gutter-x)) !important;
+    margin-left:  calc(-.5 * var(--bs-gutter-x)) !important;
+}
+.modal .row > *{
+    padding-right: calc(var(--bs-gutter-x) * .5) !important;
+    padding-left:  calc(var(--bs-gutter-x) * .5) !important;
+}
+.modal .g-3{
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1rem;
+}
+/* === 버튼 3개 그리드 (모바일 1열 → 태블릿 3열) === */
+.actions-grid{
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr;
+}
+@media (min-width: 768px){
+    .actions-grid{ grid-template-columns: repeat(3, 1fr); }
+}
+.actions-grid > button{ width: 100%; }
+
+/* === 가격 컴포넌트 === */
+.price-box .price-line{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.price-now{
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111;
+}
+.price-badge{
+    display: inline-block;
+    font-size: .875rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: .25rem .5rem;
+    border-radius: 999px;
+    background: #ef4444; /* 빨강 - 할인 강조 */
+    color: #fff;
+}
+.price-sub{
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .25rem;
+    color: #666;
+}
+.price-original{
+    color: #888;
+    text-decoration: line-through;
+}
+.stock-chip{
+    font-size: .75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 999px;
+    padding: .125rem .5rem;
+    background: #f9fafb;
+    color: #333;
 }

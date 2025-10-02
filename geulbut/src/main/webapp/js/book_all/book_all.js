@@ -104,3 +104,22 @@ console.log('[book_all] wired: wishlist + cart (form-encoded + confirm)');
         }
     });
 })();
+function switchTab(button) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    button.classList.add('active');
+}
+
+document.querySelectorAll('.category-item').forEach(item => {
+    item.addEventListener('click', function() {
+        document.querySelectorAll('.category-item').forEach(cat => {
+            cat.classList.remove('featured');
+        });
+
+        this.classList.add('featured');
+
+        console.log('선택된 카테고리:', this.textContent);
+    });
+});

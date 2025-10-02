@@ -12,4 +12,6 @@ public interface AuthorsRepository extends JpaRepository<Authors, Long> {
 //    작가검색키워드
     Page<Authors> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
+
+
 }

@@ -27,11 +27,13 @@ $(function () {
         $('#bookId').val('');
         $('#imgPreview').attr('src', '').hide();
         $('#discountedPrice').val(0);
+        $('#orderCount').val(0);
+        $('#wishCount').val(0);
 
         loadOptions();
         $('#bookModal').css('display', 'flex').attr('aria-hidden', 'false');
     });
-    
+
     // 🔹 모달 닫기
     function closeBookModal() {
         $('#bookModal').hide().attr('aria-hidden', 'true');
@@ -44,7 +46,7 @@ $(function () {
         if (e.key === 'Escape' && $('#bookModal').is(':visible')) closeBookModal();
     });
 
-    // 🔹 등록 / 수정 submit
+    // 🔹 등록 / 수정 submit (검색어 유지 + row 갱신)
     $('#bookForm').submit(function (e) {
         e.preventDefault();
 
@@ -70,18 +72,43 @@ $(function () {
             authorId: parseInt(authorVal, 10),
             publisherId: parseInt(publisherVal, 10),
             categoryId: parseInt(categoryVal, 10),
-            imgUrl: $('#imgUrl').val().trim()
+            imgUrl: $('#imgUrl').val().trim(),
+            orderCount: parseInt($('#orderCount').val(), 10) || 0,
+            wishCount: parseInt($('#wishCount').val(), 10) || 0
         };
 
         if (!data.title) { alert('제목을 입력해주세요.'); return; }
         if (!data.isbn) { alert('ISBN을 입력해주세요.'); return; }
         if (data.price < 0 || data.stock < 0 || data.discountedPrice < 0) { alert('가격, 할인가, 재고는 0 이상이어야 합니다.'); return; }
 
+        const keyword = $('#bookSearchForm input[name="keyword"]').val().trim();
+
         $.ajax({
             url, method,
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function () { alert('저장 완료'); location.reload(); },
+            success: function (res) {
+                alert('저장 완료');
+
+                if (bookId) {
+                    const row = $(`#booksTableBody tr[data-id='${bookId}']`);
+                    if (row.length) {
+                        row.find('td:eq(1) .title-ellipsis').text(res.title);
+                        row.find('td:eq(3) .isbn-mono').text(res.isbn);
+                        row.find('td:eq(7)').text(res.price);
+                        row.find('td:eq(8)').text(res.discountedPrice ?? '');
+                        row.find('td:eq(9)').text(res.stock > 0 ? res.stock : '품절');
+                        row.find('td:eq(10)').text(res.orderCount ?? 0);
+                        row.find('td:eq(11)').text(res.wishCount ?? 0);
+                    } else {
+                        loadBooksPage(0, keyword);
+                    }
+                } else {
+                    loadBooksPage(0, keyword);
+                }
+
+                $('#bookModal').hide().attr('aria-hidden', 'true');
+            },
             error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.message) alert('저장 실패: ' + xhr.responseJSON.message);
                 else alert('저장 실패');
@@ -95,10 +122,11 @@ $(function () {
             let bookId = $(this).closest('tr').data('id');
             if (!confirm('정말 삭제하시겠습니까?')) return;
 
+            const keyword = $('#bookSearchForm input[name="keyword"]').val().trim();
             $.ajax({
                 url: `${ctx}/admin/books/${bookId}`,
                 method: 'DELETE',
-                success: function () { alert('삭제 완료'); location.reload(); },
+                success: function () { alert('삭제 완료'); loadBooksPage(0, keyword); },
                 error: function () { alert('삭제 실패'); }
             });
         })
@@ -115,6 +143,8 @@ $(function () {
                 $('#stock').val(book.stock);
                 $('#imgUrl').val(book.imgUrl || '');
                 $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
+                $('#orderCount').val(book.orderCount || 0);
+                $('#wishCount').val(book.wishCount || 0);
 
                 let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
                 let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
@@ -145,19 +175,22 @@ $(function () {
     // 🔹 검색 + 페이징 갱신
     $('#bookSearchForm').submit(function (e) {
         e.preventDefault();
-        let keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
+        const keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
+        loadBooksPage(0, keyword);
+    });
 
-        $.get(`${ctx}/admin/books/search`, { keyword }, function (res) {
-            let tbody = $('#booksTableBody');
+    // 🔹 AJAX로 책 목록 불러오기 (페이징 포함)
+    function loadBooksPage(page, keyword) {
+        $.get(`${ctx}/admin/books/search`, { page, keyword }, function (res) {
+            const tbody = $('#booksTableBody');
             tbody.empty();
 
             if (!res.content || res.content.length === 0) {
-                tbody.append('<tr><td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
+                tbody.append('<tr><td colspan="14" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
                 $('.pagination, .pagination-toolbar').remove();
                 return;
             }
 
-            // 목록 렌더
             res.content.forEach(book => {
                 let row = `
 <tr class="data-row" data-id="${book.bookId}">
@@ -171,6 +204,8 @@ $(function () {
   <td class="t-right">${book.price}</td>
   <td class="t-right hide-lg">${book.discountedPrice ?? ''}</td>
   <td>${book.stock}</td>
+  <td>${book.orderCount ?? 0}</td>
+  <td>${book.wishCount ?? 0}</td>
   <td class="hide-lg">${book.createdAt}</td>
   <td>
     <button type="button" class="btn btn-secondary btnView">상세보기</button>
@@ -181,54 +216,40 @@ $(function () {
                 tbody.append(row);
             });
 
-            // --- 페이징 (Materia 버튼그룹) : 전체 교체 ---
+            // --- 페이징 ---
             $('.pagination, .pagination-toolbar').remove();
-
-            const $toolbar = $(`
-<div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션">
-  <div class="btn-group" role="group" aria-label="페이지"></div>
-</div>`);
+            const $toolbar = $(`<div class="btn-toolbar pagination-toolbar" role="toolbar" aria-label="페이지네이션"><div class="btn-group" role="group" aria-label="페이지"></div></div>`);
             const $group = $toolbar.find('.btn-group');
 
             const total = res.totalPages || 0;
-            const now   = (typeof res.number === 'number') ? res.number : 0;
-            const first = (typeof res.first  === 'boolean') ? res.first : (now === 0);
-            const last  = (typeof res.last   === 'boolean') ? res.last  : (now === total - 1);
+            const now = res.number || 0;
+            const first = res.first || (now === 0);
+            const last = res.last || (now === total - 1);
 
             if (total > 1) {
-                // « 이전
-                $group.append(`
-<a class="btn btn-secondary btn-nav"
-   href="?page=${Math.max(0, now - 1)}&keyword=${encodeURIComponent(keyword)}"
-   aria-label="이전" ${first ? 'aria-disabled="true"' : ''}>&laquo;</a>`);
-
-                // 숫자들
+                $group.append(`<button class="btn btn-secondary btn-nav" ${first ? 'disabled' : ''} data-page="${Math.max(0, now - 1)}">&laquo;</button>`);
                 for (let i = 0; i < total; i++) {
                     const isActive = i === now;
-                    $group.append(`
-<a class="btn btn-secondary ${isActive ? 'active' : ''}"
-   href="?page=${i}&keyword=${encodeURIComponent(keyword)}"
-   ${isActive ? 'aria-current="page"' : ''}>${i + 1}</a>`);
+                    $group.append(`<button class="btn btn-secondary ${isActive ? 'active' : ''}" data-page="${i}">${i + 1}</button>`);
                 }
-
-                // » 다음
-                $group.append(`
-<a class="btn btn-secondary btn-nav"
-   href="?page=${Math.min(total - 1, now + 1)}&keyword=${encodeURIComponent(keyword)}"
-   aria-label="다음" ${last ? 'aria-disabled="true"' : ''}>&raquo;</a>`);
-
-                // 비활성 링크 클릭 방지
-                $toolbar.on('click', 'a[aria-disabled="true"]', function (e) { e.preventDefault(); });
-
-                // 렌더링 위치
+                $group.append(`<button class="btn btn-secondary btn-nav" ${last ? 'disabled' : ''} data-page="${Math.min(total - 1, now + 1)}">&raquo;</button>`);
                 $('.table-scroll').after($toolbar);
+
+                // 페이징 클릭 이벤트
+                $group.find('button[data-page]').off('click').on('click', function () {
+                    const targetPage = $(this).data('page');
+                    loadBooksPage(targetPage, keyword);
+                });
             }
 
-            //  검색/렌더 완료 후: 가로 스크롤 초기화
+            // 스크롤 초기화
             $('.table-scroll').each(function () { this.scrollLeft = 0; });
         });
-    });
+    }
 
-    //  초기 로드 시: 테이블이 오른쪽 끝에서 보이는 현상 방지
+    // 초기 로드 시 테이블 스크롤 초기화
     $('.table-scroll').each(function () { this.scrollLeft = 0; });
+
+    // 초기 데이터 로드
+    loadBooksPage(0, $('#bookSearchForm input[name="keyword"]').val().trim());
 });

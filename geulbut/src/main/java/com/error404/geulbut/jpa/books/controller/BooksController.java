@@ -29,13 +29,13 @@ public class BooksController {
     private final BooksRepository booksRepository;
     private final MapStruct mapStruct;
 
-    
 
-    
+
+
     // application.yml(or properties)에 정의된 값. 없으면 imp_test로 기본(개발 임시) 세팅
     @Value("${portone.imp_code}")
     private String iamportCode;
-    
+
     @GetMapping("/book/{bookId}")
     public String bookDetail(@PathVariable long bookId,
                              Model model,
@@ -83,12 +83,4 @@ public class BooksController {
         model.addAttribute("keyword", q); // 검색창에 표시
         return "authors/authors_search"; // JSP
     }
-
-    @GetMapping("/books-for-cards")
-    public List<Map<String, Object>> getBooksForCards() {
-        return booksService.getBooksForAudiobookCards(5); // 최대 5권
-    }
-
-
-
 }

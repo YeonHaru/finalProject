@@ -35,41 +35,57 @@
 
                 <c:forEach var="data" items="${choice}">
 
-                <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
-                    <!-- 책 카드 1 -->
-                    <div class="book-card">
-                            <%--                    <div class="book-badge recommend">추천</div>--%>
-                        <div class="book-image">
-                            <img src="${data.imgUrl}" alt="${data.title}">
-                            <div class="book-number">1</div>
+                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
+                        <!-- 책 카드 -->
+                        <div class="book-card">
+                                <%-- <div class="book-badge recommend">추천</div> --%>
+
+                            <div class="book-image">
+                                <!-- 이미지 없을 때 기본 이미지 -->
+                                <img src="${empty data.imgUrl ? '/images/thumb_ing.gif' : data.imgUrl}"
+                                     alt="${fn:escapeXml(data.title)}">
+                                <div class="book-number">1</div>
+                            </div>
+
+                            <!-- 제목 길이 제한 -->
+                            <h3 class="book-title">
+                                <c:choose>
+                                    <c:when test="${fn:length(data.title) > 25}">
+                                        ${fn:substring(data.title, 0, 25)}...
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${data.title}
+                                    </c:otherwise>
+                                </c:choose>
+                            </h3>
+
+                            <p class="book-author my-3"><c:out value="${data.name}"/></p>
+
+                            <div class="editor-comment">
+                                <!-- 설명 없을 때 '설명 준비중' -->
+                                <h4 class="new-book-description">
+                                        ${empty data.description ? '설명 준비중' : data.description}
+                                </h4>
+                            </div>
+
+                            <div class="book-rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
                         </div>
-                        <h3 class="book-title"><c:out value="${data.title}"/></h3>
-                        <p class="book-author"><c:out value="${data.name}"/></p>
-                        <div class="editor-comment">
+                    </a>
 
-
-                            <h4 class="new-book-description"><c:out value="${data.description}"/></h4>
-
-                        </div>
-
-                        <div class="book-rating">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                    </c:forEach>
-                </a>
+                </c:forEach>
 
             </div>
-
         </div>
+
 
         <!-- 신간 소개 컨텐츠 -->
         <div class="tab-content" id="new-books-content">
-
             <div class="new-books-grid">
                 <c:forEach var="data" items="${introductions}">
                     <div class="new-book-card">
@@ -78,14 +94,42 @@
                         <!-- 책 이미지를 눌렀을 때 bookId 기반 디테일 페이지 -->
                         <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="new-book-link">
                             <div class="new-book-image">
-                                <img src="${data.imgUrl}" alt="${data.title}">
+                                <img
+                                        src="<c:choose>
+                                     <c:when test='${not empty data.imgUrl}'>
+                                         ${data.imgUrl}
+                                     </c:when>
+                                     <c:otherwise>
+                                         /images/thumb_ing.gif
+                                     </c:otherwise>
+                                 </c:choose>"
+                                        alt="${fn:escapeXml(data.title)}">
                             </div>
                         </a>
 
-                        <h3 class="new-book-title"><c:out value="${data.title}"/></h3>
+                        <h3 class="new-book-title">
+                            <c:choose>
+                                <c:when test="${fn:length(data.title) > 15}">
+                                    ${fn:substring(data.title, 0, 15)}...
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${data.title}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </h3>
+
                         <p class="new-book-author"><c:out value="${data.name}"/></p>
                         <div class="new-book-date"><c:out value="${data.publishedDate}"/></div>
-                        <p class="new-book-description"><c:out value="${data.description}"/></p>
+                        <p class="new-book-description">
+                            <c:choose>
+                                <c:when test="${not empty data.description}">
+                                    <c:out value="${data.description}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    설명 준비중
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
 
                         <button class="new-book-button">예약구매</button>
                     </div>
@@ -97,111 +141,43 @@
         <!-- 화제의 책 컨텐츠 -->
         <div class="tab-content" id="trending-content">
             <div class="trending-grid">
-                <!-- 화제의 책 카드 1 -->
-                <div class="trending-card">
-                    <div class="trending-badge hot">HOT</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/ff6b6b/ffffff?text=Trending1" alt="지금 뜨는 소설">
-                        <div class="trending-rank">1</div>
-                    </div>
-                    <h3 class="trending-title">지금 뜨는 소설</h3>
-                    <p class="trending-author">인기작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">🔥 15.2K 언급</div>
-                            <div class="stats-trend">↗ 250%</div>
+                <c:forEach var="data" items="${randomBooks}">
+                    <div class="trending-card">
+                        <div class="trending-badge hot">HOT</div>
+                        <div class="trending-image">
+                            <img src="<c:choose>
+                                 <c:when test='${not empty data.imgUrl}'>
+                                     ${data.imgUrl}
+                                 </c:when>
+                                 <c:otherwise>
+                                     /images/thumb_ing.gif
+                                 </c:otherwise>
+                             </c:choose>"
+                                 alt="${fn:escapeXml(data.title)}">
+                            <div class="trending-rank">-</div> <!-- 순위는 필요시 제거 -->
+                        </div>
+                        <h3 class="trending-title">지금 뜨는 소설</h3>
+                        <p class="trending-author">인기작가</p>
+                        <div class="trending-stats">
+                            <h4 class="stats-title">화제 지수</h4>
+                            <div class="stats-info">
+                                <div class="stats-views">🔥 15.2K 언급</div>
+                                <div class="stats-trend">↗ 250%</div>
+                            </div>
+                        </div>
+                        <div class="trending-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="rating-number">(4.7)</span>
                         </div>
                     </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.7)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 2 -->
-                <div class="trending-card">
-                    <div class="trending-badge viral">VIRAL</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/764ba2/ffffff?text=Trending2" alt="SNS 화제작">
-                        <div class="trending-rank">2</div>
-                    </div>
-                    <h3 class="trending-title">SNS 화제작</h3>
-                    <p class="trending-author">바이럴 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">📱 12.8K 공유</div>
-                            <div class="stats-trend">↗ 320%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.6)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 3 -->
-                <div class="trending-card">
-                    <div class="trending-badge rising">상승</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/f093fb/ffffff?text=Trending3" alt="급상승 에세이">
-                        <div class="trending-rank">3</div>
-                    </div>
-                    <h3 class="trending-title">급상승 에세이</h3>
-                    <p class="trending-author">트렌드 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">💬 9.5K 댓글</div>
-                            <div class="stats-trend">↗ 180%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.8)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 4 -->
-                <div class="trending-card">
-                    <div class="trending-badge hot">인기</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/4facfe/ffffff?text=Trending4" alt="논란의 작품">
-                        <div class="trending-rank">4</div>
-                    </div>
-                    <h3 class="trending-title">논란의 작품</h3>
-                    <p class="trending-author">논쟁 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">⚡ 18.7K 토론</div>
-                            <div class="stats-trend">↗ 400%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.5)</span>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
+
 
         <!-- 지금 핫딜중 컨텐츠 -->
         <div class="tab-content" id="hotdeal-content">
@@ -290,7 +266,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 이벤트 굿즈 컨텐츠 -->
         <div class="tab-content" id="goods-content">
             <div class="goods-grid">
@@ -379,7 +354,9 @@
                         <!-- 이미지 영역 클릭 시 책 디테일 페이지로 이동 -->
                         <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-image-link">
                             <div class="weekly-image">
-                                <img src="${book.imgUrl}" alt="${book.title}"/>
+                                <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
+                                     alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
+
                             </div>
                         </a>
 
@@ -403,7 +380,9 @@
                                     <span class="rating-text">평점</span>
                                 </div>
                                 <div class="weekly-comment">
-                                    <p class="comment-text"><c:out value="${book.description}"/></p>
+                                    <p class="comment-text">
+                                            ${empty book.description ? '설명 준비중' : book.description}
+                                    </p>
                                 </div>
 
                             </div>
@@ -682,10 +661,6 @@
 
                                             <p class="book-description"><c:out value="${b.description}"/></p>
 
-                                            <div class="book-meta">
-                                                <span class="meta-order">판매 ${b.orderCount}권</span>
-                                                <span class="meta-wish">위시 ${b.wishCount}</span>
-                                            </div>
                                         </div>
                                     </div>
                                 </c:forEach>
@@ -838,6 +813,7 @@
                     </div>
                 </div>
 
+
             </div>
         </div>
 
@@ -922,100 +898,59 @@
         </div>
 
         <div class="audiobook-grid">
-            <!-- 오디오북 카드 1 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge new">NEW</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/667eea/ffffff?text=미스터리+카페의+비밀" alt="미스터리 카페의 비밀">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">7시간 32분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.8</span>
-                        <span class="audiobook-category">스릴러</span>
-                    </div>
-                    <h3 class="audiobook-title">미스터리 카페의 비밀</h3>
-                    <p class="audiobook-author">저자: 김수진</p>
-                    <p class="audiobook-narrator">낭독: 박지혜</p>
-                </div>
-            </div>
+            <c:forEach var="book" items="${audiobooks}" varStatus="status">
+                <a href="/book/${book.bookId}" class="audiobook-card-link">
+                    <div class="audiobook-card">
+                        <!-- 배지 하드코딩 -->
+                        <div class="audiobook-badge">
+                            <c:choose>
+                                <c:when test="${status.index == 0}">NEW</c:when>
+                                <c:when test="${status.index == 1}">인기</c:when>
+                                <c:otherwise>BEST</c:otherwise>
+                            </c:choose>
+                        </div>
 
-            <!-- 오디오북 카드 2 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/2d3748/ffffff?text=심야+추리소설" alt="심야 추리소설">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">9시간 15분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.6</span>
-                        <span class="audiobook-category">미스터리</span>
-                    </div>
-                    <h3 class="audiobook-title">심야 추리소설</h3>
-                    <p class="audiobook-author">저자: 이정민</p>
-                    <p class="audiobook-narrator">낭독: 김동원</p>
-                </div>
-            </div>
+                        <div class="audiobook-cover">
+                            <!-- 디폴트 이미지 추가 -->
+                            <img src="${book.imgUrl != null && !book.imgUrl.isEmpty() ? book.imgUrl : '/images/thumb_ing.gif'}"
+                                 alt="${book.title}">
+                            <div class="audio-icon">🎧</div>
+                            <div class="play-time">
+                                <c:choose>
+                                    <c:when test="${status.index == 0}">7시간 32분</c:when>
+                                    <c:when test="${status.index == 1}">5시간 15분</c:when>
+                                    <c:when test="${status.index == 2}">6시간</c:when>
+                                    <c:otherwise>6시간 40분</c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
 
-            <!-- 오디오북 카드 3 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge new">NEW</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/4ecdc4/ffffff?text=라자+센빌리티" alt="라자 센빌리티">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">6시간 48분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.9</span>
-                        <span class="audiobook-category">로맨스</span>
+                        <div class="audiobook-info">
+                            <div class="audiobook-rating">
+                        <span class="rating-stars">
+                            <c:choose>
+                                <c:when test="${status.index == 0}">⭐ 4.8</c:when>
+                                <c:when test="${status.index == 1}">⭐ 4.5</c:when>
+                                <c:when test="${status.index == 2}">⭐ 4.9</c:when>
+                                <c:otherwise>⭐ 4.7</c:otherwise>
+                            </c:choose>
+                        </span>
+                                <span class="audiobook-category">${book.categoryName}</span>
+                            </div>
+                            <h3 class="audiobook-title">${book.title}</h3>
+                            <p class="audiobook-author">저자: ${book.authorName}</p>
+                            <p class="audiobook-narrator">
+                                <c:choose>
+                                    <c:when test="${status.index == 0}">낭독: 최종일</c:when>
+                                    <c:when test="${status.index == 1}">낭독: 서덕규</c:when>
+                                    <c:when test="${status.index == 2}">낭독: 신승화</c:when>
+                                    <c:otherwise>낭독: 문려경</c:otherwise>
+                                </c:choose>
+                            </p>
+                        </div>
                     </div>
-                    <h3 class="audiobook-title">라자 센빌리티</h3>
-                    <p class="audiobook-author">저자: 박소영</p>
-                    <p class="audiobook-narrator">낭독: 최향울</p>
-                </div>
-            </div>
-
-            <!-- 오디오북 카드 4 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/f9ca24/ffffff?text=창업가의+회고록" alt="창업가의 회고록">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">8시간 22분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.7</span>
-                        <span class="audiobook-category">자서전</span>
-                    </div>
-                    <h3 class="audiobook-title">창업가의 회고록</h3>
-                    <p class="audiobook-author">저자: 정태호</p>
-                    <p class="audiobook-narrator">낭독: 김영우</p>
-                </div>
-            </div>
-
-            <!-- 오디오북 카드 5 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/805ad5/ffffff?text=우주+탐험기" alt="우주 탐험기">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">10시간 5분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.5</span>
-                        <span class="audiobook-category">SF</span>
-                    </div>
-                    <h3 class="audiobook-title">우주 탐험기</h3>
-                    <p class="audiobook-author">저자: 김과학</p>
-                    <p class="audiobook-narrator">낭독: 이우주</p>
-                </div>
-            </div>
+                </a>
+            </c:forEach>
         </div>
 
         <!-- 오디오북 프로모션 -->
@@ -1031,6 +966,9 @@
             <a href="/audiobooks-all" class="more-audiobooks-link">더 많은 오디오북 보기</a>
         </div>
     </section>
+
+
+
 
     <!-- 수상 섹션 -->
     <section class="awards-section">

@@ -470,13 +470,12 @@ body {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .book-author {
     font-size: 10px;
     color: rgba(181, 181, 181, 0.48);
-    margin-bottom: 6px;
 }
 
 .editor-comment {
@@ -1277,6 +1276,8 @@ body {
     font-weight: 600;
     color: #5A7A4A;
     margin-bottom: 6px;
+    height: 42px;   /* 2줄 기준 높이 (16px * 1.4 * 2 ≈ 44px) */
+    overflow: hidden;
 }
 
 .weekly-author {
@@ -1290,7 +1291,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 4px;
-    margin-bottom: 12px;
+    /*margin-bottom: 12px;*/
 }
 
 .rating-score {
@@ -1308,7 +1309,7 @@ body {
     background: #ffffff;
     border-radius: 8px;
     padding: 12px;
-    text-align: left;
+    text-align: center;
     margin-top: auto; /* 코멘트를 하단에 고정 */
 }
 
@@ -1659,9 +1660,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 12px;
+    /*margin-bottom: 12px;*/
     position: relative;
-    height: 24px;
+    /*height: 24px;*/
 }
 
 .discount-badge {
@@ -1684,8 +1685,8 @@ body {
 
 .featured-book-image {
     width: 100%;
-    height: 180px;
-    margin-bottom: 12px;
+    /*height: 180px;*/
+    /*margin-bottom: 12px;*/
     border-radius: 8px;
     overflow: hidden;
     aspect-ratio: 8 / 11;
@@ -2318,130 +2319,172 @@ body {
     100% { transform: translateX(0); }
 }
 
-/* 화제의 책 소식 섹션 */
-.hot-news-section {
-    background: white;
-    padding: 40px 30px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(90,122,74,0.1);
-    margin: 40px 0;
-    position: relative;
+/* =========================
+   Hot News (deduped/clean)
+   - 색상/값 중복 제거
+   - 애니메이션 네임스페이스
+   - 트랜지션 대상 명시
+========================= */
+.hot-news-section{
+    --hot-primary:#5A7A4A;
+    --hot-accent:#E8C18E;
+    --hot-accent-dark:#D4A574;
+    --hot-green:#87A96B;
+    --hot-green-soft:#9BBF82;
+
+    background:#fff;
+    padding:40px 30px;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(90,122,74,.1);
+    margin:40px 0;
+    position:relative;
 }
 
-.hot-news-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #5A7A4A;
-    text-align: center;
-    margin-bottom: 40px;
-    position: relative;
+.hot-news-title{
+    font-size:24px;
+    font-weight:700;
+    color:var(--hot-primary);
+    text-align:center;
+    margin-bottom:40px;
+    position:relative;
 }
 
-.hot-news-slider {
-    position: relative;
-    overflow: hidden;
-}
+.hot-news-slider{ position:relative; overflow:hidden; }
+.hot-news-container{ position:relative; width:100%; min-height:500px; }
 
-.hot-news-container {
-    position: relative;
-    width: 100%;
-    min-height: 500px;
-}
+.hot-news-page{ display:none; width:100%; }
+.hot-news-page.active{ display:block; animation:hotFade .5s ease; }
 
-.hot-news-page {
-    display: none;
-    width: 100%;
-}
+@keyframes hotFade { from{opacity:0} to{opacity:1} }
 
-.hot-news-page.active {
-    display: block;
-    animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.hot-news-grid {
+/* Grid: 카드 최소폭만 바꾸면 전체 스케일 조절 가능 */
+.hot-news-grid{
     display:grid;
-    gap:16px;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-
+    gap:12px;
+    grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+}
+@media (min-width:768px){
+    .hot-news-grid{ grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); }
 }
 
-.hot-news-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    transition: all 0.3s ease;
-    border: 1px solid #E8C18E;
-    position: relative;
-    height: 100%;
+/* Card */
+.hot-news-card{
+    display: grid;
+    grid-template-rows: auto 1fr;     /* 커버는 내용만큼, 본문은 남은 높이 채우기 */
+    row-gap: 12px;
+}
+.hot-news-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 25px rgba(90,122,74,.1);
+    border-color:var(--hot-accent-dark);
+}
+
+/* Cover */
+.hot-news-card .book-cover{
+    margin: 0;
+}
+.hot-news-card .book-cover img{
+    width:100%; height:100%;
+    object-fit:cover; display:block;
+}
+/* 본문 컨테이너: 겹침 방지용 레이아웃 */
+.hot-news-card .book-content{
+    display: grid;
+    grid-template-rows: min-content min-content minmax(0, 1fr) min-content;
+    row-gap: 8px;
+    min-height: 0;
+}
+.hot-news-card .book-title a{
+    color: inherit;
+    text-decoration: none;
+}
+/* 저자 1줄 */
+.hot-news-card .book-author{
+    margin: 0;
+    color: #6b7280;
+    font-size: .875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 설명(3줄 고정) */
+.hot-news-card .book-description{
+    --lh: 1.5;
+    --lines: 3;
+    margin: 0;
+    color: #4b5563;
+    font-size: .875rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--lines);
+    overflow: hidden;
+    max-height: calc(var(--lh) * var(--lines) * 1em);
+    word-break: break-word;
+}
+
+/* 메타는 카드 바닥에 고정(위 내용이 길어도 겹치지 않음) */
+.hot-news-card .book-meta{
+    align-self: end;                  /* 그리드 마지막 행 하단 고정 */
     display: flex;
-    flex-direction: column;
+    gap: 8px;
+    color: #6b7280;
+    font-size: .8125rem;
+}
+/* 제목(2줄 고정) */
+.hot-news-card .book-title{
+    --lh: 1.35;
+    --lines: 2;
+    line-height: var(--lh);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--lines);
+    overflow: hidden;
+    max-height: calc(var(--lh) * var(--lines) * 1em);  /* Safari/비클램프 보조 */
+    word-break: break-word;
 }
 
-.hot-news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(90,122,74,0.1);
-    border-color: #D4A574;
+/* Header (rank/status badges) */
+.hot-news-card .card-header{
+    position: absolute;
+    top: 8px; left: 8px; right: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    pointer-events: none;
 }
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+/* Rank badge: 기본 + 랭크별 배경 */
+.rank-badge{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+    background:var(--hot-green);
+}
+.rank-badge.rank-1,
+.rank-badge.rank-3{
+    background:linear-gradient(135deg, var(--hot-green-soft) 0%, var(--hot-green) 100%);
+    color:var(--hot-primary);
+}
+.rank-badge.rank-2{
+    background:linear-gradient(135deg, var(--hot-accent-dark) 0%, var(--hot-accent) 100%);
+    color:var(--hot-primary);
 }
 
-.rank-badge {
-    background: #87A96B;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 700;
+/* Status badge: 공통 + 타입별 색상 */
+.status-badge{
+    padding:4px 10px;
+    border-radius:12px;
+    font-size:11px;
+    font-weight:600;
+    color:#fff;
 }
+.status-badge.hot{ background:var(--hot-accent-dark); }
+.status-badge.best{ background:var(--hot-green); }
+.status-badge.new{ background:var(--hot-green-soft); }
+.status-badge.trending{ background:var(--hot-accent); }
 
-.rank-badge.rank-1 {
-    background: linear-gradient(135deg, #9BBF82 0%, #87A96B 100%);
-    color: #5A7A4A;
-}
-
-.rank-badge.rank-2 {
-    background: linear-gradient(135deg, #D4A574 0%, #E8C18E 100%);
-    color: #5A7A4A;
-}
-
-.rank-badge.rank-3 {
-    background: linear-gradient(135deg, #9BBF82 0%, #87A96B 100%);
-    color: #5A7A4A;
-}
-
-.status-badge {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-    color: white;
-}
-
-.status-badge.hot {
-    background: #D4A574;
-}
-
-.status-badge.best {
-    background: #87A96B;
-}
-
-.status-badge.new {
-    background: #9BBF82;
-}
-
-.status-badge.trending {
-    background: #E8C18E;
-}
 
 .book-cover{
     width: 100%;
@@ -2471,7 +2514,7 @@ body {
 }
 
 .book-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.61);
     margin-bottom: 8px;

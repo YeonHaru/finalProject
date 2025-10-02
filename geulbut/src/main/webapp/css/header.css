@@ -1,10 +1,10 @@
-/* ========= 헤더 전용 (전역 00_common.css 팔레트만 사용) ========= */
+/* ========= 헤더 전용 (세이지 그린 포인트 + 회색 베이스) ========= */
 
 .site-header {
     top: 0;
     z-index: 1000;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 /* 헤더 구조: 1행(좌/로고/우) — 2행(인사말) — 3행(검색) — 4행(하단메뉴) */
@@ -33,7 +33,7 @@
     justify-content: center;      /* 가운데 정렬 */
     align-items: center;
     min-width: 120px;             /* 너무 좁아지지 않게 */
-    background-color: transparent; /* 빨간색 제거 */
+    background-color: transparent;
 }
 
 .site-header__logo img {
@@ -64,17 +64,17 @@
 }
 
 .greeting-message {
-    color: var(--color-accent-dark);
-    font-size: 0.8rem;            /* 크기 줄임 */
-    font-weight: 400;             /* 두께 줄임 */
-    padding: 4px 12px;            /* 패딩 줄임 */
+    color: #4b5563;
+    font-size: 0.8rem;
+    font-weight: 400;
+    padding: 4px 12px;
     background: rgba(59, 130, 246, 0.06);
-    border-radius: 15px;          /* 둥글기 줄임 */
+    border-radius: 15px;
     border: 1px solid rgba(59, 130, 246, 0.12);
     transition: all 0.3s ease;
     text-align: center;
     display: inline-block;
-    line-height: 1.2;             /* 줄 높이 조정 */
+    line-height: 1.2;
 }
 
 .greeting-message:hover {
@@ -108,14 +108,14 @@
 .site-header__menu a {
     display: inline-block;
     padding: 8px 10px;
-    color: var(--color-text);
+    color: #4b5563;
     font-weight: 500;
-    border-radius: var(--radius-sm);
-    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 .site-header__menu a:hover {
-    background: rgba(0,0,0,.04);
-    color: var(--color-accent-dark);
+    background: rgba(135, 169, 107, 0.08);
+    color: #87A96B;
 }
 
 /* 햄버거 메뉴 버튼 (기본적으로 숨김) */
@@ -139,11 +139,11 @@
     width: 100%;
     max-width: 500px;
     height: 44px;                 /* 통일 높이 */
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background: var(--color-surface);
+    border: 1px solid #e5e7eb;
+    border-radius: 25px;
+    background: #ffffff;
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* 검색 유형 선택 */
@@ -151,10 +151,10 @@
     height: 100%;
     padding: 0 12px;
     font-size: 0.9rem;
-    color: var(--color-text);
-    background: var(--color-bg);
+    color: #4b5563;
+    background: #FBF7F0;
     border: none;
-    border-right: 1px solid var(--color-border);
+    border-right: 1px solid #e5e7eb;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
@@ -170,29 +170,29 @@
     height: 100%;
     padding: 0 12px;
     font-size: 0.9rem;
-    color: var(--color-text);
-    background: var(--color-surface);
+    color: #374151;
+    background: #ffffff;
     border: none;
 }
-.search-form input::placeholder { color: var(--color-text-light); }
+.search-form input::placeholder { color: #9ca3af; }
 .search-form input:focus-visible { outline: none; }
 
-/* 버튼 */
+/* 버튼 - 세이지 그린 포인트 */
 .btn-search {
     height: 100%;
     padding: 0 16px;
     font-size: 0.9rem;
-    background: var(--color-accent-dark);
+    background: #87A96B;
     color: #fff;
     font-weight: 600;
-    border-left: 1px solid var(--color-border);
+    border-left: 1px solid #e5e7eb;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease);
+    transition: all 0.3s ease;
 }
-.btn-search:hover  { opacity: .92; }
+.btn-search:hover  { background: #9BBF82; }
 .btn-search:active { opacity: .86; }
 
 /* 포커스 링 */
@@ -200,7 +200,7 @@
 .btn-search:focus-visible,
 .search-form input:focus-visible,
 .search-select:focus-visible {
-    outline: 3px solid var(--color-accent);
+    outline: 3px solid #87A96B;
     outline-offset: 2px;
 }
 
@@ -308,8 +308,8 @@
         display: block;
         height: 3px;
         width: 100%;
-        background: var(--color-text);
-        border-radius: var(--radius-sm);
+        background: #6b7280;
+        border-radius: 2px;
         transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         transform-origin: center;
     }
@@ -342,12 +342,13 @@
         position: absolute;
         top: calc(100% + 8px);     /* 햄버거 버튼 바로 아래 */
         right: 0;
-        background: var(--color-surface);
+        background: #ffffff;
         border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         min-width: 200px;
         z-index: 999;
         overflow: hidden;
+        border: 1px solid #e5e7eb;
 
         /* 초기 상태: 숨김 */
         max-height: 0;
@@ -380,9 +381,9 @@
     .site-header__menu--mobile li a {
         display: block;
         padding: 14px 18px;
-        color: var(--color-text);
+        color: #4b5563;
         font-weight: 500;
-        border-bottom: 1px solid var(--color-border);
+        border-bottom: 1px solid #e5e7eb;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -396,7 +397,7 @@
         top: 0;
         bottom: 0;
         width: 0;
-        background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+        background: linear-gradient(135deg, #87A96B, #9BBF82);
         transition: width 0.3s ease;
         z-index: -1;
     }
@@ -456,6 +457,7 @@
     .search-form {
         max-width: 320px;
         height: 40px;
+        border-radius: 20px;
     }
 
     .search-select {

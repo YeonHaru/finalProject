@@ -6,6 +6,7 @@ import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class BooksService {
                 .map(mapStruct::toDto)
                 .toList();
     }
+
 
     public List<BooksDto> getHotNewsBooks(List<Long> ids) {
         List<Books> found = booksRepository.findByIds(ids);
@@ -114,35 +116,16 @@ public class BooksService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<Map<String, Object>> getBooksForAudiobookCards(int limit) {
-        // DB에서 삭제되지 않은 책 조회
+    // 오디오북 책 데이터 가져오기 (랜덤)
+    public List<BooksDto> getTopAudiobooks(int limit) {
         List<Books> allBooks = booksRepository.findByEsDeleteFlagOrderByBookIdAsc("N");
-
-        // limit 만큼만 가져오기
-        List<Books> selectedBooks = allBooks.stream()
+        Collections.shuffle(allBooks); // 리스트 섞기
+        return allBooks.stream()
                 .limit(limit)
-                .toList();
-
-        // BooksDto → 카드용 Map 변환
-        return selectedBooks.stream()
-                .map(book -> {
-                    BooksDto dto = mapStruct.toDto(book);
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("title", dto.getTitle());
-                    map.put("authorName", dto.getAuthorName());
-                    map.put("categoryName", dto.getCategoryName());
-                    map.put("imgUrl", dto.getImgUrl());
-
-                    // 오디오북 카드 전용 필드 (임시)
-                    map.put("badge", "");          // NEW/인기 표시 없거나 조건부 설정 가능
-                    map.put("playTime", "0시간 0분"); // 임시 값
-                    map.put("narrator", "");       // 임시 값
-
-                    return map;
-                })
+                .map(mapStruct::toDto)
                 .toList();
     }
+
 
     @Transactional(readOnly = true)
     public List<BooksDto> findPromoBooks(Long... ids) {
@@ -160,4 +143,12 @@ public class BooksService {
                 .sorted(Comparator.comparingInt(b -> order.getOrDefault(b.getBookId(), Integer.MAX_VALUE)))
                 .toList();
     }
+    // 랜덤 4권 가져오기
+    public List<BooksDto> getRandomBooks() {
+        return booksRepository.findRandomBooks()
+                .stream()
+                .map(mapStruct::toDto)  // ✅ MapStruct 매핑 사용
+                .toList();
+    }
+
 }

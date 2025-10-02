@@ -15,14 +15,12 @@ import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import com.error404.geulbut.jpa.publishers.repository.PublishersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,6 +85,7 @@ public class AdminBooksService {
 
     // 도서 수정
     public BooksDto updateBook(BooksDto dto) {
+        // null 체크 및 기본값 적용
         if (dto.getDiscountedPrice() == null) {
             dto.setDiscountedPrice(0L);
         }
@@ -97,17 +96,37 @@ public class AdminBooksService {
             dto.setWishCount(0L);
         }
 
+        // 기존 도서 조회
         Books existingBook = booksRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
 
+        // DTO에서 넘어온 ID로 임시 엔티티 세팅
+        if (dto.getAuthorId() != null) {
+            existingBook.setAuthor(new Authors(dto.getAuthorId()));
+        }
+        if (dto.getPublisherId() != null) {
+            existingBook.setPublisher(new Publishers(dto.getPublisherId()));
+        }
+        if (dto.getCategoryId() != null) {
+            existingBook.setCategory(new Categories(dto.getCategoryId()));
+        }
+
+        // 나머지 필드 MapStruct로 업데이트
         mapStruct.updateFromDto(dto, existingBook);
+
+        // 실제 DB 엔티티로 관계 세팅 (저장 전)
         setRelations(existingBook);
+
+        // 저장
         Books saved = booksRepository.save(existingBook);
 
+        // DTO로 변환 후 이름 세팅
         BooksDto updatedDto = mapStruct.toDto(saved);
         setNames(updatedDto, saved);
+
         return updatedDto;
     }
+
 
     // 도서 삭제
     @Transactional
@@ -120,21 +139,48 @@ public class AdminBooksService {
         }).orElse(false);
     }
 
-    // 검색
+//    검색
     public Page<BooksDto> searchBooks(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Books> result;
+        Page<Long> bookIdsPage;
+
         if (keyword == null || keyword.isEmpty()) {
-            result = booksRepository.findAll(pageable);
+            bookIdsPage = booksRepository.findAll(pageable).map(Books::getBookId);
         } else {
-            result = booksRepository.searchByKeyword(keyword, pageable);
+            bookIdsPage = booksRepository.findBookIdsByKeyword(keyword, pageable);
         }
-        return result.map(book -> {
-            BooksDto dto = mapStruct.toDto(book);
-            setNames(dto, book);
-            return dto;
-        });
+
+        List<Books> books = booksRepository.findByIdsWithRelations(bookIdsPage.getContent());
+
+        // --- 중복 제거 + 입력 순서 보장 ---
+        Map<Long, Books> uniqueMap = new LinkedHashMap<>();
+        for (Long id : bookIdsPage.getContent()) {
+            books.stream()
+                    .filter(b -> b.getBookId().equals(id))
+                    .findFirst()
+                    .ifPresent(b -> uniqueMap.put(id, b));
+        }
+
+        List<BooksDto> dtos = uniqueMap.values().stream()
+                .map(book -> {
+                    BooksDto dto = mapStruct.toDto(book);
+                    setNames(dto, book);
+                    if (book.getHashtags() != null) {
+                        dto.setHashtags(book.getHashtags().stream()
+                                .map(h -> h.getName())
+                                .distinct()
+                                .toList());
+                    }
+                    return dto;
+                })
+                .toList();
+
+        return new PageImpl<>(dtos, pageable, bookIdsPage.getTotalElements());
     }
+
+
+
+
 
     // Author, Category, Publisher 관계 세팅
     private void setRelations(Books book) {
@@ -221,4 +267,6 @@ public class AdminBooksService {
                 })
                 .collect(Collectors.toList());
     }
+
+
 }

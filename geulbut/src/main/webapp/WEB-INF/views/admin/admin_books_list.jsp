@@ -50,6 +50,8 @@
                 <col class="col-price"/>
                 <col class="col-discount"/>
                 <col class="col-stock"/>
+                <col class="col-order"/>
+                <col class="col-wish"/>
                 <col class="col-created"/>
                 <col class="col-actions"/>
             </colgroup>
@@ -65,6 +67,8 @@
                 <th>가격</th>
                 <th class="hide-lg">할인가</th>
                 <th>재고</th>
+                <th>주문 수</th>
+                <th>찜 수</th>
                 <th class="hide-lg">생성일</th>
                 <th>작업</th>
             </tr>
@@ -72,50 +76,49 @@
             <tbody id="booksTableBody">
             <c:set var="matchCount" value="0"/>
             <c:forEach var="book" items="${booksPage.content}">
-                <c:set var="rowText"
-                       value="${fn:toLowerCase(book.title)} ${book.isbn} ${fn:toLowerCase(book.authorName)} ${fn:toLowerCase(book.publisherName)} ${fn:toLowerCase(book.categoryName)}"/>
-                <c:if test="${empty param.keyword or fn:contains(rowText, param.keyword)}">
-                    <c:set var="matchCount" value="${matchCount + 1}"/>
-                    <tr class="data-row" data-id="${book.bookId}">
-                        <td>${book.bookId}</td>
-                        <td class="t-left">
-                            <div class="title-ellipsis" title="${book.title}">${book.title}</div>
-                        </td>
-                        <td>
-                            <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
-                                 alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
-                        </td>
-                        <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
-                        <td>${book.authorName}</td>
-                        <td class="hide-lg">${book.publisherName}</td>
-                        <td class="hide-lg">${book.categoryName}</td>
-                        <td class="t-right"><c:out value="${book.price}"/></td>
-                        <td class="t-right hide-lg"><c:out value="${book.discountedPrice}"/></td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${book.stock gt 0}">
-                                    <span class="stock-chip ok">${book.stock}</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="stock-chip out">품절</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td class="hide-lg">${book.createdAtFormatted}</td>
-                        <td>
-                            <button type="button" class="btn btn-secondary btn--liquid-glass btnView">상세보기</button>
-                            <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
-                            <button type="button" class="btn btn-danger btn--liquid-glass btnDelete">삭제</button>
-                        </td>
-                    </tr>
-                </c:if>
+                <c:set var="matchCount" value="${matchCount + 1}"/>
+                <tr class="data-row" data-id="${book.bookId}" data-order="${book.orderCount}" data-wish="${book.wishCount}">
+                    <td>${book.bookId}</td>
+                    <td class="t-left">
+                        <div class="title-ellipsis" title="${book.title}">${book.title}</div>
+                    </td>
+                    <td>
+                        <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
+                             alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
+                    </td>
+                    <td class="hide-md"><span class="isbn-mono">${book.isbn}</span></td>
+                    <td>${book.authorName}</td>
+                    <td class="hide-lg">${book.publisherName}</td>
+                    <td class="hide-lg">${book.categoryName}</td>
+                    <td class="t-right"><c:out value="${book.price}"/></td>
+                    <td class="t-right hide-lg"><c:out value="${book.discountedPrice}"/></td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${book.stock gt 0}">
+                                <span class="stock-chip ok">${book.stock}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="stock-chip out">품절</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td class="t-right">${book.orderCount}</td>
+                    <td class="t-right">${book.wishCount}</td>
+                    <td class="hide-lg">${book.createdAtFormatted}</td>
+                    <td>
+                        <button type="button" class="btn btn-secondary btn--liquid-glass btnView">상세보기</button>
+                        <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
+                        <button type="button" class="btn btn-danger btn--liquid-glass btnDelete">삭제</button>
+                    </td>
+                </tr>
             </c:forEach>
             <c:if test="${matchCount == 0}">
                 <tr>
-                    <td colspan="12" class="t-center text-light">검색 결과가 없습니다.</td>
+                    <td colspan="14" class="t-center text-light">검색 결과가 없습니다.</td>
                 </tr>
             </c:if>
             </tbody>
+
         </table>
     </div>
 
@@ -166,8 +169,7 @@
 
         <form id="bookForm" class="modal__form">
             <input type="hidden" name="bookId" id="bookId"/>
-            <input type="hidden" name="orderCount" id="orderCount" value="0"/>
-            <input type="hidden" name="wishCount" id="wishCount" value="0"/>
+
 
             <div class="form-grid">
                 <label>제목 <input type="text" name="title" id="title" required/></label>
@@ -189,6 +191,8 @@
                     <img id="imgPreview" src="" alt="이미지 미리보기"
                          style="max-width:200px; max-height:300px; display:none;"/>
                 </div>
+                <label>주문 수 <input type="number" name="orderCount" id="orderCount" min="0" step="1"/></label>
+                <label>찜 수 <input type="number" name="wishCount" id="wishCount" min="0" step="1"/></label>
             </div>
             <div class="modal__footer">
                 <button type="submit" class="btn btn-secondary btn--liquid-glass save-btn mt-3">저장</button>
