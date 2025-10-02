@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -88,10 +89,12 @@
                 </c:choose>
 
                 <!-- 숫자들 -->
-                <c:forEach var="i" begin="0" end="${categoriesPage.totalPages - 1}">
+                <c:forEach var="i" begin="0" end="${categoriesPage.totalPages > 0 ? categoriesPage.totalPages - 1 : 0}">
                     <a class="btn btn-secondary ${i == categoriesPage.number ? 'active' : ''}"
                        href="?page=${i}&keyword=${param.keyword}"
-                        ${i == categoriesPage.number ? 'aria-current="page"' : ''}>${i + 1}</a>
+                        ${i == categoriesPage.number ? 'aria-current="page"' : ''}>
+                            ${i + 1}
+                    </a>
                 </c:forEach>
 
                 <!-- 다음 (») -->
