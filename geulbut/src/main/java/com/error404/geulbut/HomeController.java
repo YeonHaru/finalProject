@@ -35,6 +35,12 @@ public class HomeController {
         model.addAttribute("hotNews", booksService.getHotNewsBooks(
                 List.of(157L, 42L, 15L, 4L)
         ));
+
+//        메인페이지 배너 2개짜리
+        model.addAttribute("promoBooks", booksService.findPromoBooks(
+                501L, 155L, 514L, 27L
+        ));
+
         model.addAttribute("introductions", pages.getContent());
         model.addAttribute("featuredBooks", pages.getContent());
 //        편집장의 선택
