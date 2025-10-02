@@ -28,11 +28,22 @@ public class SearchAllBooksController {
 
     @GetMapping("/search")
     public String search(@RequestParam(defaultValue = "") String keyword,
+                         @RequestParam(required = false) String sortField,
+                         @RequestParam(required = false) String sortOrder,
                          @PageableDefault(page = 0, size = 10) Pageable pageable,
                          Model model) throws Exception {
 
         // 1) 검색어 정리
         final String kw = keyword == null ? "" : keyword.trim();
+
+        String sf = (sortField == null ? "popularity_score" : sortField.trim().toLowerCase());
+        if (!java.util.Set.of("popularity_score","sales_count","pub_date","created_at","price").contains(sf)) {
+            sf = "popularity_score";
+        }
+        String so = (sortOrder == null ? "desc" : sortOrder.trim().toLowerCase());
+        if (!java.util.Set.of("asc","desc").contains(so)) {
+            so = "desc";
+        }
 
         // 2) ES 호출: 비어있으면 전체조회(match_all), 있으면 검색
         Page<SearchAllBooksDto> pages = kw.isEmpty()
@@ -60,6 +71,8 @@ public class SearchAllBooksController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("size", size);
+        model.addAttribute("sortField", sf);
+        model.addAttribute("sortOrder", so);
 
         return "books/book_all"; // 기존 JSP 경로 유지
     }
