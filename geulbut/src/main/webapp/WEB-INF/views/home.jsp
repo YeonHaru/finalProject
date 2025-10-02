@@ -682,10 +682,7 @@
 
                                             <p class="book-description"><c:out value="${b.description}"/></p>
 
-                                            <div class="book-meta">
-                                                <span class="meta-order">판매 ${b.orderCount}권</span>
-                                                <span class="meta-wish">위시 ${b.wishCount}</span>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </c:forEach>
