@@ -16,9 +16,8 @@ import java.util.Optional;
 public interface BooksRepository extends JpaRepository<Books, Long> {
     boolean existsByIsbn(String isbn);
 
-    //    관리자 책 페이지에서 검색기능
-//    제목/저자/출판사/카테고리/isbn
-    @Query("SELECT b FROM Books b " +  // 엔티티 이름 Books
+    // 1) ID만 조회 (중복 방지)
+    @Query("SELECT DISTINCT b.bookId FROM Books b " +
             "LEFT JOIN b.author a " +
             "LEFT JOIN b.publisher p " +
             "LEFT JOIN b.category c " +
@@ -27,7 +26,14 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
             "OR LOWER(a.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<Books> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    Page<Long> findBookIdsByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    // 2) 실제 Books 엔티티 fetch join
+    @EntityGraph(attributePaths = {"author", "publisher", "category", "hashtags"})
+    @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
+    List<Books> findByIdsWithRelations(@Param("ids") List<Long> ids);
+
+
 
     // 카테고리별 조회 (저자/출판사/카테고리 포함)
     @EntityGraph(attributePaths = {"author", "publisher", "category"})

@@ -15,14 +15,12 @@ import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
 import com.error404.geulbut.jpa.publishers.repository.PublishersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -141,21 +139,48 @@ public class AdminBooksService {
         }).orElse(false);
     }
 
-    // 검색
+//    검색
     public Page<BooksDto> searchBooks(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Books> result;
+        Page<Long> bookIdsPage;
+
         if (keyword == null || keyword.isEmpty()) {
-            result = booksRepository.findAll(pageable);
+            bookIdsPage = booksRepository.findAll(pageable).map(Books::getBookId);
         } else {
-            result = booksRepository.searchByKeyword(keyword, pageable);
+            bookIdsPage = booksRepository.findBookIdsByKeyword(keyword, pageable);
         }
-        return result.map(book -> {
-            BooksDto dto = mapStruct.toDto(book);
-            setNames(dto, book);
-            return dto;
-        });
+
+        List<Books> books = booksRepository.findByIdsWithRelations(bookIdsPage.getContent());
+
+        // --- 중복 제거 + 입력 순서 보장 ---
+        Map<Long, Books> uniqueMap = new LinkedHashMap<>();
+        for (Long id : bookIdsPage.getContent()) {
+            books.stream()
+                    .filter(b -> b.getBookId().equals(id))
+                    .findFirst()
+                    .ifPresent(b -> uniqueMap.put(id, b));
+        }
+
+        List<BooksDto> dtos = uniqueMap.values().stream()
+                .map(book -> {
+                    BooksDto dto = mapStruct.toDto(book);
+                    setNames(dto, book);
+                    if (book.getHashtags() != null) {
+                        dto.setHashtags(book.getHashtags().stream()
+                                .map(h -> h.getName())
+                                .distinct()
+                                .toList());
+                    }
+                    return dto;
+                })
+                .toList();
+
+        return new PageImpl<>(dtos, pageable, bookIdsPage.getTotalElements());
     }
+
+
+
+
 
     // Author, Category, Publisher 관계 세팅
     private void setRelations(Books book) {
@@ -242,4 +267,6 @@ public class AdminBooksService {
                 })
                 .collect(Collectors.toList());
     }
+
+
 }
