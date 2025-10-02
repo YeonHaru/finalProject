@@ -33,8 +33,14 @@ public class HomeController {
 
 //        메인페이지 화제의소식 (bookId로 넘김)
         model.addAttribute("hotNews", booksService.getHotNewsBooks(
-                List.of(157L, 42L, 15L,4L)
+                List.of(157L, 42L, 15L, 4L)
         ));
+
+//        메인페이지 배너 2개짜리
+        model.addAttribute("promoBooks", booksService.findPromoBooks(
+                501L, 155L, 514L, 27L
+        ));
+
         model.addAttribute("introductions", pages.getContent());
         model.addAttribute("featuredBooks", pages.getContent());
 //        편집장의 선택
@@ -50,6 +56,11 @@ public class HomeController {
         // 이달의 주목도서 → BooksDto
         List<BooksDto> featuredBooks = booksService.getFeaturedBooks();
         model.addAttribute("featuredBooks", featuredBooks);
+
+        //  오디오북에 책 데이터 집어넣기
+        List<BooksDto> audiobooks = booksService.getTopAudiobooks(5);
+        model.addAttribute("audiobooks", audiobooks);
+
 
 //        이주의 특가
         model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));

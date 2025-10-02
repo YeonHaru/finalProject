@@ -121,7 +121,11 @@ public interface MapStruct {
     Books toEntity(BooksDto booksDto);
 
     @Mapping(target = "hashtags", ignore = true)
+    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "publisher", ignore = true)
+    @Mapping(target = "category", ignore = true)
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
+
 
 
     //  Mypage DTO 변환 승화

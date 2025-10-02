@@ -44,7 +44,6 @@ public class BooksService {
     }
 
     @Transactional(readOnly = true)
-
     public List<BooksDto> findTopDiscount(int limit) {
         int size = Math.max(1, Math.min(limit, 12));
         Pageable page = PageRequest.of(0, size);
@@ -115,33 +114,31 @@ public class BooksService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<Map<String, Object>> getBooksForAudiobookCards(int limit) {
-        // DB에서 삭제되지 않은 책 조회
+    // 오디오북 책 데이터 가져오기 (랜덤)
+    public List<BooksDto> getTopAudiobooks(int limit) {
         List<Books> allBooks = booksRepository.findByEsDeleteFlagOrderByBookIdAsc("N");
-
-        // limit 만큼만 가져오기
-        List<Books> selectedBooks = allBooks.stream()
+        Collections.shuffle(allBooks); // 리스트 섞기
+        return allBooks.stream()
                 .limit(limit)
+                .map(mapStruct::toDto)
                 .toList();
+    }
 
-        // BooksDto → 카드용 Map 변환
-        return selectedBooks.stream()
-                .map(book -> {
-                    BooksDto dto = mapStruct.toDto(book);
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("title", dto.getTitle());
-                    map.put("authorName", dto.getAuthorName());
-                    map.put("categoryName", dto.getCategoryName());
-                    map.put("imgUrl", dto.getImgUrl());
 
-                    // 오디오북 카드 전용 필드 (임시)
-                    map.put("badge", "");          // NEW/인기 표시 없거나 조건부 설정 가능
-                    map.put("playTime", "0시간 0분"); // 임시 값
-                    map.put("narrator", "");       // 임시 값
+    @Transactional(readOnly = true)
+    public List<BooksDto> findPromoBooks(Long... ids) {
+        List<Long> idList = Arrays.stream(ids)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+        if(idList.isEmpty()) return List.of();
 
-                    return map;
-                })
+        Map<Long, Integer> order = new HashMap<>();
+        for (int i = 0; i < idList.size(); i++) order.put(idList.get(i), i);
+
+        return booksRepository.findAllById(idList).stream()
+                .map(mapStruct::toDto)
+                .sorted(Comparator.comparingInt(b -> order.getOrDefault(b.getBookId(), Integer.MAX_VALUE)))
                 .toList();
     }
     // 랜덤 4권 가져오기
