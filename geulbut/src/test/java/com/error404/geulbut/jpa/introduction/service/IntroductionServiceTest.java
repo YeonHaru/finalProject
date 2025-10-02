@@ -24,4 +24,8 @@ class IntroductionServiceTest {
     void selectDeptList() {
 
     }
+
+    @Test
+    void getAllIntroductions() {
+    }
 }

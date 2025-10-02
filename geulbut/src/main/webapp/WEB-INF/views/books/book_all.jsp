@@ -145,7 +145,7 @@
 
                             <a class="srch-thumb rounded-sm border bg-main"
                                href="${pageContext.request.contextPath}/book/${data.bookId}">
-                                <c:if test="${status.index < 3}">
+                                <c:if test="${pageNumber == 1 && status.index < 3}">
                                     <span class="rank-badge rank-${status.index + 1}">${status.index + 1}위</span>
                                 </c:if>
                                 <img src="${empty data.bookImgUrl ? '/images/thumb_ing.gif' : data.bookImgUrl}"
