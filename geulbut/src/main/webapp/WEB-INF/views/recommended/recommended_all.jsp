@@ -10,9 +10,14 @@
 <html>
 <head>
     <title>Title</title>
+    <link rel="stylesheet" href="/css/00_common.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/recommended/recommended.css">
+
 </head>
 <body>
+<jsp:include page="/common/header.jsp"></jsp:include>
 <div class="container">
     <!-- 통합 이벤트 섹션 -->
     <div class="event-container">
@@ -32,10 +37,10 @@
                             📷
                         </div>
                         <div class="event-details">
-                            <div class="event-title"><c:out value="${data.title}" /></div>
-                            <div class="event-date"><c:out value="${data.days}" /></div>
-                            <div class="event-location"><c:out value="${data.point}" /></div>
-                            <div class="event-time"><c:out value="${data.timeInfo}" /></div>
+                            <div class="event-title"><c:out value="${data.title}"/></div>
+                            <div class="event-date"><c:out value="${data.days}"/></div>
+                            <div class="event-location"><c:out value="${data.point}"/></div>
+                            <div class="event-time"><c:out value="${data.timeInfo}"/></div>
                         </div>
                     </div>
                 </c:forEach>
@@ -59,17 +64,17 @@
             <div class="goods-grid" id="goods-slider">
                 <c:forEach var="data" items="${eventcontentsB}">
                     <div class="goods-card">
-                        <div class="goods-image">
+                        <div class="event-image">
                             <div class="goods-badge badge-limited">한정</div>
                             📷
                         </div>
                         <div class="goods-info">
-                            <div class="goods-title"><c:out value="${data.title}" /></div>
-                            <div class="goods-period"><c:out value="${data.days}" /></div>
-                            <div class="goods-location"><c:out value="${data.press}" /></div>
+                            <div class="goods-title"><c:out value="${data.title}"/></div>
+                            <div class="goods-period"><c:out value="${data.days}"/></div>
+                            <div class="goods-location"><c:out value="${data.press}"/></div>
                             <div class="goods-price">
-                                <span class="price-amount"><c:out value="${data.price}" /></span>
-                                <span class="discount-rate"><c:out value="${data.discount}" />% 할인</span>
+                                <span class="price-amount"><c:out value="${data.price}"/></span>
+                                <span class="discount-rate"><c:out value="${data.discount}"/>% 할인</span>
                             </div>
                         </div>
                     </div>
@@ -82,13 +87,13 @@
             function slideLeft(sliderId) {
                 const slider = document.getElementById(sliderId);
                 const cardWidth = 300; // 카드 너비 + 간격
-                slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                slider.scrollBy({left: -cardWidth, behavior: 'smooth'});
             }
 
             function slideRight(sliderId) {
                 const slider = document.getElementById(sliderId);
                 const cardWidth = 300; // 카드 너비 + 간격
-                slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                slider.scrollBy({left: cardWidth, behavior: 'smooth'});
             }
 
             // 스크롤 위치에 따른 버튼 상태 업데이트
@@ -110,7 +115,7 @@
             }
 
             // 스크롤 이벤트 리스너 추가
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const sliders = document.querySelectorAll('.events-grid, .goods-grid');
                 sliders.forEach(slider => {
                     slider.addEventListener('scroll', updateButtons);
@@ -120,5 +125,7 @@
                 updateButtons();
             });
         </script>
+    </div>
+    <jsp:include page="/common/footer.jsp"></jsp:include>
 </body>
 </html>

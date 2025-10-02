@@ -182,23 +182,30 @@
         <!-- 지금 핫딜중 컨텐츠 -->
         <div class="tab-content" id="hotdeal-content">
             <div class="hotdeal-grid">
-                <!-- 핫딜 카드 1 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/4facfe/ffffff?text=설민석의+조선왕조실록" alt="설민석의 조선왕조실록">
-                    </div>
-                    <h3 class="hotdeal-title">설민석의 조선왕조실록</h3>
-                    <p class="hotdeal-author">설민석</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">22,000원</span>
-                        <span class="sale-price">15,400원</span>
-                    </div>
+                <c:forEach var="data" items="${hotdeal}">
+                    <!-- 핫딜 카드 1 -->
+                    <div class="hotdeal-card">
+                        <div class="hotdeal-badge discount-30"><c:set var="discountRate"
+                                                                      value="${(data.price - data.discounted_price) * 100 / data.price}"/>
 
-                    <div class="hotdeal-time">장바구니🛒</div>
+                            할인율: <c:out value="${discountRate}"/>%
+                        </div>
+                        <div class="hotdeal-image">
+                            <img src="https://via.placeholder.com/200x180/4facfe/ffffff?text=설민석의+조선왕조실록"
+                                 alt="설민석의 조선왕조실록">
+                        </div>
+                        <h3 class="hotdeal-title"><c:out value="${data.title}"/></h3>
+                        <p class="hotdeal-author"><c:out value="${data.name}"/></p>
+                        <div class="hotdeal-prices">
+                            <span class="original-price"><c:out value="${data.discounted_price}"/></span>
+                            <span class="sale-price"><c:out value="${data.price}"/></span>
+                        </div>
 
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
+                        <div class="hotdeal-time">장바구니🛒</div>
+
+                        <button class="hotdeal-button">구매하기</button>
+                    </div>
+                </c:forEach>
             </div>
         </div>
 
@@ -438,7 +445,7 @@
                 </div>
                 <span class="icon-label">할인혜택</span>
             </a>
-            <a href="/event" class="icon-item event">
+            <a href="/recommended" class="icon-item event">
                 <div class="icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d69e2e" stroke-width="2">
                         <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
@@ -966,8 +973,6 @@
             <a href="/audiobooks-all" class="more-audiobooks-link">더 많은 오디오북 보기</a>
         </div>
     </section>
-
-
 
 
     <!-- 수상 섹션 -->

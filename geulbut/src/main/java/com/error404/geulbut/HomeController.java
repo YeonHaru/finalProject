@@ -5,6 +5,8 @@ import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.service.BooksService;
 import com.error404.geulbut.jpa.choice.dto.ChoiceDto;
 import com.error404.geulbut.jpa.choice.service.ChoiceService;
+import com.error404.geulbut.jpa.hotdeal.dto.HotdealDto;
+import com.error404.geulbut.jpa.hotdeal.service.HotdealService;
 import com.error404.geulbut.jpa.introduction.dto.IntroductionDto;
 import com.error404.geulbut.jpa.introduction.service.IntroductionService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class HomeController {
     private final IntroductionService introductionService;
     private final BooksService booksService;
     private final ChoiceService choiceService;
+    private final HotdealService hotdealService;
 
     @GetMapping("/")
     public String home(Model model, @PageableDefault(page = 0, size = 4) Pageable pageable) {
@@ -53,6 +56,11 @@ public class HomeController {
 //       이주간 책
         List<BooksDto> weeklyBooks = booksService.getWeeklyRandom4Books();
         model.addAttribute("weeklyBooks", weeklyBooks);
+
+//        핫딜
+        Page<HotdealDto> pages3 = hotdealService.getAllHotdeal(pageable);
+        model.addAttribute("hotdeal", pages3.getContent());
+
 
         // 이달의 주목도서 → BooksDto
         List<BooksDto> featuredBooks = booksService.getFeaturedBooks();
