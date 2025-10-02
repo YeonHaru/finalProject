@@ -121,6 +121,24 @@
                 <ol class="grid gap-3">
                     <c:forEach var="data" items="${searches}" varStatus="status">
                         <li class="srch-item bg-surface border rounded shadow-sm p-3">
+
+                            <!-- ✅ 아이콘 영역 (공유만 표시) -->
+                            <div class="srch-icons">
+                                <button class="icon-btn" data-act="share" title="공유">
+                                    <i class="fa-solid fa-share-nodes">🔗</i>
+                                </button>
+
+                                <!-- 품절인 경우만 재입고 알림 표시 -->
+                                <!-- 디버깅: stock = ${data.stock} -->
+                                <c:if test="${data.stock != null && data.stock == 0}">
+                                    <button class="icon-btn" data-act="restock" title="재입고 알림">
+                                        <i class="fa-regular fa-bell">🔔</i>
+                                    </button>
+                                </c:if>
+                            </div>
+
+                            <!-- 체크박스 -->
+
                             <div class="srch-col-check row">
                                 <input type="checkbox" name="selected" value="${data.bookId}">
                             </div>
@@ -193,11 +211,27 @@
                                     </ul>
                                 </c:if>
 
+                                <!-- 액션 버튼 (품절 여부에 따라 다르게 표시) -->
+
                                 <div class="row gap-2">
-                                    <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
-                                            data-act="cart" data-id="${data.bookId}">장바구니</button>
-                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                            data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                    <!-- 디버깅: stock = ${data.stock} -->
+                                    <c:choose>
+                                        <c:when test="${data.stock != null && data.stock == 0}">
+                                            <!-- 품절인 경우: 장바구니 버튼 비활성화 -->
+                                            <button type="button" class="px-3 py-2 rounded bg-disabled text-muted" disabled>
+                                                품절
+                                            </button>
+                                            <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                                    data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <!-- 정상 재고인 경우: 장바구니 버튼 활성화 -->
+                                            <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
+                                                    data-act="cart" data-id="${data.bookId}">장바구니</button>
+                                            <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                                    data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </div>
                         </li>
