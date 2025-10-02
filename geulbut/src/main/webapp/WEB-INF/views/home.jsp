@@ -901,7 +901,8 @@
                         </div>
 
                         <div class="audiobook-cover">
-                            <img src="${book.imgUrl}" alt="${book.title}">
+                            <img src="${book.imgUrl != null && !book.imgUrl.isEmpty() ? book.imgUrl : '/images/thumb_ing.gif'}"
+                                 alt="${book.title}">
                             <div class="audio-icon">🎧</div>
                             <div class="play-time">
                                 <c:choose>
