@@ -25,17 +25,17 @@
     <div class="bestseller-container">
         <!-- 탭 버튼 -->
         <div class="tab-buttons">
-            <button class="tab-btn active" onclick="switchTab(this)">주간 베스트셀러</button>
-            <button class="tab-btn" onclick="switchTab(this)">월간 베스트셀러</button>
+            <button class="tab-btn active" onclick="switchTab(this)">카테고리</button>
+            <button class="tab-btn" onclick="switchTab(this)">해시태그</button>
         </div>
 
         <!-- 카테고리 그리드 -->
         <div class="category-grid">
-            <div class="category-item featured">종합</div>
-            <div class="category-item">국내소설</div>
-            <div class="category-item">외국소설</div>
+            <div class="category-item featured">소설</div>
+            <div class="category-item">교육</div>
+            <div class="category-item">자기계발</div>
+            <div class="category-item">종교</div>
             <div class="category-item">에세이</div>
-            <div class="category-item">시</div>
             <div class="category-item">경제경영</div>
 
             <div class="category-item">자기계발</div>
