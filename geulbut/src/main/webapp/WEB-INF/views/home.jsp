@@ -35,41 +35,57 @@
 
                 <c:forEach var="data" items="${choice}">
 
-                <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
-                    <!-- 책 카드 1 -->
-                    <div class="book-card">
-                            <%--                    <div class="book-badge recommend">추천</div>--%>
-                        <div class="book-image">
-                            <img src="${data.imgUrl}" alt="${data.title}">
-                            <div class="book-number">1</div>
+                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
+                        <!-- 책 카드 -->
+                        <div class="book-card">
+                                <%-- <div class="book-badge recommend">추천</div> --%>
+
+                            <div class="book-image">
+                                <!-- 이미지 없을 때 기본 이미지 -->
+                                <img src="${empty data.imgUrl ? '/images/thumb_ing.gif' : data.imgUrl}"
+                                     alt="${fn:escapeXml(data.title)}">
+                                <div class="book-number">1</div>
+                            </div>
+
+                            <!-- 제목 길이 제한 -->
+                            <h3 class="book-title">
+                                <c:choose>
+                                    <c:when test="${fn:length(data.title) > 25}">
+                                        ${fn:substring(data.title, 0, 25)}...
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${data.title}
+                                    </c:otherwise>
+                                </c:choose>
+                            </h3>
+
+                            <p class="book-author my-3"><c:out value="${data.name}"/></p>
+
+                            <div class="editor-comment">
+                                <!-- 설명 없을 때 '설명 준비중' -->
+                                <h4 class="new-book-description">
+                                        ${empty data.description ? '설명 준비중' : data.description}
+                                </h4>
+                            </div>
+
+                            <div class="book-rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
                         </div>
-                        <h3 class="book-title"><c:out value="${data.title}"/></h3>
-                        <p class="book-author"><c:out value="${data.name}"/></p>
-                        <div class="editor-comment">
+                    </a>
 
-
-                            <h4 class="new-book-description"><c:out value="${data.description}"/></h4>
-
-                        </div>
-
-                        <div class="book-rating">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                    </c:forEach>
-                </a>
+                </c:forEach>
 
             </div>
-
         </div>
+
 
         <!-- 신간 소개 컨텐츠 -->
         <div class="tab-content" id="new-books-content">
-
             <div class="new-books-grid">
                 <c:forEach var="data" items="${introductions}">
                     <div class="new-book-card">
@@ -78,14 +94,42 @@
                         <!-- 책 이미지를 눌렀을 때 bookId 기반 디테일 페이지 -->
                         <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="new-book-link">
                             <div class="new-book-image">
-                                <img src="${data.imgUrl}" alt="${data.title}">
+                                <img
+                                        src="<c:choose>
+                                     <c:when test='${not empty data.imgUrl}'>
+                                         ${data.imgUrl}
+                                     </c:when>
+                                     <c:otherwise>
+                                         /images/thumb_ing.gif
+                                     </c:otherwise>
+                                 </c:choose>"
+                                        alt="${fn:escapeXml(data.title)}">
                             </div>
                         </a>
 
-                        <h3 class="new-book-title"><c:out value="${data.title}"/></h3>
+                        <h3 class="new-book-title">
+                            <c:choose>
+                                <c:when test="${fn:length(data.title) > 15}">
+                                    ${fn:substring(data.title, 0, 15)}...
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${data.title}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </h3>
+
                         <p class="new-book-author"><c:out value="${data.name}"/></p>
                         <div class="new-book-date"><c:out value="${data.publishedDate}"/></div>
-                        <p class="new-book-description"><c:out value="${data.description}"/></p>
+                        <p class="new-book-description">
+                            <c:choose>
+                                <c:when test="${not empty data.description}">
+                                    <c:out value="${data.description}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    설명 준비중
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
 
                         <button class="new-book-button">예약구매</button>
                     </div>
@@ -97,111 +141,43 @@
         <!-- 화제의 책 컨텐츠 -->
         <div class="tab-content" id="trending-content">
             <div class="trending-grid">
-                <!-- 화제의 책 카드 1 -->
-                <div class="trending-card">
-                    <div class="trending-badge hot">HOT</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/ff6b6b/ffffff?text=Trending1" alt="지금 뜨는 소설">
-                        <div class="trending-rank">1</div>
-                    </div>
-                    <h3 class="trending-title">지금 뜨는 소설</h3>
-                    <p class="trending-author">인기작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">🔥 15.2K 언급</div>
-                            <div class="stats-trend">↗ 250%</div>
+                <c:forEach var="data" items="${randomBooks}">
+                    <div class="trending-card">
+                        <div class="trending-badge hot">HOT</div>
+                        <div class="trending-image">
+                            <img src="<c:choose>
+                                 <c:when test='${not empty data.imgUrl}'>
+                                     ${data.imgUrl}
+                                 </c:when>
+                                 <c:otherwise>
+                                     /images/thumb_ing.gif
+                                 </c:otherwise>
+                             </c:choose>"
+                                 alt="${fn:escapeXml(data.title)}">
+                            <div class="trending-rank">-</div> <!-- 순위는 필요시 제거 -->
+                        </div>
+                        <h3 class="trending-title">지금 뜨는 소설</h3>
+                        <p class="trending-author">인기작가</p>
+                        <div class="trending-stats">
+                            <h4 class="stats-title">화제 지수</h4>
+                            <div class="stats-info">
+                                <div class="stats-views">🔥 15.2K 언급</div>
+                                <div class="stats-trend">↗ 250%</div>
+                            </div>
+                        </div>
+                        <div class="trending-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="rating-number">(4.7)</span>
                         </div>
                     </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.7)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 2 -->
-                <div class="trending-card">
-                    <div class="trending-badge viral">VIRAL</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/764ba2/ffffff?text=Trending2" alt="SNS 화제작">
-                        <div class="trending-rank">2</div>
-                    </div>
-                    <h3 class="trending-title">SNS 화제작</h3>
-                    <p class="trending-author">바이럴 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">📱 12.8K 공유</div>
-                            <div class="stats-trend">↗ 320%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.6)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 3 -->
-                <div class="trending-card">
-                    <div class="trending-badge rising">상승</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/f093fb/ffffff?text=Trending3" alt="급상승 에세이">
-                        <div class="trending-rank">3</div>
-                    </div>
-                    <h3 class="trending-title">급상승 에세이</h3>
-                    <p class="trending-author">트렌드 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">💬 9.5K 댓글</div>
-                            <div class="stats-trend">↗ 180%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.8)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 4 -->
-                <div class="trending-card">
-                    <div class="trending-badge hot">인기</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/4facfe/ffffff?text=Trending4" alt="논란의 작품">
-                        <div class="trending-rank">4</div>
-                    </div>
-                    <h3 class="trending-title">논란의 작품</h3>
-                    <p class="trending-author">논쟁 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">⚡ 18.7K 토론</div>
-                            <div class="stats-trend">↗ 400%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.5)</span>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
+
 
         <!-- 지금 핫딜중 컨텐츠 -->
         <div class="tab-content" id="hotdeal-content">
@@ -290,7 +266,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 이벤트 굿즈 컨텐츠 -->
         <div class="tab-content" id="goods-content">
             <div class="goods-grid">
@@ -379,7 +354,9 @@
                         <!-- 이미지 영역 클릭 시 책 디테일 페이지로 이동 -->
                         <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-image-link">
                             <div class="weekly-image">
-                                <img src="${book.imgUrl}" alt="${book.title}"/>
+                                <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
+                                     alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
+
                             </div>
                         </a>
 
@@ -403,7 +380,9 @@
                                     <span class="rating-text">평점</span>
                                 </div>
                                 <div class="weekly-comment">
-                                    <p class="comment-text"><c:out value="${book.description}"/></p>
+                                    <p class="comment-text">
+                                            ${empty book.description ? '설명 준비중' : book.description}
+                                    </p>
                                 </div>
 
                             </div>
@@ -834,6 +813,7 @@
                         </c:forEach>
                     </div>
                 </div>
+
 
             </div>
         </div>

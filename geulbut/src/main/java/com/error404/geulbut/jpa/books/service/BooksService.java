@@ -141,5 +141,12 @@ public class BooksService {
                 .sorted(Comparator.comparingInt(b -> order.getOrDefault(b.getBookId(), Integer.MAX_VALUE)))
                 .toList();
     }
+    // 랜덤 4권 가져오기
+    public List<BooksDto> getRandomBooks() {
+        return booksRepository.findRandomBooks()
+                .stream()
+                .map(mapStruct::toDto)  // ✅ MapStruct 매핑 사용
+                .toList();
+    }
 
 }

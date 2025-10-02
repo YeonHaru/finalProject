@@ -64,7 +64,9 @@ public class HomeController {
 
 //        이주의 특가
         model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
-
+//       추천 이벤트
+        List<BooksDto> randomBooks = booksService.getRandomBooks();
+        model.addAttribute("randomBooks", randomBooks);
         return "home";
     }
 }
