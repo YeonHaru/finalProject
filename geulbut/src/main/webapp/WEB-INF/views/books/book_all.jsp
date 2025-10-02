@@ -31,28 +31,28 @@
             <button class="tab-btn" onclick="switchTab(this, 'monthly')">월간 베스트셀러</button>
         </div>
 
-      <!-- ✅ 주간 카테고리 -->
-<div class="category-grid-weekly">
-    <div class="category-item featured">종합</div>
-    <div class="category-item">국내소설</div>
-    <div class="category-item">외국소설</div>
-    <div class="category-item">에세이</div>
-    <div class="category-item">시</div>
-    <div class="category-item">경제경영</div>
-</div>
+        <!-- ✅ 주간 카테고리 -->
+        <div class="category-grid-weekly">
+            <div class="category-item featured">종합</div>
+            <div class="category-item">국내소설</div>
+            <div class="category-item">외국소설</div>
+            <div class="category-item">에세이</div>
+            <div class="category-item">시</div>
+            <div class="category-item">경제경영</div>
+        </div>
 
-<!-- ✅ 월간 카테고리 -->
-<div class="category-grid-monthly">
-    <div class="category-item">자기계발</div>
-    <div class="category-item">인문과학</div>
-    <div class="category-item">역사/문화</div>
-    <div class="category-item">정치/법률</div>
-    <div class="category-item">종교</div>
-    <div class="category-item">예술</div>
-</div>
+        <!-- ✅ 월간 카테고리 -->
+        <div class="category-grid-monthly">
+            <div class="category-item">자기계발</div>
+            <div class="category-item">인문과학</div>
+            <div class="category-item">역사/문화</div>
+            <div class="category-item">정치/법률</div>
+            <div class="category-item">종교</div>
+            <div class="category-item">예술</div>
+        </div>
     </div>
 
-            <!-- 상단 툴바(체크/일괄 버튼만 유지, 페이징 링크는 하단으로 이동) -->
+    <!-- 상단 툴바(체크/일괄 버튼만 유지, 페이징 링크는 하단으로 이동) -->
     <div class="row gap-2 mb-3 container">
         <div class="row gap-1 ml-3 text-light">
             <label class="row gap-1">
@@ -84,6 +84,21 @@
                 <ol class="grid gap-3">
                     <c:forEach var="data" items="${searches}" varStatus="status">
                         <li class="srch-item bg-surface border rounded shadow-sm p-3">
+                            <!-- ✅ 아이콘 영역 (공유만 표시) -->
+                            <div class="srch-icons">
+                                <button class="icon-btn" data-act="share" title="공유">
+                                    <i class="fa-solid fa-share-nodes">🔗</i>
+                                </button>
+
+                                <!-- 품절인 경우만 재입고 알림 표시 -->
+                                <!-- 디버깅: stock = ${data.stock} -->
+                                <c:if test="${data.stock != null && data.stock == 0}">
+                                    <button class="icon-btn" data-act="restock" title="재입고 알림">
+                                        <i class="fa-regular fa-bell">🔔</i>
+                                    </button>
+                                </c:if>
+                            </div>
+
                             <!-- 체크박스 -->
                             <div class="srch-col-check row">
                                 <input type="checkbox" name="selected" value="${data.bookId}">
@@ -92,7 +107,6 @@
                             <!-- 썸네일 -->
                             <a class="srch-thumb rounded-sm border bg-main"
                                href="${pageContext.request.contextPath}/book/${data.bookId}">
-                                <!-- 순위 뱃지 추가 (상위 3개만) -->
                                 <c:if test="${status.index < 3}">
                                     <span class="rank-badge rank-${status.index + 1}">${status.index + 1}위</span>
                                 </c:if>
@@ -166,12 +180,26 @@
                                     </ul>
                                 </c:if>
 
-                                <!-- 액션 -->
+                                <!-- 액션 버튼 (품절 여부에 따라 다르게 표시) -->
                                 <div class="row gap-2">
-                                    <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
-                                            data-act="cart" data-id="${data.bookId}">장바구니</button>
-                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                            data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                    <!-- 디버깅: stock = ${data.stock} -->
+                                    <c:choose>
+                                        <c:when test="${data.stock != null && data.stock == 0}">
+                                            <!-- 품절인 경우: 장바구니 버튼 비활성화 -->
+                                            <button type="button" class="px-3 py-2 rounded bg-disabled text-muted" disabled>
+                                                품절
+                                            </button>
+                                            <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                                    data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <!-- 정상 재고인 경우: 장바구니 버튼 활성화 -->
+                                            <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
+                                                    data-act="cart" data-id="${data.bookId}">장바구니</button>
+                                            <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                                    data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </div>
                         </li>
