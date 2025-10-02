@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user
-  Date: 25. 9. 24.
-  Time: 오전 9:21
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -29,32 +22,33 @@
 <main id="main" class="page py-4" role="main">
     <!-- 브레드크럼 -->
     <nav aria-label="경로" class="mb-3">
-        <ol class="row gap-2 breadcrumb list-reset">
-            <li><a href="/" class="text-light">홈</a></li>
+        <ol class="breadcrumb list-reset">
+            <li><a href="<c:url value='/'/>">홈</a></li>
             <li aria-hidden="true">/</li>
-            <li><a href="/book" class="text-light">도서</a></li>
+            <li><a href="<c:url value='/books'/>">도서</a></li>
             <li aria-hidden="true">/</li>
             <li aria-current="page"><strong class="text-main">${book.title}</strong></li>
         </ol>
     </nav>
 
     <!-- 상세 카드 -->
-    <article class="book-detail bg-surface border rounded shadow-sm p-4 grid cols-2 gap-4" itemscope itemtype="https://schema.org/Book">
-        <!-- 좌측: 커버 -->
+    <article class="book-detail grid cols-2 gap-4 bg-surface border rounded shadow-sm p-4"
+             itemscope itemtype="https://schema.org/Book">
+
+        <!-- 좌측 -->
         <section class="grid gap-3" aria-label="도서 이미지">
             <figure class="book-cover">
                 <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
                      alt="${fn:escapeXml(book.title)} 표지">
             </figure>
 
-            <!-- 작은 카드: 배송/재고 안내 등 -->
             <div class="info-card">
                 <p class="mb-1"><strong>배송</strong> : 오늘 출고 (평균 1–2일 내 도착)</p>
                 <p class="mb-0"><strong>반품</strong> : 수령 후 7일 이내 가능</p>
             </div>
         </section>
 
-        <!-- 우측: 메타/가격/액션 -->
+        <!-- 우측 -->
         <section class="grid gap-3" aria-label="도서 정보">
             <header>
                 <h1 class="mb-1" itemprop="name">${book.title}</h1>
@@ -65,14 +59,36 @@
                 </p>
             </header>
 
-            <!-- 가격 영역 -->
-            <div class="bg-main rounded p-3 border" aria-label="가격 정보">
-                <div class="row gap-2">
-                    <p class="price-original">정가: ${book.price}</p>
-                    <p class="text-main"><strong class="price-discount">할인가: ${book.discountedPrice}</strong></p>
-                    <span class="badge bg-accent-dark text-invert">25%↓</span>
-                </div>
-                <p class="mt-1 text-light">재고: ${book.stock}</p>
+            <!-- 가격 영역 (개선) -->
+            <c:set var="hasDiscount" value="${not empty book.discountedPrice and book.discountedPrice lt book.price}" />
+            <c:set var="discountPercent" value="${hasDiscount ? ((book.price - book.discountedPrice) * 100.0) / book.price : 0}" />
+            <div class="price-box border rounded p-3 bg-surface" aria-label="가격 정보">
+                <c:choose>
+                    <c:when test="${hasDiscount}">
+                        <div class="price-line">
+                            <strong class="price-now">
+                                <fmt:formatNumber value="${book.discountedPrice}" type="number"/>원
+                            </strong>
+                            <span class="price-badge">-<fmt:formatNumber value="${discountPercent}" maxFractionDigits="0"/>%</span>
+                        </div>
+                        <div class="price-sub">
+                            <span class="price-original">
+                                정가 <fmt:formatNumber value="${book.price}" type="number"/>원
+                            </span>
+                            <span class="stock-chip">재고 ${book.stock}</span>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="price-line">
+                            <strong class="price-now">
+                                <fmt:formatNumber value="${book.price}" type="number"/>원
+                            </strong>
+                        </div>
+                        <div class="price-sub">
+                            <span class="stock-chip">재고 ${book.stock}</span>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <!-- 해시태그 -->
@@ -85,8 +101,8 @@
                 </ul>
             </section>
 
-            <!-- 액션 버튼 -->
-            <div class="row gap-2 mt-2" role="group" aria-label="작업">
+            <!-- 액션 버튼: 모바일=1열 → 태블릿=3열 -->
+            <div class="actions-grid mt-2" role="group" aria-label="작업">
                 <button type="button"
                         class="px-3 py-2 rounded bg-accent text-invert"
                         data-act="cart" data-id="${book.bookId}" data-qty="1" id="btnAddCart">
@@ -99,8 +115,9 @@
                     위시리스트
                 </button>
 
-                <button type="button" class="px-3 py-2 border rounded bg-surface"
-                        id="buyNowBtn">구매하기</button>
+                <button type="button" class="px-3 py-2 border rounded bg-surface" id="buyNowBtn">
+                    구매하기
+                </button>
             </div>
 
             <!-- 추가 정보 -->
@@ -111,15 +128,12 @@
         </section>
     </article>
 
-    <!-- 상세 설명 & 목차 -->
+    <!-- 상세 설명 & 출판 정보 -->
     <section class="grid gap-3 mt-3">
         <article class="bg-surface border rounded p-4" aria-label="도서 소개">
             <h2 class="mb-2">도서 소개</h2>
-            <p>
-                ${book.description}
-            </p>
+            <p>${book.description}</p>
         </article>
-
 
         <article class="bg-surface border rounded p-4" aria-label="출판 정보">
             <h2 class="mb-2">출판 정보</h2>
@@ -135,26 +149,18 @@
 <footer class="page py-4 text-light" role="contentinfo">
     <p class="mb-0">&copy; 2025 Geulbut</p>
 </footer>
-<!-- 1) Bootstrap bundle 먼저 -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
-<!-- 3) PortOne SDK -->
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-<script>
-    if (window.IMP) {
-        IMP.init("${iamportCode}");
-    }
-</script>
+<script> if (window.IMP) { IMP.init("${iamportCode}"); } </script>
 
-<!-- 4) imp_code 주입 (반드시 cart.js보다 먼저 존재) -->
 <div id="imp-root" data-imp-code="${iamportCode}"></div>
 
-<!-- 2) 결제/주문 공통 로직 -->
 <script src="/js/mypage/orders.js"></script>
 
-<!-- 3) 북 디테일 전용 전역 값 주입 -->
 <script>
     window.PRODUCT = {
         id: ${book.bookId},
@@ -166,8 +172,6 @@
     };
 </script>
 
-<!-- 4) 북 디테일 전용 스크립트 -->
 <script src="/js/book_detail/book_detail.js"></script>
-
 </body>
 </html>

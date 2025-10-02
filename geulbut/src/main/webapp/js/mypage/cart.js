@@ -20,7 +20,7 @@ function refreshCart() {
 
             let html = `
         <h2 class="mb-3 pb-2 border-bottom">장바구니</h2>
-        <div class="list-group" id="cart-list">
+        <div class="list-group w-100" id="cart-list">
       `;
 
             data.items.forEach(item => {
@@ -37,7 +37,7 @@ function refreshCart() {
               <img src="${imgUrl}" alt="${title}"
                    style="width:70px; height:100px; object-fit:cover; border-radius:4px;">
             </div>
-            <div class="flex-grow-1">
+            <div class="flex-grow-1" style="min-width: 0;">
               <h6 class="mb-1">${title}</h6>
               <p class="mb-1 text-muted small">
                 수량:

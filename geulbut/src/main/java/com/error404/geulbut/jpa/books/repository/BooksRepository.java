@@ -16,9 +16,8 @@ import java.util.Optional;
 public interface BooksRepository extends JpaRepository<Books, Long> {
     boolean existsByIsbn(String isbn);
 
-    //    관리자 책 페이지에서 검색기능
-//    제목/저자/출판사/카테고리/isbn
-    @Query("SELECT b FROM Books b " +  // 엔티티 이름 Books
+    // 1) ID만 조회 (중복 방지)
+    @Query("SELECT DISTINCT b.bookId FROM Books b " +
             "LEFT JOIN b.author a " +
             "LEFT JOIN b.publisher p " +
             "LEFT JOIN b.category c " +
@@ -27,7 +26,14 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
             "OR LOWER(a.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<Books> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    Page<Long> findBookIdsByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    // 2) 실제 Books 엔티티 fetch join
+    @EntityGraph(attributePaths = {"author", "publisher", "category", "hashtags"})
+    @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
+    List<Books> findByIdsWithRelations(@Param("ids") List<Long> ids);
+
+
 
     // 카테고리별 조회 (저자/출판사/카테고리 포함)
     @EntityGraph(attributePaths = {"author", "publisher", "category"})
@@ -47,34 +53,34 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
 
     @EntityGraph(attributePaths = {"author"})
     @Query("""
-  SELECT b FROM Books b
-  WHERE COALESCE(b.orderCount,0) > 0
-  ORDER BY b.orderCount DESC,
-           COALESCE(b.updatedAt, b.createdAt) DESC,
-           b.bookId
-""")
+              SELECT b FROM Books b
+              WHERE COALESCE(b.orderCount,0) > 0
+              ORDER BY b.orderCount DESC,
+                       COALESCE(b.updatedAt, b.createdAt) DESC,
+                       b.bookId
+            """)
     List<Books> findBestSellers(Pageable pageable);
 
 
-//    메인페이지 이주의 특가
+    //    메인페이지 이주의 특가
     @EntityGraph(attributePaths = {"author", "publisher", "category"})
     @Query("""
-        SELECT b FROM Books b
-        WHERE b.price > 0
-          AND b.discountedPrice IS NOT NULL
-          AND b.discountedPrice < b.price
-          AND b.imgUrl IS NOT NULL
-        ORDER BY ((b.price - b.discountedPrice) * 1.0 / b.price) DESC,
-                 b.discountedPrice ASC
-    """)
+                SELECT b FROM Books b
+                WHERE b.price > 0
+                  AND b.discountedPrice IS NOT NULL
+                  AND b.discountedPrice < b.price
+                  AND b.imgUrl IS NOT NULL
+                ORDER BY ((b.price - b.discountedPrice) * 1.0 / b.price) DESC,
+                         b.discountedPrice ASC
+            """)
     List<Books> findTopDiscount(Pageable pageable);
 
     @EntityGraph(attributePaths = {"author"})
     @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
     List<Books> findByIds(@Param("ids") List<Long> ids);
 
-    
-//  작가 작품보기 버튼 클릭용
+
+    //  작가 작품보기 버튼 클릭용
     @Query("SELECT b FROM Books b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :authorName, '%'))")
     List<Books> findByAuthorNameContaining(@Param("authorName") String authorName);
 
@@ -84,5 +90,11 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     // 2) Native Query로 랜덤 4권 가져오기 (DB 지원 시)
     @Query(value = "SELECT * FROM BOOKS WHERE ES_DELETE_FLAG = 'N' ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY", nativeQuery = true)
     List<Books> findRandom4Native();
+
+    //   추천 이벤트
+// Oracle: DBMS_RANDOM.VALUE 사용
+    @Query(value = "SELECT * FROM BOOKS ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY",
+            nativeQuery = true)
+    List<Books> findRandomBooks();
 
 }

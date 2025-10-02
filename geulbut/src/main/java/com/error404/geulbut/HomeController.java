@@ -33,7 +33,8 @@ public class HomeController {
 
 //        메인페이지 화제의소식 (bookId로 넘김)
         model.addAttribute("hotNews", booksService.getHotNewsBooks(
-                List.of(157L, 42L, 15L, 4L)
+
+                List.of(154L, 24L, 519L, 2L, 10L, 155L, 532L, 35L, 157L, 13L)
         ));
 
 //        메인페이지 배너 2개짜리
@@ -64,7 +65,9 @@ public class HomeController {
 
 //        이주의 특가
         model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
-
+//       추천 이벤트
+        List<BooksDto> randomBooks = booksService.getRandomBooks();
+        model.addAttribute("randomBooks", randomBooks);
         return "home";
     }
 }

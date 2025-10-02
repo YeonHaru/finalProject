@@ -90,7 +90,6 @@ $(function () {
             success: function (res) {
                 alert('저장 완료');
 
-                // 수정 후 기존 row 갱신
                 if (bookId) {
                     const row = $(`#booksTableBody tr[data-id='${bookId}']`);
                     if (row.length) {
@@ -102,10 +101,10 @@ $(function () {
                         row.find('td:eq(10)').text(res.orderCount ?? 0);
                         row.find('td:eq(11)').text(res.wishCount ?? 0);
                     } else {
-                        $('#bookSearchForm').submit();
+                        loadBooksPage(0, keyword);
                     }
                 } else {
-                    $('#bookSearchForm').submit();
+                    loadBooksPage(0, keyword);
                 }
 
                 $('#bookModal').hide().attr('aria-hidden', 'true');
@@ -123,10 +122,11 @@ $(function () {
             let bookId = $(this).closest('tr').data('id');
             if (!confirm('정말 삭제하시겠습니까?')) return;
 
+            const keyword = $('#bookSearchForm input[name="keyword"]').val().trim();
             $.ajax({
                 url: `${ctx}/admin/books/${bookId}`,
                 method: 'DELETE',
-                success: function () { alert('삭제 완료'); $('#bookSearchForm').submit(); },
+                success: function () { alert('삭제 완료'); loadBooksPage(0, keyword); },
                 error: function () { alert('삭제 실패'); }
             });
         })
@@ -175,10 +175,14 @@ $(function () {
     // 🔹 검색 + 페이징 갱신
     $('#bookSearchForm').submit(function (e) {
         e.preventDefault();
-        let keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
+        const keyword = ($(this).find('input[name="keyword"]').val() || '').trim();
+        loadBooksPage(0, keyword);
+    });
 
-        $.get(`${ctx}/admin/books/search`, { keyword }, function (res) {
-            let tbody = $('#booksTableBody');
+    // 🔹 AJAX로 책 목록 불러오기 (페이징 포함)
+    function loadBooksPage(page, keyword) {
+        $.get(`${ctx}/admin/books/search`, { page, keyword }, function (res) {
+            const tbody = $('#booksTableBody');
             tbody.empty();
 
             if (!res.content || res.content.length === 0) {
@@ -187,7 +191,6 @@ $(function () {
                 return;
             }
 
-            // 목록 렌더
             res.content.forEach(book => {
                 let row = `
 <tr class="data-row" data-id="${book.bookId}">
@@ -219,26 +222,34 @@ $(function () {
             const $group = $toolbar.find('.btn-group');
 
             const total = res.totalPages || 0;
-            const now   = (typeof res.number === 'number') ? res.number : 0;
-            const first = (typeof res.first  === 'boolean') ? res.first : (now === 0);
-            const last  = (typeof res.last   === 'boolean') ? res.last  : (now === total - 1);
+            const now = res.number || 0;
+            const first = res.first || (now === 0);
+            const last = res.last || (now === total - 1);
 
             if (total > 1) {
-                $group.append(`<a class="btn btn-secondary btn-nav" href="?page=${Math.max(0, now - 1)}&keyword=${encodeURIComponent(keyword)}" aria-label="이전" ${first ? 'aria-disabled="true"' : ''}>&laquo;</a>`);
+                $group.append(`<button class="btn btn-secondary btn-nav" ${first ? 'disabled' : ''} data-page="${Math.max(0, now - 1)}">&laquo;</button>`);
                 for (let i = 0; i < total; i++) {
                     const isActive = i === now;
-                    $group.append(`<a class="btn btn-secondary ${isActive ? 'active' : ''}" href="?page=${i}&keyword=${encodeURIComponent(keyword)}" ${isActive ? 'aria-current="page"' : ''}>${i + 1}</a>`);
+                    $group.append(`<button class="btn btn-secondary ${isActive ? 'active' : ''}" data-page="${i}">${i + 1}</button>`);
                 }
-                $group.append(`<a class="btn btn-secondary btn-nav" href="?page=${Math.min(total - 1, now + 1)}&keyword=${encodeURIComponent(keyword)}" aria-label="다음" ${last ? 'aria-disabled="true"' : ''}>&raquo;</a>`);
-                $toolbar.on('click', 'a[aria-disabled="true"]', function (e) { e.preventDefault(); });
+                $group.append(`<button class="btn btn-secondary btn-nav" ${last ? 'disabled' : ''} data-page="${Math.min(total - 1, now + 1)}">&raquo;</button>`);
                 $('.table-scroll').after($toolbar);
+
+                // 페이징 클릭 이벤트
+                $group.find('button[data-page]').off('click').on('click', function () {
+                    const targetPage = $(this).data('page');
+                    loadBooksPage(targetPage, keyword);
+                });
             }
 
             // 스크롤 초기화
             $('.table-scroll').each(function () { this.scrollLeft = 0; });
         });
-    });
+    }
 
     // 초기 로드 시 테이블 스크롤 초기화
     $('.table-scroll').each(function () { this.scrollLeft = 0; });
+
+    // 초기 데이터 로드
+    loadBooksPage(0, $('#bookSearchForm input[name="keyword"]').val().trim());
 });
