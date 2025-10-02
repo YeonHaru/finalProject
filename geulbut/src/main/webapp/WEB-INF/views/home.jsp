@@ -661,7 +661,6 @@
 
                                             <p class="book-description"><c:out value="${b.description}"/></p>
 
-
                                         </div>
                                     </div>
                                 </c:forEach>
