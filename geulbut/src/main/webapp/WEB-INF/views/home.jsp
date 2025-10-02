@@ -697,7 +697,6 @@
         </c:choose>
     </section>
 
-
     <!-- 프로모션 세션 2칸씩 있는 도서 광고창 -->
     <section class="promotion-section">
         <div class="promotion-slider">
@@ -706,107 +705,141 @@
             <button class="promo-slider-btn next" id="promoNextBtn">></button>
 
             <div class="promotion-container">
-                <!-- 첫 번째 페이지 -->
+
+                <!-- 첫 번째 페이지: index 0~1 -->
                 <div class="promotion-page active">
                     <div class="promotion-grid">
-                        <!-- 베스트셀러 프로모션 -->
-                        <div class="promotion-card bestseller-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                                </svg>
-                                <span>선간</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">베스트셀러 1위</h3>
-                                <h4 class="promo-subtitle">「달러구트 꿈의 서점」, 신작 출간</h4>
-                                <p class="promo-description">전국 서점가 화제! 특별 예약판매 30% 할인</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/667eea/ffffff?text=달러구트+꿈의+서점"
-                                     alt="달러구트 꿈의 서점">
-                            </div>
-                        </div>
+                        <c:forEach var="p" items="${promoBooks}" varStatus="st">
+                            <c:if test="${st.index lt 2}">
+                                <c:url var="detailUrl" value="/book/${p.bookId}"/>
+                                <div class="promotion-card
+                          ${st.index == 0 ? 'bestseller-promo' : ''}
+                          ${st.index == 1 ? 'md-promo' : ''}">
+                                    <!-- 아이콘 (기존 SVG 유지) -->
+                                    <div class="promo-icon">
+                                        <c:choose>
+                                            <c:when test="${st.index == 0}">
+                                                <!-- bestseller star -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87
+                                 1.18 6.88L12 17.77l-6.18 3.25L7 14.14
+                                 2 9.27l6.91-1.01L12 2z"></path>
+                                                </svg>
+                                                <span>선간</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <!-- MD 추천 -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
+                                                </svg>
+                                                <span>MD추천</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
 
-                        <!-- MD 추천 프로모션 -->
-                        <div class="promotion-card md-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
-                                </svg>
-                                <span>MD추천</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">자기계발 MD 추천</h3>
-                                <h4 class="promo-subtitle">「아주 작은 습관의 힘」</h4>
-                                <p class="promo-description">올해 가장 많이 읽힌 자기계발서, 리뷰 이벤트 진행 중</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/f97316/ffffff?text=아주+작은+습관의+힘"
-                                     alt="아주 작은 습관의 힘">
-                            </div>
-                        </div>
+                                    <div class="promo-content">
+                                        <h3 class="promo-title"><c:out value="${p.title}"/></h3>
+                                        <h4 class="promo-subtitle">
+                                            <c:out value="${p.authorName}"/> · <c:out value="${p.publisherName}"/>
+                                        </h4>
+                                        <p class="promo-description">
+                                            <c:out value="${fn:length(p.description) > 60
+                                   ? fn:substring(p.description,0,60).concat('...')
+                                   : p.description}"/>
+                                        </p>
+                                        <a class="promo-button" href="${detailUrl}">자세히 보기 ></a>
+                                    </div>
+
+                                    <div class="promo-image">
+                                        <a href="${detailUrl}">
+                                            <img
+                                                    src="${empty p.imgUrl
+                              ? 'https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'
+                              : p.imgUrl}"
+                                                    alt="${fn:escapeXml(p.title)}"
+                                                    onerror="this.src='https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'">
+                                        </a>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:forEach>
                     </div>
                 </div>
 
-                <!-- 두 번째 페이지 -->
+                <!-- 두 번째 페이지: index 2~3 -->
                 <div class="promotion-page">
                     <div class="promotion-grid">
-                        <!-- 신간 프로모션 -->
-                        <div class="promotion-card new-book-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14,2 14,8 20,8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10,9 9,9 8,9"></polyline>
-                                </svg>
-                                <span>신간</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">9월 화제의 신간</h3>
-                                <h4 class="promo-subtitle">「미드나잇 라이브러리」</h4>
-                                <p class="promo-description">전 세계 독자들의 찬사! 선주문 시 한정 굿즈 증정</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/10b981/ffffff?text=미드나잇+라이브러리"
-                                     alt="미드나잇 라이브러리">
-                            </div>
-                        </div>
+                        <c:forEach var="p" items="${promoBooks}" varStatus="st">
+                            <c:if test="${st.index ge 2}">
+                                <c:url var="detailUrl" value="/book/${p.bookId}"/>
+                                <div class="promotion-card
+                          ${st.index == 2 ? 'new-book-promo' : ''}
+                          ${st.index == 3 ? 'audiobook-promo' : ''}">
+                                    <!-- 아이콘 (기존 SVG 유지) -->
+                                    <div class="promo-icon">
+                                        <c:choose>
+                                            <c:when test="${st.index == 2}">
+                                                <!-- 신간 -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                    <polyline points="14,2 14,8 20,8"></polyline>
+                                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                    <polyline points="10,9 9,9 8,9"></polyline>
+                                                </svg>
+                                                <span>신간</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <!-- 오디오 -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                    <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12
+                                 a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0
+                                 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
+                                                    <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12
+                                 a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0
+                                 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
+                                                </svg>
+                                                <span>오디오</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
 
-                        <!-- 오디오북 프로모션 -->
-        <div class="promotion-card audiobook-promo">
-            <div class="promo-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="2">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
-                    <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
-                </svg>
-                <span>오디오</span>
-            </div>
-            <div class="promo-content">
-                <h3 class="promo-title">오디오북 특가</h3>
-                <h4 class="promo-subtitle">「사피엔스」 오디오북</h4>
-                <p class="promo-description">성우 김영철 낭독! 첫 구매 고객 50% 할인 혜택</p>
-                <button class="promo-button">자세히 보기 ></button>
-            </div>
-            <div class="promo-image">
-                <img src="https://via.placeholder.com/120x160/6366f1/ffffff?text=사피엔스+오디오북"
-                     alt="사피엔스 오디오북">
+                                    <div class="promo-content">
+                                        <h3 class="promo-title"><c:out value="${p.title}"/></h3>
+                                        <h4 class="promo-subtitle">
+                                            <c:out value="${p.authorName}"/> · <c:out value="${p.publisherName}"/>
+                                        </h4>
+                                        <p class="promo-description">
+                                            <c:out value="${fn:length(p.description) > 60
+                                   ? fn:substring(p.description,0,60).concat('...')
+                                   : p.description}"/>
+                                        </p>
+                                        <a class="promo-button" href="${detailUrl}">자세히 보기 ></a>
+                                    </div>
+
+                                    <div class="promo-image">
+                                        <a href="${detailUrl}">
+                                            <img
+                                                    src="${empty p.imgUrl
+                              ? 'https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'
+                              : p.imgUrl}"
+                                                    alt="${fn:escapeXml(p.title)}"
+                                                    onerror="this.src='https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'">
+                                        </a>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </div>
+
             </div>
         </div>
-</div>
-</div>
-</div>
-</div>
 
         <div class="promotion-footer">
             <p class="promotion-notice">
@@ -815,6 +848,7 @@
             </p>
         </div>
     </section>
+
 
     <!-- 이 주의 특가 섹션 -->
     <section class="weekly-special-section">
@@ -1244,7 +1278,7 @@
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
     /*** === 2칸 프로모션 슬라이드 (active 토글 방식) === ***/
-    (function initPromotionSliderByActive(){
+    (function initPromotionSliderByActive() {
         const pages = Array.from(document.querySelectorAll('.promotion-page'));
         const prevBtn = document.getElementById('promoPrevBtn');
         const nextBtn = document.getElementById('promoNextBtn');
@@ -1252,7 +1286,10 @@
 
         // 현재 인덱스 계산 (없으면 0)
         let idx = Math.max(0, pages.findIndex(p => p.classList.contains('active')));
-        if (idx === -1) { idx = 0; pages[0].classList.add('active'); }
+        if (idx === -1) {
+            idx = 0;
+            pages[0].classList.add('active');
+        }
 
         const show = (n) => {
             pages[idx].classList.remove('active');
@@ -1261,14 +1298,22 @@
         };
 
         // 버튼
-        prevBtn.addEventListener('click', () => { show(idx - 1); bounce(); });
-        nextBtn.addEventListener('click', () => { show(idx + 1); bounce(); });
+        prevBtn.addEventListener('click', () => {
+            show(idx - 1);
+            bounce();
+        });
+        nextBtn.addEventListener('click', () => {
+            show(idx + 1);
+            bounce();
+        });
 
         // 마우스 오버 시 일시정지(선택)
         const container = document.querySelector('.promotion-slider');
         if (container) {
             container.addEventListener('mouseenter', stop);
-            container.addEventListener('mouseleave', () => { if (!timer) start(); });
+            container.addEventListener('mouseleave', () => {
+                if (!timer) start();
+            });
         }
 
         start(); // 시작

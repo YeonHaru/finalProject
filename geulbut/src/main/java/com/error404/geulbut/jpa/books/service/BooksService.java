@@ -44,7 +44,6 @@ public class BooksService {
     }
 
     @Transactional(readOnly = true)
-
     public List<BooksDto> findTopDiscount(int limit) {
         int size = Math.max(1, Math.min(limit, 12));
         Pageable page = PageRequest.of(0, size);
@@ -145,4 +144,20 @@ public class BooksService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<BooksDto> findPromoBooks(Long... ids) {
+        List<Long> idList = Arrays.stream(ids)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+        if(idList.isEmpty()) return List.of();
+
+        Map<Long, Integer> order = new HashMap<>();
+        for (int i = 0; i < idList.size(); i++) order.put(idList.get(i), i);
+
+        return booksRepository.findAllById(idList).stream()
+                .map(mapStruct::toDto)
+                .sorted(Comparator.comparingInt(b -> order.getOrDefault(b.getBookId(), Integer.MAX_VALUE)))
+                .toList();
+    }
 }
