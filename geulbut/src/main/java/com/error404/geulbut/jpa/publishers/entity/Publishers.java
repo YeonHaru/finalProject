@@ -26,4 +26,8 @@ public class Publishers extends BaseTimeEntity {
     @Lob
     private String description;
 
+    public Publishers(Long publisherId) {
+        this.publisherId = publisherId;
+    }
+
 }

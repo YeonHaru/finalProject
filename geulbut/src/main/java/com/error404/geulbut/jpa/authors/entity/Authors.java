@@ -28,4 +28,9 @@ public class Authors extends BaseTimeEntity {
     @Lob
     private byte[] authorImg;
     private String imgUrl;
+
+    public Authors(Long authorId) {
+        this.authorId = authorId;
+    }
+
 }
