@@ -19,12 +19,11 @@
 
 
 <div class="container my-5">
-    <h1 class="mb-4 text-accent-dark">마이페이지</h1>
-
     <div class="mypage-wrapper">
         <!-- ✅ 왼쪽 사이드 탭 -->
         <div class="mypage-sidebar nav flex-column nav-pills" id="v-pills-tab" role="tablist"
              aria-orientation="vertical">
+            <h4 class="mb-3 text-accent-dark text-center mt-3">마이페이지</h4>
             <button class="nav-link active" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info"
                     type="button" role="tab">내 정보
             </button>
@@ -236,7 +235,7 @@
                 </c:if>
 
                 <c:if test="${not empty cart}">
-                    <div class="list-group">
+                    <div class="list-group w-100">
                         <c:forEach var="item" items="${cart}">
                             <div class="list-group-item d-flex">
                                 <!-- ✅ 책 이미지 -->
@@ -341,7 +340,7 @@
     window.csrfHeaderName = "${_csrf.headerName}";
     window.csrfToken = "${_csrf.token}";
     window.currentUserId = "${user.userId}";
-    window.forceChangePw = ${forceChangePw};
+    window.forceChangePw = "${forceChangePw}";
 </script>
 
 <!-- 3) PortOne SDK -->
