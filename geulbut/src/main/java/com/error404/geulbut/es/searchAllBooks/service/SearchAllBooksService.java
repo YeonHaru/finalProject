@@ -1,4 +1,3 @@
-// src/main/java/com/error404/geulbut/es/searchAllBooks/service/SearchAllBooksService.java
 package com.error404.geulbut.es.searchAllBooks.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -13,6 +12,7 @@ import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.es.searchAllBooks.dto.SearchAllBooksDto;
 import com.error404.geulbut.es.searchAllBooks.entity.SearchAllBooks;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class SearchAllBooksService {
@@ -27,10 +28,17 @@ public class SearchAllBooksService {
     private static final String INDEX = "search-all-books";
     private static final String TEMPLATE_ID = "book_unified_search";
 
-    private static final Set<String> ALLOWED_SORT_FIELDS =
-            Set.of("popularity_score", "sales_count", "pub_date", "created_at", "price");
-    private static final Set<String> ALLOWED_SORT_ORDERS =
-            Set.of("asc", "desc");
+    /** ✅ JSP/템플릿에서 쓰는 정렬 필드 전체 허용 */
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "popularity_score",
+            "sales_count",
+            "wish_count",     // ← 추가
+            "pub_date",
+            "created_at",
+            "updated_at",     // ← 추가
+            "price"
+    );
+    private static final Set<String> ALLOWED_SORT_ORDERS = Set.of("asc", "desc");
 
     private final ElasticsearchClient client;
     private final MapStruct mapStruct;
@@ -60,19 +68,11 @@ public class SearchAllBooksService {
                 .map(mapStruct::toDto)
                 .filter(Objects::nonNull)
                 .peek(dto -> {
-                    // popularityScore NaN/Infinity/null -> 0.0
                     try {
                         Double ps = dto.getPopularityScore();
-                        if (ps == null || !Double.isFinite(ps)) {
-                            dto.setPopularityScore(0.0);
-                        }
-                    } catch (Exception ignore) {
-                        dto.setPopularityScore(0.0);
-                    }
-                    // hashtags null -> []
-                    if (dto.getHashtags() == null) {
-                        dto.setHashtags(Collections.emptyList());
-                    }
+                        if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
+                    } catch (Exception ignore) { dto.setPopularityScore(0.0); }
+                    if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
                 })
                 .toList();
     }
@@ -86,38 +86,29 @@ public class SearchAllBooksService {
                 .peek(dto -> {
                     try {
                         Double ps = dto.getPopularityScore();
-                        if (ps == null || !Double.isFinite(ps)) {
-                            dto.setPopularityScore(0.0);
-                        }
-                    } catch (Exception ignore) {
-                        dto.setPopularityScore(0.0);
-                    }
-                    if (dto.getHashtags() == null) {
-                        dto.setHashtags(Collections.emptyList());
-                    }
+                        if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
+                    } catch (Exception ignore) { dto.setPopularityScore(0.0); }
+                    if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
                 })
                 .toList();
     }
 
     /* ------------------------------ match_all (키워드 빈 문자열일 때) ------------------------------ */
 
-    /**
-     * 기존 시그니처 유지 (하위 호환) — 기본 정렬: popularity_score desc
-     */
+    /** 기존 시그니처 유지 — 기본 정렬: popularity_score desc */
     public Page<SearchAllBooksDto> listAll(Pageable pageable) throws Exception {
         return listAll(pageable, "popularity_score", "desc");
     }
 
-    /**
-     * 오버로드 — match_all + 동적 정렬(프런트 sortField/sortOrder 반영)
-     * 템플릿이 빈 문자열을 match_all로 처리하지 않으므로, 이 경로는 DSL로 유지.
-     */
+    /** 오버로드 — match_all + 동적 정렬(프런트 sortField/sortOrder 반영) */
     public Page<SearchAllBooksDto> listAll(Pageable pageable, String sortField, String sortOrder) throws Exception {
         final int size = pageable.getPageSize();
         final int from = (int) pageable.getOffset();
 
         final String sf = normSortField(sortField);
         final String so = normSortOrder(sortOrder);
+
+        log.debug("[ES] match_all sort={} order={} from={} size={}", sf, so, from, size);
 
         SearchRequest req = SearchRequest.of(b -> b
                 .index(INDEX)
@@ -138,18 +129,19 @@ public class SearchAllBooksService {
         return new PageImpl<>(content, pageable, total);
     }
 
+    /** 편의 오버로드 — 컨트롤러가 (sf, so, pageable) 순서로 호출해도 수용 */
+    public Page<SearchAllBooksDto> listAll(String sortField, String sortOrder, Pageable pageable) throws Exception {
+        return listAll(pageable, sortField, sortOrder);
+    }
+
     /* ------------------------------ 템플릿 검색 (키워드 있을 때) ------------------------------ */
 
-    /**
-     * 기존 시그니처 유지 (하위 호환) — 기본 정렬: popularity_score desc
-     */
+    /** 기존 시그니처 유지 — 기본 정렬: popularity_score desc */
     public Page<SearchAllBooksDto> searchByTemplate(String keyword, Pageable pageable) throws Exception {
         return searchByTemplate(keyword, pageable, "popularity_score", "desc");
     }
 
-    /**
-     * 템플릿 호출 — q/size/from + sort_field/sort_order 전달
-     */
+    /** 템플릿 호출 — q/size/from + sort_field/sort_order 전달 */
     public Page<SearchAllBooksDto> searchByTemplate(String keyword, Pageable pageable,
                                                     String sortField, String sortOrder) throws Exception {
         final String q = (keyword == null) ? "" : keyword;
@@ -165,6 +157,9 @@ public class SearchAllBooksService {
         params.put("from",        JsonData.of(from));
         params.put("sort_field",  JsonData.of(sf));   // ← 템플릿에서 사용
         params.put("sort_order",  JsonData.of(so));   // ← 템플릿에서 사용
+
+        log.debug("[ES] template={} q='{}' sort={} order={} from={} size={}",
+                TEMPLATE_ID, q, sf, so, from, size);
 
         SearchTemplateRequest req = SearchTemplateRequest.of(b -> b
                 .index(INDEX)
