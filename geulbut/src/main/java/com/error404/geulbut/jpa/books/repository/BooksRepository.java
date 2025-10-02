@@ -47,34 +47,34 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
 
     @EntityGraph(attributePaths = {"author"})
     @Query("""
-  SELECT b FROM Books b
-  WHERE COALESCE(b.orderCount,0) > 0
-  ORDER BY b.orderCount DESC,
-           COALESCE(b.updatedAt, b.createdAt) DESC,
-           b.bookId
-""")
+              SELECT b FROM Books b
+              WHERE COALESCE(b.orderCount,0) > 0
+              ORDER BY b.orderCount DESC,
+                       COALESCE(b.updatedAt, b.createdAt) DESC,
+                       b.bookId
+            """)
     List<Books> findBestSellers(Pageable pageable);
 
 
-//    메인페이지 이주의 특가
+    //    메인페이지 이주의 특가
     @EntityGraph(attributePaths = {"author", "publisher", "category"})
     @Query("""
-        SELECT b FROM Books b
-        WHERE b.price > 0
-          AND b.discountedPrice IS NOT NULL
-          AND b.discountedPrice < b.price
-          AND b.imgUrl IS NOT NULL
-        ORDER BY ((b.price - b.discountedPrice) * 1.0 / b.price) DESC,
-                 b.discountedPrice ASC
-    """)
+                SELECT b FROM Books b
+                WHERE b.price > 0
+                  AND b.discountedPrice IS NOT NULL
+                  AND b.discountedPrice < b.price
+                  AND b.imgUrl IS NOT NULL
+                ORDER BY ((b.price - b.discountedPrice) * 1.0 / b.price) DESC,
+                         b.discountedPrice ASC
+            """)
     List<Books> findTopDiscount(Pageable pageable);
 
     @EntityGraph(attributePaths = {"author"})
     @Query("SELECT b FROM Books b WHERE b.bookId IN :ids")
     List<Books> findByIds(@Param("ids") List<Long> ids);
 
-    
-//  작가 작품보기 버튼 클릭용
+
+    //  작가 작품보기 버튼 클릭용
     @Query("SELECT b FROM Books b WHERE LOWER(b.author.name) LIKE LOWER(CONCAT('%', :authorName, '%'))")
     List<Books> findByAuthorNameContaining(@Param("authorName") String authorName);
 
@@ -84,5 +84,11 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     // 2) Native Query로 랜덤 4권 가져오기 (DB 지원 시)
     @Query(value = "SELECT * FROM BOOKS WHERE ES_DELETE_FLAG = 'N' ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY", nativeQuery = true)
     List<Books> findRandom4Native();
+
+    //   추천 이벤트
+// Oracle: DBMS_RANDOM.VALUE 사용
+    @Query(value = "SELECT * FROM BOOKS ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY",
+            nativeQuery = true)
+    List<Books> findRandomBooks();
 
 }

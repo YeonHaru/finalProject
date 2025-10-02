@@ -35,41 +35,57 @@
 
                 <c:forEach var="data" items="${choice}">
 
-                <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
-                    <!-- 책 카드 1 -->
-                    <div class="book-card">
-                            <%--                    <div class="book-badge recommend">추천</div>--%>
-                        <div class="book-image">
-                            <img src="${data.imgUrl}" alt="${data.title}">
-                            <div class="book-number">1</div>
+                    <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="weekly-info-link">
+                        <!-- 책 카드 -->
+                        <div class="book-card">
+                                <%-- <div class="book-badge recommend">추천</div> --%>
+
+                            <div class="book-image">
+                                <!-- 이미지 없을 때 기본 이미지 -->
+                                <img src="${empty data.imgUrl ? '/images/thumb_ing.gif' : data.imgUrl}"
+                                     alt="${fn:escapeXml(data.title)}">
+                                <div class="book-number">1</div>
+                            </div>
+
+                            <!-- 제목 길이 제한 -->
+                            <h3 class="book-title">
+                                <c:choose>
+                                    <c:when test="${fn:length(data.title) > 25}">
+                                        ${fn:substring(data.title, 0, 25)}...
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${data.title}
+                                    </c:otherwise>
+                                </c:choose>
+                            </h3>
+
+                            <p class="book-author my-3"><c:out value="${data.name}"/></p>
+
+                            <div class="editor-comment">
+                                <!-- 설명 없을 때 '설명 준비중' -->
+                                <h4 class="new-book-description">
+                                        ${empty data.description ? '설명 준비중' : data.description}
+                                </h4>
+                            </div>
+
+                            <div class="book-rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
                         </div>
-                        <h3 class="book-title"><c:out value="${data.title}"/></h3>
-                        <p class="book-author"><c:out value="${data.name}"/></p>
-                        <div class="editor-comment">
+                    </a>
 
-
-                            <h4 class="new-book-description"><c:out value="${data.description}"/></h4>
-
-                        </div>
-
-                        <div class="book-rating">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                    </c:forEach>
-                </a>
+                </c:forEach>
 
             </div>
-
         </div>
+
 
         <!-- 신간 소개 컨텐츠 -->
         <div class="tab-content" id="new-books-content">
-
             <div class="new-books-grid">
                 <c:forEach var="data" items="${introductions}">
                     <div class="new-book-card">
@@ -78,14 +94,42 @@
                         <!-- 책 이미지를 눌렀을 때 bookId 기반 디테일 페이지 -->
                         <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="new-book-link">
                             <div class="new-book-image">
-                                <img src="${data.imgUrl}" alt="${data.title}">
+                                <img
+                                        src="<c:choose>
+                                     <c:when test='${not empty data.imgUrl}'>
+                                         ${data.imgUrl}
+                                     </c:when>
+                                     <c:otherwise>
+                                         /images/thumb_ing.gif
+                                     </c:otherwise>
+                                 </c:choose>"
+                                        alt="${fn:escapeXml(data.title)}">
                             </div>
                         </a>
 
-                        <h3 class="new-book-title"><c:out value="${data.title}"/></h3>
+                        <h3 class="new-book-title">
+                            <c:choose>
+                                <c:when test="${fn:length(data.title) > 15}">
+                                    ${fn:substring(data.title, 0, 15)}...
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${data.title}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </h3>
+
                         <p class="new-book-author"><c:out value="${data.name}"/></p>
                         <div class="new-book-date"><c:out value="${data.publishedDate}"/></div>
-                        <p class="new-book-description"><c:out value="${data.description}"/></p>
+                        <p class="new-book-description">
+                            <c:choose>
+                                <c:when test="${not empty data.description}">
+                                    <c:out value="${data.description}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    설명 준비중
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
 
                         <button class="new-book-button">예약구매</button>
                     </div>
@@ -97,111 +141,43 @@
         <!-- 화제의 책 컨텐츠 -->
         <div class="tab-content" id="trending-content">
             <div class="trending-grid">
-                <!-- 화제의 책 카드 1 -->
-                <div class="trending-card">
-                    <div class="trending-badge hot">HOT</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/ff6b6b/ffffff?text=Trending1" alt="지금 뜨는 소설">
-                        <div class="trending-rank">1</div>
-                    </div>
-                    <h3 class="trending-title">지금 뜨는 소설</h3>
-                    <p class="trending-author">인기작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">🔥 15.2K 언급</div>
-                            <div class="stats-trend">↗ 250%</div>
+                <c:forEach var="data" items="${randomBooks}">
+                    <div class="trending-card">
+                        <div class="trending-badge hot">HOT</div>
+                        <div class="trending-image">
+                            <img src="<c:choose>
+                                 <c:when test='${not empty data.imgUrl}'>
+                                     ${data.imgUrl}
+                                 </c:when>
+                                 <c:otherwise>
+                                     /images/thumb_ing.gif
+                                 </c:otherwise>
+                             </c:choose>"
+                                 alt="${fn:escapeXml(data.title)}">
+                            <div class="trending-rank">-</div> <!-- 순위는 필요시 제거 -->
+                        </div>
+                        <h3 class="trending-title">지금 뜨는 소설</h3>
+                        <p class="trending-author">인기작가</p>
+                        <div class="trending-stats">
+                            <h4 class="stats-title">화제 지수</h4>
+                            <div class="stats-info">
+                                <div class="stats-views">🔥 15.2K 언급</div>
+                                <div class="stats-trend">↗ 250%</div>
+                            </div>
+                        </div>
+                        <div class="trending-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="rating-number">(4.7)</span>
                         </div>
                     </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.7)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 2 -->
-                <div class="trending-card">
-                    <div class="trending-badge viral">VIRAL</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/764ba2/ffffff?text=Trending2" alt="SNS 화제작">
-                        <div class="trending-rank">2</div>
-                    </div>
-                    <h3 class="trending-title">SNS 화제작</h3>
-                    <p class="trending-author">바이럴 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">📱 12.8K 공유</div>
-                            <div class="stats-trend">↗ 320%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.6)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 3 -->
-                <div class="trending-card">
-                    <div class="trending-badge rising">상승</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/f093fb/ffffff?text=Trending3" alt="급상승 에세이">
-                        <div class="trending-rank">3</div>
-                    </div>
-                    <h3 class="trending-title">급상승 에세이</h3>
-                    <p class="trending-author">트렌드 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">💬 9.5K 댓글</div>
-                            <div class="stats-trend">↗ 180%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.8)</span>
-                    </div>
-                </div>
-
-                <!-- 화제의 책 카드 4 -->
-                <div class="trending-card">
-                    <div class="trending-badge hot">인기</div>
-                    <div class="trending-image">
-                        <img src="https://via.placeholder.com/130x170/4facfe/ffffff?text=Trending4" alt="논란의 작품">
-                        <div class="trending-rank">4</div>
-                    </div>
-                    <h3 class="trending-title">논란의 작품</h3>
-                    <p class="trending-author">논쟁 작가</p>
-                    <div class="trending-stats">
-                        <h4 class="stats-title">화제 지수</h4>
-                        <div class="stats-info">
-                            <div class="stats-views">⚡ 18.7K 토론</div>
-                            <div class="stats-trend">↗ 400%</div>
-                        </div>
-                    </div>
-                    <div class="trending-rating">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="rating-number">(4.5)</span>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
+
 
         <!-- 지금 핫딜중 컨텐츠 -->
         <div class="tab-content" id="hotdeal-content">
@@ -290,7 +266,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 이벤트 굿즈 컨텐츠 -->
         <div class="tab-content" id="goods-content">
             <div class="goods-grid">
@@ -379,7 +354,9 @@
                         <!-- 이미지 영역 클릭 시 책 디테일 페이지로 이동 -->
                         <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="weekly-image-link">
                             <div class="weekly-image">
-                                <img src="${book.imgUrl}" alt="${book.title}"/>
+                                <img src="${empty book.imgUrl ? '/images/thumb_ing.gif' : book.imgUrl}"
+                                     alt="${fn:escapeXml(book.title)}" class="book-thumb"/>
+
                             </div>
                         </a>
 
@@ -403,7 +380,9 @@
                                     <span class="rating-text">평점</span>
                                 </div>
                                 <div class="weekly-comment">
-                                    <p class="comment-text"><c:out value="${book.description}"/></p>
+                                    <p class="comment-text">
+                                            ${empty book.description ? '설명 준비중' : book.description}
+                                    </p>
                                 </div>
 
                             </div>
@@ -681,6 +660,7 @@
                                             <p class="book-author"><c:out value="${b.authorName}"/></p>
 
                                             <p class="book-description"><c:out value="${b.description}"/></p>
+
                                         </div>
                                     </div>
                                 </c:forEach>
@@ -692,7 +672,6 @@
         </c:choose>
     </section>
 
-
     <!-- 프로모션 세션 2칸씩 있는 도서 광고창 -->
     <section class="promotion-section">
         <div class="promotion-slider">
@@ -701,107 +680,142 @@
             <button class="promo-slider-btn next" id="promoNextBtn">></button>
 
             <div class="promotion-container">
-                <!-- 첫 번째 페이지 -->
+
+                <!-- 첫 번째 페이지: index 0~1 -->
                 <div class="promotion-page active">
                     <div class="promotion-grid">
-                        <!-- 베스트셀러 프로모션 -->
-                        <div class="promotion-card bestseller-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                                </svg>
-                                <span>선간</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">베스트셀러 1위</h3>
-                                <h4 class="promo-subtitle">「달러구트 꿈의 서점」, 신작 출간</h4>
-                                <p class="promo-description">전국 서점가 화제! 특별 예약판매 30% 할인</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/667eea/ffffff?text=달러구트+꿈의+서점"
-                                     alt="달러구트 꿈의 서점">
-                            </div>
-                        </div>
+                        <c:forEach var="p" items="${promoBooks}" varStatus="st">
+                            <c:if test="${st.index lt 2}">
+                                <c:url var="detailUrl" value="/book/${p.bookId}"/>
+                                <div class="promotion-card
+                          ${st.index == 0 ? 'bestseller-promo' : ''}
+                          ${st.index == 1 ? 'md-promo' : ''}">
+                                    <!-- 아이콘 (기존 SVG 유지) -->
+                                    <div class="promo-icon">
+                                        <c:choose>
+                                            <c:when test="${st.index == 0}">
+                                                <!-- bestseller star -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87
+                                 1.18 6.88L12 17.77l-6.18 3.25L7 14.14
+                                 2 9.27l6.91-1.01L12 2z"></path>
+                                                </svg>
+                                                <span>선간</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <!-- MD 추천 -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
+                                                </svg>
+                                                <span>MD추천</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
 
-                        <!-- MD 추천 프로모션 -->
-                        <div class="promotion-card md-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
-                                </svg>
-                                <span>MD추천</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">자기계발 MD 추천</h3>
-                                <h4 class="promo-subtitle">「아주 작은 습관의 힘」</h4>
-                                <p class="promo-description">올해 가장 많이 읽힌 자기계발서, 리뷰 이벤트 진행 중</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/f97316/ffffff?text=아주+작은+습관의+힘"
-                                     alt="아주 작은 습관의 힘">
-                            </div>
-                        </div>
+                                    <div class="promo-content">
+                                        <h3 class="promo-title"><c:out value="${p.title}"/></h3>
+                                        <h4 class="promo-subtitle">
+                                            <c:out value="${p.authorName}"/> · <c:out value="${p.publisherName}"/>
+                                        </h4>
+                                        <p class="promo-description">
+                                            <c:out value="${fn:length(p.description) > 60
+                                   ? fn:substring(p.description,0,60).concat('...')
+                                   : p.description}"/>
+                                        </p>
+                                        <a class="promo-button" href="${detailUrl}">자세히 보기 ></a>
+                                    </div>
+
+                                    <div class="promo-image">
+                                        <a href="${detailUrl}">
+                                            <img
+                                                    src="${empty p.imgUrl
+                              ? 'https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'
+                              : p.imgUrl}"
+                                                    alt="${fn:escapeXml(p.title)}"
+                                                    onerror="this.src='https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'">
+                                        </a>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:forEach>
                     </div>
                 </div>
 
-                <!-- 두 번째 페이지 -->
+                <!-- 두 번째 페이지: index 2~3 -->
                 <div class="promotion-page">
                     <div class="promotion-grid">
-                        <!-- 신간 프로모션 -->
-                        <div class="promotion-card new-book-promo">
-                            <div class="promo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14,2 14,8 20,8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10,9 9,9 8,9"></polyline>
-                                </svg>
-                                <span>신간</span>
-                            </div>
-                            <div class="promo-content">
-                                <h3 class="promo-title">9월 화제의 신간</h3>
-                                <h4 class="promo-subtitle">「미드나잇 라이브러리」</h4>
-                                <p class="promo-description">전 세계 독자들의 찬사! 선주문 시 한정 굿즈 증정</p>
-                                <button class="promo-button">자세히 보기 ></button>
-                            </div>
-                            <div class="promo-image">
-                                <img src="https://via.placeholder.com/120x160/10b981/ffffff?text=미드나잇+라이브러리"
-                                     alt="미드나잇 라이브러리">
-                            </div>
-                        </div>
+                        <c:forEach var="p" items="${promoBooks}" varStatus="st">
+                            <c:if test="${st.index ge 2}">
+                                <c:url var="detailUrl" value="/book/${p.bookId}"/>
+                                <div class="promotion-card
+                          ${st.index == 2 ? 'new-book-promo' : ''}
+                          ${st.index == 3 ? 'audiobook-promo' : ''}">
+                                    <!-- 아이콘 (기존 SVG 유지) -->
+                                    <div class="promo-icon">
+                                        <c:choose>
+                                            <c:when test="${st.index == 2}">
+                                                <!-- 신간 -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                    <polyline points="14,2 14,8 20,8"></polyline>
+                                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                    <polyline points="10,9 9,9 8,9"></polyline>
+                                                </svg>
+                                                <span>신간</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <!-- 오디오 -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                    <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12
+                                 a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0
+                                 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
+                                                    <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12
+                                 a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0
+                                 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
+                                                </svg>
+                                                <span>오디오</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
 
-                        <!-- 오디오북 프로모션 -->
-        <div class="promotion-card audiobook-promo">
-            <div class="promo-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="2">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <path d="m19.07 4.93-1.4 1.4A6.5 6.5 0 0 1 19.5 12a6.5 6.5 0 0 1-1.83 5.67l1.4 1.4A8.5 8.5 0 0 0 21.5 12a8.5 8.5 0 0 0-2.43-7.07z"></path>
-                    <path d="m15.54 8.46-1.4 1.4A2.5 2.5 0 0 1 15.5 12a2.5 2.5 0 0 1-1.36 2.14l1.4 1.4A4.5 4.5 0 0 0 17.5 12a4.5 4.5 0 0 0-1.96-4.54z"></path>
-                </svg>
-                <span>오디오</span>
-            </div>
-            <div class="promo-content">
-                <h3 class="promo-title">오디오북 특가</h3>
-                <h4 class="promo-subtitle">「사피엔스」 오디오북</h4>
-                <p class="promo-description">성우 김영철 낭독! 첫 구매 고객 50% 할인 혜택</p>
-                <button class="promo-button">자세히 보기 ></button>
-            </div>
-            <div class="promo-image">
-                <img src="https://via.placeholder.com/120x160/6366f1/ffffff?text=사피엔스+오디오북"
-                     alt="사피엔스 오디오북">
+                                    <div class="promo-content">
+                                        <h3 class="promo-title"><c:out value="${p.title}"/></h3>
+                                        <h4 class="promo-subtitle">
+                                            <c:out value="${p.authorName}"/> · <c:out value="${p.publisherName}"/>
+                                        </h4>
+                                        <p class="promo-description">
+                                            <c:out value="${fn:length(p.description) > 60
+                                   ? fn:substring(p.description,0,60).concat('...')
+                                   : p.description}"/>
+                                        </p>
+                                        <a class="promo-button" href="${detailUrl}">자세히 보기 ></a>
+                                    </div>
+
+                                    <div class="promo-image">
+                                        <a href="${detailUrl}">
+                                            <img
+                                                    src="${empty p.imgUrl
+                              ? 'https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'
+                              : p.imgUrl}"
+                                                    alt="${fn:escapeXml(p.title)}"
+                                                    onerror="this.src='https://via.placeholder.com/120x160/cccccc/000000?text=No+Image'">
+                                        </a>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </div>
+
+
             </div>
         </div>
-</div>
-</div>
-</div>
-</div>
 
         <div class="promotion-footer">
             <p class="promotion-notice">
@@ -810,6 +824,7 @@
             </p>
         </div>
     </section>
+
 
     <!-- 이 주의 특가 섹션 -->
     <section class="weekly-special-section">
@@ -883,100 +898,59 @@
         </div>
 
         <div class="audiobook-grid">
-            <!-- 오디오북 카드 1 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge new">NEW</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/667eea/ffffff?text=미스터리+카페의+비밀" alt="미스터리 카페의 비밀">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">7시간 32분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.8</span>
-                        <span class="audiobook-category">스릴러</span>
-                    </div>
-                    <h3 class="audiobook-title">미스터리 카페의 비밀</h3>
-                    <p class="audiobook-author">저자: 김수진</p>
-                    <p class="audiobook-narrator">낭독: 박지혜</p>
-                </div>
-            </div>
+            <c:forEach var="book" items="${audiobooks}" varStatus="status">
+                <a href="/book/${book.bookId}" class="audiobook-card-link">
+                    <div class="audiobook-card">
+                        <!-- 배지 하드코딩 -->
+                        <div class="audiobook-badge">
+                            <c:choose>
+                                <c:when test="${status.index == 0}">NEW</c:when>
+                                <c:when test="${status.index == 1}">인기</c:when>
+                                <c:otherwise>BEST</c:otherwise>
+                            </c:choose>
+                        </div>
 
-            <!-- 오디오북 카드 2 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/2d3748/ffffff?text=심야+추리소설" alt="심야 추리소설">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">9시간 15분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.6</span>
-                        <span class="audiobook-category">미스터리</span>
-                    </div>
-                    <h3 class="audiobook-title">심야 추리소설</h3>
-                    <p class="audiobook-author">저자: 이정민</p>
-                    <p class="audiobook-narrator">낭독: 김동원</p>
-                </div>
-            </div>
+                        <div class="audiobook-cover">
+                            <!-- 디폴트 이미지 추가 -->
+                            <img src="${book.imgUrl != null && !book.imgUrl.isEmpty() ? book.imgUrl : '/images/thumb_ing.gif'}"
+                                 alt="${book.title}">
+                            <div class="audio-icon">🎧</div>
+                            <div class="play-time">
+                                <c:choose>
+                                    <c:when test="${status.index == 0}">7시간 32분</c:when>
+                                    <c:when test="${status.index == 1}">5시간 15분</c:when>
+                                    <c:when test="${status.index == 2}">6시간</c:when>
+                                    <c:otherwise>6시간 40분</c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
 
-            <!-- 오디오북 카드 3 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge new">NEW</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/4ecdc4/ffffff?text=라자+센빌리티" alt="라자 센빌리티">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">6시간 48분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.9</span>
-                        <span class="audiobook-category">로맨스</span>
+                        <div class="audiobook-info">
+                            <div class="audiobook-rating">
+                        <span class="rating-stars">
+                            <c:choose>
+                                <c:when test="${status.index == 0}">⭐ 4.8</c:when>
+                                <c:when test="${status.index == 1}">⭐ 4.5</c:when>
+                                <c:when test="${status.index == 2}">⭐ 4.9</c:when>
+                                <c:otherwise>⭐ 4.7</c:otherwise>
+                            </c:choose>
+                        </span>
+                                <span class="audiobook-category">${book.categoryName}</span>
+                            </div>
+                            <h3 class="audiobook-title">${book.title}</h3>
+                            <p class="audiobook-author">저자: ${book.authorName}</p>
+                            <p class="audiobook-narrator">
+                                <c:choose>
+                                    <c:when test="${status.index == 0}">낭독: 최종일</c:when>
+                                    <c:when test="${status.index == 1}">낭독: 서덕규</c:when>
+                                    <c:when test="${status.index == 2}">낭독: 신승화</c:when>
+                                    <c:otherwise>낭독: 문려경</c:otherwise>
+                                </c:choose>
+                            </p>
+                        </div>
                     </div>
-                    <h3 class="audiobook-title">라자 센빌리티</h3>
-                    <p class="audiobook-author">저자: 박소영</p>
-                    <p class="audiobook-narrator">낭독: 최향울</p>
-                </div>
-            </div>
-
-            <!-- 오디오북 카드 4 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/f9ca24/ffffff?text=창업가의+회고록" alt="창업가의 회고록">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">8시간 22분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.7</span>
-                        <span class="audiobook-category">자서전</span>
-                    </div>
-                    <h3 class="audiobook-title">창업가의 회고록</h3>
-                    <p class="audiobook-author">저자: 정태호</p>
-                    <p class="audiobook-narrator">낭독: 김영우</p>
-                </div>
-            </div>
-
-            <!-- 오디오북 카드 5 -->
-            <div class="audiobook-card">
-                <div class="audiobook-badge popular">인기</div>
-                <div class="audiobook-cover">
-                    <img src="https://via.placeholder.com/160x220/805ad5/ffffff?text=우주+탐험기" alt="우주 탐험기">
-                    <div class="audio-icon">🎧</div>
-                    <div class="play-time">10시간 5분</div>
-                </div>
-                <div class="audiobook-info">
-                    <div class="audiobook-rating">
-                        <span class="rating-stars">⭐ 4.5</span>
-                        <span class="audiobook-category">SF</span>
-                    </div>
-                    <h3 class="audiobook-title">우주 탐험기</h3>
-                    <p class="audiobook-author">저자: 김과학</p>
-                    <p class="audiobook-narrator">낭독: 이우주</p>
-                </div>
-            </div>
+                </a>
+            </c:forEach>
         </div>
 
         <!-- 오디오북 프로모션 -->
@@ -992,6 +966,9 @@
             <a href="/audiobooks-all" class="more-audiobooks-link">더 많은 오디오북 보기</a>
         </div>
     </section>
+
+
+
 
     <!-- 수상 섹션 -->
     <section class="awards-section">
@@ -1239,7 +1216,7 @@
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
     /*** === 2칸 프로모션 슬라이드 (active 토글 방식) === ***/
-    (function initPromotionSliderByActive(){
+    (function initPromotionSliderByActive() {
         const pages = Array.from(document.querySelectorAll('.promotion-page'));
         const prevBtn = document.getElementById('promoPrevBtn');
         const nextBtn = document.getElementById('promoNextBtn');
@@ -1247,7 +1224,10 @@
 
         // 현재 인덱스 계산 (없으면 0)
         let idx = Math.max(0, pages.findIndex(p => p.classList.contains('active')));
-        if (idx === -1) { idx = 0; pages[0].classList.add('active'); }
+        if (idx === -1) {
+            idx = 0;
+            pages[0].classList.add('active');
+        }
 
         const show = (n) => {
             pages[idx].classList.remove('active');
@@ -1256,14 +1236,22 @@
         };
 
         // 버튼
-        prevBtn.addEventListener('click', () => { show(idx - 1); bounce(); });
-        nextBtn.addEventListener('click', () => { show(idx + 1); bounce(); });
+        prevBtn.addEventListener('click', () => {
+            show(idx - 1);
+            bounce();
+        });
+        nextBtn.addEventListener('click', () => {
+            show(idx + 1);
+            bounce();
+        });
 
         // 마우스 오버 시 일시정지(선택)
         const container = document.querySelector('.promotion-slider');
         if (container) {
             container.addEventListener('mouseenter', stop);
-            container.addEventListener('mouseleave', () => { if (!timer) start(); });
+            container.addEventListener('mouseleave', () => {
+                if (!timer) start();
+            });
         }
 
         start(); // 시작
