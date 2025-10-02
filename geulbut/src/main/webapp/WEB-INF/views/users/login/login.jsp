@@ -23,14 +23,13 @@
         <span class="logo-sub">Geulbut</span>
     </a>
 
-    <!-- 오류 메시지 (컨트롤러에서 model.addAttribute('loginError', ...) 또는 쿼리파라미터로 제어) -->
+    <!-- 오류/알림 -->
     <c:if test="${not empty loginError}">
         <div class="alert error">${loginError}</div>
     </c:if>
     <c:if test="${empty loginError and param.error ne null}">
         <div class="alert error">로그인에 실패했습니다. 아이디/비밀번호를 확인해주세요.</div>
     </c:if>
-    <%--  탈퇴 완료 안내 문구   --%>
     <c:if test="${param.withdrawn ne null}">
         <p class="notice" style="color: green; font-weight: bold;">
             탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.
@@ -38,21 +37,14 @@
     </c:if>
 
     <section class="grid-2">
+        <!-- 좌측: 회원 로그인 카드 -->
         <article class="card" aria-labelledby="loginTitle">
-            <div class="tabbar" role="tablist">
-                <button id="tab-member" class="tab active" role="tab" aria-selected="true"
-                        aria-controls="panel-member">회원 로그인</button>
-                <button id="tab-guest" class="tab" role="tab" aria-selected="false"
-                        aria-controls="panel-guest">비회원 주문조회</button>
-            </div>
-
-            <!-- 회원 로그인 탭 -->
-            <div id="panel-member" class="card-body" role="tabpanel" aria-labelledby="tab-member">
+            <div class="card-body" role="tabpanel" aria-labelledby="loginTitle">
                 <h1 id="loginTitle" class="sr-only">글벗 회원 로그인</h1>
 
-                <!-- ★ 폼 로그인: /loginProc 로 전송 (SecurityConfig와 일치) -->
+                <!-- ★ 폼 로그인: /loginProc -->
                 <form class="form" method="post" action="<c:url value='/loginProc'/>">
-                    <!-- CSRF 사용 시(운영 권장) 아래 hidden 추가
+                    <!-- CSRF 사용 시 운영에서 활성화
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     -->
 
@@ -72,7 +64,6 @@
                     </div>
 
                     <div class="options">
-                        <!-- remember-me 기능 사용 시 SecurityConfig에 .rememberMe() 추가 필요 -->
                         <label class="opt"><input type="checkbox" name="remember-me"> 로그인 상태 유지</label>
                         <label class="opt"><input type="checkbox" name="save-id"> 아이디 저장</label>
                     </div>
@@ -89,7 +80,6 @@
 
                     <div class="divider">또는 간편 로그인</div>
                     <div class="sns-list" role="group" aria-label="간편 로그인">
-                        <!-- 실제 OAuth2 엔드포인트로 연결 -->
                         <a class="sns-btn" href="<c:url value='/oauth2/authorization/naver'/>" aria-label="네이버로 로그인">
                             <img src="<c:url value='/v/users/login/img/naver-icon.png'/>" alt="네이버 로그인" class="sns-img"/>
                         </a>
@@ -102,59 +92,28 @@
                     </div>
                 </form>
             </div>
-
-            <!-- 비회원 주문조회 탭 -->
-            <div id="panel-guest" class="card-body" role="tabpanel" aria-labelledby="tab-guest" hidden>
-                <form class="form" method="get" action="<c:url value='/guest/order'/>">
-                    <div class="field">
-                        <label for="ordNo">주문번호</label>
-                        <div class="input"><input id="ordNo" name="orderNo" type="text"
-                                                  placeholder="예) GB2025-000001" required></div>
-                    </div>
-                    <div class="field">
-                        <label for="ordPw">비회원 주문 비밀번호</label>
-                        <div class="input"><input id="ordPw" name="orderPw" type="password"
-                                                  placeholder="주문 시 설정한 비밀번호" required></div>
-                    </div>
-                    <button type="submit" class="btn-primary">주문조회</button>
-                    <div class="links mt-1">
-                        <a href="<c:url value='/users/join'/>">회원가입 후 더 많은 혜택 받기</a>
-                    </div>
-                </form>
-            </div>
         </article>
 
-        <!-- 우측 배너 -->
-        <aside class="banner" aria-label="배경">
-            <div>
-                <img src="<c:url value='/v/users/login/img/login.png'/>" alt="로그인 이미지">
+        <!-- 우측 배너 (디자인 개선) -->
+        <aside class="banner" aria-label="로그인 안내 배너">
+            <figure class="banner__media">
+                <img src="<c:url value='/v/users/login/img/login2.jpg'/>" alt="" aria-hidden="true">
+            </figure>
+            <div class="banner__overlay" aria-hidden="true"></div>
+            <div class="banner__inner">
+                <p class="banner__badge">Welcome Back</p>
+                <h2 class="banner__title">다시 만나는<br>당신의 서재</h2>
+                <ul class="banner__bullets" aria-label="로그인 혜택">
+                    <li>구매 이력/배송 상태 한눈에</li>
+                    <li>등급별 혜택과 포인트 적립</li>
+                    <li>관심 도서 맞춤 추천</li>
+                </ul>
             </div>
         </aside>
     </section>
 
 </main>
 
-<!-- 간단 스크립트는 인라인(원칙 준수) -->
-<script>
-    // 탭/패널 매핑: 키값만 바꿔 부르면 되도록 단순화
-    const tabs = {
-        member: { btn: document.getElementById('tab-member'), panel: document.getElementById('panel-member') },
-        guest:  { btn: document.getElementById('tab-guest'),  panel: document.getElementById('panel-guest')  }
-    };
-
-    function show(which) {
-        const other = (which === 'member') ? 'guest' : 'member';
-        tabs[which].btn.classList.add('active');
-        tabs[other].btn.classList.remove('active');
-        tabs[which].btn.setAttribute('aria-selected', 'true');
-        tabs[other].btn.setAttribute('aria-selected', 'false');
-        tabs[which].panel.hidden = false;
-        tabs[other].panel.hidden = true;
-    }
-
-    tabs.member.btn.onclick = () => show('member');
-    tabs.guest.btn.onclick = () => show('guest');
-</script>
 <c:if test="${signupDone}">
     <script>
         alert("회원가입이 완료되었습니다. 로그인 해주세요.");
