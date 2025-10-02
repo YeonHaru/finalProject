@@ -470,13 +470,12 @@ body {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .book-author {
     font-size: 10px;
     color: rgba(181, 181, 181, 0.48);
-    margin-bottom: 6px;
 }
 
 .editor-comment {
@@ -1277,6 +1276,8 @@ body {
     font-weight: 600;
     color: #5A7A4A;
     margin-bottom: 6px;
+    height: 42px;   /* 2줄 기준 높이 (16px * 1.4 * 2 ≈ 44px) */
+    overflow: hidden;
 }
 
 .weekly-author {
@@ -1290,7 +1291,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 4px;
-    margin-bottom: 12px;
+    /*margin-bottom: 12px;*/
 }
 
 .rating-score {
@@ -1308,7 +1309,7 @@ body {
     background: #ffffff;
     border-radius: 8px;
     padding: 12px;
-    text-align: left;
+    text-align: center;
     margin-top: auto; /* 코멘트를 하단에 고정 */
 }
 
@@ -2471,7 +2472,7 @@ body {
 }
 
 .book-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.61);
     margin-bottom: 8px;

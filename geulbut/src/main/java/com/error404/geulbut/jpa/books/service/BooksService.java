@@ -144,5 +144,12 @@ public class BooksService {
                 })
                 .toList();
     }
+    // 랜덤 4권 가져오기
+    public List<BooksDto> getRandomBooks() {
+        return booksRepository.findRandomBooks()
+                .stream()
+                .map(mapStruct::toDto)  // ✅ MapStruct 매핑 사용
+                .toList();
+    }
 
 }
