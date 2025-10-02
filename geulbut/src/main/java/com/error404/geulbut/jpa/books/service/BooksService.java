@@ -6,6 +6,7 @@ import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class BooksService {
                 .map(mapStruct::toDto)
                 .toList();
     }
+
 
     public List<BooksDto> getHotNewsBooks(List<Long> ids) {
         List<Books> found = booksRepository.findByIds(ids);

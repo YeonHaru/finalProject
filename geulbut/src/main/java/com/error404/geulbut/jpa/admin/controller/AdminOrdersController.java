@@ -60,11 +60,19 @@ public class AdminOrdersController {
     }
 
     // 주문 상태 변경
-    @PostMapping("/{orderId}/status")
+    @PutMapping("/{orderId}/status")
     @ResponseBody
-    public OrdersDto changeStatus(@PathVariable Long orderId, @RequestParam String status) {
-        return adminOrdersService.updateOrderStatus(orderId, status);
+    public OrdersDto changeStatus(@PathVariable Long orderId, @RequestBody StatusDto dto) {
+        return adminOrdersService.updateOrderStatus(orderId, dto.getStatus());
     }
+
+    // DTO 클래스
+    public static class StatusDto {
+        private String status;
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+    }
+
 
     // 신규 주문 생성
     @PostMapping("/create")
