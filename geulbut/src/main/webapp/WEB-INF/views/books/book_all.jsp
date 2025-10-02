@@ -25,29 +25,31 @@
     <div class="bestseller-container">
         <!-- 탭 버튼 -->
         <div class="tab-buttons">
+
+
             <button class="tab-btn active" onclick="switchTab(this, 'weekly')">주간 베스트셀러</button>
             <button class="tab-btn" onclick="switchTab(this, 'monthly')">월간 베스트셀러</button>
         </div>
 
-        <!-- ✅ 주간 카테고리 -->
-        <div class="category-grid-weekly">
-            <div class="category-item featured">종합</div>
-            <div class="category-item">국내소설</div>
-            <div class="category-item">외국소설</div>
-            <div class="category-item">에세이</div>
-            <div class="category-item">시</div>
-            <div class="category-item">경제경영</div>
-        </div>
+      <!-- ✅ 주간 카테고리 -->
+<div class="category-grid-weekly">
+    <div class="category-item featured">종합</div>
+    <div class="category-item">국내소설</div>
+    <div class="category-item">외국소설</div>
+    <div class="category-item">에세이</div>
+    <div class="category-item">시</div>
+    <div class="category-item">경제경영</div>
+</div>
 
-        <!-- ✅ 월간 카테고리 -->
-        <div class="category-grid-monthly">
-            <div class="category-item">자기계발</div>
-            <div class="category-item">인문과학</div>
-            <div class="category-item">역사/문화</div>
-            <div class="category-item">정치/법률</div>
-            <div class="category-item">종교</div>
-            <div class="category-item">예술</div>
-        </div>
+<!-- ✅ 월간 카테고리 -->
+<div class="category-grid-monthly">
+    <div class="category-item">자기계발</div>
+    <div class="category-item">인문과학</div>
+    <div class="category-item">역사/문화</div>
+    <div class="category-item">정치/법률</div>
+    <div class="category-item">종교</div>
+    <div class="category-item">예술</div>
+</div>
     </div>
 
             <!-- 상단 툴바(체크/일괄 버튼만 유지, 페이징 링크는 하단으로 이동) -->

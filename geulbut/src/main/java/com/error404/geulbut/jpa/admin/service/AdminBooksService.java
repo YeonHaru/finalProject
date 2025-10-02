@@ -87,6 +87,7 @@ public class AdminBooksService {
 
     // 도서 수정
     public BooksDto updateBook(BooksDto dto) {
+        // null 체크 및 기본값 적용
         if (dto.getDiscountedPrice() == null) {
             dto.setDiscountedPrice(0L);
         }
@@ -97,17 +98,37 @@ public class AdminBooksService {
             dto.setWishCount(0L);
         }
 
+        // 기존 도서 조회
         Books existingBook = booksRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
 
+        // DTO에서 넘어온 ID로 임시 엔티티 세팅
+        if (dto.getAuthorId() != null) {
+            existingBook.setAuthor(new Authors(dto.getAuthorId()));
+        }
+        if (dto.getPublisherId() != null) {
+            existingBook.setPublisher(new Publishers(dto.getPublisherId()));
+        }
+        if (dto.getCategoryId() != null) {
+            existingBook.setCategory(new Categories(dto.getCategoryId()));
+        }
+
+        // 나머지 필드 MapStruct로 업데이트
         mapStruct.updateFromDto(dto, existingBook);
+
+        // 실제 DB 엔티티로 관계 세팅 (저장 전)
         setRelations(existingBook);
+
+        // 저장
         Books saved = booksRepository.save(existingBook);
 
+        // DTO로 변환 후 이름 세팅
         BooksDto updatedDto = mapStruct.toDto(saved);
         setNames(updatedDto, saved);
+
         return updatedDto;
     }
+
 
     // 도서 삭제
     @Transactional

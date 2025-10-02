@@ -23,4 +23,8 @@ public class Categories extends BaseTimeEntity {
     generator = "SEQ_CATEGORIES_JPA")
     private Long categoryId;
     private String name;
+    public Categories(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
 }

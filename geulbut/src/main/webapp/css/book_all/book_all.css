@@ -503,6 +503,78 @@ nav[aria-label="페이지 네비게이션"] .is-active {
     font-weight: 700;
 }
 
+/* 전체선택 체크박스 */
+#checkAll {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #8B9DC3;
+}
+
+/* 페이지네이션 */
+nav[aria-label="페이지 네비게이션"] ul {
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+nav[aria-label="페이지 네비게이션"] a,
+nav[aria-label="페이지 네비게이션"] span {
+    min-width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: #495057;
+    border: 1.5px solid #DEE2E6;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+nav[aria-label="페이지 네비게이션"] a:hover {
+    background: #F8F9FA;
+    border-color: #8B9DC3;
+    color: #2C3E50;
+}
+
+nav[aria-label="페이지 네비게이션"] .is-active {
+    background: #8B9DC3;
+    color: white;
+    border-color: #8B9DC3;
+    font-weight: 700;
+}
+
+/* 검색 결과 없음 카드 */
+.card {
+    background: white;
+    padding: 48px 24px;
+    text-align: center;
+    color: #6C757D;
+    font-size: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* 총 건수 안내 */
+.container > p.text-light {
+    background: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14.5px;
+    color: #495057;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid #F1F3F5;
+}
+
+.container > p.text-light strong {
+    color: #2C3E50;
+    font-weight: 700;
+}
+
 /* 반응형 - 태블릿 */
 @media (max-width: 1024px) {
     .category-grid-weekly,
