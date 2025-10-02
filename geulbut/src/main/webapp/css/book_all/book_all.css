@@ -66,6 +66,267 @@
     .srch-thumb { width: 96px; height: 140px; }
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #F5F6F4;
+    padding: 40px 20px;
+}
 
+/* 베스트셀러 컨테이너 - 작고 깔끔하게 */
+.bestseller-container {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
 
+/* 탭 버튼 - 컴팩트하게 */
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: #f9fafb;
+    color: #9ca3af;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #8B9DC3;
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.tab-btn.active {
+    color: #4B5563;
+    background: #ffffff;
+    font-weight: 700;
+}
+
+.tab-btn.active::after {
+    transform: scaleX(1);
+}
+
+.tab-btn:hover:not(.active) {
+    color: #6b7280;
+    background: #f3f4f6;
+}
+
+/* 카테고리 그리드 - 작게 압축 */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    background: #f9fafb;
+    padding: 0;
+}
+
+.category-item {
+    background: #ffffff;
+    padding: 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    color: #4b5563;
+    font-weight: 500;
+    border-right: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.category-item:nth-child(6n) {
+    border-right: none;
+}
+
+.category-item:hover {
+    background: #E8EBE5;
+    color: #4B5563;
+}
+
+.category-item.featured {
+    color: #ffffff;
+    font-weight: 600;
+    background: #8B9DC3;
+}
+
+.category-item.featured:hover {
+    background: #7A8DB3;
+    color: #ffffff;
+}
+
+/* 반응형 - 모바일 */
+@media (max-width: 1024px) {
+    .category-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .category-item:nth-child(4n) {
+        border-right: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .tab-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .category-item {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .category-item:nth-child(3n) {
+        border-right: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .bestseller-container {
+        border-radius: 4px;
+        margin-bottom: 16px;
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .category-item {
+        padding: 8px 8px;
+        font-size: 0.75rem;
+    }
+
+    .category-item:nth-child(2n) {
+        border-right: none;
+    }
+}
+
+/* 검색 결과 아이템 스타일 */
+.srch-item {
+    display: grid;
+    grid-template-columns: 32px 200px 1fr;
+    gap: var(--gap-3, 16px);
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .srch-item {
+        grid-template-columns: 24px 120px 1fr;
+    }
+}
+
+.srch-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.srch-col-check {
+    align-items: center;
+    justify-content: center;
+}
+
+.srch-thumb {
+    width: 200px;
+    height: 266px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f6f7f9;
+    display: block;
+}
+
+.srch-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .srch-thumb {
+        width: 120px;
+        height: 160px;
+    }
+}
+
+.srch-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.srch-title a {
+    color: #111827;
+    text-decoration: none;
+}
+
+.srch-title a:hover {
+    text-decoration: underline;
+}
+
+/* 칩 스타일 */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+}
+
+.chip--soft {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #ffedd5;
+}
+
+.chip--tag {
+    background: #f1f5f9;
+    color: #334155;
+    text-decoration: none;
+}
+
+.chip--tag:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.strike {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+.accent-strong {
+    color: #dc2626;
+    font-weight: 700;
+}
