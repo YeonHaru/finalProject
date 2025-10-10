@@ -77,7 +77,7 @@ public class LoginController {
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String error, Model model) {
         if (error != null) {
-            model.addAttribute("loginError", "로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
+            model.addAttribute("loginError", "아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
         return "users/login/login";
     }
