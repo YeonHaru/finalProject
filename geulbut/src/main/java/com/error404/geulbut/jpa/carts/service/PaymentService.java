@@ -12,11 +12,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.client.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
-import java.util.Objects;
 
 @Log4j2
 @Service

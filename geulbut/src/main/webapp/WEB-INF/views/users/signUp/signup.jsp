@@ -158,7 +158,7 @@
             refreshSubmit(); return;
         }
         // 간단 패턴
-        const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRe.test(v)) {
             emailOK = false;
             $emailMsg.textContent = '이메일 형식을 확인해주세요.';
