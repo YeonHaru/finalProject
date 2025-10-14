@@ -72,4 +72,5 @@ Geulbut은 Spring Boot 기반의 온라인 서점 웹 애플리케이션으로,
 
 총 7명으로 구성된 팀 프로젝트로, GitHub를 통한 브랜치별 협업 및 버전 관리를 수행하였습니다.
 
-https://github.com/YeonHaru/finalProject/releases/download/v1.0/demo.mp4
+🎬 시연 영상
+[Geulbut Demo Video](https://github.com/YeonHaru/finalProject/releases/download/v1.0/default.mp4)
