@@ -17,8 +17,11 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
     Optional<Cart> findByUserIdAndBook_BookId(String userId, Long bookId);
+
     List<Cart> findByUserId(String userId);
+
     boolean existsByUserIdAndBook_BookId(String userId, Long bookId);
+
     void deleteByUserIdAndBook_BookId(String userId, Long bookId);
 
     // ✅ 결제용: Book까지 한 번에 로딩 (N+1 방지)

@@ -188,5 +188,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             @Param("accStatus") String accStatus,
             @Param("rvkStatus") String rvkStatus
     );
-
+    
+//    삭제
+    void deleteByUserUserId(String userId); // userId 기준으로 주문 삭제
 }
