@@ -1,4 +1,3 @@
-
 package com.error404.geulbut.es.searchAllBooks.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -13,15 +12,15 @@ import com.error404.geulbut.common.MapStruct;
 import com.error404.geulbut.es.searchAllBooks.dto.SearchAllBooksDto;
 import com.error404.geulbut.es.searchAllBooks.entity.SearchAllBooks;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class SearchAllBooksService {
@@ -29,53 +28,138 @@ public class SearchAllBooksService {
     private static final String INDEX = "search-all-books";
     private static final String TEMPLATE_ID = "book_unified_search";
 
+    /** ✅ JSP/템플릿에서 쓰는 정렬 필드 전체 허용 */
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "popularity_score",
+            "sales_count",
+            "wish_count",     // ← 추가
+            "pub_date",
+            "created_at",
+            "updated_at",     // ← 추가
+            "price"
+    );
+    private static final Set<String> ALLOWED_SORT_ORDERS = Set.of("asc", "desc");
+
     private final ElasticsearchClient client;
     private final MapStruct mapStruct;
 
-    /**
-     * 전체 조회 (keyword가 빈 문자열일 때 사용)
-     * - match_all + 정렬(updated_at desc 기준; 필드명은 환경에 맞게 변경)
-     */
+    /* ------------------------------ 공통 가드 ------------------------------ */
+
+    private String normSortField(String sf) {
+        if (sf == null) return "popularity_score";
+        sf = sf.trim().toLowerCase();
+        return ALLOWED_SORT_FIELDS.contains(sf) ? sf : "popularity_score";
+    }
+
+    private String normSortOrder(String so) {
+        if (so == null) return "desc";
+        so = so.trim().toLowerCase();
+        return ALLOWED_SORT_ORDERS.contains(so) ? so : "desc";
+    }
+
+    private SortOrder toSortOrder(String so) {
+        return "asc".equalsIgnoreCase(so) ? SortOrder.Asc : SortOrder.Desc;
+    }
+
+    private List<SearchAllBooksDto> toDtoList(SearchResponse<SearchAllBooks> res) {
+        return res.hits().hits().stream()
+                .map(Hit::source)
+                .filter(Objects::nonNull)
+                .map(mapStruct::toDto)
+                .filter(Objects::nonNull)
+                .peek(dto -> {
+                    try {
+                        Double ps = dto.getPopularityScore();
+                        if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
+                    } catch (Exception ignore) { dto.setPopularityScore(0.0); }
+                    if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
+                })
+                .toList();
+    }
+
+    private List<SearchAllBooksDto> toDtoList(SearchTemplateResponse<SearchAllBooks> res) {
+        return res.hits().hits().stream()
+                .map(Hit::source)
+                .filter(Objects::nonNull)
+                .map(mapStruct::toDto)
+                .filter(Objects::nonNull)
+                .peek(dto -> {
+                    try {
+                        Double ps = dto.getPopularityScore();
+                        if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
+                    } catch (Exception ignore) { dto.setPopularityScore(0.0); }
+                    if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
+                })
+                .toList();
+    }
+
+    /* ------------------------------ match_all (키워드 빈 문자열일 때) ------------------------------ */
+
+    /** 기존 시그니처 유지 — 기본 정렬: popularity_score desc */
     public Page<SearchAllBooksDto> listAll(Pageable pageable) throws Exception {
-        int size = pageable.getPageSize();
-        int from = (int) pageable.getOffset();
+        return listAll(pageable, "popularity_score", "desc");
+    }
+
+    /** 오버로드 — match_all + 동적 정렬(프런트 sortField/sortOrder 반영) */
+    public Page<SearchAllBooksDto> listAll(Pageable pageable, String sortField, String sortOrder) throws Exception {
+        final int size = pageable.getPageSize();
+        final int from = (int) pageable.getOffset();
+
+        final String sf = normSortField(sortField);
+        final String so = normSortOrder(sortOrder);
+
+        log.debug("[ES] match_all sort={} order={} from={} size={}", sf, so, from, size);
 
         SearchRequest req = SearchRequest.of(b -> b
                 .index(INDEX)
                 .from(from)
                 .size(size)
                 .query(q -> q.matchAll(m -> m))
-                // 정렬 정책: 최신 업데이트 순. 매핑에 맞게 필드명 교체 가능(e.g. "created_at", "published_at")
-                .sort(s -> s.field(f -> f.field("updated_at").order(SortOrder.Desc)))
+                // 1차: 선택 정렬, 2차: _score desc, 3차: created_at desc (fallback)
+                .sort(s -> s.field(f -> f.field(sf).order(toSortOrder(so)).missing("_last")))
+                .sort(s -> s.score(sc -> sc.order(SortOrder.Desc)))
+                .sort(s -> s.field(f -> f.field("created_at").order(SortOrder.Desc).missing("_last")))
         );
 
         SearchResponse<SearchAllBooks> res = client.search(req, SearchAllBooks.class);
 
-        List<SearchAllBooksDto> content = res.hits().hits().stream()
-                .map(Hit::source)
-                .filter(src -> src != null)
-                .map(mapStruct::toDto)
-                .toList();
-
+        List<SearchAllBooksDto> content = toDtoList(res);
         long total = (res.hits().total() != null) ? res.hits().total().value() : content.size();
+
         return new PageImpl<>(content, pageable, total);
     }
 
+    /** 편의 오버로드 — 컨트롤러가 (sf, so, pageable) 순서로 호출해도 수용 */
+    public Page<SearchAllBooksDto> listAll(String sortField, String sortOrder, Pageable pageable) throws Exception {
+        return listAll(pageable, sortField, sortOrder);
+    }
 
-    /**
-     * ES 저장 템플릿(book_unified_search) 호출
-     * params: q, size, from  (템플릿 쪽에 모두 정의되어 있어야 함)
-     */
+    /* ------------------------------ 템플릿 검색 (키워드 있을 때) ------------------------------ */
+
+    /** 기존 시그니처 유지 — 기본 정렬: popularity_score desc */
     public Page<SearchAllBooksDto> searchByTemplate(String keyword, Pageable pageable) throws Exception {
-        String q = (keyword == null) ? "" : keyword;
-        int size = pageable.getPageSize();
-        int from = (int) pageable.getOffset(); // page * size
+        return searchByTemplate(keyword, pageable, "popularity_score", "desc");
+    }
 
-        // 템플릿 파라미터 구성 es로 날리는 쿼리
+    /** 템플릿 호출 — q/size/from + sort_field/sort_order 전달 */
+    public Page<SearchAllBooksDto> searchByTemplate(String keyword, Pageable pageable,
+                                                    String sortField, String sortOrder) throws Exception {
+        final String q = (keyword == null) ? "" : keyword;
+        final int size = pageable.getPageSize();
+        final int from = (int) pageable.getOffset();
+
+        final String sf = normSortField(sortField);
+        final String so = normSortOrder(sortOrder);
+
         Map<String, JsonData> params = new HashMap<>();
-        params.put("q", JsonData.of(q));
-        params.put("size", JsonData.of(size));
-        params.put("from", JsonData.of(from));
+        params.put("q",           JsonData.of(q));
+        params.put("size",        JsonData.of(size));
+        params.put("from",        JsonData.of(from));
+        params.put("sort_field",  JsonData.of(sf));   // ← 템플릿에서 사용
+        params.put("sort_order",  JsonData.of(so));   // ← 템플릿에서 사용
+
+        log.debug("[ES] template={} q='{}' sort={} order={} from={} size={}",
+                TEMPLATE_ID, q, sf, so, from, size);
 
         SearchTemplateRequest req = SearchTemplateRequest.of(b -> b
                 .index(INDEX)
@@ -86,12 +170,7 @@ public class SearchAllBooksService {
         SearchTemplateResponse<SearchAllBooks> res =
                 client.searchTemplate(req, SearchAllBooks.class);
 
-        List<SearchAllBooksDto> content = res.hits().hits().stream()
-                .map(Hit::source)
-                .filter(src -> src != null)
-                .map(mapStruct::toDto)
-                .toList();
-
+        List<SearchAllBooksDto> content = toDtoList(res);
         long total = (res.hits().total() != null) ? res.hits().total().value() : content.size();
 
         return new PageImpl<>(content, pageable, total);

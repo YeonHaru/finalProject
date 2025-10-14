@@ -182,23 +182,30 @@
         <!-- 지금 핫딜중 컨텐츠 -->
         <div class="tab-content" id="hotdeal-content">
             <div class="hotdeal-grid">
-                <!-- 핫딜 카드 1 -->
-                <div class="hotdeal-card">
-                    <div class="hotdeal-badge discount-30">30% OFF</div>
-                    <div class="hotdeal-image">
-                        <img src="https://via.placeholder.com/200x180/4facfe/ffffff?text=설민석의+조선왕조실록" alt="설민석의 조선왕조실록">
-                    </div>
-                    <h3 class="hotdeal-title">설민석의 조선왕조실록</h3>
-                    <p class="hotdeal-author">설민석</p>
-                    <div class="hotdeal-prices">
-                        <span class="original-price">22,000원</span>
-                        <span class="sale-price">15,400원</span>
-                    </div>
+                <c:forEach var="data" items="${hotdeal}">
+                    <!-- 핫딜 카드 1 -->
+                    <div class="hotdeal-card">
+                        <div class="hotdeal-badge discount-30"><c:set var="discountRate"
+                                                                      value="${(data.price - data.discounted_price) * 100 / data.price}"/>
 
-                    <div class="hotdeal-time">장바구니🛒</div>
+                            할인율: <c:out value="${discountRate}"/>%
+                        </div>
+                        <div class="hotdeal-image">
+                            <img src="https://via.placeholder.com/200x180/4facfe/ffffff?text=설민석의+조선왕조실록"
+                                 alt="설민석의 조선왕조실록">
+                        </div>
+                        <h3 class="hotdeal-title"><c:out value="${data.title}"/></h3>
+                        <p class="hotdeal-author"><c:out value="${data.name}"/></p>
+                        <div class="hotdeal-prices">
+                            <span class="original-price"><c:out value="${data.discounted_price}"/></span>
+                            <span class="sale-price"><c:out value="${data.price}"/></span>
+                        </div>
 
-                    <button class="hotdeal-button">구매하기</button>
-                </div>
+                        <div class="hotdeal-time">장바구니🛒</div>
+
+                        <button class="hotdeal-button">구매하기</button>
+                    </div>
+                </c:forEach>
             </div>
         </div>
 
@@ -206,140 +213,45 @@
         <div class="tab-content" id="event-content">
             <div class="event-grid">
                 <!-- 이벤트 카드 1 -->
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://via.placeholder.com/100x100/667eea/ffffff?text=Event1" alt="감영하 작가 싸인회">
-                    </div>
-                    <div class="event-details">
-                        <h3 class="event-title">감영하 작가 싸인회</h3>
-                        <div class="event-info">
-                            <div class="event-date">📅 2024년 9월 21일</div>
-                            <div class="event-location">📍 고복문고 광화문점</div>
-                            <div class="event-time">🕐 오후 2시</div>
+                <c:forEach var="data" items="${eventcontentsA}">
+                    <div class="event-card">
+                        <div class="event-image">
+                            <div class="event-badge">HOT</div>
+                            📷
+                        </div>
+                        <div class="event-details">
+                            <div class="event-title"><c:out value="${data.title}"/></div>
+                            <div class="event-date"><c:out value="${data.days}"/></div>
+                            <div class="event-location"><c:out value="${data.point}"/></div>
+                            <div class="event-time"><c:out value="${data.timeInfo}"/></div>
                         </div>
                     </div>
-                </div>
-
-                <!-- 이벤트 카드 2 -->
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://via.placeholder.com/100x100/764ba2/ffffff?text=Event2" alt="독서모임 '책과 함께'">
-                    </div>
-                    <div class="event-details">
-                        <h3 class="event-title">독서모임 '책과 함께'</h3>
-                        <div class="event-info">
-                            <div class="event-date">📅 매주 토요일</div>
-                            <div class="event-location">📍 양라단 서점 홍대점</div>
-                            <div class="event-time">🕐 오후 7시</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 이벤트 카드 3 -->
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://via.placeholder.com/100x100/f093fb/ffffff?text=Event3" alt="신간 출간기념 북토크">
-                    </div>
-                    <div class="event-details">
-                        <h3 class="event-title">신간 출간기념 북토크</h3>
-                        <div class="event-info">
-                            <div class="event-date">📅 2024년 9월 25일</div>
-                            <div class="event-location">📍 온라인 라이브</div>
-                            <div class="event-time">🕐 오후 8시</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 이벤트 카드 4 -->
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://via.placeholder.com/100x100/4facfe/ffffff?text=Event4" alt="출리소설 토론회">
-                    </div>
-                    <div class="event-details">
-                        <h3 class="event-title">출리소설 토론회</h3>
-                        <div class="event-info">
-                            <div class="event-date">📅 2024년 9월 30일</div>
-                            <div class="event-location">📍 YES24 강남점</div>
-                            <div class="event-time">🕐 오후 3시</div>
-                        </div>
-                    </div>
-                </div>
+                </c:forEach>
             </div>
         </div>
+
         <!-- 이벤트 굿즈 컨텐츠 -->
         <div class="tab-content" id="goods-content">
             <div class="goods-grid">
                 <!-- 굿즈 카드 1 -->
-                <div class="goods-card">
-                    <div class="goods-badge special">한정</div>
-                    <div class="goods-image">
-                        <img src="https://via.placeholder.com/200x200/ff6b6b/ffffff?text=Goods1" alt="북페딘 감성우산">
-                    </div>
-                    <div class="goods-info">
-                        <h3 class="goods-title">북페딘 감성우산</h3>
-                        <div class="goods-period">📅 2025.01.15 ~ 2025.02.28</div>
-                        <div class="goods-publisher">지금출간: 첫 구매</div>
-                        <div class="goods-author">분야: 패션</div>
-                        <div class="goods-price">
-                            <span class="current-price">29,000원</span>
-                            <span class="discount">35% 할인</span>
+                <c:forEach var="data" items="${eventcontentsB}">
+                    <div class="goods-card">
+                        <div class="event-image">
+                            <div class="goods-badge badge-limited">한정</div>
+                            📷
+                        </div>
+                        <div class="goods-info">
+                            <div class="goods-title"><c:out value="${data.title}"/></div>
+                            <div class="goods-period"><c:out value="${data.days}"/></div>
+                            <div class="goods-location"><c:out value="${data.press}"/></div>
+                            <div class="goods-price">
+                                <span class="price-amount"><c:out value="${data.price}"/></span>
+                                <span class="discount-rate"><c:out value="${data.discount}"/>% 할인</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </c:forEach>
 
-                <!-- 굿즈 카드 2 -->
-                <div class="goods-card">
-                    <div class="goods-badge new">NEW</div>
-                    <div class="goods-image">
-                        <img src="https://via.placeholder.com/200x200/764ba2/ffffff?text=Goods2" alt="달빛 무드등">
-                    </div>
-                    <div class="goods-info">
-                        <h3 class="goods-title">달빛 무드등</h3>
-                        <div class="goods-period">📅 2025.01.20 ~ 2025.03.15</div>
-                        <div class="goods-publisher">지금출간: 회독가입</div>
-                        <div class="goods-author">분야: 인테리어</div>
-                        <div class="goods-price">
-                            <span class="current-price">42,000원</span>
-                            <span class="discount">30% 할인</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 굿즈 카드 3 -->
-                <div class="goods-card">
-                    <div class="goods-badge hot">HOT</div>
-                    <div class="goods-image">
-                        <img src="https://via.placeholder.com/200x200/4facfe/ffffff?text=Goods3" alt="도서관 향 캔들">
-                    </div>
-                    <div class="goods-info">
-                        <h3 class="goods-title">도서관 향 캔들</h3>
-                        <div class="goods-period">📅 2025.01.10 ~ 2025.02.20</div>
-                        <div class="goods-publisher">지금출간: 리뷰작성</div>
-                        <div class="goods-author">분야: 라이프</div>
-                        <div class="goods-price">
-                            <span class="current-price">18,000원</span>
-                            <span class="discount">25% 할인</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 굿즈 카드 4 -->
-                <div class="goods-card">
-                    <div class="goods-badge best">BEST</div>
-                    <div class="goods-image">
-                        <img src="https://via.placeholder.com/200x200/f093fb/ffffff?text=Goods4" alt="독서 블루라이트 안경">
-                    </div>
-                    <div class="goods-info">
-                        <h3 class="goods-title">독서 블루라이트 안경</h3>
-                        <div class="goods-period">📅 2025.01.25 ~ 2025.03.10</div>
-                        <div class="goods-publisher">지금출간: 멤십자</div>
-                        <div class="goods-author">분야: 헬스케어</div>
-                        <div class="goods-price">
-                            <span class="current-price">33,000원</span>
-                            <span class="discount">40% 할인</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -438,7 +350,7 @@
                 </div>
                 <span class="icon-label">할인혜택</span>
             </a>
-            <a href="/event" class="icon-item event">
+            <a href="/recommended" class="icon-item event">
                 <div class="icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d69e2e" stroke-width="2">
                         <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
@@ -966,8 +878,6 @@
             <a href="/audiobooks-all" class="more-audiobooks-link">더 많은 오디오북 보기</a>
         </div>
     </section>
-
-
 
 
     <!-- 수상 섹션 -->

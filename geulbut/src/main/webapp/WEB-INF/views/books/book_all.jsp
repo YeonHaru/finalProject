@@ -6,6 +6,11 @@
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
 
+<%-- 파라미터 표준화: q 우선, keyword 보조 --%>
+<c:set var="qParam" value="${not empty param.q ? param.q : (not empty param.keyword ? param.keyword : (not empty keyword ? keyword : ''))}" />
+<c:set var="currentSortField" value="${empty param.sort_field ? 'popularity_score' : param.sort_field}" />
+<c:set var="currentSortOrder" value="${empty param.sort_order ? 'desc' : param.sort_order}" />
+<c:set var="currentSize"      value="${empty param.size ? size : param.size}" />
 
 <html>
 <head>
@@ -23,35 +28,31 @@
 
     <%--    주간/월간 베스트 셀러 --%>
     <div class="bestseller-container">
-        <!-- 탭 버튼 -->
         <div class="tab-buttons">
-
-            <button class="tab-btn active" onclick="switchTab(this, 'weekly')">카테고리</button>
-            <button class="tab-btn" onclick="switchTab(this, 'monthly')">해시태그</button>
+            <button class="tab-btn active" onclick="switchTab(this)">카테고리</button>
+            <button class="tab-btn" onclick="switchTab(this)">해시태그</button>
         </div>
 
-      <!-- 카테고리 -->
-<div class="category-grid-weekly">
-    <div class="category-item featured">종합</div>
-    <div class="category-item">소설</div>
-    <div class="category-item">교육</div>
-    <div class="category-item">자기계발</div>
-    <div class="category-item">종교</div>
-    <div class="category-item">에세이</div>
-</div>
+        <div class="category-grid-weekly">
+            <div class="category-item featured">종합</div>
+            <div class="category-item">소설</div>
+            <div class="category-item">교육</div>
+            <div class="category-item">자기계발</div>
+            <div class="category-item">종교</div>
+            <div class="category-item">에세이</div>
+        </div>
 
-<!-- 해시태그 -->
-<div class="category-grid-monthly">
-    <div class="category-item">자기계발</div>
-    <div class="category-item">인문과학</div>
-    <div class="category-item">역사/문화</div>
-    <div class="category-item">정치/법률</div>
-    <div class="category-item">종교</div>
-    <div class="category-item">예술</div>
-</div>
+        <div class="category-grid-monthly">
+            <div class="category-item">자기계발</div>
+            <div class="category-item">인문과학</div>
+            <div class="category-item">역사/문화</div>
+            <div class="category-item">정치/법률</div>
+            <div class="category-item">종교</div>
+            <div class="category-item">예술</div>
+        </div>
     </div>
 
-    <!-- 상단 툴바(체크/일괄 버튼만 유지, 페이징 링크는 하단으로 이동) -->
+    <!-- 상단 툴바 -->
     <div class="row gap-2 mb-3 container">
         <div class="row gap-1 ml-3 text-light">
             <label class="row gap-1">
@@ -64,10 +65,47 @@
     </div>
 
     <form name="listForm" action="${pageContext.request.contextPath}/search" method="get" class="container">
-        <!-- 컨트롤러에서 내려준 표시용 1-base 페이지 번호를 보존하려면 필요시 사용 -->
+        <!-- 0-base 페이지로 서버에 전달 -->
         <input type="hidden" id="page" name="page" value="${pageNumber - 1}"/>
-        <input type="hidden" name="keyword" value="${keyword}"/>
-        <input type="hidden" name="size" value="${size}"/>
+        <!-- 검색어: q(우선) + keyword(후방호환) 둘 다 전달 -->
+        <input type="hidden" name="q" value="${fn:escapeXml(qParam)}"/>
+        <input type="hidden" name="keyword" value="${fn:escapeXml(qParam)}"/>
+        <input type="hidden" name="size" value="${currentSize}"/>
+
+        <%-- 정렬 툴바 --%>
+        <section class="row gap-2 mb-2 items-center">
+            <div class="row gap-1 items-center">
+                <label for="sort_field" class="text-light">정렬</label>
+                <select id="sort_field" name="sort_field" class="border rounded-sm bg-surface px-2 py-1">
+                    <option value="popularity_score" ${currentSortField=='popularity_score' ? 'selected' : ''}>인기순</option>
+                    <option value="sales_count"      ${currentSortField=='sales_count' ? 'selected' : ''}>판매량순</option>
+                    <option value="wish_count"       ${currentSortField=='wish_count' ? 'selected' : ''}>위시순</option>
+                    <option value="pub_date"         ${currentSortField=='pub_date' ? 'selected' : ''}>출간일순</option>
+                    <option value="created_at"       ${currentSortField=='created_at' ? 'selected' : ''}>등록일순</option>
+                    <option value="updated_at"       ${currentSortField=='updated_at' ? 'selected' : ''}>업데이트순</option>
+                    <option value="price"            ${currentSortField=='price' ? 'selected' : ''}>가격순</option>
+                </select>
+
+                <label for="sort_order" class="visually-hidden">정렬 방향</label>
+                <select id="sort_order" name="sort_order" class="border rounded-sm bg-surface px-2 py-1">
+                    <option value="asc"  ${currentSortOrder=='asc'  ? 'selected' : ''}>오름차순 ▲</option>
+                    <option value="desc" ${currentSortOrder=='desc' ? 'selected' : ''}>내림차순 ▼</option>
+                </select>
+
+                <button type="submit" class="px-2 py-1 rounded bg-accent text-invert"
+                        onclick="document.getElementById('page').value=0">적용</button>
+
+                <c:url var="resetUrl" value="/search">
+                    <c:param name="q" value="${fn:escapeXml(qParam)}"/>
+                    <c:param name="keyword" value="${fn:escapeXml(qParam)}"/>
+                    <c:param name="page" value="0"/>
+                    <c:param name="size" value="${currentSize}"/>
+                    <c:param name="sort_field" value="popularity_score"/>
+                    <c:param name="sort_order" value="desc"/>
+                </c:url>
+                <a class="px-2 py-1 border rounded-sm bg-surface" href="${resetUrl}">초기화</a>
+            </div>
+        </section>
 
         <!-- 총 건수 안내 -->
         <p class="mb-2 text-light">
@@ -83,23 +121,37 @@
                 <ol class="grid gap-3">
                     <c:forEach var="data" items="${searches}" varStatus="status">
                         <li class="srch-item bg-surface border rounded shadow-sm p-3">
+
+                            <!-- ✅ 아이콘 영역 (공유만 표시) -->
+                            <div class="srch-icons">
+                                <button class="icon-btn" data-act="share" title="공유">
+                                    <i class="fa-solid fa-share-nodes">🔗</i>
+                                </button>
+
+                                <!-- 품절인 경우만 재입고 알림 표시 -->
+                                <!-- 디버깅: stock = ${data.stock} -->
+                                <c:if test="${data.stock != null && data.stock == 0}">
+                                    <button class="icon-btn" data-act="restock" title="재입고 알림">
+                                        <i class="fa-regular fa-bell">🔔</i>
+                                    </button>
+                                </c:if>
+                            </div>
+
                             <!-- 체크박스 -->
+
                             <div class="srch-col-check row">
                                 <input type="checkbox" name="selected" value="${data.bookId}">
                             </div>
 
-                            <!-- 썸네일 -->
                             <a class="srch-thumb rounded-sm border bg-main"
                                href="${pageContext.request.contextPath}/book/${data.bookId}">
-                                <!-- 순위 뱃지 추가 (상위 3개만) -->
-                                <c:if test="${status.index < 3}">
+                                <c:if test="${pageNumber == 1 && status.index < 3}">
                                     <span class="rank-badge rank-${status.index + 1}">${status.index + 1}위</span>
                                 </c:if>
                                 <img src="${empty data.bookImgUrl ? '/images/thumb_ing.gif' : data.bookImgUrl}"
                                      alt="${fn:escapeXml(data.title)} 표지">
                             </a>
 
-                            <!-- 정보 -->
                             <div class="srch-info">
                                 <div class="row gap-1 mb-1 text-light">
                                     <c:if test="${not empty data.categoryName}">
@@ -114,15 +166,10 @@
                                 </h3>
 
                                 <p class="mb-2 text-light">
-                                    <c:if test="${not empty data.authorName}">
-                                        ${data.authorName}
-                                    </c:if>
-                                    <c:if test="${not empty data.publisherName}">
-                                        &nbsp;|&nbsp; ${data.publisherName}
-                                    </c:if>
+                                    <c:if test="${not empty data.authorName}">${data.authorName}</c:if>
+                                    <c:if test="${not empty data.publisherName}">&nbsp;|&nbsp; ${data.publisherName}</c:if>
                                 </p>
 
-                                <!-- 가격 -->
                                 <div class="row gap-2 mb-2">
                                     <span class="text-light strike">
                                         <fmt:formatNumber value="${data.price}" type="number"/>원
@@ -143,34 +190,48 @@
                                     </c:choose>
                                 </div>
 
-                                <!-- 배송/뱃지 -->
                                 <div class="row gap-1 mb-2 text-light">
                                     <span class="chip chip--soft">알뜰배송</span>
                                     <span>내일 도착 보장</span>
                                 </div>
 
-                                <!-- 해시태그 -->
                                 <c:if test="${not empty data.hashtags}">
                                     <ul class="row gap-1 mb-2">
                                         <c:forEach var="tag" items="${data.hashtags}">
                                             <c:url var="tagUrl" value="/search">
+                                                <c:param name="q" value="${fn:escapeXml(tag)}"/>
                                                 <c:param name="keyword" value="${fn:escapeXml(tag)}"/>
                                                 <c:param name="page" value="0"/>
-                                                <c:param name="size" value="${size}"/>
+                                                <c:param name="size" value="${currentSize}"/>
+                                                <c:param name="sort_field" value="${currentSortField}"/>
+                                                <c:param name="sort_order" value="${currentSortOrder}"/>
                                             </c:url>
-                                            <li>
-                                                <a class="chip chip--tag" href="${tagUrl}">#${tag}</a>
-                                            </li>
+                                            <li><a class="chip chip--tag" href="${tagUrl}">#${tag}</a></li>
                                         </c:forEach>
                                     </ul>
                                 </c:if>
 
-                                <!-- 액션 -->
+                                <!-- 액션 버튼 (품절 여부에 따라 다르게 표시) -->
+
                                 <div class="row gap-2">
-                                    <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
-                                            data-act="cart" data-id="${data.bookId}">장바구니</button>
-                                    <button type="button" class="px-3 py-2 border rounded bg-surface"
-                                            data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                    <!-- 디버깅: stock = ${data.stock} -->
+                                    <c:choose>
+                                        <c:when test="${data.stock != null && data.stock == 0}">
+                                            <!-- 품절인 경우: 장바구니 버튼 비활성화 -->
+                                            <button type="button" class="px-3 py-2 rounded bg-disabled text-muted" disabled>
+                                                품절
+                                            </button>
+                                            <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                                    data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <!-- 정상 재고인 경우: 장바구니 버튼 활성화 -->
+                                            <button type="button" class="px-3 py-2 rounded bg-accent text-invert"
+                                                    data-act="cart" data-id="${data.bookId}">장바구니</button>
+                                            <button type="button" class="px-3 py-2 border rounded bg-surface"
+                                                    data-act="like" data-id="${data.bookId}">위시리스트</button>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </div>
                         </li>
@@ -179,24 +240,25 @@
             </c:otherwise>
         </c:choose>
 
-        <!-- 하단 페이징 (0-base page 전송) -->
+        <!-- 하단 페이징 -->
         <c:if test="${pages.totalElements > 0}">
             <div class="container mt-4">
                 <nav aria-label="페이지 네비게이션">
                     <ul class="row gap-1">
-                        <!-- 이전 -->
                         <c:if test="${pageNumber > 1}">
                             <li>
                                 <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm"
                                    href="<c:url value='/search'>
-                                            <c:param name='keyword' value='${keyword}'/>
+                                            <c:param name='q' value='${fn:escapeXml(qParam)}'/>
+                                            <c:param name='keyword' value='${fn:escapeXml(qParam)}'/>
                                             <c:param name='page' value='${pageNumber - 2}'/>
-                                            <c:param name='size' value='${size}'/>
+                                            <c:param name='size' value='${currentSize}'/>
+                                            <c:param name='sort_field' value='${currentSortField}'/>
+                                            <c:param name='sort_order' value='${currentSortOrder}'/>
                                         </c:url>">이전</a>
                             </li>
                         </c:if>
 
-                        <!-- 번호 (블록 페이징) -->
                         <c:forEach var="p" begin="${startPage}" end="${endPage}">
                             <c:set var="isActive" value="${p == pageNumber}"/>
                             <li>
@@ -207,23 +269,28 @@
                                     <c:otherwise>
                                         <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm"
                                            href="<c:url value='/search'>
-                                                    <c:param name='keyword' value='${keyword}'/>
+                                                    <c:param name='q' value='${fn:escapeXml(qParam)}'/>
+                                                    <c:param name='keyword' value='${fn:escapeXml(qParam)}'/>
                                                     <c:param name='page' value='${p - 1}'/>
-                                                    <c:param name='size' value='${size}'/>
+                                                    <c:param name='size' value='${currentSize}'/>
+                                                    <c:param name='sort_field' value='${currentSortField}'/>
+                                                    <c:param name='sort_order' value='${currentSortOrder}'/>
                                                 </c:url>">${p}</a>
                                     </c:otherwise>
                                 </c:choose>
                             </li>
                         </c:forEach>
 
-                        <!-- 다음 -->
                         <c:if test="${pageNumber < totalPages}">
                             <li>
                                 <a class="px-2 py-1 border rounded-sm bg-surface shadow-sm"
                                    href="<c:url value='/search'>
-                                            <c:param name='keyword' value='${keyword}'/>
+                                            <c:param name='q' value='${fn:escapeXml(qParam)}'/>
+                                            <c:param name='keyword' value='${fn:escapeXml(qParam)}'/>
                                             <c:param name='page' value='${pageNumber}'/>
-                                            <c:param name='size' value='${size}'/>
+                                            <c:param name='size' value='${currentSize}'/>
+                                            <c:param name='sort_field' value='${currentSortField}'/>
+                                            <c:param name='sort_order' value='${currentSortOrder}'/>
                                         </c:url>">다음</a>
                             </li>
                         </c:if>
@@ -237,7 +304,6 @@
 
 </div>
 
-<script src="/js/book_all/book_all.js"></script>
-
+<script src="/js/book_all/book_all.wired.js"></script>
 </body>
 </html>

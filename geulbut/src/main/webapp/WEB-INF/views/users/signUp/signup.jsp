@@ -23,7 +23,12 @@
             <!-- CSRF -->
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="input-group">
-                <input id="userId" type="text" name="userId" placeholder="아이디" value="${usersSignupDto.userId}"/>
+                <input id="userId" type="text" name="userId" placeholder="아이디" value="${usersSignupDto.userId}"
+                    autocomplete="username"
+                       inputmode="latin"
+                       maxlength="20"
+                       pattern="^[a-z0-9]{4,20}$"
+                />
                 <span id="userIdMsg" class="help-msg"></span>
             </div>
 
@@ -41,8 +46,29 @@
                 <input type="text" name="name" placeholder="이름" value="${usersSignupDto.name}"/>
             </div>
 
-            <div class="input-group">
-                <input id="email" type="email" name="email" placeholder="이메일" value="${usersSignupDto.email}"/>
+            <div class="input-group email-group">
+                <div class="email-row">
+                    <input id="emailLocal" type="text" placeholder="이메일 아이디(예: user)"
+                           autocomplete="email" />
+                    <span class="at" aria-hidden="true">@</span>
+
+                    <select id="emailDomainSelect">
+                        <option value="">이메일 선택</option>
+                        <option value="gmail.com">gmail.com</option>
+                        <option value="naver.com">naver.com</option>
+                        <option value="daum.net">daum.net</option>
+                        <option value="kakao.com">kakao.com</option>
+                        <option value="outlook.com">outlook.com</option>
+                        <option value="_custom">직접입력</option>
+                    </select>
+
+                    <input id="emailDomainCustom" type="text" placeholder="도메인 직접입력(예: example.com)"
+                           style="display:none" />
+                </div>
+
+                <!-- 백엔드 제출용(합쳐서 여기로) -->
+                <input id="email" type="hidden" name="email" value="${usersSignupDto.email}"/>
+
                 <span id="emailMsg" class="help-msg"></span>
             </div>
 
@@ -92,7 +118,13 @@
     const $submit = document.getElementById('submitBtn');
 
     const $userId = document.getElementById('userId');
-    const $email = document.getElementById('email');
+
+    // 이메일 구성 요소
+    const $emailHidden = document.getElementById('email'); // 제출용 hidden
+    const $emailLocal = document.getElementById('emailLocal');
+    const $emailDomainSelect = document.getElementById('emailDomainSelect');
+    const $emailDomainCustom = document.getElementById('emailDomainCustom');
+
     const $password = document.getElementById('password');
     const $password2 = document.getElementById('password2');
 
@@ -102,74 +134,155 @@
     const $password2Msg = document.getElementById('password2Msg');
 
     // 2) 검사결과를 기억함
-    // - idOK: 아이디 사용 가능 여부
-    // - emailOK: 이메일 사용 가능 여부 (비워도 되는 정책이면, 비었을 때 true)
-    // - pwOK: 비밀번호 조건 충족 여부
     let idOK = false, emailOK = true, pwOK = false, pw2OK = false;
 
-    // 3) 유틸: 디바운스(debounce)
-    // - 입력이 연속으로 들어올 때, "일정 시간(ms) 동안 입력이 멈추면" 한 번만 실행
-    // - 서버에 과도한 요청(중복확인 AJAX)을 방지
-    const debounce = (fn, ms=300) => {
-        let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+    // 3) 디바운스
+    const debounce = (fn, ms = 300) => {
+        let t;
+        return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
     };
-    // 4) 제출 버튼 활성/비활성 스위치
-    // - 세 플래그가 모두 true일 때만 버튼을 활성화
-    function refreshSubmit() {
-        // 하나라도 false 면 disabled = true 버튼 비활성
-        $submit.disabled = !(idOK && emailOK && pwOK && pw2OK);
+
+    // 4) 제출 버튼 활성/비활성
+    function refreshSubmit() { $submit.disabled = !(idOK && emailOK && pwOK && pw2OK); }
+
+    // ---- 아이디 정책 ----
+    const USERID_RE = /^[a-z0-9]{4,20}$/;
+
+    function normalizeUserId(raw) {
+        if (!raw) return "";
+        const lowered = raw.toLowerCase();
+        return lowered.replace(/[^a-z0-9]/g, "");
     }
-    // 5) 아이디 중복 확인
-    // 흐름:
-    //  (1) 입력값 기본 규칙(길이 등) 확인
-    //  (2) 서버에 GET /users/check-id?userId=... 요청
-    //  (3) true/false 응답에 따라 메시지와 idOK 갱신
+
+    // 이메일 조합/검증 유틸
+    const EMAIL_LOCAL_RE = /^[A-Za-z0-9._%+-]+$/;                // 로컬파트 간단검사
+    const EMAIL_DOMAIN_RE = /^([A-Za-z0-9-]+\.)+[A-Za-z]{2,}$/;  // 도메인 간단검사
+    const EMAIL_WHOLE_RE  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;        // 최종 전체검사(간단)
+
+    function getSelectedDomain() {
+        const sel = $emailDomainSelect.value;
+        if (sel === "_custom") {
+            return ($emailDomainCustom.value || "").trim().toLowerCase();
+        }
+        return (sel || "").trim().toLowerCase();
+    }
+
+    function assembleEmail() {
+        const local = ($emailLocal.value || "").trim();
+        const domain = getSelectedDomain();
+        if (!local || !domain) return "";
+        return `${local}@${domain}`.toLowerCase();
+    }
+
+    function toggleCustomDomainInput() {
+        const useCustom = ($emailDomainSelect.value === "_custom");
+        $emailDomainCustom.style.display = useCustom ? "" : "none";
+        if (!useCustom) $emailDomainCustom.value = "";
+    }
+
+    function populateEmailFieldsFromHidden() {
+        const v = ($emailHidden.value || "").trim();
+        if (!v || !v.includes("@")) return;
+        const [local, domain] = v.split("@");
+        $emailLocal.value = local || "";
+
+        // 도메인 셀렉트에 있는 값인지 확인
+        const options = Array.from($emailDomainSelect.options).map(o => o.value);
+        if (options.includes(domain)) {
+            $emailDomainSelect.value = domain;
+            $emailDomainCustom.value = "";
+            $emailDomainCustom.style.display = "none";
+        } else {
+            $emailDomainSelect.value = "_custom";
+            $emailDomainCustom.value = domain;
+            $emailDomainCustom.style.display = "";
+        }
+    }
+
+    // 5) 아이디 중복 확인 (정책 통과 시에만 서버 조회)
     async function checkId() {
-        const v = $userId.value.trim();
-        // 1) 최소길이 규칙 예 ) 4자 이상
-        if (v.length < 4) {
+        const raw = $userId.value;
+        const normalized = normalizeUserId(raw);
+        if (raw !== normalized) $userId.value = normalized;
+
+        const v = normalized;
+
+        if (!v) {
             idOK = false;
-            $userIdMsg.textContent = '아이디는 4자 이상이어야 합니다.';
+            $userIdMsg.textContent = '아이디를 입력하세요.';
             refreshSubmit(); return;
         }
+        if (!USERID_RE.test(v)) {
+            idOK = false;
+            if (v.length < 4)       $userIdMsg.textContent = '아이디는 4자 이상이어야 합니다.';
+            else if (v.length > 20) $userIdMsg.textContent = '아이디는 20자 이하여야 합니다.';
+            else                    $userIdMsg.textContent = '영문 소문자와 숫자만 사용할 수 있습니다.';
+            refreshSubmit(); return;
+        }
+
         try {
-            // 2) 서버에 중복확인 요청
             const res = await fetch('/users/check-id?userId=' + encodeURIComponent(v));
-            const ok = await res.json();
+            const ok = await res.json(); // true=사용가능
             idOK = !!ok;
-            // 3) 사용자에게 결과 메시지 표시
             $userIdMsg.textContent = ok ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.';
-        } catch(e) {
-            // 네트워크/서버 오류등등
+        } catch (e) {
             idOK = false;
             $userIdMsg.textContent = '아이디 확인 중 오류가 발생했습니다.';
         } finally {
-            // 다 되면 버튼 갱신
             refreshSubmit();
         }
     }
 
+    // 6) 이메일 검증 + 중복확인(선조합 후 검사)
     async function checkEmail() {
-        let v = $email.value.trim().toLowerCase();
-        $email.value = v;
-        if (v === '') { // 이메일 선택항목이면 비워도 통과
+        const local = ($emailLocal.value || "").trim();
+        const domain = getSelectedDomain();
+
+        // 선택항목 정책: 둘 다 비어있으면 통과
+        if (!local && !domain) {
             emailOK = true;
+            $emailHidden.value = "";
             $emailMsg.textContent = '';
             refreshSubmit(); return;
         }
+
         // 간단 패턴
         const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRe.test(v)) {
+
+
+        // 로컬/도메인 각각 기본 검사
+        if (!EMAIL_LOCAL_RE.test(local)) {
+            emailOK = false;
+            $emailMsg.textContent = '이메일 앞부분(아이디) 형식을 확인해주세요.';
+            refreshSubmit(); return;
+        }
+        if (!EMAIL_DOMAIN_RE.test(domain)) {
+            emailOK = false;
+            $emailMsg.textContent = '이메일 도메인 형식을 확인해주세요.';
+            refreshSubmit(); return;
+        }
+
+        const email = `${local}@${domain}`.toLowerCase();
+
+        // 전체 패턴(간단) 확인
+        if (!EMAIL_WHOLE_RE.test(email)) {
+
             emailOK = false;
             $emailMsg.textContent = '이메일 형식을 확인해주세요.';
             refreshSubmit(); return;
         }
+
+        // hidden에 반영
+        $emailHidden.value = email;
+
+        // 서버 중복확인
         try {
-            const res = await fetch('/users/check-email?email=' + encodeURIComponent(v));
+            const res = await fetch('/users/check-email?email=' + encodeURIComponent(email));
             const ok = await res.json();
             emailOK = !!ok;
             $emailMsg.textContent = ok ? '사용 가능한 이메일입니다.' : '이미 가입된 이메일입니다.';
-        } catch(e) {
+        } catch (e) {
             emailOK = false;
             $emailMsg.textContent = '이메일 확인 중 오류가 발생했습니다.';
         } finally {
@@ -177,9 +290,9 @@
         }
     }
 
+    // 7) 비밀번호/확인
     function checkPassword() {
         const v = $password.value;
-        // 간단 정책: 8자 이상
         if (v.length >= 8) {
             pwOK = true;
             $passwordMsg.textContent = '';
@@ -207,15 +320,45 @@
         refreshSubmit();
     }
 
-    $userId.addEventListener('input', debounce(checkId, 400));
-    $email.addEventListener('input', debounce(checkEmail, 400));
+    // 8) IME(한글 조합 등) 입력 대응 + 디바운스 바인딩
+    let composing = false;
+    $userId.addEventListener('compositionstart', () => composing = true);
+    $userId.addEventListener('compositionend', () => { composing = false; debouncedCheckId(); });
+
+    const debouncedCheckId = debounce(() => { if (!composing) checkId(); }, 400);
+
+    $userId.addEventListener('input', debouncedCheckId);
+
+    // 이메일 필드 이벤트
+    $emailDomainSelect.addEventListener('change', () => { toggleCustomDomainInput(); checkEmail(); });
+    $emailLocal.addEventListener('input', debounce(checkEmail, 400));
+    $emailDomainCustom.addEventListener('input', debounce(checkEmail, 400));
+
     $password.addEventListener('input', checkPassword);
     $password2.addEventListener('input', checkPasswordConfirm);
 
-    // 최종 제출 전 정규화/최종검증
+    // 9) 최종 제출 전 정규화/최종검증
     $form.addEventListener('submit', (e) => {
-        $userId.value = $userId.value.trim();
-        $email.value = $email.value.trim().toLowerCase();
+        // userId 최종 정규화
+        $userId.value = normalizeUserId($userId.value);
+
+        // 이메일 최종 합성
+        const emailValue = assembleEmail();
+        $emailHidden.value = emailValue;
+
+        // 아이디 정책 최종 방어
+        if (!USERID_RE.test($userId.value)) {
+            e.preventDefault();
+            alert('아이디는 영문 소문자와 숫자만 사용하여 4~20자로 입력하세요.');
+            return;
+        }
+
+        // 이메일 선택항목: 값이 있으면 유효해야 함
+        if (emailValue && !EMAIL_WHOLE_RE.test(emailValue)) {
+            e.preventDefault();
+            alert('이메일 형식을 확인해주세요.');
+            return;
+        }
 
         if (!(idOK && emailOK && pwOK && pw2OK)) {
             e.preventDefault();
@@ -223,12 +366,19 @@
         }
     });
 
-    // 초기 상태 점검(값이 미리 있을 수 있으니)
+    // 10) 초기 상태 점검(값이 미리 있을 수 있으니)
+    // hidden email 값이 있다면 로컬/도메인으로 분해해서 채워 넣음
+    populateEmailFieldsFromHidden();
+    toggleCustomDomainInput();
+
+    // 초기 점검 트리거
     checkPassword();
     if ($userId.value.trim()) checkId();
-    if ($email.value.trim()) checkEmail();
+    // 이메일은 값이 있으면 검사
+    if ($emailHidden.value.trim()) checkEmail();
     if ($password2.value.trim()) checkPasswordConfirm();
-
 </script>
+
+
 </body>
 </html>
