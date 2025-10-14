@@ -63,15 +63,9 @@ Geulbut은 Spring Boot 기반의 온라인 서점 웹 애플리케이션으로,
 | VCS | Git, GitHub |
 | API 연동 | Aladin Open API, KMA 공공기상청 API, 공공 미세먼지 API, KakaoPay/NaverPay, Google·Naver·Kakao OAuth2 |
 
-### 팀 구성
-| 역할 | 담당 |
-|------|------|
-| 기획 / UI 설계 | 1명 |
-| 백엔드 (Spring / Oracle / API 연동) | 4명 |
-| 프론트엔드 (JSP / JS / 반응형 디자인) | 2명 |
-
-
-총 7명으로 구성된 팀 프로젝트로, GitHub를 통한 브랜치별 협업 및 버전 관리를 수행하였습니다.
+#### 팀 구성
+총 7명으로 구성된 팀 프로젝트로 기획, 백엔드, 프론트엔드, DB 설계 등 역할을 분담 하여
+GitHub를 통한 브랜치별 협업 및 버전 관리를 수행하였습니다.
 
 GIF
 ![Geulbut Demo](geulbut/src/main/webapp/images/GeulbutGIF.gif)
