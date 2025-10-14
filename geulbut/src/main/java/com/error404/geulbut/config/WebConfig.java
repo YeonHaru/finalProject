@@ -38,5 +38,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("/images/")
                 .setCachePeriod(0);
 
+        // ✅ DevTools 요청 무시용
+        registry.addResourceHandler("/.well-known/**")
+                .addResourceLocations("classpath:/static/.well-known/")
+                .setCachePeriod(0);
     }
 }
