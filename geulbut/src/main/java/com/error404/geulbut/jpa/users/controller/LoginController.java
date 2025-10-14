@@ -8,6 +8,7 @@ import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifyEmailAndRese
 import com.error404.geulbut.jpa.users.dto.PasswordRecoveryDto.VerifySmsAndResetRequest;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
+import com.error404.geulbut.jpa.users.repository.UsersRepository;
 import com.error404.geulbut.jpa.users.service.UsersService;
 
 
@@ -37,6 +38,7 @@ public class LoginController {
     private final UsersService usersService;
     private final ErrorMsg errorMsg;
     private final PasswordRecoveryService passwordRecoveryService;
+    private final UsersRepository usersRepository;
 
     //    회원가입 페이지입니다.
     @GetMapping("/signup")
@@ -86,7 +88,11 @@ public class LoginController {
     @GetMapping("/users/check-id")
     @ResponseBody
     public boolean checkUserId(@RequestParam String userId) {
-        return usersService.isUserIdAvailable(userId);
+        String normalized = userId == null ? "" : userId.toLowerCase().replaceAll("[^a-z0-9]", "");
+        if (!normalized.matches("^[a-z0-9]{4,20}$")) {
+            return false;
+        }
+        return !usersRepository.existsById(normalized);
     }
 
     @GetMapping("/users/check-email")

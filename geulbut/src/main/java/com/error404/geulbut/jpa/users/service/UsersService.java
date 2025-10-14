@@ -7,6 +7,7 @@ import com.error404.geulbut.jpa.users.dto.UsersOAuthUpsertDto;
 import com.error404.geulbut.jpa.users.dto.UsersSignupDto;
 import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.repository.UsersRepository;
+import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class UsersService {
     private final PasswordEncoder passwordEncoder;
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
+    private static final Pattern USERID_RE = Pattern.compile("^[a-z0-9]{4,20}$");
 
     /** totalPurchase 기준으로 grade를 저장 전 항상 동기화 */
     private void ensureGradeConsistent(Users user) {
@@ -108,6 +110,10 @@ public class UsersService {
     //   TODO :  1. 회원가입
     @Transactional
     public Users signup(UsersSignupDto usersSignupDto) {
+        String userId = usersSignupDto.getUserId();
+        if (userId == null || !USERID_RE.matcher(userId).matches()){
+            throw new IllegalArgumentException("아이디 정책 위반");
+        }
 //        기본검증
         if (usersSignupDto == null)
             throw new IllegalArgumentException(errorMsg.getMessage("error.user.request.null"));
