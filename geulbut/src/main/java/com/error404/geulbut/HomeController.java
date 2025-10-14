@@ -5,6 +5,8 @@ import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.service.BooksService;
 import com.error404.geulbut.jpa.choice.dto.ChoiceDto;
 import com.error404.geulbut.jpa.choice.service.ChoiceService;
+import com.error404.geulbut.jpa.event.entity.EventContents;
+import com.error404.geulbut.jpa.event.service.EventContentsService;
 import com.error404.geulbut.jpa.hotdeal.dto.HotdealDto;
 import com.error404.geulbut.jpa.hotdeal.service.HotdealService;
 import com.error404.geulbut.jpa.introduction.dto.IntroductionDto;
@@ -28,6 +30,7 @@ public class HomeController {
     private final BooksService booksService;
     private final ChoiceService choiceService;
     private final HotdealService hotdealService;
+    private final EventContentsService eventContentsService;
 
     @GetMapping("/")
     public String home(Model model, @PageableDefault(page = 0, size = 4) Pageable pageable) {
@@ -76,6 +79,9 @@ public class HomeController {
 //       추천 이벤트
         List<BooksDto> randomBooks = booksService.getRandomBooks();
         model.addAttribute("randomBooks", randomBooks);
+//        추천 이벤트
+        Page<EventContents> pagesA=eventContentsService.selectEventContentsListA(pageable);
+        model.addAttribute("eventcontentsA", pagesA.getContent());
         return "home";
     }
 }
