@@ -56,12 +56,13 @@ Geulbut은 Spring Boot 기반의 온라인 서점 웹 애플리케이션으로,
 ## 기술 스택
 | 분야 | 기술 |
 |------|------|
-| Frontend | HTML, CSS, JavaScript, JSP |
+| Frontend | HTML, CSS, JavaScript, JSP(서버 템플릿), Bootstrap |
 | Backend | Java 17, Spring Boot, Spring Data JPA |
 | Database | Oracle Database |
+| Search / Infra | Elasticsearch |
 | Build & Tool | Gradle, IntelliJ IDEA |
 | VCS | Git, GitHub |
-| API 연동 | Aladin Open API, KMA 공공기상청 API, 공공 미세먼지 API, KakaoPay/NaverPay, Google·Naver·Kakao OAuth2 |
+| API 연동 | 알라딘 Open API, KMA 공공기상청 API, 공공 미세먼지 API, KakaoPay/NaverPay, Google·Naver·Kakao OAuth2 |
 
 #### 팀 구성
 총 7명으로 구성된 팀 프로젝트로 기획, 백엔드, 프론트엔드, DB 설계 등 역할을 분담 하여
