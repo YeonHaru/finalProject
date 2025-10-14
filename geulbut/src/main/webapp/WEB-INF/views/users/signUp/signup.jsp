@@ -246,6 +246,11 @@
             refreshSubmit(); return;
         }
 
+        // 간단 패턴
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(v)) {
+
+
         // 로컬/도메인 각각 기본 검사
         if (!EMAIL_LOCAL_RE.test(local)) {
             emailOK = false;
@@ -262,6 +267,7 @@
 
         // 전체 패턴(간단) 확인
         if (!EMAIL_WHOLE_RE.test(email)) {
+
             emailOK = false;
             $emailMsg.textContent = '이메일 형식을 확인해주세요.';
             refreshSubmit(); return;

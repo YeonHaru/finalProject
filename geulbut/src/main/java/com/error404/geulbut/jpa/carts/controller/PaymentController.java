@@ -34,7 +34,6 @@ public class PaymentController {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new org.springframework.web.server.ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        String userId = authentication.getName();
         String merchantUid = "order_" + System.currentTimeMillis();
         return Map.of("merchantUid", merchantUid);
     }
@@ -65,6 +64,7 @@ public class PaymentController {
         }
         String userId = authentication.getName();
 
+//        1) 우리측 서버 결제 금액과 PG측 결제 금액 조회
         String token = paymentService.getAccessToken();
         Map<String, Object> paymentInfo = paymentService.verifyPayment(token, req.impUid());
         Long paidAmount = ((Number) paymentInfo.get("amount")).longValue();
@@ -73,12 +73,14 @@ public class PaymentController {
         if (info == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "ordersInfo is required"));
         }
+//        2) OrderInfo.amount vs paidAmount(PG서버) 비교
+//              금액 변조 방지 교차검증
         if (!paidAmount.equals(info.amount())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "amount mismatch"));
         }
 
-        //  멱등 체크 (선조회)
+        //  멱등(선조회) 체크 + 사용자 일치 확인
         Orders existing = ordersRepository.findByMerchantUid(req.merchantUid()).orElse(null);
         if (existing != null) {
             if (!userId.equals(existing.getUserId())) {
@@ -101,11 +103,11 @@ public class PaymentController {
                 long bookId = (info.bookId() == null ? 0L : info.bookId());
                 int qty    = (info.quantity() == null || info.quantity() <= 0) ? 1 : info.quantity();
 
-                // ✅ 바로구매 전용 서비스 메서드 (CartService에 구현 필요)
+                //  바로구매 전용 서비스 메서드 (CartService에 구현 필요)
                 //   "장바구니에 담지 않고 단건으로 주문아이템 구성" 로직
                 order = cartService.checkoutBuyNow(userId, req.merchantUid(), bookId, qty, info.amount());
             } else {
-                // ✅ 장바구니 기반 결제 (기존 로직)
+                //  장바구니 기반 결제 (기존 로직)
                 //   CartService에 "장바구니→주문 생성" 메서드가 따로 있다면 그걸 호출
                 order = cartService.checkoutFromCart(userId, req.merchantUid(), info.amount());
                 // 기존에 cartService.checkout(userId, req.merchantUid(), info) 사용 중이면 그대로 둬도 OK
