@@ -26,31 +26,31 @@
 
 <div class="page py-4">
 
-    <%--    주간/월간 베스트 셀러 --%>
-    <div class="bestseller-container">
-        <div class="tab-buttons">
-            <button class="tab-btn active" onclick="switchTab(this)">카테고리</button>
-            <button class="tab-btn" onclick="switchTab(this)">해시태그</button>
-        </div>
+<%--    &lt;%&ndash;    주간/월간 베스트 셀러 &ndash;%&gt;--%>
+<%--    <div class="bestseller-container">--%>
+<%--        <div class="tab-buttons">--%>
+<%--            <button class="tab-btn active" onclick="switchTab(this)">카테고리</button>--%>
+<%--            <button class="tab-btn" onclick="switchTab(this)">해시태그</button>--%>
+<%--        </div>--%>
 
-        <div class="category-grid-weekly">
-            <div class="category-item featured">종합</div>
-            <div class="category-item">소설</div>
-            <div class="category-item">교육</div>
-            <div class="category-item">자기계발</div>
-            <div class="category-item">종교</div>
-            <div class="category-item">에세이</div>
-        </div>
+<%--        <div class="category-grid-weekly">--%>
+<%--            <div class="category-item featured">종합</div>--%>
+<%--            <div class="category-item">소설</div>--%>
+<%--            <div class="category-item">교육</div>--%>
+<%--            <div class="category-item">자기계발</div>--%>
+<%--            <div class="category-item">종교</div>--%>
+<%--            <div class="category-item">에세이</div>--%>
+<%--        </div>--%>
 
-        <div class="category-grid-monthly">
-            <div class="category-item">자기계발</div>
-            <div class="category-item">인문과학</div>
-            <div class="category-item">역사/문화</div>
-            <div class="category-item">정치/법률</div>
-            <div class="category-item">종교</div>
-            <div class="category-item">예술</div>
-        </div>
-    </div>
+<%--        <div class="category-grid-monthly">--%>
+<%--            <div class="category-item">자기계발</div>--%>
+<%--            <div class="category-item">인문과학</div>--%>
+<%--            <div class="category-item">역사/문화</div>--%>
+<%--            <div class="category-item">정치/법률</div>--%>
+<%--            <div class="category-item">종교</div>--%>
+<%--            <div class="category-item">예술</div>--%>
+<%--        </div>--%>
+<%--    </div>--%>
 
     <!-- 상단 툴바 -->
     <div class="row gap-2 mb-3 container">
