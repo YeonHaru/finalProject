@@ -47,6 +47,7 @@
                 <p class="mb-1"><strong>배송</strong> : 오늘 출고 (평균 1–2일 내 도착)</p>
                 <p class="mb-0"><strong>반품</strong> : 수령 후 7일 이내 가능</p>
             </div>
+
         </section>
 
         <!-- 우측 -->
@@ -91,6 +92,40 @@
                     </c:otherwise>
                 </c:choose>
             </div>
+            <!-- ===== 멤버십/포인트 ===== -->
+            <section class="point-box border rounded p-3 bg-surface" aria-label="포인트 안내">
+                <div class="point-line">
+                    <strong class="label">적립</strong>
+                    <strong id="earnPoint">0P</strong>
+                    <span class="muted">(구매금액의 1%)</span>
+                </div>
+
+                <details class="point-more">
+                    <summary>멤버십 등급 보기</summary>
+                    <table class="tier-table">
+                        <thead>
+                        <tr><th>등급</th><th>구매금액</th><th>적립률</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr><td>브론즈</td><td>100,000원</td><td>1%</td></tr>
+                        <tr><td>실버</td><td>100,000 ~ 200,000원</td><td>1%</td></tr>
+                        <tr><td>골드</td><td>200,000 ~ 300,000원</td><td>1%</td></tr>
+
+                        </tbody>
+                    </table>
+                    <p class="tiny-note">* 등급 기준은 최근 12개월 누적 결제액, 배송비/포인트결제 제외. 정책은 공지 없이 변경될 수 있어요.</p>
+                </details>
+
+                <c:choose>
+                    <c:when test="${not empty user}">
+                        <p class="tiny-note">* 결제 완료 후 즉시 적립되며 마이페이지 &gt; 포인트에서 확인할 수 있어요.</p>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="tiny-note">* 로그인 후 구매 시 포인트가 적립됩니다.</p>
+                    </c:otherwise>
+                </c:choose>
+
+            </section>
 
             <!-- 해시태그 -->
             <section aria-label="해시태그">
@@ -169,11 +204,117 @@
             </div>
         </details>
     </section>
+
+    <c:if test="${not empty book.authorName}">
+        <c:url var="authorSearchUrl" value="/books/search">
+            <c:param name="q" value="${book.authorName}"/>
+        </c:url>
+    </c:if>
+
+    <!-- ================= 저자 및 역자소개 ================ -->
+    <c:if test="${not empty author}">
+        <section class="author-section mt-4" aria-label="저자 및 역자소개">
+            <h2 class="mb-3">저자 및 역자소개</h2>
+            <article class="author-card">
+                <div class="author-photo">
+                    <c:choose>
+                        <c:when test="${not empty author.imgUrl}">
+                            <img src="${author.imgUrl}" alt="${fn:escapeXml(author.name)} 프로필">
+                        </c:when>
+                        <c:otherwise>
+                            <div class="photo-fallback" aria-hidden="true">No Image</div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="author-body">
+                    <div class="author-head">
+                        <h3 class="author-name">
+                            <c:choose>
+                                <c:when test="${not empty authorSearchUrl}">
+                                    <a class="link" href="${authorSearchUrl}">${author.name}</a>
+                                </c:when>
+                                <c:otherwise>
+                                    ${author.name}
+                                </c:otherwise>
+                            </c:choose>
+                        </h3>
+
+                        <div class="author-actions">
+                            <c:if test="${not empty authorSearchUrl}">
+                                <a class="btn-ghost sm" href="${authorSearchUrl}">작가의 다른 도서 보기</a>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="author-desc">
+                        <c:if test="${not empty author.description}">${author.description}</c:if>
+                        <c:if test="${empty author.description}">
+                            <span class="text-light">저자 소개 정보가 없습니다.</span>
+                        </c:if>
+                    </div>
+                </div>
+            </article>
+
+            <c:if test="${not empty moreByAuthor}">
+                <div class="author-books mt-3">
+                    <h4 class="mb-2">같은 작가의 다른 도서</h4>
+                    <ul class="books-inline">
+                        <c:forEach var="b" items="${moreByAuthor}">
+                            <li class="book-mini">
+                                <a href="<c:url value='/book/${b.bookId}'/>">
+                                    <img src="${empty b.imgUrl ? '/images/thumb_ing.gif' : b.imgUrl}" alt="${fn:escapeXml(b.title)}">
+                                    <span class="t">${b.title}</span>
+                                </a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </c:if>
+        </section>
+    </c:if>
+
+    <!-- ===== 리뷰 / 별점 ===== -->
+    <section class="review-section mt-5" aria-label="독자 리뷰">
+        <h2 class="section-title">회원 리뷰</h2>
+
+        <!-- 평균 별점 -->
+        <div class="rating-summary">
+            <div class="rating-stars">★★★★☆</div>
+            <div class="rating-score">
+                <strong>4.7</strong>
+                <span>/ 5.0</span>
+                <span class="rating-count">(총 389명 참여)</span>
+            </div>
+
+            <!-- 리뷰 작성 버튼 (로그인 유저만) -->
+            <c:if test="${not empty user}">
+                <button class="btn-ghost sm" id="writeReviewBtn">리뷰 남기기</button>
+            </c:if>
+            <c:if test="${empty user}">
+                <p class="login-notice">로그인 후 리뷰를 작성할 수 있습니다.</p>
+            </c:if>
+        </div>
+
+        <!-- 한줄 리뷰 미리보기 (향후 동적 교체) -->
+        <div class="short-reviews">
+            <c:if test="${empty reviews}">
+                <p class="no-review">아직 등록된 리뷰가 없습니다. 첫 리뷰어가 되어보세요!</p>
+            </c:if>
+
+            <c:forEach var="r" items="${reviews}" begin="0" end="2">
+                <p class="review-card">📖 "${r.shortComment}"</p>
+            </c:forEach>
+
+            <button class="btn-more" id="openReviewsBtn">+ 전체 리뷰 보기</button>
+        </div>
+    </section>
+
+
     <!--하단 고정 구매바(모바일) -->
     <div id="stickyBar" class="sticky-bar" role="region" aria-label="빠른 구매바" hidden>
         <div class="sticky-bar__left">
             <span class="sticky-qty" id="stickyQty">수량 1</span>
             <strong class="sticky-total" id="stickyTotal">0원</strong>
+            <small class="sticky-earn" id="stickyEarn">+0P 적립</small> <!-- ← 이 줄 추가 -->
         </div>
         <div class="sticky-bar__right">
             <button type="button" class="btn-ghost" data-act="cart" data-id="${book.bookId}">장바구니</button>
@@ -250,10 +391,7 @@
     window.PRODUCT = {
         id: ${book.bookId},
         price: ${book.price},
-        discountedPrice: <c:choose>
-            <c:when test="${empty book.discountedPrice}">null</c:when>
-        <c:otherwise>${book.discountedPrice}</c:otherwise>
-        </c:choose>
+        discountedPrice: ${empty book.discountedPrice ? 'null' : book.discountedPrice}
     };
 </script>
 

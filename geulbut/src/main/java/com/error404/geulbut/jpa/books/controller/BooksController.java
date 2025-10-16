@@ -1,6 +1,7 @@
 package com.error404.geulbut.jpa.books.controller;
 
 import com.error404.geulbut.common.MapStruct;
+import com.error404.geulbut.jpa.authors.service.AuthorsService;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import com.error404.geulbut.jpa.books.service.BooksService;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import java.util.Map;
-import java.util.List;
+
+import java.util.*;
 import java.util.Map;
 
 
@@ -28,6 +29,7 @@ public class BooksController {
     private final UsersService usersService;
     private final BooksRepository booksRepository;
     private final MapStruct mapStruct;
+    private final AuthorsService authorsService;
 
 
 
@@ -43,6 +45,29 @@ public class BooksController {
 
         BooksDto book = booksService.findDetailByBookId(bookId);
         model.addAttribute("book", book);
+
+        // 저자 정보 + 같은 작가의 다른 도서 (있을때만)
+        if (book.getAuthorId() != null) {
+            var author = authorsService.findAuthorsById(book.getAuthorId());
+            model.addAttribute("author", author);
+
+            // ✅ 가변 리스트로 복사해서 조작
+            List<BooksDto> moreByAuthor = new ArrayList<>(
+                    Optional.ofNullable(authorsService.findBooksByAuthorId(book.getAuthorId()))
+                            .orElseGet(List::of) // null 방지
+            );
+
+            // 현재 도서 제외
+            moreByAuthor.removeIf(b -> Objects.equals(b.getBookId(), bookId));
+
+            // 최대 4권만 (subList도 다시 복사해서 불변/뷰 리스트 이슈 방지)
+            if (moreByAuthor.size() > 4) {
+                moreByAuthor = new ArrayList<>(moreByAuthor.subList(0, 4));
+            }
+
+            model.addAttribute("moreByAuthor", moreByAuthor);
+        }
+
 
         // 로그인 사용자 내려주기 (모달에 user.* 바인딩)
         if (authentication != null && authentication.isAuthenticated()) {
