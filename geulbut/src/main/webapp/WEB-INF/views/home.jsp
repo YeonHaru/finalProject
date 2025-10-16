@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="/css/home.css">
 
+    <!-- 🔹 CSRF 토큰 메타 태그 -->
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
-
-
-
 <div class="page">
     <!-- 편집장의 선택 섹션 -->
     <section class="editor-choice-section">
@@ -97,16 +97,14 @@
                         <!-- 책 이미지를 눌렀을 때 bookId 기반 디테일 페이지 -->
                         <a href="${pageContext.request.contextPath}/book/${data.bookId}" class="new-book-link">
                             <div class="new-book-image">
-                                <img
-                                        src="<c:choose>
-                                     <c:when test='${not empty data.imgUrl}'>
-                                         ${data.imgUrl}
-                                     </c:when>
-                                     <c:otherwise>
-                                         /images/thumb_ing.gif
-                                     </c:otherwise>
-                                 </c:choose>"
-                                        alt="${fn:escapeXml(data.title)}">
+                                <c:choose>
+                                    <c:when test="${not empty data.imgUrl}">
+                                        <img src="${data.imgUrl}" alt="${fn:escapeXml(data.title)}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="/images/thumb_ing.gif" alt="${fn:escapeXml(data.title)}">
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </a>
 
@@ -145,22 +143,38 @@
         <div class="tab-content" id="trending-content">
             <div class="trending-grid">
                 <c:forEach var="data" items="${randomBooks}">
+                    <c:url var="detailUrl" value="/book/${data.bookId}"/>
+
                     <div class="trending-card">
+                        <!-- 배지 -->
                         <div class="trending-badge hot">HOT</div>
-                        <div class="trending-image">
-                            <img src="<c:choose>
-                                 <c:when test='${not empty data.imgUrl}'>
-                                     ${data.imgUrl}
-                                 </c:when>
-                                 <c:otherwise>
-                                     /images/thumb_ing.gif
-                                 </c:otherwise>
-                             </c:choose>"
-                                 alt="${fn:escapeXml(data.title)}">
-                            <div class="trending-rank">-</div> <!-- 순위는 필요시 제거 -->
-                        </div>
-                        <h3 class="trending-title">지금 뜨는 소설</h3>
-                        <p class="trending-author">인기작가</p>
+
+                        <!-- 이미지 클릭 시 상세 페이지 이동 -->
+                        <a href="${detailUrl}" class="trending-book-link" aria-label="${fn:escapeXml(data.title)} 상세보기">
+                            <div class="trending-image">
+                                <c:choose>
+                                    <c:when test="${not empty data.imgUrl}">
+                                        <img src="${data.imgUrl}" alt="${fn:escapeXml(data.title)}"
+                                             onerror="this.src='${pageContext.request.contextPath}/images/thumb_ing.gif'">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/images/thumb_ing.gif"
+                                             alt="기본 이미지">
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="trending-rank">-</div> <!-- 순위 필요시 표시 -->
+                            </div>
+                        </a>
+
+                        <!-- 제목 클릭 시 상세 페이지 이동 -->
+                        <h3 class="trending-title">
+                            <a href="${detailUrl}"><c:out value="${data.title}"/></a>
+                        </h3>
+
+                        <!-- 작가 -->
+                        <p class="trending-author"><c:out value="${data.authorName != null ? data.authorName : '인기작가'}"/></p>
+
+                        <!-- 화제 지수 -->
                         <div class="trending-stats">
                             <h4 class="stats-title">화제 지수</h4>
                             <div class="stats-info">
@@ -168,6 +182,8 @@
                                 <div class="stats-trend">↗ 250%</div>
                             </div>
                         </div>
+
+                        <!-- 별점 -->
                         <div class="trending-rating">
                             <span class="star">★</span>
                             <span class="star">★</span>
@@ -181,82 +197,67 @@
             </div>
         </div>
 
-
         <!-- 지금 핫딜중 컨텐츠 -->
         <div class="tab-content" id="hotdeal-content">
             <div class="hotdeal-grid">
                 <c:forEach var="data" items="${hotdeal}">
                     <!-- 핫딜 카드 1 -->
+                    <c:url var="detailUrl" value="/book/${data.bookId}"/>
                     <div class="hotdeal-card">
-                        <div class="hotdeal-badge discount-30"><c:set var="discountRate"
-                                                                      value="${(data.price - data.discounted_price) * 100 / data.price}"/>
 
+                        <!-- 할인 배지 -->
+                        <div class="hotdeal-badge discount-30">
+                            <c:set var="discountRate" value="${(data.price - data.discounted_price) * 100 / data.price}"/>
                             할인율: <c:out value="${discountRate}"/>%
                         </div>
+
+                        <!-- 이미지 클릭 시 상세보기 이동 -->
                         <div class="hotdeal-image">
-                            <img src="https://via.placeholder.com/200x180/4facfe/ffffff?text=설민석의+조선왕조실록"
-                                 alt="설민석의 조선왕조실록">
+                            <a href="${detailUrl}" aria-label="${fn:escapeXml(data.title)} 상세보기">
+                                <c:choose>
+                                    <c:when test="${not empty data.imgUrl}">
+                                        <img src="<c:out value='${data.imgUrl}'/>"
+                                             alt="<c:out value='${data.title}'/>"
+                                             onerror="this.src='${pageContext.request.contextPath}/images/thumb_ing.gif'">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/images/thumb_ing.gif"
+                                             alt="기본 이미지">
+                                    </c:otherwise>
+                                </c:choose>
+                            </a>
                         </div>
-                        <h3 class="hotdeal-title"><c:out value="${data.title}"/></h3>
+
+                        <!-- 제목 클릭 시 상세보기 이동 -->
+                        <h3 class="hotdeal-title">
+                            <a href="${detailUrl}"><c:out value="${data.title}"/></a>
+                        </h3>
+
+                        <!-- 저자 -->
                         <p class="hotdeal-author"><c:out value="${data.name}"/></p>
+
+                        <!-- 가격 정보 -->
                         <div class="hotdeal-prices">
-                            <span class="original-price"><c:out value="${data.discounted_price}"/></span>
-                            <span class="sale-price"><c:out value="${data.price}"/></span>
+                            <span class="original-price"><c:out value="${data.price}"/></span>
+                            <span class="sale-price"><c:out value="${data.discounted_price}"/></span>
                         </div>
 
-                        <div class="hotdeal-time">장바구니🛒</div>
-
-                        <button class="hotdeal-button">구매하기</button>
+                        <!-- 장바구니 안내 -->
+                        <button class="hotdeal-time" onclick="addToCart(${data.bookId}, 1)">
+                            장바구니🛒
+                        </button>
+                        <!-- 구매 버튼 디테일페이지로 이동 후 결제모달뜨게 -->
+                        <button class="hotdeal-button"
+                                onclick="location.href='/book/${data.bookId}'">
+                            구매하기
+                        </button>
                     </div>
                 </c:forEach>
             </div>
         </div>
 
-        <!-- 추천 이벤트 컨텐츠 -->
-        <div class="tab-content" id="event-content">
-            <div class="event-grid">
-                <!-- 이벤트 카드 1 -->
-                <c:forEach var="data" items="${eventcontentsA}">
-                    <div class="event-card">
-                        <div class="event-image">
-                            <div class="event-badge">HOT</div>
-                            📷
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title"><c:out value="${data.title}"/></div>
-                            <div class="event-date"><c:out value="${data.days}"/></div>
-                            <div class="event-location"><c:out value="${data.point}"/></div>
-                            <div class="event-time"><c:out value="${data.timeInfo}"/></div>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
-        </div>
 
-        <!-- 이벤트 굿즈 컨텐츠 -->
-        <div class="tab-content" id="goods-content">
-            <div class="goods-grid">
-                <!-- 굿즈 카드 1 -->
-                <c:forEach var="data" items="${eventcontentsB}">
-                    <div class="goods-card">
-                        <div class="event-image">
-                            <div class="goods-badge badge-limited">한정</div>
-                            📷
-                        </div>
-                        <div class="goods-info">
-                            <div class="goods-title"><c:out value="${data.title}"/></div>
-                            <div class="goods-period"><c:out value="${data.days}"/></div>
-                            <div class="goods-location"><c:out value="${data.press}"/></div>
-                            <div class="goods-price">
-                                <span class="price-amount"><c:out value="${data.price}"/></span>
-                                <span class="discount-rate"><c:out value="${data.discount}"/>% 할인</span>
-                            </div>
-                        </div>
-                    </div>
-                </c:forEach>
 
-            </div>
-        </div>
 
         <!-- 이 주의 책 컨텐츠 -->
         <div class="tab-content" id="weekly-content">
@@ -311,12 +312,10 @@
         <!-- 탭 메뉴 -->
         <div class="tab-menu">
             <button class="tab-item active" onclick="showTab('editor-choice-content', '편집장의 선택')">편집장의 선택</button>
-            <button class="tab-item" onclick="showTab('new-books-content', '추천 이벤트')">추천 이벤트</button>
-            <button class="tab-item" onclick="showTab('trending-content', '이 주의 책')">이 주의 책</button>
-            <button class="tab-item" onclick="showTab('hotdeal-content', '신간 소개')">신간 소개</button>
-            <button class="tab-item" onclick="showTab('event-content', '화제의 책')">화제의 책</button>
-            <button class="tab-item" onclick="showTab('goods-content', '이벤트 굿즈')">이벤트 굿즈</button>
-            <button class="tab-item" onclick="showTab('weekly-content', '지금 핫딜중')">지금 핫딜중</button>
+            <button class="tab-item" onclick="showTab('weekly-content', '이 주의 책')">이 주의 책</button>
+            <button class="tab-item" onclick="showTab('new-books-content', '신간 소개')">신간 소개</button>
+            <button class="tab-item" onclick="showTab('trending-content', '화제의 책')">화제의 책</button>
+            <button class="tab-item" onclick="showTab('hotdeal-content', '지금 핫딜중')">지금 핫딜중</button>
         </div>
     </section>
 
@@ -327,60 +326,60 @@
         </div>
     </section>
 
-    <!-- 아이콘 메뉴 -->
-    <section class="icon-menu">
-        <div class="icon-menu-grid">
-            <a href="/gift" class="icon-item gift">
-                <div class="icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2">
-                        <polyline points="20,12 20,19 4,19 4,12"></polyline>
-                        <rect x="2" y="5" width="20" height="7"></rect>
-                        <line x1="12" y1="22" x2="12" y2="5"></line>
-                        <path d="m9,5 A3,3 0 0,1 6,2 A3,3 0 0,1 9,5 m6,0 A3,3 0 0,0 18,2 A3,3 0 0,0 15,5"></path>
-                    </svg>
-                </div>
-                <span class="icon-label">기프트카드</span>
-            </a>
-            <a href="/discount" class="icon-item discount">
-                <div class="icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38a169" stroke-width="2">
-                        <circle cx="8" cy="8" r="6"></circle>
-                        <path d="m18.09 10.37 1.51 1.51c.39.39.39 1.02 0 1.41l-8.94 8.94c-.39.39-1.02.39-1.41 0l-1.51-1.51"></path>
-                        <path d="m8 8 6 6"></path>
-                        <path d="m7 7h.01"></path>
-                        <path d="m17 17h.01"></path>
-                    </svg>
-                </div>
-                <span class="icon-label">할인혜택</span>
-            </a>
-            <a href="/recommended" class="icon-item event">
-                <div class="icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d69e2e" stroke-width="2">
-                        <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>
-                    </svg>
-                </div>
-                <span class="icon-label">이벤트</span>
-            </a>
-            <a href="/bestseller" class="icon-item bestseller">
-                <div class="icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3182ce" stroke-width="2">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                </div>
-                <span class="icon-label">베스트셀러</span>
-            </a>
-            <a href="/review" class="icon-item review">
-                <div class="icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#805ad5" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        <path d="M8 9h8"></path>
-                        <path d="M8 13h6"></path>
-                    </svg>
-                </div>
-                <span class="icon-label">리뷰·추천</span>
-            </a>
-        </div>
-    </section>
+    <%--    <!-- 아이콘 메뉴 -->--%>
+    <%--    <section class="icon-menu">--%>
+    <%--        <div class="icon-menu-grid">--%>
+    <%--            <a href="/gift" class="icon-item gift">--%>
+    <%--                <div class="icon-wrapper">--%>
+    <%--                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2">--%>
+    <%--                        <polyline points="20,12 20,19 4,19 4,12"></polyline>--%>
+    <%--                        <rect x="2" y="5" width="20" height="7"></rect>--%>
+    <%--                        <line x1="12" y1="22" x2="12" y2="5"></line>--%>
+    <%--                        <path d="m9,5 A3,3 0 0,1 6,2 A3,3 0 0,1 9,5 m6,0 A3,3 0 0,0 18,2 A3,3 0 0,0 15,5"></path>--%>
+    <%--                    </svg>--%>
+    <%--                </div>--%>
+    <%--                <span class="icon-label">기프트카드</span>--%>
+    <%--            </a>--%>
+    <%--            <a href="/discount" class="icon-item discount">--%>
+    <%--                <div class="icon-wrapper">--%>
+    <%--                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38a169" stroke-width="2">--%>
+    <%--                        <circle cx="8" cy="8" r="6"></circle>--%>
+    <%--                        <path d="m18.09 10.37 1.51 1.51c.39.39.39 1.02 0 1.41l-8.94 8.94c-.39.39-1.02.39-1.41 0l-1.51-1.51"></path>--%>
+    <%--                        <path d="m8 8 6 6"></path>--%>
+    <%--                        <path d="m7 7h.01"></path>--%>
+    <%--                        <path d="m17 17h.01"></path>--%>
+    <%--                    </svg>--%>
+    <%--                </div>--%>
+    <%--                <span class="icon-label">할인혜택</span>--%>
+    <%--            </a>--%>
+    <%--            <a href="/recommended" class="icon-item event">--%>
+    <%--                <div class="icon-wrapper">--%>
+    <%--                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d69e2e" stroke-width="2">--%>
+    <%--                        <path d="M9 11H3v8h6m11-8h-6v8h6m-7-14v8m-5-5 5 5 5-5"></path>--%>
+    <%--                    </svg>--%>
+    <%--                </div>--%>
+    <%--                <span class="icon-label">이벤트</span>--%>
+    <%--            </a>--%>
+    <%--            <a href="/bestseller" class="icon-item bestseller">--%>
+    <%--                <div class="icon-wrapper">--%>
+    <%--                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3182ce" stroke-width="2">--%>
+    <%--                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>--%>
+    <%--                    </svg>--%>
+    <%--                </div>--%>
+    <%--                <span class="icon-label">베스트셀러</span>--%>
+    <%--            </a>--%>
+    <%--            <a href="/review" class="icon-item review">--%>
+    <%--                <div class="icon-wrapper">--%>
+    <%--                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#805ad5" stroke-width="2">--%>
+    <%--                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>--%>
+    <%--                        <path d="M8 9h8"></path>--%>
+    <%--                        <path d="M8 13h6"></path>--%>
+    <%--                    </svg>--%>
+    <%--                </div>--%>
+    <%--                <span class="icon-label">리뷰·추천</span>--%>
+    <%--            </a>--%>
+    <%--        </div>--%>
+    <%--    </section>--%>
 
     <!-- 이달의 주목도서 -->
 
@@ -936,7 +935,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        /*** === 편집장의 선택 (탭 자동 슬라이드) === ***/
+        /*** === 탭 자동 슬라이드 === ***/
         let currentTabIndex = 0;
         let autoSlideInterval = null;
         let isPlaying = false;
@@ -947,29 +946,23 @@
 
         const tabContents = [
             'editor-choice-content',
-            'event-content',
             'weekly-content',
             'new-books-content',
             'trending-content',
-            'goods-content',
             'hotdeal-content'
         ];
 
         const tabTexts = [
             '편집장의 선택',
-            '추천 이벤트',
             '이 주의 책',
             '신간 소개',
             '화제의 책',
-            '이벤트 굿즈',
             '지금 핫딜중'
         ];
 
         function showTabContent(tabIndex) {
             tabItems.forEach(t => t.classList.remove('active'));
-            if (tabItems[tabIndex]) {
-                tabItems[tabIndex].classList.add('active');
-            }
+            if (tabItems[tabIndex]) tabItems[tabIndex].classList.add('active');
 
             tabContents.forEach(contentId => {
                 const content = document.getElementById(contentId);
@@ -986,9 +979,7 @@
             }
 
             const sectionTitle = document.getElementById('section-title');
-            if (sectionTitle) {
-                sectionTitle.textContent = tabTexts[tabIndex];
-            }
+            if (sectionTitle) sectionTitle.textContent = tabTexts[tabIndex];
 
             currentTabIndex = tabIndex;
         }
@@ -1007,8 +998,10 @@
             if (!isPlaying) {
                 isPlaying = true;
                 autoSlideInterval = setInterval(nextTabSlide, autoSlideDelay);
-                playButton.classList.remove('playing');
-                playButton.classList.add('paused');
+                if (playButton) {
+                    playButton.classList.remove('playing');
+                    playButton.classList.add('paused');
+                }
             }
         }
 
@@ -1017,49 +1010,38 @@
                 isPlaying = false;
                 clearInterval(autoSlideInterval);
                 autoSlideInterval = null;
-                playButton.classList.remove('paused');
-                playButton.classList.add('playing');
+                if (playButton) {
+                    playButton.classList.remove('paused');
+                    playButton.classList.add('playing');
+                }
             }
         }
 
         if (playButton) {
             playButton.addEventListener('click', function () {
-                if (isPlaying) {
-                    stopAutoSlide();
-                } else {
-                    startAutoSlide();
-                }
+                if (isPlaying) stopAutoSlide();
+                else startAutoSlide();
             });
         }
 
         if (tabItems.length > 0) {
             tabItems.forEach((tab, index) => {
                 tab.addEventListener('click', function () {
-                    if (isPlaying) {
-                        stopAutoSlide();
-                    }
+                    if (isPlaying) stopAutoSlide();
                     showTabContent(index);
                 });
             });
         }
 
-        // === 탭용 전역 함수 등록 ===
-        window.nextTab = function () {
-            if (isPlaying) stopAutoSlide();
-            nextTabSlide();
-        };
-
-        window.prevTab = function () {
-            if (isPlaying) stopAutoSlide();
-            prevTabSlide();
-        };
+        // 전역 탭 함수 노출
+        window.showTab = showTabContent;
+        window.nextTab = nextTabSlide;
+        window.prevTab = prevTabSlide;
 
         showTabContent(0);
-        setTimeout(() => {
-            startAutoSlide();
-        }, 1000);
+        setTimeout(startAutoSlide, 1000);
 
-        /*** === 큰 광고 배너 슬라이드 === ***/
+        /*** === 큰 배너 슬라이드 === ***/
         let currentBannerSlide = 0;
         const totalBannerSlides = 3;
         let bannerInterval = null;
@@ -1067,110 +1049,143 @@
 
         function updateBannerSlider() {
             const sliderTrack = document.getElementById('sliderTrack');
-            if (sliderTrack) {
-                const translateX = -currentBannerSlide * 33.333;
-                sliderTrack.style.transform = `translateX(${translateX}%)`;
-            }
+            if (sliderTrack) sliderTrack.style.transform = `translateX(${-currentBannerSlide * 33.333}%)`;
         }
 
-        function nextBannerSlide() {
-            currentBannerSlide = (currentBannerSlide + 1) % totalBannerSlides;
-            updateBannerSlider();
-        }
-
-        function prevBannerSlide() {
-            currentBannerSlide = (currentBannerSlide - 1 + totalBannerSlides) % totalBannerSlides;
-            updateBannerSlider();
-        }
+        function nextBannerSlide() { currentBannerSlide = (currentBannerSlide + 1) % totalBannerSlides; updateBannerSlider(); }
+        function prevBannerSlide() { currentBannerSlide = (currentBannerSlide - 1 + totalBannerSlides) % totalBannerSlides; updateBannerSlider(); }
 
         function startBannerAutoSlide() {
-            bannerInterval = setInterval(() => {
-                if (!userInteracting) {
-                    nextBannerSlide();
-                }
-            }, 4000);
+            bannerInterval = setInterval(() => { if (!userInteracting) nextBannerSlide(); }, 4000);
         }
 
-        function stopBannerAutoSlide() {
-            if (bannerInterval) {
-                clearInterval(bannerInterval);
-                bannerInterval = null;
+        function stopBannerAutoSlide() { if (bannerInterval) { clearInterval(bannerInterval); bannerInterval = null; } }
+        function resetBannerAutoSlide() { stopBannerAutoSlide(); userInteracting = false; setTimeout(startBannerAutoSlide, 3000); }
+
+        window.nextBanner = function () { userInteracting = true; stopBannerAutoSlide(); nextBannerSlide(); resetBannerAutoSlide(); }
+        window.prevBanner = function () { userInteracting = true; stopBannerAutoSlide(); prevBannerSlide(); resetBannerAutoSlide(); }
+
+        setTimeout(startBannerAutoSlide, 2000);
+
+        /*** === 핫딜 / 장바구니 버튼 === ***/
+        async function addToCart(bookId, qty = 1) {
+            if (!Number.isFinite(bookId)) return alert('도서 ID가 없습니다.');
+
+            const CTX = (typeof window.CONTEXT_PATH !== 'undefined'
+                ? window.CONTEXT_PATH
+                : (typeof pageContext !== 'undefined' && pageContext?.request?.contextPath) || '');
+            const URL = CTX + '/cart'; // 장바구니 전용
+
+            const CSRF_TOKEN  = document.querySelector('meta[name="_csrf"]')?.getAttribute('content') || null;
+            const CSRF_HEADER = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+
+            try {
+                const headers = new Headers();
+                headers.set('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                if (CSRF_TOKEN) headers.set(CSRF_HEADER, CSRF_TOKEN);
+
+                const body = new URLSearchParams();
+                body.append('bookId', bookId);
+                body.append('quantity', qty);
+
+                const res = await fetch(URL, { method: 'POST', headers, body });
+
+                if (res.status === 401) { location.href = CTX + '/users/login'; return; }
+
+                const data = await res.json();
+                if (data.status === 'ok') toast('장바구니에 담겼습니다!');
+                else toast('장바구니 담기 실패: ' + (data.message || '알 수 없는 오류'));
+            } catch (err) {
+                console.error('장바구니 추가 오류', err);
+                toast('장바구니 담기 실패: 네트워크 오류');
             }
         }
 
-        function resetBannerAutoSlide() {
-            stopBannerAutoSlide();
-            userInteracting = false;
-            setTimeout(() => {
-                startBannerAutoSlide();
-            }, 3000);
+        /*** === 핫딜 / 구매 버튼 === ***/
+        async function buyBook(bookId, qty = 1) {
+            if (!Number.isFinite(bookId)) return alert('도서 ID가 없습니다.');
+
+            const CTX = (typeof window.CONTEXT_PATH !== 'undefined'
+                ? window.CONTEXT_PATH
+                : (typeof pageContext !== 'undefined' && pageContext?.request?.contextPath) || '');
+            const URL = CTX + '/orders/buy-now'; // 구매 전용
+
+            try {
+                // 상세페이지로 이동 + 결제 모달 열기
+                if (window.PRODUCT && window.PRODUCT.id === bookId && window.Orders?.openOrderInfoModal) {
+                    // 이미 상세페이지에 있다면 바로 모달
+                    const total = Number((window.PRODUCT?.discountedPrice ?? window.PRODUCT?.price) ?? 0);
+                    if (Number.isNaN(total) || total <= 0) return alert('결제 금액을 계산할 수 없습니다.');
+                    Orders.openOrderInfoModal(total);
+                    return;
+                }
+
+                // 상세페이지로 이동하고 URL 파라미터로 자동 구매 모드 전달
+                const detailUrl = document.querySelector(`.hotdeal-card[data-book-id="${bookId}"]`)?.dataset.detailUrl;
+                if (detailUrl) {
+                    const url = new URL(detailUrl, window.location.origin);
+                    url.searchParams.set('autoBuy', 'true');
+                    window.location.href = url.toString();
+                }
+            } catch (err) {
+                console.error('구매 오류', err);
+                alert('구매 처리 중 오류가 발생했습니다.');
+            }
         }
 
-        // 전역 등록 (HTML 버튼에서 호출 가능)
-        window.nextBanner = function () {
-            userInteracting = true;
-            stopBannerAutoSlide();
-            nextBannerSlide();
-            resetBannerAutoSlide();
-        }
+// 전역 노출
+        window.addToCart = addToCart;
+        window.buyBook = buyBook;
 
-        window.prevBanner = function () {
-            userInteracting = true;
-            stopBannerAutoSlide();
-            prevBannerSlide();
-            resetBannerAutoSlide();
-        }
+// 장바구니 버튼
+        document.querySelectorAll('.hotdeal-card .hotdeal-button.add-cart').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const bookId = Number(this.dataset.bookId);
+                addToCart(bookId, 1);
+            });
+        });
 
-        // 배너 자동 시작
-        setTimeout(() => {
-            startBannerAutoSlide();
-        }, 2000);
+// 구매 버튼
+        document.querySelectorAll('.hotdeal-card .hotdeal-button.buy-now').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const bookId = Number(this.dataset.bookId);
+                buyBook(bookId);
+            });
+        });
+
+// 카드 전체 클릭 → 상세페이지 이동 (버튼 클릭이면 무시)
+        document.querySelectorAll('.hotdeal-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.hotdeal-button')) return;
+                const detailUrl = this.dataset.detailUrl;
+                if (detailUrl) window.location.href = detailUrl;
+            });
+        });
+
+// 간단한 토스트 함수
+        function toast(msg) {
+            let t = document.getElementById('_toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = '_toast';
+                Object.assign(t.style, {
+                    position: 'fixed', left: '50%', bottom: '28px', transform: 'translateX(-50%)',
+                    padding: '10px 14px', borderRadius: '10px', background: 'rgba(0,0,0,.78)',
+                    color: '#fff', fontWeight: '600', zIndex: '9999', transition: 'opacity .25s ease'
+                });
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            t.style.opacity = '1';
+            setTimeout(() => (t.style.opacity = '0'), 1400);
+        }
 
         console.log('BookStore 웹사이트가 성공적으로 로드되었습니다!');
     });
-    /*** === 2칸 프로모션 슬라이드 (active 토글 방식) === ***/
-    (function initPromotionSliderByActive() {
-        const pages = Array.from(document.querySelectorAll('.promotion-page'));
-        const prevBtn = document.getElementById('promoPrevBtn');
-        const nextBtn = document.getElementById('promoNextBtn');
-        if (!pages.length || !prevBtn || !nextBtn) return;
-
-        // 현재 인덱스 계산 (없으면 0)
-        let idx = Math.max(0, pages.findIndex(p => p.classList.contains('active')));
-        if (idx === -1) {
-            idx = 0;
-            pages[0].classList.add('active');
-        }
-
-        const show = (n) => {
-            pages[idx].classList.remove('active');
-            idx = (n + pages.length) % pages.length;   // 순환
-            pages[idx].classList.add('active');
-        };
-
-        // 버튼
-        prevBtn.addEventListener('click', () => {
-            show(idx - 1);
-            bounce();
-        });
-        nextBtn.addEventListener('click', () => {
-            show(idx + 1);
-            bounce();
-        });
-
-        // 마우스 오버 시 일시정지(선택)
-        const container = document.querySelector('.promotion-slider');
-        if (container) {
-            container.addEventListener('mouseenter', stop);
-            container.addEventListener('mouseleave', () => {
-                if (!timer) start();
-            });
-        }
-
-        start(); // 시작
-    })();
-
 </script>
+
 <jsp:include page="/common/footer.jsp"></jsp:include>
 </body>
 </html>
