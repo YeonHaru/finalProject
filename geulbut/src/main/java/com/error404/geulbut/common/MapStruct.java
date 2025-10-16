@@ -20,7 +20,9 @@ import com.error404.geulbut.jpa.orders.dto.OrdersDto;
 import com.error404.geulbut.jpa.orders.entity.Orders;
 import com.error404.geulbut.jpa.publishers.dto.PublishersDto;
 import com.error404.geulbut.jpa.publishers.entity.Publishers;
+import com.error404.geulbut.jpa.reviews.dto.ReviewsDto;
 import com.error404.geulbut.jpa.users.dto.*;
+import com.error404.geulbut.jpa.reviews.entity.Reviews;
 import com.error404.geulbut.jpa.users.entity.Users;
 import org.mapstruct.*;
 
@@ -125,6 +127,14 @@ public interface MapStruct {
     @Mapping(target = "publisher", ignore = true)
     @Mapping(target = "category", ignore = true)
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
+
+    // MapStruct.java
+    @Mapping(target = "reviewId", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    Reviews toEntity(ReviewsDto dto);
+
+    ReviewsDto toDto(Reviews entity);
 
 
 
