@@ -21,6 +21,9 @@
 </head>
 <body>
 <jsp:include page="/common/header.jsp"></jsp:include>
+
+
+
 <div class="page">
     <!-- 편집장의 선택 섹션 -->
     <section class="editor-choice-section">
