@@ -1,5 +1,7 @@
 package com.error404.geulbut.jpa.reviews.entity;
 
+import com.error404.geulbut.jpa.books.entity.Books;
+import com.error404.geulbut.jpa.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,8 +17,17 @@ public class Reviews {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
-    private Long bookId;
-    private String userId;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "dno")           // DB FK 컬럼명 작성
+//    private Dept dept;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Books book;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
     private int rating;
 
     @Column(length = 2000)

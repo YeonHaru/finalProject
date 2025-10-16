@@ -128,12 +128,17 @@ public interface MapStruct {
     @Mapping(target = "category", ignore = true)
     void updateFromDto(BooksDto dto, @MappingTarget Books books);
 
-    // MapStruct.java
+    // Reviews
+
     @Mapping(target = "reviewId", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "user.userId", source = "userId")
+    @Mapping(target = "book.bookId", source = "bookId")
     Reviews toEntity(ReviewsDto dto);
 
+    @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "bookId", source = "book.bookId")
     ReviewsDto toDto(Reviews entity);
 
 
