@@ -134,7 +134,7 @@ public class WeatherService {
             List<WeatherDto> list = getShortWeather(nx, ny, baseDate, baseTime);
 
             if (list.isEmpty()) {
-                // 🔹 API 실패 시 가짜 데이터 생성
+                // 데이터센터 화재로 인해 랜덤데이터 생성
                 String tmp = String.valueOf(20 + random.nextInt(6));  // 20~25°C
                 String pty = String.valueOf(random.nextInt(5));        // 0~4
                 String sky = String.valueOf(1 + random.nextInt(4));    // 1~4
