@@ -174,24 +174,7 @@
                         <!-- 작가 -->
                         <p class="trending-author"><c:out value="${data.authorName != null ? data.authorName : '인기작가'}"/></p>
 
-                        <!-- 화제 지수 -->
-                        <div class="trending-stats">
-                            <h4 class="stats-title">화제 지수</h4>
-                            <div class="stats-info">
-                                <div class="stats-views">🔥 15.2K 언급</div>
-                                <div class="stats-trend">↗ 250%</div>
-                            </div>
-                        </div>
 
-                        <!-- 별점 -->
-                        <div class="trending-rating">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="rating-number">(4.7)</span>
-                        </div>
                     </div>
                 </c:forEach>
             </div>
@@ -455,7 +438,6 @@
             </div>
 
             <div class="view-all-link">
-                <a href="/featured-books">⏰ 이달의 추천도서 전체보기</a>
             </div>
         </c:if>
     </section>
@@ -757,10 +739,9 @@
             <c:forEach var="b" items="${weeklySpecials}">
                 <c:set var="rate" value="${(b.price - b.discountedPrice) * 100.0 / b.price}"/>
                 <c:url var="detailUrl" value="/book/${b.bookId}"/>
-
                 <div class="special-book-card">
                     <div class="special-badges">
-                        <div class="discount-percent">% 70%</div>
+                        <c:set var="discountRate" value="${(data.price - data.discounted_price) * 100 / data.price}" />
                         <div class="days-left">2일 남음</div>
                     </div>
 
@@ -791,7 +772,7 @@
                 <span class="notice-icon">⚠️</span>
                 특가 할인은 매주 일요일 자정에 종료됩니다
             </div>
-            <button class="view-all-special-btn">전체 특가 보기</button>
+
         </div>
     </section>
 
