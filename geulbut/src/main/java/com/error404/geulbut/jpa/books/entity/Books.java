@@ -68,6 +68,10 @@ public class Books extends BaseTimeEntity {
 
     private String isbn;
     
+//    별점
+    private Double rating;
+    private Long reviewCount;
+    
 
 //  hashtags-books 다대다 관계 관련 - 종일
     @ManyToMany
