@@ -302,8 +302,8 @@
                 <h3 class="dist-title">평점 분포</h3>
 
                 <div class="rating-head">
-                    <div class="rating-stars lg">★★★★★★★</div>
-                    <strong class="rating-avg">9.1</strong>
+                    <div class="rating-stars lg">★★★★★</div>
+                    <strong class="rating-avg">5</strong>
                 </div>
 
                 <div class="bar-row">
@@ -357,14 +357,6 @@
                 <span>/ 5.0</span>
                 <span class="rating-count">(총 389명 참여)</span>
             </div>
-
-            <!-- 리뷰 작성 버튼 (로그인 유저만) -->
-            <c:if test="${not empty user}">
-                <button class="btn-ghost sm" id="writeReviewBtn">리뷰 남기기</button>
-            </c:if>
-            <c:if test="${empty user}">
-                <p class="login-notice">로그인 후 리뷰를 작성할 수 있습니다.</p>
-            </c:if>
         </div>
 
         <!-- 한줄 리뷰 미리보기 (향후 동적 교체) -->
