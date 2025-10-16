@@ -76,6 +76,10 @@ dependencies {
 
 }
 
+// api키 보안 -> .env파일에 키 주입 후 사용
+dependencies {
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+}
 
 tasks.named('test') {
     useJUnitPlatform()
