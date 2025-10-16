@@ -363,6 +363,13 @@
 <%-- 버튼 클릭시 이동 경로 --%>
 <%--<a href="/mypage?tab=wishlist"> 위시리스트</a>--%>
 <%--<a href="/mypage?tab=cart"> 장바구니</a>--%>
+<%--주문내역 리뷰쓰기--%>
+<script>
+    function writeReview(orderId) {
+        location.href = '/reviews/write?orderId=' + orderId;
+    }
+</script>
+
 
 <jsp:include page="paymentModal.jsp"/>
 <jsp:include page="/common/footer.jsp"></jsp:include>

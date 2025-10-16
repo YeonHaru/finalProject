@@ -190,7 +190,10 @@ window.Orders = (() => {
             case 'SHIPPED':
                 return `<span class="badge bg-info text-dark">배송중</span>`;
             case 'DELIVERED':
-                return `<span class="badge bg-success">배송완료</span>`;
+                return `
+          <span class="badge bg-success">배송완료</span>
+          <button class="btn btn-sm btn-outline-primary ms-2"
+            onclick="writeReview(${id})">리뷰쓰기</button>`;
             default:
                 return `<span class="badge bg-light text-dark">알 수 없음</span>`;
         }
