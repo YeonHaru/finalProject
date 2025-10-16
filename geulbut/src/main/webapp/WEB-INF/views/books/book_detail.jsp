@@ -271,6 +271,79 @@
             </c:if>
         </section>
     </c:if>
+    <!-- ===== 통계: 성별 분포 & 평점 분포 ===== -->
+    <section class="stats-section mt-5" aria-label="구매자/평점 분포">
+        <div class="stats-grid">
+            <!-- 성별 분포 -->
+            <article class="dist-card" aria-label="구매자 성별 분포">
+                <h3 class="dist-title">구매자 분포</h3>
+
+                <div class="bar-row">
+                    <span class="bar-label">여성</span>
+                    <div class="bar-track" role="img" aria-label="여성 62.5%">
+                        <div class="bar-fill" style="--w:62.5%;" data-p="62.5%"></div>
+                    </div>
+                    <span class="bar-val">62.5%</span>
+                </div>
+
+                <div class="bar-row">
+                    <span class="bar-label">남성</span>
+                    <div class="bar-track" role="img" aria-label="남성 37.5%">
+                        <div class="bar-fill" style="--w:37.5%;" data-p="37.5%"></div>
+                    </div>
+                    <span class="bar-val">37.5%</span>
+                </div>
+
+                <p class="tiny-note mt-1">* 내부 기준(임시) 통계입니다. 실제 서비스에서는 구매 데이터/리뷰 기준으로 산출합니다.</p>
+            </article>
+
+            <!-- 평점 분포 -->
+            <article class="dist-card" aria-label="평점 분포">
+                <h3 class="dist-title">평점 분포</h3>
+
+                <div class="rating-head">
+                    <div class="rating-stars lg">★★★★★★★</div>
+                    <strong class="rating-avg">9.1</strong>
+                </div>
+
+                <div class="bar-row">
+                    <span class="bar-label">★ 5</span>
+                    <div class="bar-track" role="img" aria-label="5점 71.8%">
+                        <div class="bar-fill" style="--w:71.8%;" data-p="71.8%"></div>
+                    </div>
+                    <span class="bar-val">71.8%</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">★ 4</span>
+                    <div class="bar-track" role="img" aria-label="4점 17.9%">
+                        <div class="bar-fill" style="--w:17.9%;" data-p="17.9%"></div>
+                    </div>
+                    <span class="bar-val">17.9%</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">★ 3</span>
+                    <div class="bar-track" role="img" aria-label="3점 7.7%">
+                        <div class="bar-fill" style="--w:7.7%;" data-p="7.7%"></div>
+                    </div>
+                    <span class="bar-val">7.7%</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">★ 2</span>
+                    <div class="bar-track" role="img" aria-label="2점 0%">
+                        <div class="bar-fill" style="--w:0%;" data-p="0%"></div>
+                    </div>
+                    <span class="bar-val">0%</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">★ 1</span>
+                    <div class="bar-track" role="img" aria-label="1점 2.6%">
+                        <div class="bar-fill" style="--w:2.6%;" data-p="2.6%"></div>
+                    </div>
+                    <span class="bar-val">2.6%</span>
+                </div>
+            </article>
+        </div>
+    </section>
 
     <!-- ===== 리뷰 / 별점 ===== -->
     <section class="review-section mt-5" aria-label="독자 리뷰">
@@ -321,6 +394,7 @@
             <button type="button" class="btn-fill"  id="buyNowBtnSticky">구매하기</button>
         </div>
     </div>
+
 
     <!-- ====================== 반품 / 교환 안내 ====================== -->
     <section class="return-policy mt-4" aria-label="반품 및 교환 안내">

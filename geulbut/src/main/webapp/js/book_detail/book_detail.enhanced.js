@@ -141,3 +141,21 @@ console.log('[book_detail] enhanced: qty/total, sticky bar, image skeleton, reve
         });
     });
 })();
+
+/* ===== 8) 통계 바 애니메이션 ===== */
+const statSec = document.querySelector('.stats-section');
+if (statSec) {
+    const bars = statSec.querySelectorAll('.bar-fill');
+    bars.forEach(b => (b.style.width = '0'));  // 초기 0%
+
+    const io3 = new IntersectionObserver((ents) => {
+        if (!ents[0].isIntersecting) return;
+        bars.forEach(b => {
+            const p = b.dataset.p || getComputedStyle(b).getPropertyValue('--w') || '0%';
+            b.style.width = p.trim();
+        });
+        io3.disconnect();
+    }, { threshold: 0.2 });
+    io3.observe(statSec);
+}
+

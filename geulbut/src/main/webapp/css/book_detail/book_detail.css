@@ -409,6 +409,28 @@
     cursor: pointer;
 }
 
+/* ==== 통계 섹션 (알라딘 스타일) ==== */
+.stats-section { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; }
+.stats-grid { display:grid; gap:20px; grid-template-columns: 1fr; }
+@media (min-width: 992px){ .stats-grid { grid-template-columns: 1fr 1fr; } }
+
+.dist-card { padding:12px 8px; }
+.dist-title { font-weight:800; margin-bottom:12px; }
+
+.rating-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.rating-stars { color:#f43f8c; letter-spacing:2px; }
+.rating-stars.lg { font-size:20px; }
+.rating-avg { font-size:24px; font-weight:800; color:#f43f8c; }
+
+.bar-row { display:grid; grid-template-columns: 52px 1fr 54px; gap:10px; align-items:center; margin:8px 0; }
+.bar-label { color:#6b7280; font-size:13px; text-align:left; }
+.bar-val { color:#6b7280; font-size:13px; text-align:right; }
+
+.bar-track { position:relative; height:12px; background:#eee; border-radius:999px; overflow:hidden; }
+.bar-fill { position:absolute; left:0; top:0; bottom:0; width:0; background:#f43f8c; border-radius:999px; transition:width .9s ease; }
+
+.tiny-note { color:#6b7280; font-size:12px; }
+
 
 
 /* ===== 반응형 그리드 보완(모바일 퍼스트) ===== */
