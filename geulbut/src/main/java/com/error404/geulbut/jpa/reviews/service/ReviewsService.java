@@ -10,6 +10,7 @@ import com.error404.geulbut.jpa.reviews.entity.Reviews;
 import com.error404.geulbut.jpa.reviews.repository.ReviewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ public class ReviewsService {
     private final ErrorMsg errorMsg;
 
 
+    @Transactional
     public void saveReview(ReviewsDto reviewsDto) {
 //        JPA 저장 함수 실행 : return 값 : 저장된 객체
         Reviews reviews=mapStruct.toEntity(reviewsDto);
