@@ -300,7 +300,23 @@
 
             <!-- 주문 내역 (SSR 제거: 스켈레톤 + 렌더 타깃만 남김) -->
             <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
-                <h2 class="mb-3 pb-2 border-bottom">주문 내역</h2>
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <h2 class="m-0">주문 내역</h2>
+
+                <c:choose>
+                    <c:when test="${not empty sessionScope.lastOrderId}">
+                        <c:url var="dlvUrl" value="/orders/${sessionScope.lastOrderId}/delivery"/>
+                        <a href="${dlvUrl}" class="btn btn-outline-secondary btn-sm">배송조회</a>
+                    </c:when>
+                    <c:otherwise>
+                        <!-- 주문내역 탭으로 이동(SSR/JS 로딩 위치 유지) -->
+                        <c:url var="mypageOrdersUrl" value="/users/mypage">
+                            <c:param name="tab" value="orders"/>
+                        </c:url>
+                        <a href="${mypageOrdersUrl}" class="btn btn-outline-secondary btn-sm">배송조회</a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
 
                 <!-- 스켈레톤: JS 로딩 전 잠깐 표시 -->
                 <div id="orders-skeleton">

@@ -140,26 +140,21 @@
                                        ? delivery.ordersDto.orderId
                                        : sessionScope.lastOrderId)}"/>
 
+                    <li><a href="${ctx}/notice">공지사항</a></li>
+                    <li><a href="${ctx}/books">도서목록</a></li>
+                    <li><a href="${ctx}/authors">작가목록</a></li>
                     <li><a href="${ctx}/mypage">마이페이지</a></li>
                     <li><a href="${ctx}/logout">로그아웃</a></li>
-                    <li><a href="${ctx}/notice">공지사항</a></li>
 
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.lastOrderId}">
-                            <li><a href="<c:url value='/orders/${sessionScope.lastOrderId}/delivery'/>">배송조회</a></li>
-                        </c:when>
-                        <c:otherwise>
-                            <li><a href="${ctx}/mypage">배송조회</a></li>
-                        </c:otherwise>
-                    </c:choose>
                 </sec:authorize>
 
                 <!-- 비로그인 -->
                 <sec:authorize access="!isAuthenticated()">
+                    <li><a href="${ctx}/notice">공지사항</a></li>
+                    <li><a href="${ctx}/books">도서목록</a></li>
+                    <li><a href="${ctx}/authors">작가목록</a></li>
                     <li><a href="${ctx}/login">로그인</a></li>
                     <li><a href="${ctx}/signup">회원가입</a></li>
-                    <li><a href="${ctx}/notice">공지사항</a></li>
-                    <li><a href="${ctx}/login?redirect=%2Fmypage%2Forders">배송조회</a></li>
                 </sec:authorize>
 
             </ul>
@@ -188,14 +183,6 @@
                 <button type="submit" class="btn-search">검색</button>
             </form>
         </div>
-
-        <!-- 하단 메뉴 -->
-        <nav class="site-header__nav site-header__nav--bottom" aria-label="Sub">
-            <ul class="site-header__menu site-header__menu--bottom">
-                <li><a href="${ctx}/books">도서목록</a></li>
-                <li><a href="${ctx}/authors">작가목록</a></li>
-            </ul>
-        </nav>
 
         <!-- 날씨/미세먼지 ticker -->
         <div id="weather-dust-header">불러오는 중...</div>
