@@ -433,6 +433,98 @@
     color: #2C3E50;
 }
 
+/* ================= Book All (검색/목록) =================
+   - 전역 유틸과 충돌 최소화: .bookall-xxx 접두, .srch-xxx는 카드 내부만
+   - 모바일 퍼스트, 가을톤 팔레트(절제된)
+========================================================= */
+
+:root{
+    --ba-bg:#faf7f3;     /* 배경(따뜻한 아이보리) */
+    --ba-surface:#ffffff;
+    --ba-border:#e9e5de;
+    --ba-text:#2b2f33;
+    --ba-muted:#7a7f85;
+    --ba-accent:#6f835d; /* 세이지 그린 */
+    --ba-accent-2:#b7815c; /* 소프트 브라운 */
+}
+
+.page{ background:var(--ba-bg); }
+
+.bookall-wrap{ max-width:1200px; margin:0 auto; }
+.bookall-toolbar{ display:flex; gap:10px; align-items:center; padding:10px 0; }
+.bookall-toolbar select, .bookall-toolbar button{
+    border:1px solid var(--ba-border); background:#fff; border-radius:8px; padding:6px 10px;
+}
+.bookall-toolbar .apply{ background:var(--ba-accent); color:#fff; border-color:var(--ba-accent); }
+
+.srch-list{ display:grid; gap:14px; }
+
+/* ===== 카드 ===== */
+.srch-item{
+    display:grid; grid-template-columns: 28px 120px 1fr;
+    gap:16px; align-items:start;
+    background:var(--ba-surface); border:1px solid var(--ba-border);
+    border-radius:12px; padding:16px;
+    box-shadow:0 2px 6px rgba(0,0,0,.03);
+    transition:transform .12s ease, box-shadow .12s ease;
+}
+.srch-item:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.06); }
+
+.srch-col-check{ display:flex; justify-content:center; padding-top:6px; }
+.srch-col-check input{ width:18px; height:18px; accent-color:var(--ba-accent); cursor:pointer; }
+
+.srch-thumb{ width:120px; height:160px; border-radius:8px; overflow:hidden; border:1px solid var(--ba-border); background:#f6f6f6; position:relative; }
+.srch-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.rank-badge{
+    position:absolute; top:6px; left:6px; height:28px; min-width:28px; padding:0 8px;
+    display:flex; align-items:center; justify-content:center; border-radius:999px; font-size:12px; font-weight:800;
+    background:linear-gradient(135deg,#ffe0a6,#ffc278); color:#4b3423; box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+
+.srch-info{ display:flex; flex-direction:column; gap:8px; min-width:0; }
+.srch-title{ font-size:18px; font-weight:800; line-height:1.45; }
+.srch-title a{ color:var(--ba-text); text-decoration:none; }
+.srch-title a:hover{ color:var(--ba-accent); }
+
+.srch-info .meta{ color:var(--ba-muted); font-size:14px; }
+.srch-info .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+.chip{ height:26px; display:inline-flex; align-items:center; padding:0 10px; border-radius:999px; border:1px solid var(--ba-border); background:#fff; font-size:12px; color:var(--ba-muted); }
+.chip.tag{ background:#f2efe9; color:#7b695a; border-color:#e7dfd4; text-decoration:none; }
+.chip.tag:hover{ background:#e9e3da; color:#5a4a3d; }
+
+.price-row{ display:flex; align-items:center; gap:8px; }
+.price-ori{ text-decoration:line-through; color:#a7a7a7; font-size:13px; }
+.price-now{ color:#b45757; font-weight:800; font-size:18px; }
+.price-disc{ font-size:12px; font-weight:700; color:#b45757; background:#ffeaea; padding:2px 8px; border-radius:999px; }
+
+.srch-actions{ display:flex; gap:8px; margin-top:auto; }
+.btn{ padding:10px 14px; border-radius:8px; border:1.5px solid var(--ba-border); background:#fff; font-weight:700; cursor:pointer; }
+.btn.fill{ background:var(--ba-accent); border-color:var(--ba-accent); color:#fff; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+
+/* 페이징 */
+.paging{ display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+.paging a, .paging span{
+    min-width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--ba-border); border-radius:8px; background:#fff; text-decoration:none; color:#333; font-weight:600;
+}
+.paging .is-active{ background:var(--ba-accent); border-color:var(--ba-accent); color:#fff; }
+
+/* 반응형 */
+@media (min-width:768px){
+    .srch-item{ grid-template-columns: 28px 140px 1fr; padding:18px; }
+    .srch-thumb{ width:140px; height:186px; }
+}
+@media (min-width:1024px){
+    .srch-item{ grid-template-columns: 28px 160px 1fr; }
+    .srch-thumb{ width:160px; height:212px; }
+}
+
+/* 최초 진입 부드러운 페이드업(한 번만) */
+.soft-fade-up{ animation:softFade .5s ease both; }
+@keyframes softFade{ from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none} }
+
+
 
 /* 태블릿(1024px 이하) : 4칸 */
 @media (max-width: 1024px) {
