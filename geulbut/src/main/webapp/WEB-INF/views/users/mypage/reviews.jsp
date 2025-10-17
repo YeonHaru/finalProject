@@ -84,7 +84,7 @@
         <!-- 책 정보 -->
         <div class="book-info">
             <img src="<c:out value='${item.imageUrl}'/>" alt="<c:out value='${item.title}'/>">
-            <div class="book-title"><c:out value="${item.title}"/></div>
+            <div class="book-title ml-5"><c:out value="${item.title}"/></div>
         </div>
 
         <!-- 별점 -->
