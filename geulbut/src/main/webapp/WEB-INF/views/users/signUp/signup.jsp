@@ -33,14 +33,25 @@
             </div>
 
             <div class="input-group">
-                <input id="password" type="password" name="password" placeholder="비밀번호"/>
+                <input id="password"
+                       type="password"
+                       name="password"
+                       placeholder="비밀번호"
+                       autocomplete="new-password"
+                />
                 <span id="passwordMsg" class="help-msg"></span>
             </div>
 
             <div class="input-group">
-                <input id="password2" type="password" name="passwordConfirm" placeholder="비밀번호 확인"/>
+                <input id="password2"
+                       type="password"
+                       name="passwordConfirm"
+                       placeholder="비밀번호 확인"
+                       autocomplete="new-password"
+                />
                 <span id="password2Msg" class="help-msg"></span>
             </div>
+
 
             <div class="input-group">
                 <input type="text" name="name" placeholder="이름" value="${usersSignupDto.name}"/>
