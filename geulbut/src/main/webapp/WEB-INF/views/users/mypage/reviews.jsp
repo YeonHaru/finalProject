@@ -163,7 +163,7 @@
                     }
                     if (res.ok && body === 'success') {
                         alert('리뷰가 등록되었습니다.');
-                        location.href = '/mypage';
+                        location.href = '/books/' + bookId + '#reviews';
                     } else {
                         // 서버가 HTML(로그인 페이지) 등을 준 경우 대비
                         alert('해당 주문에 대해선 리뷰를 이미 작성하셨습니다');

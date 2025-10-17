@@ -303,45 +303,31 @@
 
                 <div class="rating-head">
                     <div class="rating-stars lg">★★★★★</div>
-                    <strong class="rating-avg">5</strong>
+                    <strong class="rating-avg">
+                        <fmt:formatNumber value="${rv.avg}" minFractionDigits="1" maxFractionDigits="2"/>
+                    </strong>
                 </div>
 
-                <div class="bar-row">
-                    <span class="bar-label">★ 5</span>
-                    <div class="bar-track" role="img" aria-label="5점 71.8%">
-                        <div class="bar-fill" style="--w:71.8%;" data-p="71.8%"></div>
+                <c:set var="p5" value="${rv.p5()}"/>
+                <c:set var="p4" value="${rv.p4()}"/>
+                <c:set var="p3" value="${rv.p3()}"/>
+                <c:set var="p2" value="${rv.p2()}"/>
+                <c:set var="p1" value="${rv.p1()}"/>
+
+                <c:forEach var="row" items="${[5,4,3,2,1]}">
+                    <c:set var="pct" value="${row==5?p5:row==4?p4:row==3?p3:row==2?p2:p1}"/>
+                    <div class="bar-row">
+                        <span class="bar-label">★ ${row}</span>
+                        <div class="bar-track" role="img" aria-label="${row}점 ${pct}%">
+                            <div class="bar-fill" style="--w:${pct}%;" data-p="${pct}%"></div>
+                        </div>
+                        <span class="bar-val">
+                <fmt:formatNumber value="${pct}" minFractionDigits="0" maxFractionDigits="1"/>%
+            </span>
                     </div>
-                    <span class="bar-val">71.8%</span>
-                </div>
-                <div class="bar-row">
-                    <span class="bar-label">★ 4</span>
-                    <div class="bar-track" role="img" aria-label="4점 17.9%">
-                        <div class="bar-fill" style="--w:17.9%;" data-p="17.9%"></div>
-                    </div>
-                    <span class="bar-val">17.9%</span>
-                </div>
-                <div class="bar-row">
-                    <span class="bar-label">★ 3</span>
-                    <div class="bar-track" role="img" aria-label="3점 7.7%">
-                        <div class="bar-fill" style="--w:7.7%;" data-p="7.7%"></div>
-                    </div>
-                    <span class="bar-val">7.7%</span>
-                </div>
-                <div class="bar-row">
-                    <span class="bar-label">★ 2</span>
-                    <div class="bar-track" role="img" aria-label="2점 0%">
-                        <div class="bar-fill" style="--w:0%;" data-p="0%"></div>
-                    </div>
-                    <span class="bar-val">0%</span>
-                </div>
-                <div class="bar-row">
-                    <span class="bar-label">★ 1</span>
-                    <div class="bar-track" role="img" aria-label="1점 2.6%">
-                        <div class="bar-fill" style="--w:2.6%;" data-p="2.6%"></div>
-                    </div>
-                    <span class="bar-val">2.6%</span>
-                </div>
+                </c:forEach>
             </article>
+
         </div>
     </section>
 
@@ -351,22 +337,28 @@
 
         <!-- 평균 별점 -->
         <div class="rating-summary">
-            <div class="rating-stars">★★★★☆</div>
+            <div class="rating-stars">
+                <c:set var="full" value="${rv.avg >= 4.5 ? 5 : rv.avg >= 3.5 ? 4 : rv.avg >= 2.5 ? 3 : rv.avg >= 1.5 ? 2 : rv.avg > 0 ? 1 : 0}"/>
+                <c:forEach begin="1" end="${full}">★</c:forEach>
+                <c:forEach begin="1" end="${5 - full}">☆</c:forEach>
+            </div>
             <div class="rating-score">
-                <strong>4.7</strong>
+                <strong><fmt:formatNumber value="${rv.avg}" minFractionDigits="1" maxFractionDigits="2"/></strong>
                 <span>/ 5.0</span>
-                <span class="rating-count">(총 389명 참여)</span>
+                <span class="rating-count">(총 ${rv.total}명 참여)</span>
             </div>
         </div>
 
         <!-- 한줄 리뷰 미리보기 (향후 동적 교체) -->
         <div class="short-reviews">
-            <c:if test="${empty reviews}">
+            <c:if test="${rv.total == 0}">
                 <p class="no-review">아직 등록된 리뷰가 없습니다. 첫 리뷰어가 되어보세요!</p>
             </c:if>
 
-            <c:forEach var="r" items="${reviews}" begin="0" end="2">
-                <p class="review-card">📖 "${r.shortComment}"</p>
+            <c:forEach var="r" items="${reviews}">
+                <c:set var="shortText"
+                       value="${fn:length(r.content) > 60 ? fn:substring(r.content,0,60).concat('…') : r.content}" />
+                <p class="review-card">📖 "<c:out value='${shortText}'/>"</p>
             </c:forEach>
 
             <button class="btn-more" id="openReviewsBtn">+ 전체 리뷰 보기</button>

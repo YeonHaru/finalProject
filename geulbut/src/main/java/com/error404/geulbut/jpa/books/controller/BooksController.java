@@ -5,6 +5,7 @@ import com.error404.geulbut.jpa.authors.service.AuthorsService;
 import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import com.error404.geulbut.jpa.books.service.BooksService;
+import com.error404.geulbut.jpa.reviews.service.ReviewsQueryService;
 import com.error404.geulbut.jpa.users.entity.Users;
 import com.error404.geulbut.jpa.users.service.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,7 @@ public class BooksController {
     private final BooksRepository booksRepository;
     private final MapStruct mapStruct;
     private final AuthorsService authorsService;
-
-
+    private final ReviewsQueryService reviewsQueryService;
 
 
     // application.yml(or properties)에 정의된 값. 없으면 imp_test로 기본(개발 임시) 세팅
@@ -86,6 +86,12 @@ public class BooksController {
 
         // 아임포트 가맹점 코드(JS 초기화용)
         model.addAttribute("iamportCode", iamportCode);
+
+        var rv = reviewsQueryService.getSummary(bookId);
+        var recent = reviewsQueryService.getRecentShortReviews(bookId, 3);
+
+        model.addAttribute("rv", rv);
+        model.addAttribute("reviews", recent);
 
         return "books/book_detail";
     }
