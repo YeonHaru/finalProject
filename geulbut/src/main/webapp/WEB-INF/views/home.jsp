@@ -198,8 +198,7 @@
                             <span class="original-price"><fmt:formatNumber value="${data.price}" pattern="#,##0"/></span>
                             <span class="sale-price"><fmt:formatNumber value="${data.discounted_price}" pattern="#,##0"/></span>
                         </div>
-
-                        
+                        <button class="hotdeal-time" onclick="event.stopPropagation(); addToCart(${data.bookId}, 1)">장바구니🛒</button>
                         <button class="hotdeal-button buy-now" data-book-id="${data.bookId}">구매하기</button>
                     </div>
                 </c:forEach>
@@ -627,11 +626,12 @@
 
         <div class="special-books-grid">
             <c:forEach var="b" items="${weeklySpecials}">
-                <c:set var="rate" value="${(b.price - b.discountedPrice) * 100.0 / b.price}"/>
                 <c:url var="detailUrl" value="/book/${b.bookId}"/>
                 <div class="special-book-card">
                     <div class="special-badges">
-                        <c:set var="discountRate" value="${(data.price - data.discounted_price) * 100 / data.price}" />
+                        <c:if test="${b.discountRate > 0}">
+                            <div class="discount-badge">${b.discountRate}% 할인</div>
+                        </c:if>
                         <div class="days-left">2일 남음</div>
                     </div>
 
@@ -650,12 +650,16 @@
                         <div class="special-price-info">
                             <span class="original-price"><fmt:formatNumber value="${b.price}" pattern="#,##0"/>원</span>
                             <span class="special-price"><fmt:formatNumber value="${b.discountedPrice}" pattern="#,##0"/>원</span>
+                            <c:if test="${b.discountRate > 0}">
+                                <span class="discount-rate">${b.discountRate}% 할인</span>
+                            </c:if>
                             <span class="price-label">적립</span>
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
+
 
         <div class="special-notice">
             <div class="notice-text">

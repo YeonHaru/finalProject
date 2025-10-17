@@ -44,6 +44,14 @@ public class BooksController {
                              Authentication authentication) {
 
         BooksDto book = booksService.findDetailByBookId(bookId);
+
+        // ✅ 할인율 계산 추가
+        if (book.getPrice() != null && book.getDiscountedPrice() != null && book.getPrice() > 0) {
+            double rate = ((book.getPrice() - book.getDiscountedPrice()) * 100.0) / book.getPrice();
+            book.setDiscountRate((double) Math.round(rate)); // 반올림된 % 값
+        } else {
+            book.setDiscountRate(0.0);
+        }
         model.addAttribute("book", book);
 
         // 저자 정보 + 같은 작가의 다른 도서 (있을때만)
