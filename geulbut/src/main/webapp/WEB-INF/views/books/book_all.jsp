@@ -52,18 +52,6 @@
 <%--        </div>--%>
 <%--    </div>--%>
 
-    <!-- 상단 툴바 -->
-    <div class="row gap-2 mb-3 container">
-        <div class="row gap-1 ml-3 text-light">
-            <label class="row gap-1">
-                <input id="checkAll" type="checkbox">
-                <span>전체선택</span>
-            </label>
-            <button type="button" class="px-2 py-1 border rounded-sm bg-surface" data-bulk="cart">장바구니 담기</button>
-            <button type="button" class="px-2 py-1 border rounded-sm bg-surface" data-bulk="like">위시리스트 담기</button>
-        </div>
-    </div>
-
     <form name="listForm" action="${pageContext.request.contextPath}/search" method="get" class="container">
         <!-- 0-base 페이지로 서버에 전달 -->
         <input type="hidden" id="page" name="page" value="${pageNumber - 1}"/>
