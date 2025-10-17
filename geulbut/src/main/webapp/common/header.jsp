@@ -194,7 +194,6 @@
             <ul class="site-header__menu site-header__menu--bottom">
                 <li><a href="${ctx}/books">도서목록</a></li>
                 <li><a href="${ctx}/authors">작가목록</a></li>
-                <li><a href="${ctx}/publishers">해시태그</a></li>
             </ul>
         </nav>
 

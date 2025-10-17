@@ -42,6 +42,9 @@ public class BooksDto {
     // 해시태그 추가
     private List<String> hashtags;
 
+    // 할인가 계산
+    private Double discountRate;
+
     //  출력 날짜 변환
     public String getCreatedAtFormatted() {
         if (createdAt == null) return "";

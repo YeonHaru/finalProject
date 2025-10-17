@@ -75,7 +75,18 @@ public class HomeController {
 
 
 //        이주의 특가
-        model.addAttribute("weeklySpecials", booksService.findTopDiscount(5));
+        List<BooksDto> weeklySpecials = booksService.findTopDiscount(5);
+
+        for (BooksDto b : weeklySpecials) {
+            if (b.getPrice() != null && b.getDiscountedPrice() != null && b.getPrice() > 0) {
+                double rate = ((b.getPrice() - b.getDiscountedPrice()) * 100.0) / b.getPrice();
+                b.setDiscountRate((double) Math.round(rate));
+            } else {
+                b.setDiscountRate(0.0);
+            }
+        }
+
+        model.addAttribute("weeklySpecials", weeklySpecials);
 //       추천 이벤트
         List<BooksDto> randomBooks = booksService.getRandomBooks();
         model.addAttribute("randomBooks", randomBooks);

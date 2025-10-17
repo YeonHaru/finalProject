@@ -163,17 +163,6 @@
                             <c:out value="${data.authorName != null ? data.authorName : '인기작가'}"/>
                         </p>
 
-                        <div class="trending-stats">
-                            <h4 class="stats-title">화제 지수</h4>
-                            <div class="stats-info">
-                                <div class="stats-views">🔥 15.2K 언급</div>
-                                <div class="stats-trend">↗ 250%</div>
-                            </div>
-                        </div>
-
-                        <div class="trending-rating" aria-hidden="true">
-                            ★★★★★ <span class="rating-number">(4.7)</span>
-                        </div>
                     </div>
                 </c:forEach>
             </div>
@@ -209,8 +198,7 @@
                             <span class="original-price"><fmt:formatNumber value="${data.price}" pattern="#,##0"/></span>
                             <span class="sale-price"><fmt:formatNumber value="${data.discounted_price}" pattern="#,##0"/></span>
                         </div>
-
-                        <button class="hotdeal-time" onclick="addToCart(${data.bookId}, 1)">장바구니🛒</button>
+                        <button class="hotdeal-time" onclick="event.stopPropagation(); addToCart(${data.bookId}, 1)">장바구니🛒</button>
                         <button class="hotdeal-button buy-now" data-book-id="${data.bookId}">구매하기</button>
                     </div>
                 </c:forEach>
@@ -348,7 +336,6 @@
             </div>
 
             <div class="view-all-link">
-                <a href="/featured-books">⏰ 이달의 추천도서 전체보기</a>
             </div>
         </c:if>
     </section>
@@ -639,12 +626,12 @@
 
         <div class="special-books-grid">
             <c:forEach var="b" items="${weeklySpecials}">
-                <c:set var="rate" value="${(b.price - b.discountedPrice) * 100.0 / b.price}"/>
                 <c:url var="detailUrl" value="/book/${b.bookId}"/>
-
                 <div class="special-book-card">
                     <div class="special-badges">
-                        <div class="discount-percent">% 70%</div>
+                        <c:if test="${b.discountRate > 0}">
+                            <div class="discount-badge">${b.discountRate}% 할인</div>
+                        </c:if>
                         <div class="days-left">2일 남음</div>
                     </div>
 
@@ -663,6 +650,9 @@
                         <div class="special-price-info">
                             <span class="original-price"><fmt:formatNumber value="${b.price}" pattern="#,##0"/>원</span>
                             <span class="special-price"><fmt:formatNumber value="${b.discountedPrice}" pattern="#,##0"/>원</span>
+                            <c:if test="${b.discountRate > 0}">
+                                <span class="discount-rate">${b.discountRate}% 할인</span>
+                            </c:if>
                             <span class="price-label">적립</span>
                         </div>
                     </div>
@@ -670,12 +660,13 @@
             </c:forEach>
         </div>
 
+
         <div class="special-notice">
             <div class="notice-text">
                 <span class="notice-icon">⚠️</span>
                 특가 할인은 매주 일요일 자정에 종료됩니다
             </div>
-            <button class="view-all-special-btn">전체 특가 보기</button>
+
         </div>
     </section>
 
