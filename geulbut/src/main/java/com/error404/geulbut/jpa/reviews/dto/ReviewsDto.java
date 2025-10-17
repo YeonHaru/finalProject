@@ -13,5 +13,6 @@ public class ReviewsDto {
     private String userId;
     private Integer rating;
     private String content;
-    private Long orderedItemId;     // 리뷰 대상 주문 아이템
+    private Long orderedItemId;
+    // 리뷰 대상 주문 아이템
 }
