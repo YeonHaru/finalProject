@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -96,5 +97,18 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     @Query(value = "SELECT * FROM BOOKS ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 4 ROWS ONLY",
             nativeQuery = true)
     List<Books> findRandomBooks();
+
+    @Modifying
+    @Query(
+            value = """
+        UPDATE BOOKS
+           SET REVIEW_COUNT = REVIEW_COUNT + 1,
+               RATING = (RATING * REVIEW_COUNT + :newRating) / (REVIEW_COUNT + 1)
+         WHERE BOOK_ID = :bookId
+        """,
+            nativeQuery = true
+    )
+    int applyReviewAggregate(@Param("bookId") Long bookId,
+                             @Param("newRating") double newRating);
 
 }

@@ -2,7 +2,6 @@ package com.error404.geulbut.jpa.reviews.service;
 
 import com.error404.geulbut.common.ErrorMsg;
 import com.error404.geulbut.common.MapStruct;
-import com.error404.geulbut.jpa.books.dto.BooksDto;
 import com.error404.geulbut.jpa.books.entity.Books;
 import com.error404.geulbut.jpa.books.repository.BooksRepository;
 import com.error404.geulbut.jpa.reviews.dto.ReviewsDto;
@@ -10,51 +9,56 @@ import com.error404.geulbut.jpa.reviews.entity.Reviews;
 import com.error404.geulbut.jpa.reviews.repository.ReviewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewsService {
+
     private final ReviewsRepository reviewsRepository;
     private final BooksRepository booksRepository;
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
 
-
+    /**
+     * 리뷰 저장 + BOOKS 집계(리뷰수/평균평점) 반영
+     * - 같은 유저가 같은 주문항목(orderedItemId)에 중복 작성 불가
+     * - 성공 시 BOOKS.REVIEW_COUNT += 1, BOOKS.RATING = 가중평균 재계산
+     */
+    @Transactional
     public void saveReview(ReviewsDto reviewsDto) {
-//        JPA 저장 함수 실행 : return 값 : 저장된 객체
-        Reviews reviews=mapStruct.toEntity(reviewsDto);
-        reviewsRepository.save(reviews);
-        Books books = booksRepository.findById(reviewsDto.getBookId())
+
+        // 1) 중복 리뷰 방지 (userId + orderedItemId 유니크 정책)
+        boolean exists = reviewsRepository.existsByUserIdAndOrderedItemId(
+                reviewsDto.getUserId(), reviewsDto.getOrderedItemId());
+        if (exists) {
+            // 컨트롤러에서 409로 변환해서 내려주면 프론트가 정확히 분기 가능
+            throw new IllegalArgumentException("duplicate");
+        }
+
+        // 2) 도서 존재 확인 (없으면 404 성격 오류)
+        Books book = booksRepository.findById(reviewsDto.getBookId())
                 .orElseThrow(() -> new RuntimeException(errorMsg.getMessage("errors.not.found")));
-        BooksDto booksDto = mapStruct.toDto(books);
-                long count = booksDto.getReviewCount();
-                double newRating = ((booksDto.getRating() * count) + reviewsDto.getRating()) / (count + 1);
-                booksDto.setReviewCount(count + 1);
-                booksDto.setRating(newRating);
 
-                mapStruct.updateFromDto(booksDto, books);
+        // 3) 리뷰 저장
+        Reviews review = mapStruct.toEntity(reviewsDto);
+        // createdAt/updatedAt을 엔티티에서 @PrePersist/@PreUpdate로 관리하지 않는다면 주석 해제
+        // review.setCreatedAt(LocalDateTime.now());
+        // review.setUpdatedAt(LocalDateTime.now());
+        reviewsRepository.save(review);
 
+        // 4) BOOKS 집계 원자적 갱신 (경합에도 안전)
+        //  - UPDATE BOOKS
+        //      SET REVIEW_COUNT = REVIEW_COUNT + 1,
+        //          RATING = (RATING * REVIEW_COUNT + :newRating) / (REVIEW_COUNT + 1)
+        //    WHERE BOOK_ID = :bookId
+        int updated = booksRepository.applyReviewAggregate(reviewsDto.getBookId(), reviewsDto.getRating());
+        if (updated != 1) {
+            // 이 상황은 거의 없지만 안전망
+            throw new IllegalStateException("aggregate-failed");
+        }
+
+        // mapStruct로 Books 엔티티를 다시 set하고 save하는 방식은 제거
+        // (동시성 시 기존 평균을 다시 읽어 계산하면 경합에 취약)
     }
-
-//    public void saveReview(ReviewsDto dto) {
-////        Reviews review = new Reviews();
-////        review.setBookId(dto.getBookId());
-////        review.setUserId(dto.getUserId());
-////        review.setRating(dto.getRating());
-////        review.setContent(dto.getContent());
-////        review.setOrderedItemId(dto.getOrderedItemId());
-////        review.setCreatedAt(LocalDateTime.now());
-////        review.setUpdatedAt(LocalDateTime.now());
-//
-//
-////        reviewsRepository.save(review);
-//
-////        int count = booksDto.getReviewCount();
-////        double newRating = ((booksDto.getRating() * count) + reviewsDto.getRating()) / (count + 1);
-////        booksDto.setReviewCount(count + 1);
-////        booksDto.setRating(newRating);
-//
-//    }
 }
