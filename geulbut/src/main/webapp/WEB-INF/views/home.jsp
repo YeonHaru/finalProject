@@ -2,6 +2,7 @@
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -88,7 +89,18 @@
                                 </h4>
                             </div>
 
-                            <div class="book-rating" aria-hidden="true">★★★★★</div>
+                            <div class="book-rating" aria-label="평점">
+                                <c:set var="avg" value="${choiceRatingMap[data.bookId] != null ? choiceRatingMap[data.bookId] : 0}" />
+                                <c:forEach begin="1" end="5" var="i">
+                                    <c:choose>
+                                        <c:when test="${i <= avg}">★</c:when>
+                                        <c:otherwise>☆</c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                                <span class="rating-number">
+        (<fmt:formatNumber value="${avg}" minFractionDigits="1" maxFractionDigits="1" />)
+    </span>
+                            </div>
                         </div>
                     </a>
                 </c:forEach>
@@ -232,10 +244,22 @@
                                     </c:choose>
                                 </h3>
                                 <p class="weekly-author"><c:out value="${book.authorName}"/></p>
-                                <div class="weekly-rating" aria-hidden="true">
-                                    ⭐ <span class="rating-score">4.5</span>
+                                <div class="weekly-rating" aria-label="평점">
+                                    <c:set var="avg" value="${weeklyRatingMap[book.bookId] != null ? weeklyRatingMap[book.bookId] : 0}" />
+                                    <span class="stars">
+        <c:forEach begin="1" end="5" var="i">
+            <c:choose>
+                <c:when test="${i <= avg}">★</c:when>
+                <c:otherwise>☆</c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </span>
+                                    <span class="rating-score">
+        <fmt:formatNumber value="${avg}" minFractionDigits="1" maxFractionDigits="1" />
+    </span>
                                     <span class="rating-text">평점</span>
                                 </div>
+
                                 <div class="weekly-comment">
                                     <p class="comment-text clamp-2">
                                             ${empty book.description ? '설명 준비중' : book.description}

@@ -292,6 +292,9 @@
 
 </div>
 
-<script src="/js/book_all/book_all.wired.js"></script>
+<script src="<c:url value='/js/book_all/book_all.js'/>"></script>
+<script src="<c:url value='/js/book_all/book_mood.js'/>" defer></script>
+<script src="<c:url value='/js/book_all/book_ani.js'/>" defer></script>
+
 </body>
 </html>

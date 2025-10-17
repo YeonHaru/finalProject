@@ -6,6 +6,8 @@ import com.error404.geulbut.jpa.reviews.dto.ReviewsSummaryDto;
 import com.error404.geulbut.jpa.reviews.entity.Reviews;
 import com.error404.geulbut.jpa.reviews.repository.RatingCount;
 import com.error404.geulbut.jpa.reviews.repository.ReviewsRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -56,5 +58,23 @@ public class ReviewsQueryService {
     private static double round(double v, int scale) {
         double p = Math.pow(10, scale);
         return Math.round(v * p) / p;
+    }
+    @PersistenceContext
+    private final EntityManager em;
+
+    public double getAverageRating(Long bookId) {
+        Double avg = em.createQuery(
+                        "select avg(r.rating) from Reviews r where r.book.bookId = :bookId", Double.class)
+                .setParameter("bookId", bookId)
+                .getSingleResult();
+        return avg != null ? Math.round(avg * 10.0) / 10.0 : 0.0; // 소수 1자리
+    }
+
+    public long getReviewCount(Long bookId) {
+        Long cnt = em.createQuery(
+                        "select count(r) from Reviews r where r.book.bookId = :bookId", Long.class)
+                .setParameter("bookId", bookId)
+                .getSingleResult();
+        return cnt != null ? cnt : 0L;
     }
 }
