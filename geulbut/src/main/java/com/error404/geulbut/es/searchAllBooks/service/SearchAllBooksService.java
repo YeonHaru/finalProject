@@ -32,10 +32,10 @@ public class SearchAllBooksService {
     private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
             "popularity_score",
             "sales_count",
-            "wish_count",     // ← 추가
+            "wish_count",
             "pub_date",
             "created_at",
-            "updated_at",     // ← 추가
+            "updated_at",
             "price"
     );
     private static final Set<String> ALLOWED_SORT_ORDERS = Set.of("asc", "desc");
@@ -61,36 +61,51 @@ public class SearchAllBooksService {
         return "asc".equalsIgnoreCase(so) ? SortOrder.Asc : SortOrder.Desc;
     }
 
+    /* ------------------------------ 변환 유틸 (하이라이트 적용 포함) ------------------------------ */
+
     private List<SearchAllBooksDto> toDtoList(SearchResponse<SearchAllBooks> res) {
         return res.hits().hits().stream()
-                .map(Hit::source)
+                .map(hit -> toDtoWithHighlight(hit.source(), hit.highlight()))
                 .filter(Objects::nonNull)
-                .map(mapStruct::toDto)
-                .filter(Objects::nonNull)
-                .peek(dto -> {
-                    try {
-                        Double ps = dto.getPopularityScore();
-                        if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
-                    } catch (Exception ignore) { dto.setPopularityScore(0.0); }
-                    if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
-                })
                 .toList();
     }
 
     private List<SearchAllBooksDto> toDtoList(SearchTemplateResponse<SearchAllBooks> res) {
         return res.hits().hits().stream()
-                .map(Hit::source)
+                .map(hit -> toDtoWithHighlight(hit.source(), hit.highlight()))
                 .filter(Objects::nonNull)
-                .map(mapStruct::toDto)
-                .filter(Objects::nonNull)
-                .peek(dto -> {
-                    try {
-                        Double ps = dto.getPopularityScore();
-                        if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
-                    } catch (Exception ignore) { dto.setPopularityScore(0.0); }
-                    if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
-                })
                 .toList();
+    }
+
+    private SearchAllBooksDto toDtoWithHighlight(SearchAllBooks src, Map<String, List<String>> highlight) {
+        if (src == null) return null;
+
+        SearchAllBooksDto dto = mapStruct.toDto(src);
+
+        // 기본 보정
+        try {
+            Double ps = dto.getPopularityScore();
+            if (ps == null || !Double.isFinite(ps)) dto.setPopularityScore(0.0);
+        } catch (Exception ignore) {
+            dto.setPopularityScore(0.0);
+        }
+        if (dto.getHashtags() == null) dto.setHashtags(Collections.emptyList());
+
+        // 하이라이트 적용 (없으면 원문 유지)
+        dto.setTitleHighlighted(firstOrFallback(highlight, "title", dto.getTitle()));
+        dto.setAuthorNameHighlighted(firstOrFallback(highlight, "author_name", dto.getAuthorName()));
+        dto.setPublisherNameHighlighted(firstOrFallback(highlight, "publisher_name", dto.getPublisherName()));
+        dto.setCategoryNameHighlighted(firstOrFallback(highlight, "category_name", dto.getCategoryName()));
+
+        return dto;
+    }
+
+    private String firstOrFallback(Map<String, List<String>> hl, String key, String fallback) {
+        if (hl == null || hl.isEmpty()) return fallback;
+        List<String> vals = hl.get(key);
+        if (vals == null || vals.isEmpty()) return fallback;
+        String v = vals.get(0);
+        return (v == null || v.isBlank()) ? fallback : v;
     }
 
     /* ------------------------------ match_all (키워드 빈 문자열일 때) ------------------------------ */
@@ -114,6 +129,7 @@ public class SearchAllBooksService {
                 .index(INDEX)
                 .from(from)
                 .size(size)
+                .trackTotalHits(t -> t.enabled(true))
                 .query(q -> q.matchAll(m -> m))
                 // 1차: 선택 정렬, 2차: _score desc, 3차: created_at desc (fallback)
                 .sort(s -> s.field(f -> f.field(sf).order(toSortOrder(so)).missing("_last")))
@@ -141,7 +157,7 @@ public class SearchAllBooksService {
         return searchByTemplate(keyword, pageable, "popularity_score", "desc");
     }
 
-    /** 템플릿 호출 — q/size/from + sort_field/sort_order 전달 */
+    /** 템플릿 호출 — q/size/from + sort_field/sort_order 전달 (하이라이트 포함 응답을 DTO에 반영) */
     public Page<SearchAllBooksDto> searchByTemplate(String keyword, Pageable pageable,
                                                     String sortField, String sortOrder) throws Exception {
         final String q = (keyword == null) ? "" : keyword;
@@ -155,8 +171,8 @@ public class SearchAllBooksService {
         params.put("q",           JsonData.of(q));
         params.put("size",        JsonData.of(size));
         params.put("from",        JsonData.of(from));
-        params.put("sort_field",  JsonData.of(sf));   // ← 템플릿에서 사용
-        params.put("sort_order",  JsonData.of(so));   // ← 템플릿에서 사용
+        params.put("sort_field",  JsonData.of(sf));   // ← 템플릿에서 사용 (조건 블록)
+        params.put("sort_order",  JsonData.of(so));   // ← 템플릿에서 사용 (조건 블록)
 
         log.debug("[ES] template={} q='{}' sort={} order={} from={} size={}",
                 TEMPLATE_ID, q, sf, so, from, size);
