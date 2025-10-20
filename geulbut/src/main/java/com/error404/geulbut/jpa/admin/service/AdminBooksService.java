@@ -42,20 +42,34 @@ public class AdminBooksService {
         return booksRepository.findAll(pageable)
                 .map(book -> {
                     BooksDto dto = mapStruct.toDto(book);
+
                     // Author/Publisher/Category 이름 세팅
                     setNames(dto, book);
+
+                    // 평점/리뷰 수 세팅 (DB 컬럼 그대로)
+                    dto.setRating(book.getRating() != null ? book.getRating() : 0.0);
+                    dto.setReviewCount(book.getReviewCount() != null ? book.getReviewCount() : 0L);
+
                     return dto;
                 });
     }
+
 
     // 단일 조회
     public BooksDto getBookById(Long bookId) {
         Books book = booksRepository.findById(bookId)
                 .orElseThrow(() -> new IllegalArgumentException(errorMsg.getMessage("error.books.notfound")));
         BooksDto dto = mapStruct.toDto(book);
+
         setNames(dto, book);
+
+        // 평점/리뷰 수 세팅
+        dto.setRating(book.getRating() != null ? book.getRating() : 0.0);
+        dto.setReviewCount(book.getReviewCount() != null ? book.getReviewCount() : 0L);
+
         return dto;
     }
+
 
     // 도서 등록
     public BooksDto saveBook(BooksDto dto) {

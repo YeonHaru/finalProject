@@ -209,13 +209,6 @@
                         <li><a href="${ctx}/admin/orders">전체 배송 조회</a></li>
                     </ul>
                 </div>
-                <div class="admin-group">
-                    <div class="group-title">🎉 이벤트 관리</div>
-                    <ul>
-                        <li><a href="#">이벤트 등록</a></li>
-                        <li><a href="#">이벤트 수정</a></li>
-                    </ul>
-                </div>
             </aside>
         </sec:authorize>
     </div>

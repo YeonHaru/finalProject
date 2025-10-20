@@ -29,6 +29,8 @@ $(function () {
         $('#discountedPrice').val(0);
         $('#orderCount').val(0);
         $('#wishCount').val(0);
+        $('#rating').val('0.0');
+        $('#reviewCount').val(0);
 
         loadOptions();
         $('#bookModal').css('display', 'flex').attr('aria-hidden', 'false');
@@ -46,7 +48,7 @@ $(function () {
         if (e.key === 'Escape' && $('#bookModal').is(':visible')) closeBookModal();
     });
 
-    // 🔹 등록 / 수정 submit (검색어 유지 + row 갱신)
+    // 🔹 등록 / 수정 submit
     $('#bookForm').submit(function (e) {
         e.preventDefault();
 
@@ -74,7 +76,9 @@ $(function () {
             categoryId: parseInt(categoryVal, 10),
             imgUrl: $('#imgUrl').val().trim(),
             orderCount: parseInt($('#orderCount').val(), 10) || 0,
-            wishCount: parseInt($('#wishCount').val(), 10) || 0
+            wishCount: parseInt($('#wishCount').val(), 10) || 0,
+            rating: parseFloat($('#rating').val()) || 0.0,
+            reviewCount: parseInt($('#reviewCount').val(), 10) || 0
         };
 
         if (!data.title) { alert('제목을 입력해주세요.'); return; }
@@ -100,6 +104,8 @@ $(function () {
                         row.find('td:eq(9)').text(res.stock > 0 ? res.stock : '품절');
                         row.find('td:eq(10)').text(res.orderCount ?? 0);
                         row.find('td:eq(11)').text(res.wishCount ?? 0);
+                        row.find('td:eq(12)').text((res.rating ?? 0).toFixed(1));
+                        row.find('td:eq(13)').text(res.reviewCount ?? 0);
                     } else {
                         loadBooksPage(0, keyword);
                     }
@@ -107,7 +113,7 @@ $(function () {
                     loadBooksPage(0, keyword);
                 }
 
-                $('#bookModal').hide().attr('aria-hidden', 'true');
+                closeBookModal();
             },
             error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.message) alert('저장 실패: ' + xhr.responseJSON.message);
@@ -145,6 +151,8 @@ $(function () {
                 $('#imgPreview').attr('src', book.imgUrl || '').toggle(!!book.imgUrl);
                 $('#orderCount').val(book.orderCount || 0);
                 $('#wishCount').val(book.wishCount || 0);
+                $('#rating').val(book.rating != null ? book.rating.toFixed(1) : '0.0');
+                $('#reviewCount').val(book.reviewCount || 0);
 
                 let authorSelect = $('#authorId').empty().append('<option value="">선택</option>');
                 let publisherSelect = $('#publisherId').empty().append('<option value="">선택</option>');
@@ -186,7 +194,7 @@ $(function () {
             tbody.empty();
 
             if (!res.content || res.content.length === 0) {
-                tbody.append('<tr><td colspan="14" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
+                tbody.append('<tr><td colspan="16" class="t-center text-light">검색 결과가 없습니다.</td></tr>');
                 $('.pagination, .pagination-toolbar').remove();
                 return;
             }
@@ -206,6 +214,8 @@ $(function () {
   <td>${book.stock}</td>
   <td>${book.orderCount ?? 0}</td>
   <td>${book.wishCount ?? 0}</td>
+  <td>${(book.rating ?? 0).toFixed(1)}</td>
+  <td>${book.reviewCount ?? 0}</td>
   <td class="hide-lg">${book.createdAt}</td>
   <td>
     <button type="button" class="btn btn-secondary btnView">상세보기</button>
