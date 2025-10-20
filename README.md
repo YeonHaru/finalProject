@@ -71,4 +71,5 @@ GIF
 ![Geulbut Demo](geulbut/src/main/webapp/images/geulbut2.gif)
 
 🎬 시연 영상
-[Geulbut Demo Video](https://github.com/YeonHaru/finalProject/releases/download/v1.0/default.mp4)
+[Geulbut Demo Video](https://github.com/YeonHaru/finalProject/releases/download/v1.0/1._._.mp4)
+
