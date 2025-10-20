@@ -11,7 +11,8 @@
     <!-- 공통/헤더 + 출판사 전용 CSS -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_base.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_publishers.css" />
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -123,7 +124,7 @@
     <div class="modal__dialog" role="document">
         <div class="modal__header">
             <h3 id="modalTitle">출판사 등록</h3>
-            <button type="button" class="modal__close" id="btnCloseModal" aria-label="닫기">×</button>
+            <button type="button" class="modal__close btn--liquid is-circle" id="btnCloseModal" aria-label="닫기">×</button>
         </div>
 
         <form id="publisherForm" class="modal__form">
@@ -138,8 +139,8 @@
             </label>
 
             <div class="modal__footer">
-                <button type="submit" class="btn btn-secondary btn--liquid-glass save-btn" id="modalSaveBtn">저장</button>
-                <button type="button" class="btn btn-danger    btn--liquid-glass"        id="btnCancel">닫기</button>
+                <button type="submit" class="btn btn-primary btn--liquid-glass save-btn" id="modalSaveBtn">저장</button>
+                <button type="button" class="btn btn-danger  btn--liquid-glass" id="btnCancel">닫기</button>
             </div>
         </form>
     </div>

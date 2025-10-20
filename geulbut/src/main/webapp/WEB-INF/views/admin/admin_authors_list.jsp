@@ -8,10 +8,10 @@
     <script>window.ctx = "${ctx}";</script>
     <title>관리자 - 작가 관리</title>
 
-    <link rel="stylesheet" href="${ctx}/css/00_common.css" />
-    <link rel="stylesheet" href="${ctx}/css/header.css" />
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
-
+    <link rel="stylesheet" href="${ctx}/css/00_common.css"/>
+    <link rel="stylesheet" href="${ctx}/css/header.css"/>
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_base.css"/>
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_authors.css"/>
 
     <!-- (도서 페이지와 동일 버전) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -33,7 +33,9 @@
 
     <!-- 상단 툴바 -->
     <div class="toolbar">
-        <button type="button" class="btn btn-light btn--liquid-glass" id="btnAddAuthor">작가 등록</button>
+        <button type="button"
+                class="btn btn-light btn--liquid-glass"
+                id="btnAddAuthor">작가 등록</button>
     </div>
 
     <!-- 작가 목록 테이블 (도서 페이지와 동일한 table 카드/스크롤 래퍼 구조) -->
@@ -75,8 +77,10 @@
                     <td class="created-at-cell hide-lg">${author.createdAtFormatted}</td>
                     <td class="t-left author-description">${author.description}</td>
                     <td>
-                        <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>
-                        <button type="button" class="btn btn-danger  btn--liquid-glass btnDelete">삭제</button>
+                        <button type="button"
+                                class="btn btn-primary  btn--liquid-glass btnEdit">수정</button>
+                        <button type="button"
+                                class="btn btn-danger   btn--liquid-glass btnDelete">삭제</button>
                     </td>
                 </tr>
             </c:forEach>

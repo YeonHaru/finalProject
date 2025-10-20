@@ -9,7 +9,8 @@
     <title>관리자 - 회원조회</title>
     <link rel="stylesheet" href="${ctx}/css/00_common.css" />
     <link rel="stylesheet" href="${ctx}/css/header.css" />
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_base.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_users_Info.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/admin/admin_users_Info.js"></script>
     <script src="/js/theme.js"></script>
@@ -25,12 +26,12 @@
         <form method="get" action="/admin/users-info" class="search-form">
             <input id="q" name="keyword" type="text" placeholder="회원ID, 이름, 이메일 검색" value="${keyword}"/>
             <button type="submit" class="btn-search">검색</button>
-            <button type="button" id="toggleAdvancedSearch" class="btn-search" style="background:#ccc; color:#000;">
+            <button type="button" id="toggleAdvancedSearch" class="btn btn-light btn--liquid-glass btn-adv">
                 조건검색 ▼
             </button>
         </form>
 
-        <div id="advancedSearch" class="advanced-search" style="display:none;">
+        <div id="advancedSearch" class="advanced-search">
             <label for="startDate">가입일:</label>
             <input type="date" id="startDate" name="startDate" value="${startDate}">
             <span>~</span>

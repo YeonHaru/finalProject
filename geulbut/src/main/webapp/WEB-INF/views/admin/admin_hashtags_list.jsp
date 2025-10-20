@@ -11,7 +11,8 @@
     <!-- 공통/헤더 + 관리자 통합 CSS -->
     <link rel="stylesheet" href="${ctx}/css/00_common.css"/>
     <link rel="stylesheet" href="${ctx}/css/header.css"/>
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css"/>
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_base.css"/>
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_hashtags.css"/>
 </head>
 
 <body class="bg-main text-main admin-hashtags has-bg" data-admin-skin="v2">
