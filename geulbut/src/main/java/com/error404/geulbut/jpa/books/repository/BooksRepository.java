@@ -111,4 +111,18 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
     int applyReviewAggregate(@Param("bookId") Long bookId,
                              @Param("newRating") double newRating);
 
+    @Modifying
+    @Query("update Books b set b.wishCount = coalesce(b.wishCount,0) + 1 where b.bookId = :bookId")
+    int incrementWishCount(@Param("bookId") Long bookId);
+
+    @Modifying
+    @Query("""
+           update Books b 
+              set b.wishCount = case when coalesce(b.wishCount,0) > 0 
+                                     then b.wishCount - 1 
+                                     else 0 end
+            where b.bookId = :bookId
+           """)
+    int decrementWishCount(@Param("bookId") Long bookId);
 }
+

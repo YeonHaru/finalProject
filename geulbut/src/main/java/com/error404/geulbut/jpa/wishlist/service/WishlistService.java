@@ -31,41 +31,44 @@ public class WishlistService {
     /** 📌 위시리스트 추가 */
     public void addWishlist(String userId, Long bookId) {
         boolean exists = wishlistRepository.existsByUserIdAndBook_BookId(userId, bookId);
+        if (exists) return; // 이미 있으면 아무 것도 안 함
 
-        if (!exists) {
-            Long seq = wishlistRepository.getNextSeq(); // 시퀀스 번호
-            String newId = "W" + String.format("%03d", seq);
+        Long seq = wishlistRepository.getNextSeq();
+        String newId = "W" + String.format("%03d", seq);
 
-            // ✅ bookId로 Books 엔티티를 찾아오기
-            Books book = booksRepository.findById(bookId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책 ID: " + bookId));
+        Books book = booksRepository.findById(bookId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책 ID: " + bookId));
 
-            Wishlist wishlist = Wishlist.builder()
-                    .wishlistId(newId)
-                    .userId(userId)
-                    .book(book)
-                    .build();
+        wishlistRepository.save(Wishlist.builder()
+                .wishlistId(newId)
+                .userId(userId)
+                .book(book)
+                .build());
 
-            wishlistRepository.save(wishlist);
-        }
+        // ✅ 실제로 새로 추가된 경우에만 +1
+        booksRepository.incrementWishCount(bookId);
     }
 
     /** 📌 위시리스트 → 장바구니 이동 */
     @Transactional
     public void moveToCart(String userId, Long bookId, int quantity) {
-        // 1. 장바구니에 담기
-        //    CartService의 addToCart() 호출 필요 (DI로 주입)
         cartService.addToCart(userId, bookId, quantity);
 
-        // 2. 위시리스트에서 제거
-        wishlistRepository.deleteByUserIdAndBook_BookId(userId, bookId);
+        long deleted = wishlistRepository.deleteByUserIdAndBook_BookId(userId, bookId);
 
-        log.info("📌 위시리스트 → 장바구니 이동 완료 - userId: {}, bookId: {}, quantity: {}",
-                userId, bookId, quantity);
+        // ✅ 정말 삭제되었을 때만 -1
+        if (deleted > 0) {
+            booksRepository.decrementWishCount(bookId);
+        }
     }
 
     /** 📌 위시리스트 삭제 */
     public void removeWishlist(String userId, Long bookId) {
-        wishlistRepository.deleteByUserIdAndBook_BookId(userId, bookId);
+        int deleted = wishlistRepository.deleteByUserIdAndBook_BookId(userId, bookId);
+
+        // ✅ 정말 삭제되었을 때만 -1
+        if (deleted > 0) {
+            booksRepository.decrementWishCount(bookId);
+        }
     }
 }

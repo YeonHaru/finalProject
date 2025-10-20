@@ -21,6 +21,7 @@ public class WishlistDto {
     private String imgUrl;
     private Long price;
     private Long discountedPrice;
+    private Long wishCount;
 
     private LocalDateTime createdAt;
 }
