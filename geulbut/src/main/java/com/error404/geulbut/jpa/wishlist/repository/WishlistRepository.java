@@ -13,7 +13,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, String> {
     // ✅ 유저 위시리스트 + 책 정보 조회
     @Query("SELECT new com.error404.geulbut.jpa.wishlist.dto.WishlistDto(" +
             "w.wishlistId, w.userId, b.bookId, b.title, a.name, p.name, b.imgUrl, " +
-            "b.price, b.discountedPrice, w.createdAt) " +
+            "b.price, b.discountedPrice,b.wishCount, w.createdAt) " +
             "FROM Wishlist w " +
             "JOIN w.book b " +
             "LEFT JOIN b.author a " +
@@ -26,7 +26,8 @@ public interface WishlistRepository extends JpaRepository<Wishlist, String> {
     boolean existsByUserIdAndBook_BookId(String userId, Long bookId);
 
     // ✅ 특정 책 삭제
-    void deleteByUserIdAndBook_BookId(String userId, Long bookId);
+    int deleteByUserIdAndBook_BookId(String userId, Long bookId);
+
 
     // ✅ 시퀀스 값 가져오기
     @Query(value = "SELECT SEQ_WISHLISTS.NEXTVAL FROM DUAL", nativeQuery = true)

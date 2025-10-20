@@ -55,116 +55,122 @@
                     <p>가입일: ${user.joinDate}</p>
                     <p>등급: ${user.grade}</p>
                     <p>포인트: <strong><fmt:formatNumber value="${user.point}" pattern="#,##0"/></strong> P</p>
-
-                    <!-- ✅ 알림 메시지 -->
-                    <c:if test="${not empty errorMsg}">
-                        <div class="alert alert-danger mt-3">${errorMsg}</div>
-                    </c:if>
-                    <c:if test="${not empty successMsg}">
-                        <div class="alert alert-success mt-3">${successMsg}</div>
-                    </c:if>
-                    <%-- 덕규 알람 메시지 추가--%>
-                    <!-- ✅ 등급/누적금액 요약 -->
-                    <div class="card mb-3">
-                        <div class="card-body d-flex align-items-center justify-content-between">
+                </c:if>
+                <!-- ✅ 알림 메시지 -->
+                <c:if test="${not empty errorMsg}">
+                    <div class="alert alert-danger mt-3">${errorMsg}</div>
+                </c:if>
+                <c:if test="${not empty successMsg}">
+                    <div class="alert alert-success mt-3">${successMsg}</div>
+                </c:if>
+                <%-- 덕규 알람 메시지 추가--%>
+                <!-- ✅ 등급/누적금액 요약 -->
+                <div class="card mb-3">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
                             <div>
-                                <div>
-                                    누적 구매 금액:
-                                    <strong><fmt:formatNumber value="${totalPurchase}" pattern="#,##0"/> 원</strong>
-                                </div>
-
-                                <c:choose>
-                                    <c:when test="${empty nextTier}">
-                                        <div class="text-success">축하합니다! 최고 등급(GOLD)입니다</div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div>
-                                            다음 등급(<strong>${nextTier}</strong>)까지
-                                            <strong><fmt:formatNumber value="${amountToNext}" pattern="#,##0"/>
-                                                원</strong> 남았어요.
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
+                                누적 구매 금액:
+                                <strong><fmt:formatNumber value="${totalPurchase}" pattern="#,##0"/> 원</strong>
                             </div>
 
-                            <div class="flex-grow-1 ms-4" style="min-width:240px;">
-                                <div class="progress" style="height:10px;">
-                                    <div class="progress-bar" role="progressbar"
-                                         style="width:${progressPct}%;" aria-valuenow="${progressPct}"
-                                         aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <small class="text-muted">${progressPct}%</small>
+                            <c:choose>
+                                <c:when test="${empty nextTier}">
+                                    <div class="text-success">축하합니다! 최고 등급(GOLD)입니다</div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div>
+                                        다음 등급(<strong>${nextTier}</strong>)까지
+                                        <strong><fmt:formatNumber value="${amountToNext}" pattern="#,##0"/>
+                                            원</strong> 남았어요.
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+
+                        <div class="flex-grow-1 ms-4" style="min-width:240px;">
+                            <div class="progress" style="height:10px;">
+                                <div class="progress-bar" role="progressbar"
+                                     style="width:${progressPct}%;" aria-valuenow="${progressPct}"
+                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
+                            <small class="text-muted">${progressPct}%</small>
                         </div>
                     </div>
+                </div>
 
-                    <%--                    덕규 알람 메시지 추가--%>
-                    <c:if test="${forceChangePw}">
-                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
-                            <strong class="me-2">보안 안내</strong>
-                            임시 비밀번호로 로그인했습니다. 지금 바로 비밀번호를 변경해 주세요.
-                        </div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', () => {
-                                // 1) "내 정보" 탭 강제 활성화
-                                const infoTab = document.getElementById('v-pills-info-tab');
-                                if (infoTab) infoTab.click();
+                <%--                    덕규 알람 메시지 추가--%>
+                <c:if test="${forceChangePw}">
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <strong class="me-2">보안 안내</strong>
+                        임시 비밀번호로 로그인했습니다. 지금 바로 비밀번호를 변경해 주세요.
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            // 1) "내 정보" 탭 강제 활성화
+                            const infoTab = document.getElementById('v-pills-info-tab');
+                            if (infoTab) infoTab.click();
 
-                                // 2) 비밀번호 변경 섹션으로 스크롤 + 현재 비번 입력창 포커스
-                                const cur = document.getElementById('currentPw');
-                                if (cur) {
-                                    cur.scrollIntoView({behavior: 'smooth', block: 'center'});
-                                    cur.focus();
-                                }
+                            // 2) 비밀번호 변경 섹션으로 스크롤 + 현재 비번 입력창 포커스
+                            const cur = document.getElementById('currentPw');
+                            if (cur) {
+                                cur.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                cur.focus();
+                            }
 
-                                // 3) 시각 강조(선택)
-                                const form = document.querySelector('form[action$="/mypage/change-password"]');
-                                if (form) {
-                                    form.classList.add('border', 'border-warning', 'rounded-3');
-                                    setTimeout(() => form.classList.remove('border', 'border-warning', 'rounded-3'), 3000);
-                                }
-                            });
-                        </script>
-                    </c:if>
-
-                    <!-- ✅ 비밀번호 변경 폼 -->
-                    <h3 class="mt-4 mb-3">비밀번호 변경</h3>
-
-                    <c:choose>
-                        <c:when test="${canChangePassword}">
-                            <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
-                                <!-- CSRF 토큰 (Spring Security 켜져있으면 필수) -->
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-
-                                <div class="col-12">
-                                    <label for="currentPw" class="form-label">현재 비밀번호</label>
-                                    <input type="password" id="currentPw" name="currentPw" class="form-control"
-                                           required>
-                                </div>
-                                <div class="col-12">
-                                    <label for="newPw" class="form-label">새 비밀번호</label>
-                                    <input type="password" id="newPw" name="newPw" class="form-control" required>
-                                </div>
-                                <div class="col-12">
-                                    <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
-                                    <input type="password" id="confirmPw" name="confirmPw" class="form-control"
-                                           required>
-                                </div>
-                                <div class="col-12 d-flex justify-content-between align-items-center">
-                                    <button type="submit" class="btn btn-primary">비밀번호 변경</button>
-                                    <a href="<c:url value='/users/mypage/withdraw'/>" class="btn btn-outline-danger red-background">
-                                        회원 탈퇴
-                                    </a>
-                                </div>
-                            </form>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="alert alert-info">
-                                소셜 로그인(구글/네이버/카카오) 사용자는 비밀번호 변경 기능을 사용할 수 없습니다.
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                            // 3) 시각 강조(선택)
+                            const form = document.querySelector('form[action$="/mypage/change-password"]');
+                            if (form) {
+                                form.classList.add('border', 'border-warning', 'rounded-3');
+                                setTimeout(() => form.classList.remove('border', 'border-warning', 'rounded-3'), 3000);
+                            }
+                        });
+                    </script>
                 </c:if>
+
+                <!-- ✅ 비밀번호 변경 헤더 -->
+                <div class="pw-header d-flex align-items-center mb-3">
+                    <div>
+                        <h2 class="pw-title m-0">비밀번호 변경</h2>
+                        <small class="pw-sub text-muted">보안을 위해 주기적으로 비밀번호를 변경하세요.</small>
+                    </div>
+                </div>
+
+                <c:choose>
+                    <c:when test="${canChangePassword}">
+                        <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
+                            <!-- CSRF 토큰 (Spring Security 켜져있으면 필수) -->
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                            <div class="col-12">
+                                <label for="currentPw" class="form-label">현재 비밀번호</label>
+                                <input type="password" id="currentPw" name="currentPw" class="form-control"
+                                       required>
+                            </div>
+                            <div class="col-12">
+                                <label for="newPw" class="form-label">새 비밀번호</label>
+                                <input type="password" id="newPw" name="newPw" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="confirmPw" class="form-label">새 비밀번호 확인</label>
+                                <input type="password" id="confirmPw" name="confirmPw" class="form-control"
+                                       required>
+                            </div>
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+                                <a href="<c:url value='/users/mypage/withdraw'/>"
+                                   class="btn btn-outline-danger red-background">
+                                    회원 탈퇴
+                                </a>
+                            </div>
+                        </form>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="alert alert-info">
+                            소셜 로그인(구글/네이버/카카오) 사용자는 비밀번호 변경 기능을 사용할 수 없습니다.
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+
             </div>
 
             <!-- ✅ 위시리스트 -->
@@ -304,26 +310,27 @@
                 <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                     <h2 class="m-0">주문 내역</h2>
 
-                <c:choose>
-                    <c:when test="${not empty sessionScope.lastOrderId}">
-                        <c:url var="dlvUrl" value="/orders/${sessionScope.lastOrderId}/delivery"/>
-                        <a href="${dlvUrl}" class="btn btn-outline-secondary btn-sm">배송조회</a>
-                    </c:when>
-                    <c:otherwise>
-                        <!-- 주문내역 탭으로 이동(SSR/JS 로딩 위치 유지) -->
-                        <c:url var="mypageOrdersUrl" value="/users/mypage">
-                            <c:param name="tab" value="orders"/>
-                        </c:url>
-                        <a href="${mypageOrdersUrl}" class="btn btn-outline-secondary btn-sm">배송조회</a>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.lastOrderId}">
+                            <c:url var="dlvUrl" value="/orders/${sessionScope.lastOrderId}/delivery"/>
+                            <a href="${dlvUrl}" class="btn btn-outline-secondary btn-sm">배송조회</a>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- 주문내역 탭으로 이동(SSR/JS 로딩 위치 유지) -->
+                            <c:url var="mypageOrdersUrl" value="/users/mypage">
+                                <c:param name="tab" value="orders"/>
+                            </c:url>
+                            <a href="${mypageOrdersUrl}" class="btn btn-outline-secondary btn-sm">배송조회</a>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
 
                 <!-- 스켈레톤: JS 로딩 전 잠깐 표시 -->
                 <div id="orders-skeleton">
                     <div class="card mb-3">
                         <div class="card-body d-flex align-items-center">
-                            <div class="me-3" style="width:60px;height:85px;border-radius:6px;background:#eee;"></div>
+                            <div class="me-3"
+                                 style="width:60px;height:85px;border-radius:6px;background:#eee;"></div>
                             <div class="flex-grow-1">
                                 <div class="placeholder-glow"><span class="placeholder col-6"></span></div>
                                 <div class="placeholder-glow"><span class="placeholder col-4"></span></div>

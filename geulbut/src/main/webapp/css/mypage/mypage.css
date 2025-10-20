@@ -92,7 +92,6 @@
     color: var(--color-primary);
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--color-accent);
     min-width: 0;
 }
 
@@ -200,6 +199,19 @@
 .mypage-content p, .list-group-item { color: var(--color-ink); }
 a { color: var(--color-leaf); }
 a:hover { color: var(--color-primary); }
+
+/* 비밀번호 변경*/
+.pw-lock{font-size:20px}
+.pw-title{font-size:1.1rem;font-weight:700;color:var(--color-primary)}
+.pw-sub{color:var(--color-ink)}
+.pw-card{
+    border:1px solid var(--border-green);
+    border-radius:12px;
+    padding:16px;
+    background:#fff;
+    box-shadow:var(--shadow-green);
+}
+
 /* =========================
    📌 위시리스트
 ========================= */
@@ -245,9 +257,7 @@ a:hover { color: var(--color-primary); }
 /* =========================
    🎨 주문 내역 탭 전용 컬러링
 ========================= */
-#v-pills-orders .border-bottom {            /* 헤더 하단 보더 */
-    border-color: var(--color-accent) !important;
-}
+
 #v-pills-orders h2 {                        /* 타이틀 컬러 */
     color: var(--color-primary);
 }
