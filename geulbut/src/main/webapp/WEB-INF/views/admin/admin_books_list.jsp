@@ -94,8 +94,8 @@
                     <td>${book.authorName}</td>
                     <td class="hide-lg">${book.publisherName}</td>
                     <td class="hide-lg">${book.categoryName}</td>
-                    <td class="t-right"><c:out value="${book.price}"/></td>
-                    <td class="t-right hide-lg"><c:out value="${book.discountedPrice}"/></td>
+                    <td class="t-center"><c:out value="${book.price}"/></td>
+                    <td class="t-center hide-lg"><c:out value="${book.discountedPrice}"/></td>
                     <td>
                         <c:choose>
                             <c:when test="${book.stock gt 0}">
@@ -114,7 +114,9 @@
                     <td class="col-review t-right">
                         <c:out value="${book.reviewCount != null ? book.reviewCount : 0}"/>
                     </td>
-                    <td class="hide-lg">${book.createdAtFormatted}</td>
+                    <td class="hide-lg" data-created="${book.createdAtFormatted}">
+                            ${book.createdAtFormatted}
+                    </td>
                     <td>
                         <button type="button" class="btn btn-secondary btn--liquid-glass btnView">상세보기</button>
                         <button type="button" class="btn btn-primary btn--liquid-glass btnEdit">수정</button>

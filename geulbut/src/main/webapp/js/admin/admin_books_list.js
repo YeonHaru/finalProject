@@ -209,14 +209,16 @@ $(function () {
   <td>${book.authorName ?? ''}</td>
   <td class="hide-lg">${book.publisherName ?? ''}</td>
   <td class="hide-lg">${book.categoryName ?? ''}</td>
-  <td class="t-right">${book.price}</td>
-  <td class="t-right hide-lg">${book.discountedPrice ?? ''}</td>
+  <td class="t-center">${book.price}</td>
+  <td class="t-center hide-lg">${book.discountedPrice ?? ''}</td>
   <td>${book.stock}</td>
   <td>${book.orderCount ?? 0}</td>
   <td>${book.wishCount ?? 0}</td>
   <td>${(book.rating ?? 0).toFixed(1)}</td>
   <td>${book.reviewCount ?? 0}</td>
-  <td class="hide-lg">${book.createdAt}</td>
+<td class="hide-lg" data-created="${book.createdAtFormatted}">
+    ${book.createdAtFormatted}
+</td>
   <td>
     <button type="button" class="btn btn-secondary btnView">상세보기</button>
     <button type="button" class="btn btn-primary btnEdit">수정</button>

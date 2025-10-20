@@ -129,8 +129,25 @@ h1 {
     color: #D4A574;
 }
 
+.admin-books-table {
+    table-layout: auto; /* 기존 fixed → auto */
+    width: 100%;        /* 컨테이너 폭에 맞춤 */
+    min-width: unset;   /* 최소 폭 해제 */
+}
+
+/* 상위 컨테이너 */
+.admin-books {
+    width: 100%;
+    padding: 0; /* 혹시 패딩 때문에 좁게 보이면 제거 */
+}
+
 /* 페이지 컨테이너 */
-.admin-books .page,
+.admin-books .page {
+    width: 100%;       /* 전체 폭 사용 */
+    max-width: 2000px; /* 충분히 넓게 */
+    margin: 0 auto;
+}
+
 .admin-authors .page,
 .admin-publishers .page,
 .admin-users .page,
@@ -141,13 +158,15 @@ h1 {
 }
 
 @media (min-width: 1640px) {
-    .admin-books .page,
+    .admin-books .page {
+        width: min(95%, 2000px); /* 큰 화면에서는 더 넓게 */
+    }
     .admin-authors .page,
     .admin-publishers .page,
     .admin-users .page,
     .admin-categories .page,
     .admin-hashtags .page {
-        width: min(90%, 1360px)
+        width: min(90%, 1360px);
     }
 }
 
@@ -859,12 +878,12 @@ h1 {
 .admin-books-table col.col-rating { width: 60px; }
 .admin-books-table col.col-review { width: 60px; }
 .admin-books-table col.col-created { width: 180px; }
-.admin-books-table col.col-actions { width: 180px; }
+.admin-books-table col.col-actions { width: 140px; }
 
 .admin-books-table {
     table-layout: fixed;
     width: 100%;
-    min-width: 1800px; /* 테이블 전체 폭 확장 */
+    min-width: unset;
 }
 .admin-books-table .t-left { text-align: left; }
 .admin-books-table .t-right { text-align: right; }
@@ -939,7 +958,6 @@ h1 {
         min-width: 350px;
     }
 }
-
 
 
 /* AUTHORS */
