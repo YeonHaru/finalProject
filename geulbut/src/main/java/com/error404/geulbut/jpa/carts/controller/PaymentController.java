@@ -116,6 +116,9 @@ public class PaymentController {
             order.setImpUid(req.impUid());
             ordersRepository.save(order);
 
+            // 주문 수 증가 처리
+            paymentService.processOrder(req.impUid());
+
             return ResponseEntity.ok(Map.of(
                     "orderId", order.getOrderId(),
                     "total", order.getTotalPrice(),

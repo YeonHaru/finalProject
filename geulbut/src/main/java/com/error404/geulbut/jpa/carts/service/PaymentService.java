@@ -1,10 +1,17 @@
 package com.error404.geulbut.jpa.carts.service;
 
+import com.error404.geulbut.jpa.books.entity.Books;
+import com.error404.geulbut.jpa.books.repository.BooksRepository;
+import com.error404.geulbut.jpa.orderitem.entity.OrderItem;
+import com.error404.geulbut.jpa.orderitem.repository.OrderItemRepository;
+import com.error404.geulbut.jpa.orders.entity.Orders;
+import com.error404.geulbut.jpa.orders.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -14,12 +21,18 @@ import org.springframework.http.client.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
+
+    private final BooksRepository booksRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final OrdersRepository ordersRepository;
+
 
     @Value("${portone.api_key}")
     private String apikey;
@@ -29,6 +42,7 @@ public class PaymentService {
 
     // ---- RestTemplate with logging interceptor ----
     private RestTemplate restTemplate;
+
     {
         // 바디를 여러 번 읽을 수 있도록 버퍼링 팩토리 사용
         SimpleClientHttpRequestFactory simple = new SimpleClientHttpRequestFactory();
@@ -125,6 +139,7 @@ public class PaymentService {
                 }
                 return (Map<String, Object>) bodyMap.get("response");
             }
+
             throw new IllegalStateException("결제 검증 실패: " + response.getStatusCode());
         } catch (HttpClientErrorException e) {
             log.error("[PORTONE] verify 4xx body={}", e.getResponseBodyAsString(), e);
@@ -155,7 +170,7 @@ public class PaymentService {
 
             log.info("[PORTONE] cancel <- status={}, body={}", response.getStatusCode(), response.getBody());
 
-            if (response.getStatusCode().is2xxSuccessful()){
+            if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> bodyMap = response.getBody();
                 if (bodyMap == null) {
                     throw new IllegalStateException("API 응답이 비어있음");
@@ -212,5 +227,28 @@ public class PaymentService {
             return response;
 
         }
-    }}
+    }
+
+    @Transactional
+    public void processOrder(String impUid) {
+        String token = getAccessToken();
+        Map<String, Object> paymentInfo = verifyPayment(token, impUid);
+
+        String merchantUid = (String) paymentInfo.get("merchant_uid");
+        Orders order = ordersRepository.findByMerchantUid(merchantUid)
+                .orElseThrow(() -> new IllegalArgumentException("주문 정보 없음"));
+
+        // 주문에 속한 모든 아이템 조회
+        List<OrderItem> items = orderItemRepository.findByOrderOrderId(order.getOrderId());
+
+        for (OrderItem item : items) {
+            Books book = booksRepository.findById(item.getBook().getBookId())
+                    .orElseThrow(() -> new IllegalArgumentException("책 없음"));
+            book.setOrderCount(book.getOrderCount() + item.getQuantity());
+            booksRepository.save(book);
+        }
+    }
+
+}
+
 
