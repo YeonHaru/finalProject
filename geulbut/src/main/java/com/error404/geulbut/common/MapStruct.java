@@ -98,6 +98,7 @@ public interface MapStruct {
     }
 
 //  Books <-> BooksDto
+    @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "authorId", source = "author.authorId")
     @Mapping(target = "authorName", source = "author.name")
     @Mapping(target = "publisherId", source = "publisher.publisherId")
