@@ -1,3 +1,22 @@
+:root {
+    --color-primary: #5A7A4A;     /* 브랜드 메인 텍스트/아이콘 */
+    --color-accent:  #E8C18E;     /* 포인트 보더/뱃지/별점 */
+    --color-accent-2:#D4A574;     /* 액티브/호버 포인트 */
+    --color-leaf:    #87A96B;     /* 버튼 그라데이션 시작 */
+    --color-sage:    #9BBF82;     /* 버튼 그라데이션 끝 */
+    --color-ink:     #7A8B6E;     /* 본문/부제 텍스트 */
+    --color-bg:      #ffffff;     /* 페이지 배경 */
+    --color-cream:   #fef9e7;     /* 강조 박스 배경 */
+    --color-ink-sub: #b3b3b3;     /* 보조 텍스트 */
+    --shadow-green:  0 6px 20px rgba(90,122,74,0.10);
+    --border-green:  rgba(90,122,74,0.05);
+}
+/* 공통 유틸 */
+.text-accent        { color: var(--color-accent) !important; }
+.text-accent-dark   { color: var(--color-primary) !important; }
+.border-accent      { border-color: var(--color-accent) !important; }
+.bg-cream           { background: var(--color-cream) !important; }
+.shadow-green       { box-shadow: var(--shadow-green) !important; }
 /* =========================
    📌 마이페이지 전체 레이아웃
 ========================= */
@@ -7,6 +26,13 @@
     align-items: stretch;
 }
 
+/* 레이아웃 카드/컨테이너 톤 맞추기 */
+.mypage-sidebar,
+.mypage-content,
+.table {
+    border-color: var(--border-green);
+    box-shadow: var(--shadow-green);
+}
 /* =========================
    📌 왼쪽 사이드바
 ========================= */
@@ -27,22 +53,24 @@
 }
 
 .nav-pills .nav-link {
-    border-radius: 0;
+    border-radius: 10px;
     padding: 14px 18px;
     font-weight: 500;
-    color: #333;
-    transition: all 0.2s ease-in-out;
+    color: var(--color-ink);
+    transition: all .2s ease;
 }
 
 .nav-pills .nav-link.active {
-    background-color: #48C9B0; /* 글벗 메인 컬러 */
+    background: linear-gradient(135deg, var(--color-leaf) 0%, var(--color-sage) 100%);
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
+    border: 1px solid transparent;
+    box-shadow: 0 6px 16px rgba(135,169,107,.28);
 }
 
 .nav-pills .nav-link:hover {
-    background-color: #f8f9fa;
-    color: #000;
+    background-color: rgba(135,169,107,.10);
+    color: var(--color-primary);
 }
 
 /* =========================
@@ -61,10 +89,10 @@
 .mypage-content h2 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #333;
+    color: var(--color-primary);
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #48C9B0;
+    border-bottom: 2px solid var(--color-accent);
     min-width: 0;
 }
 
@@ -79,13 +107,13 @@
 }
 
 .table thead {
-    background: #f8f9fa;
+    background: #fafcf7;
     font-weight: 600;
-    color: #333;
+    color: var(--color-primary);
 }
 
 .table tbody tr:hover {
-    background: #fdfdfd;
+    background: #fffef7;
 }
 
 .table tfoot td {
@@ -97,25 +125,81 @@
    📌 버튼
 ========================= */
 .btn-outline-primary {
-    border-color: #48C9B0;
-    color: #48C9B0;
-}
-
-.btn-outline-primary:hover {
-    background-color: #48C9B0;
-    color: #fff;
+    --bs-btn-color: var(--color-leaf);
+    --bs-btn-border-color: var(--color-leaf);
+    --bs-btn-hover-bg: var(--color-leaf);
+    --bs-btn-hover-border-color: var(--color-leaf);
+    --bs-btn-active-bg: var(--color-accent-2);
+    --bs-btn-active-border-color: var(--color-accent-2);
+    color: var(--color-leaf);
+    border-color: var(--color-leaf);
 }
 
 .btn-primary {
-    background-color: #48C9B0;
-    border-color: #48C9B0;
+    --bs-btn-bg: var(--color-leaf);
+    --bs-btn-border-color: var(--color-leaf);
+    --bs-btn-hover-bg: var(--color-sage);
+    --bs-btn-hover-border-color: var(--color-sage);
+    --bs-btn-active-bg: var(--color-accent-2);
+    --bs-btn-active-border-color: var(--color-accent-2);
+    --bs-btn-disabled-bg: rgba(135,169,107,.55);
+    --bs-btn-disabled-border-color: rgba(135,169,107,.55);
+    color: #fff;
+    background: linear-gradient(135deg, var(--color-leaf), var(--color-sage));
+    border: none;
 }
 
-.btn-primary:hover {
-    background-color: #3fb09a;
-    border-color: #3fb09a;
+.btn-outline-danger { /* 기존 사용 유지, 톤만 소폭 보정 */
+    border-color: var(--color-accent-2);
+    color: var(--color-accent-2);
 }
 
+.btn-outline-danger:hover {
+    background: var(--color-accent-2);
+    color: #fff;
+}
+
+/* ========== 알림/배지 ========== */
+.alert-success {
+    color: var(--color-primary);
+    background: #f1f8ef;
+    border-color: rgba(135,169,107,.35);
+}
+.alert-info {
+    color: var(--color-ink);
+    background: #f7fbff;
+    border-color: #d9ecff;
+}
+.alert-warning {
+    color: #7a5a2b;
+    background: #fff6e6;
+    border-color: var(--color-accent);
+}
+.alert-danger {
+    color: #7a2b2b;
+    background: #fff0f0;
+    border-color: #f3c1c1;
+}
+
+/* ========== 진행 바/포인트/게이미피케이션 ========== */
+.progress { background: rgba(135,169,107,.15); }
+.progress-bar {
+    background: linear-gradient(90deg, var(--color-leaf), var(--color-sage));
+}
+
+.gamify-card .gp-rail {
+    background: linear-gradient(90deg, #f2f6f1, #eef5ec);
+}
+.gamify-card .gp-fill {
+    background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-2) 100%);
+}
+.gp-missions .gp-m-list li { background:#fafcf9; border-color: var(--border-green); }
+.gp-missions .gp-m-list li.done { background:#f1fff5; border-color:#cfe8d8; }
+
+/* ========== 링크/텍스트 컬러 ========== */
+.mypage-content p, .list-group-item { color: var(--color-ink); }
+a { color: var(--color-leaf); }
+a:hover { color: var(--color-primary); }
 /* =========================
    📌 위시리스트
 ========================= */
@@ -174,6 +258,6 @@
         flex: 0 0 auto;
         max-height: none;
         overflow: visible;
-        border-radius: 6px;
+        border-radius: 10px;
     }
 }
