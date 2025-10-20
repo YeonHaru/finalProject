@@ -211,7 +211,11 @@ $(function () {
   <td class="hide-lg">${book.categoryName ?? ''}</td>
   <td class="t-center">${book.price}</td>
   <td class="t-center hide-lg">${book.discountedPrice ?? ''}</td>
-  <td>${book.stock}</td>
+  <td>
+  <span class="stock-chip ${book.stock > 0 ? 'ok' : 'out'}">
+    ${book.stock > 0 ? book.stock : '품절'}
+  </span>
+</td>
   <td>${book.orderCount ?? 0}</td>
   <td>${book.wishCount ?? 0}</td>
   <td>${(book.rating ?? 0).toFixed(1)}</td>

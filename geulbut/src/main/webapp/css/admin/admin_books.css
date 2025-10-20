@@ -419,7 +419,7 @@ body.admin-books .title-ellipsis {
     white-space: normal;
     word-break: break-word;
 }
-* Hover/Active (통일: 테이블 버튼과 동일 톤) */
+/* Hover/Active (통일: 테이블 버튼과 동일 톤) */
 body.admin-books #btnAddBook:hover,
 body.admin-books .admin-books-table .btn:hover,
 #bookModal .modal__footer .btn:hover {
