@@ -52,6 +52,8 @@
                 <col class="col-stock"/>
                 <col class="col-order"/>
                 <col class="col-wish"/>
+                <col class="col-rating"/>
+                <col class="col-review"/>
                 <col class="col-created"/>
                 <col class="col-actions"/>
             </colgroup>
@@ -68,7 +70,9 @@
                 <th class="hide-lg">할인가</th>
                 <th>재고</th>
                 <th>주문 수</th>
-                <th>찜 수</th>
+                <th>찜수</th>
+                <th>평점</th>
+                <th>리뷰</th>
                 <th class="hide-lg">생성일</th>
                 <th>작업</th>
             </tr>
@@ -104,6 +108,12 @@
                     </td>
                     <td class="t-right">${book.orderCount}</td>
                     <td class="t-right">${book.wishCount}</td>
+                    <td class="col-rating t-right">
+                        <c:out value="${book.rating != null ? book.rating : 0.0}"/>
+                    </td>
+                    <td class="col-review t-right">
+                        <c:out value="${book.reviewCount != null ? book.reviewCount : 0}"/>
+                    </td>
                     <td class="hide-lg">${book.createdAtFormatted}</td>
                     <td>
                         <button type="button" class="btn btn-secondary btn--liquid-glass btnView">상세보기</button>
@@ -114,7 +124,7 @@
             </c:forEach>
             <c:if test="${matchCount == 0}">
                 <tr>
-                    <td colspan="14" class="t-center text-light">검색 결과가 없습니다.</td>
+                    <td colspan="16" class="t-center text-light">검색 결과가 없습니다.</td>
                 </tr>
             </c:if>
             </tbody>
@@ -170,7 +180,6 @@
         <form id="bookForm" class="modal__form">
             <input type="hidden" name="bookId" id="bookId"/>
 
-
             <div class="form-grid">
                 <label>제목 <input type="text" name="title" id="title" required/></label>
                 <label>ISBN <input type="text" name="isbn" id="isbn" required/></label>
@@ -193,6 +202,12 @@
                 </div>
                 <label>주문 수 <input type="number" name="orderCount" id="orderCount" min="0" step="1"/></label>
                 <label>찜 수 <input type="number" name="wishCount" id="wishCount" min="0" step="1"/></label>
+                <label>평점
+                    <input type="number" name="rating" id="rating" step="0.1" min="0" max="5" value="0.0"/>
+                </label>
+                <label>리뷰 수
+                    <input type="number" name="reviewCount" id="reviewCount" min="0" step="1" value="0"/>
+                </label>
             </div>
             <div class="modal__footer">
                 <button type="submit" class="btn btn-secondary btn--liquid-glass save-btn mt-3">저장</button>

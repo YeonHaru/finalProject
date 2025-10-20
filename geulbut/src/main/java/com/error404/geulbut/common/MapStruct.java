@@ -105,6 +105,8 @@ public interface MapStruct {
     @Mapping(target = "categoryId", source = "category.categoryId")
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "hashtags", source = "hashtags", qualifiedByName = "mapHashtagsToNames")
+    @Mapping(target = "rating", source = "rating")
+    @Mapping(target = "reviewCount", source = "reviewCount")
     BooksDto toDto(Books books);
 
     @Named("mapHashtagsToNames")
@@ -120,6 +122,8 @@ public interface MapStruct {
     @Mapping(target = "publisher.publisherId", source = "publisherId")
     @Mapping(target = "category.categoryId", source = "categoryId")
     @Mapping(target = "hashtags", ignore = true)
+    @Mapping(target = "rating", source = "rating")
+    @Mapping(target = "reviewCount", source = "reviewCount")
     Books toEntity(BooksDto booksDto);
 
     @Mapping(target = "hashtags", ignore = true)
