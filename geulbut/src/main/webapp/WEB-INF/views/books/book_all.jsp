@@ -26,32 +26,6 @@
 
 <div class="page py-4">
 
-<%--    &lt;%&ndash;    주간/월간 베스트 셀러 &ndash;%&gt;--%>
-<%--    <div class="bestseller-container">--%>
-<%--        <div class="tab-buttons">--%>
-<%--            <button class="tab-btn active" onclick="switchTab(this)">카테고리</button>--%>
-<%--            <button class="tab-btn" onclick="switchTab(this)">해시태그</button>--%>
-<%--        </div>--%>
-
-<%--        <div class="category-grid-weekly">--%>
-<%--            <div class="category-item featured">종합</div>--%>
-<%--            <div class="category-item">소설</div>--%>
-<%--            <div class="category-item">교육</div>--%>
-<%--            <div class="category-item">자기계발</div>--%>
-<%--            <div class="category-item">종교</div>--%>
-<%--            <div class="category-item">에세이</div>--%>
-<%--        </div>--%>
-
-<%--        <div class="category-grid-monthly">--%>
-<%--            <div class="category-item">자기계발</div>--%>
-<%--            <div class="category-item">인문과학</div>--%>
-<%--            <div class="category-item">역사/문화</div>--%>
-<%--            <div class="category-item">정치/법률</div>--%>
-<%--            <div class="category-item">종교</div>--%>
-<%--            <div class="category-item">예술</div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-
     <form name="listForm" action="${pageContext.request.contextPath}/search" method="get" class="container">
         <!-- 0-base 페이지로 서버에 전달 -->
         <input type="hidden" id="page" name="page" value="${pageNumber - 1}"/>
@@ -126,7 +100,6 @@
                             </div>
 
                             <!-- 체크박스 -->
-
                             <div class="srch-col-check row">
                                 <input type="checkbox" name="selected" value="${data.bookId}">
                             </div>
@@ -142,20 +115,55 @@
 
                             <div class="srch-info">
                                 <div class="row gap-1 mb-1 text-light">
-                                    <c:if test="${not empty data.categoryName}">
-                                        <span class="text-light">${data.categoryName}</span>
+                                    <c:if test="${not empty data.categoryName or not empty data.categoryNameHighlighted}">
+                                        <span class="text-light">
+                                            <c:choose>
+                                                <c:when test="${not empty data.categoryNameHighlighted}">
+                                                    <c:out value="${data.categoryNameHighlighted}" escapeXml="false"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:out value="${data.categoryName}"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </span>
                                     </c:if>
                                 </div>
 
                                 <h3 class="mb-1 srch-title">
                                     <a href="${pageContext.request.contextPath}/book/${data.bookId}">
-                                            ${data.title}
+                                        <c:choose>
+                                            <c:when test="${not empty data.titleHighlighted}">
+                                                <c:out value="${data.titleHighlighted}" escapeXml="false"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${data.title}"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </a>
                                 </h3>
 
                                 <p class="mb-2 text-light">
-                                    <c:if test="${not empty data.authorName}">${data.authorName}</c:if>
-                                    <c:if test="${not empty data.publisherName}">&nbsp;|&nbsp; ${data.publisherName}</c:if>
+                                    <c:if test="${not empty data.authorName or not empty data.authorNameHighlighted}">
+                                        <c:choose>
+                                            <c:when test="${not empty data.authorNameHighlighted}">
+                                                <c:out value="${data.authorNameHighlighted}" escapeXml="false"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${data.authorName}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:if>
+                                    <c:if test="${(not empty data.publisherName) or (not empty data.publisherNameHighlighted)}">
+                                        &nbsp;|&nbsp;
+                                        <c:choose>
+                                            <c:when test="${not empty data.publisherNameHighlighted}">
+                                                <c:out value="${data.publisherNameHighlighted}" escapeXml="false"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${data.publisherName}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:if>
                                 </p>
 
                                 <div class="row gap-2 mb-2">
@@ -200,7 +208,6 @@
                                 </c:if>
 
                                 <!-- 액션 버튼 (품절 여부에 따라 다르게 표시) -->
-
                                 <div class="row gap-2">
                                     <!-- 디버깅: stock = ${data.stock} -->
                                     <c:choose>

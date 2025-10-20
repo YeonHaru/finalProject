@@ -11,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.time.LocalDateTime;
+
+
 @Service
 @RequiredArgsConstructor
 public class ReviewsService {
@@ -20,11 +24,7 @@ public class ReviewsService {
     private final MapStruct mapStruct;
     private final ErrorMsg errorMsg;
 
-    /**
-     * 리뷰 저장 + BOOKS 집계(리뷰수/평균평점) 반영
-     * - 같은 유저가 같은 주문항목(orderedItemId)에 중복 작성 불가
-     * - 성공 시 BOOKS.REVIEW_COUNT += 1, BOOKS.RATING = 가중평균 재계산
-     */
+
     @Transactional
     public void saveReview(ReviewsDto reviewsDto) {
 
