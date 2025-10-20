@@ -103,3 +103,60 @@
     box-shadow: 0 0 3px rgba(0,0,0,0.3);
 }
 
+/* ===== Admin topbar (nav) ===== */
+.ad-topbar{
+    position:sticky; top:0; z-index:2000;
+    background: rgba(255,255,255,.50);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    border-bottom:1px solid rgba(0,0,0,.08);
+}
+.ad-container{
+    width:min(92%,1280px); margin:0 auto; padding:10px 8px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.ad-brand{ display:flex; align-items:center; gap:10px; }
+.ad-logo{ width:28px; height:28px; object-fit:contain; }
+.ad-title{ font-weight:700; color:#222; }
+
+.ad-nav{ display:flex; align-items:center; gap:18px; }
+.ad-link{
+    text-decoration:none; color:#222; font-size:.95rem; font-weight:600;
+    padding:8px 10px; border-radius:10px;
+    transition: background .2s ease, color .2s ease;
+}
+.ad-link:hover{ background: rgba(0,0,0,.04); }
+
+.ad-dropdown{ position:relative; }
+.ad-link--dropdown{ display:inline-flex; align-items:center; gap:6px; }
+
+/* dropdown panel */
+.ad-menu{
+    position:absolute; top:calc(100% + 6px); left:0; min-width:220px; padding:8px;
+    background: rgba(255,255,255,.78);
+    border:1px solid rgba(0,0,0,.08); border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    margin:0; list-style:none;
+    opacity:0; visibility:hidden; transform:translateY(-4px);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+    pointer-events:none; z-index:1000;
+}
+.ad-dropdown:hover .ad-menu,
+.ad-dropdown:focus-within .ad-menu,
+.ad-dropdown.is-open .ad-menu{
+    opacity:1; visibility:visible; transform:translateY(0); pointer-events:auto;
+}
+
+.ad-menu__item{
+    display:block; padding:10px 12px; border-radius:10px; color:#222; white-space:nowrap;
+}
+.ad-menu__item:hover,.ad-menu__item:focus{ background: rgba(0,0,0,.06); outline:none; }
+
+@media (max-width:768px){
+    .ad-container{ padding:8px 10px; }
+    .ad-nav{ gap:12px; }
+    .ad-menu{ min-width:220px;}
+    }
+

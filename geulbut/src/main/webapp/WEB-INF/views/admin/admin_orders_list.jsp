@@ -8,9 +8,10 @@
     <title>관리자 - 주문 관리</title>
 
     <link rel="stylesheet" href="${ctx}/css/00_common.css"/>
-    <link rel="stylesheet" href="${ctx}/css/header.css"/>
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css"/>
+    <link rel="stylesheet" href="${ctx}/css/admin-header.css"/>
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_base.css"/>
     <link rel="stylesheet" href="${ctx}/css/admin/admin_orders.css"/>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>window.ctx = "${ctx}";</script>
@@ -105,8 +106,7 @@
                             <td><c:out value="${order.paidAtFormatted != null ? order.paidAtFormatted : '-'}" /></td>
                             <td><c:out value="${order.deliveredAt != null ? order.deliveredAtFormattedShort : '-'}" /></td>
                             <td>
-                                <button class="btn btn-secondary btn--liquid-glass btn-detail" data-id="${order.orderId}">상세보기</button>
-                            </td>
+                                <button class="btn btn-primary btn--liquid-glass btn-detail" data-id="${order.orderId}">상세보기</button>                            </td>
                         </tr>
                     </c:forEach>
                 </c:when>

@@ -12,7 +12,8 @@
 
     <link rel="stylesheet" href="${ctx}/css/00_common.css"/>
     <link rel="stylesheet" href="${ctx}/css/header.css"/>
-    <link rel="stylesheet" href="${ctx}/css/admin/admin.css">
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_base.css" />
+    <link rel="stylesheet" href="${ctx}/css/admin/admin_books.css" />
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
