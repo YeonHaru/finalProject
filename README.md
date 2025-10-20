@@ -68,7 +68,7 @@ Geulbut은 Spring Boot 기반의 온라인 서점 웹 애플리케이션으로,
 GitHub를 통한 브랜치별 협업 및 버전 관리를 수행하였습니다.
 
 GIF
-![Geulbut Demo](geulbut/src/main/webapp/images/GeulbutGIF.gif)
+![Geulbut Demo](geulbut/src/main/webapp/images/geulbut2.gif)
 
 🎬 시연 영상
 [Geulbut Demo Video](https://github.com/YeonHaru/finalProject/releases/download/v1.0/default.mp4)
