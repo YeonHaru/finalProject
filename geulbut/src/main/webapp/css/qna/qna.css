@@ -1,4 +1,23 @@
 
+:root {
+    --color-primary: #5A7A4A;     /* 브랜드 메인 텍스트/아이콘 */
+    --color-accent:  #E8C18E;     /* 포인트 보더/뱃지/별점 */
+    --color-accent-2:#D4A574;     /* 액티브/호버 포인트 */
+    --color-leaf:    #87A96B;     /* 버튼 그라데이션 시작 */
+    --color-sage:    #9BBF82;     /* 버튼 그라데이션 끝 */
+    --color-ink:     #7A8B6E;     /* 본문/부제 텍스트 */
+    --color-bg:      #ffffff;     /* 페이지 배경 */
+    --color-cream:   #fef9e7;     /* 강조 박스 배경 */
+    --color-ink-sub: #b3b3b3;     /* 보조 텍스트 */
+    --shadow-green:  0 6px 20px rgba(90,122,74,0.10);
+    --border-green:  rgba(90,122,74,0.05);
+}
+/* 공통 유틸 */
+.text-accent        { color: var(--color-accent) !important; }
+.text-accent-dark   { color: var(--color-primary) !important; }
+.border-accent      { border-color: var(--color-accent) !important; }
+.bg-cream           { background: var(--color-cream) !important; }
+.shadow-green       { box-shadow: var(--shadow-green) !important; }
 /*페이지네이션*/
 /* -----------------------------------------------------------------------
    9) 페이지네이션 스타일
@@ -103,10 +122,12 @@ aside nav a {
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
     transition: background var(--dur) var(--ease);
+    text-align: center;
+    font-weight: 500;
 }
 aside nav a:hover {
-    background: var(--color-bg);
-    color: var(--color-accent-dark);
+    color: var(--color-leaf);
+    background-color: rgba(135, 169, 107, 0.1); /* --color-leaf의 연한 배경 */
 }
 .text-center {
     text-align: center;
@@ -166,6 +187,20 @@ aside nav a:hover {
 .qna-table thead th {
     border-bottom: 1px solid #666666;
 }
+/* 사이드바 박스 */
+.sidebar-box {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* 오른쪽 공지사항 콘텐츠 박스 */
+.notice-content-box {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
 
 
 
