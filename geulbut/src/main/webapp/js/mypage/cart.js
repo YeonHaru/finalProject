@@ -32,12 +32,13 @@ function refreshCart() {
                 const bookId = Number(item.bookId);
 
                 html += `
-          <div class="list-group-item d-flex" data-book-id="${bookId}">
+          <div class="list-group-item d-flex align-items-stretch cart-row" data-book-id="${bookId}">
             <div class="me-3">
               <img src="${imgUrl}" alt="${title}"
                    style="width:70px; height:100px; object-fit:cover; border-radius:4px;">
             </div>
-            <div class="flex-grow-1" style="min-width: 0;">
+            <div class="flex-grow-1 d-flex flex-column flex-md-row" style="min-width: 0;">
+             <div class="pe-md-3 flex-grow-1">
               <h6 class="mb-1">${title}</h6>
               <p class="mb-1 text-muted small">
                 수량:
@@ -56,11 +57,14 @@ function refreshCart() {
               <p class="fw-bold text-accent-dark cart-item-total">
                 가격: ${fmtKR(totalPrice)} 원
               </p>
-
+             </div>
+              <!-- 오른쪽(삭제 버튼) -->
+            <div class="cart-actions">
               <button type="button"
                       class="btn btn-sm btn-outline-danger cart-remove">
                 삭제
               </button>
+              </div>
             </div>
           </div>
         `;
