@@ -321,6 +321,16 @@ a:hover { color: var(--color-primary); }
     color: #fff;
 }
 
+/* 장바구니 아이템 삭제 버튼 위치 보정 */
+#v-pills-cart .cart-row {
+    position: relative;
+    padding-right: 0;          /* md 이상에서 버튼 자리 확보 위해 아래에서 증가 */
+}
+
+#v-pills-cart .cart-actions {
+    /* 기본(모바일): 본문 아래, 오른쪽 정렬 */
+}
+
 /* =========================
    📌 반응형
 ========================= */
@@ -336,5 +346,15 @@ a:hover { color: var(--color-primary); }
         max-height: none;
         overflow: visible;
         border-radius: 10px;
+    }
+    #v-pills-cart .cart-row {
+        position: relative;     /* 자식 absolute 기준점 */
+        min-height: 110px;      /* 이미지 높이+여백만큼 확보 (100px 이미지 기준) */
+        padding-right: 100px;   /* 버튼 자리만큼 우측 여백 */
+    }
+    #v-pills-cart .cart-actions {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
     }
 }

@@ -252,42 +252,47 @@
                                 </div>
 
                                 <!-- ✅ 책 정보 -->
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">${item.title}</h6>
-                                    <p class="mb-1 text-muted small">
-                                        수량:
-                                        <input type="number"
-                                               value="${item.quantity}" min="1"
-                                               class="form-control form-control-sm d-inline-block"
-                                               style="width:70px;"
-                                               onchange="updateCart(${item.bookId}, this.value)">
-                                    </p>
-                                    <p class="mb-1">
-                                        <c:choose>
-                                            <c:when test="${not empty item.discountedPrice}">
+                                <div class="flex-grow-1 d-flex flex-column flex-md-row">
+                                    <div class="pe-md-3">
+                                        <h6 class="mb-1">${item.title}</h6>
+                                        <p class="mb-1 text-muted small">
+                                            수량:
+                                            <input type="number"
+                                                   value="${item.quantity}" min="1"
+                                                   class="form-control form-control-sm d-inline-block"
+                                                   style="width:70px;"
+                                                   onchange="updateCart(${item.bookId}, this.value)">
+                                        </p>
+
+                                        <p class="mb-1">
+                                            <c:choose>
+                                                <c:when test="${not empty item.discountedPrice}">
                                 <span class="text-muted">
                                     <del><fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원</del>
                                 </span>
-                                                → <span class="fw-bold text-danger">
+                                                    → <span class="fw-bold text-danger">
                                     <fmt:formatNumber value="${item.discountedPrice}" pattern="#,##0"/> 원
                                 </span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </p>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <fmt:formatNumber value="${item.price}" pattern="#,##0"/> 원
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </p>
 
-                                    <p class="fw-bold text-accent-dark">
-                                        가격: <fmt:formatNumber value="${item.totalPrice}" pattern="#,##0"/> 원
-                                    </p>
+                                        <p class="fw-bold text-accent-dark">
+                                            가격: <fmt:formatNumber value="${item.totalPrice}" pattern="#,##0"/> 원
+                                        </p>
+                                    </div>
 
                                     <!-- ✅ 삭제 버튼 -->
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-danger"
-                                            onclick="removeCart(${item.bookId}, this)">
-                                        삭제
-                                    </button>
+                                    <div class="mt-2 mt-md-0 d-flex align-items-start ms-auto">
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="removeCart(${item.bookId}, this)">
+                                            삭제
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </c:forEach>
