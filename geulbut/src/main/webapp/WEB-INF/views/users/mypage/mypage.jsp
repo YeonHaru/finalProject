@@ -46,9 +46,6 @@
                 <!-- 여기만 교체 -->
                 <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                     <h2 class="m-0">내 정보</h2>
-                    <a href="<c:url value='/users/mypage/withdraw'/>" class="btn btn-outline-danger btn-sm">
-                        회원 탈퇴
-                    </a>
                 </div>
                 <!-- 여기까지 교체 -->
 
@@ -132,6 +129,7 @@
 
                     <!-- ✅ 비밀번호 변경 폼 -->
                     <h3 class="mt-4 mb-3">비밀번호 변경</h3>
+
                     <c:choose>
                         <c:when test="${canChangePassword}">
                             <form method="post" action="<c:url value='/mypage/change-password'/>" class="row g-3">
@@ -152,8 +150,11 @@
                                     <input type="password" id="confirmPw" name="confirmPw" class="form-control"
                                            required>
                                 </div>
-                                <div class="col-12 text-end">
+                                <div class="col-12 d-flex justify-content-between align-items-center">
                                     <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+                                    <a href="<c:url value='/users/mypage/withdraw'/>" class="btn btn-outline-danger red-background">
+                                        회원 탈퇴
+                                    </a>
                                 </div>
                             </form>
                         </c:when>

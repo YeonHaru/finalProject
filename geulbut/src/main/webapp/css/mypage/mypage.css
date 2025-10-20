@@ -150,12 +150,12 @@
 }
 
 .btn-outline-danger { /* 기존 사용 유지, 톤만 소폭 보정 */
-    border-color: var(--color-accent-2);
-    color: var(--color-accent-2);
+    border-color: red;
+    color: red;
 }
 
 .btn-outline-danger:hover {
-    background: var(--color-accent-2);
+    background: red;
     color: #fff;
 }
 
@@ -242,7 +242,74 @@ a:hover { color: var(--color-primary); }
 
 .confetti { position: fixed; top: -10px; width: 8px; height: 14px; opacity: .9; z-index: 9999; will-change: transform, opacity; }
 
+/* =========================
+   🎨 주문 내역 탭 전용 컬러링
+========================= */
+#v-pills-orders .border-bottom {            /* 헤더 하단 보더 */
+    border-color: var(--color-accent) !important;
+}
+#v-pills-orders h2 {                        /* 타이틀 컬러 */
+    color: var(--color-primary);
+}
 
+/* '배송조회' 버튼 (outline-secondary → 브랜드 톤) */
+#v-pills-orders .btn-outline-secondary {
+    --bs-btn-color: var(--color-primary);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-hover-bg: var(--color-accent);
+    --bs-btn-hover-border-color: var(--color-accent);
+    color: var(--color-primary);
+    border-color: var(--color-accent);
+}
+#v-pills-orders .btn-outline-secondary:hover { color: #fff; }
+
+/* 스켈레톤 톤 보정 */
+#v-pills-orders #orders-skeleton .card {
+    border-color: var(--border-green);
+    box-shadow: var(--shadow-green);
+}
+#v-pills-orders #orders-skeleton .placeholder {
+    background-color: rgba(232,193,142,.35); /* accent 연톤 */
+}
+
+/* 렌더된 주문 카드(orders.js 출력) */
+#v-pills-orders .orders-list .card {
+    border-color: var(--border-green);
+    box-shadow: var(--shadow-green);
+}
+#v-pills-orders .orders-list .card-header,
+#v-pills-orders .orders-list .accordion-button {
+    background: #fafcf7;
+    color: var(--color-primary);
+}
+#v-pills-orders .orders-list .accordion-button:not(.collapsed) {
+    box-shadow: inset 0 -1px 0 var(--border-green);
+}
+
+/* 금액/합계 강조(선택) */
+#v-pills-orders .orders-list .price,
+#v-pills-orders .orders-list .total {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* 상태 배지(있다면) */
+#v-pills-orders .badge-status {
+    background: var(--color-cream);
+    color: var(--color-primary);
+    border: 1px solid var(--color-accent);
+}
+
+/* 페이지네이션 */
+#v-pills-orders .pagination .page-link {
+    color: var(--color-primary);
+    border-color: var(--border-green);
+}
+#v-pills-orders .pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--color-leaf), var(--color-sage));
+    border-color: transparent;
+    color: #fff;
+}
 
 /* =========================
    📌 반응형
