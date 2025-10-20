@@ -273,30 +273,7 @@
     </c:if>
     <!-- ===== 통계: 성별 분포 & 평점 분포 ===== -->
     <section class="stats-section mt-5" aria-label="구매자/평점 분포">
-        <div class="stats-grid">
-            <!-- 성별 분포 -->
-            <article class="dist-card" aria-label="구매자 성별 분포">
-                <h3 class="dist-title">구매자 분포</h3>
-
-                <div class="bar-row">
-                    <span class="bar-label">여성</span>
-                    <div class="bar-track" role="img" aria-label="여성 62.5%">
-                        <div class="bar-fill" style="--w:62.5%;" data-p="62.5%"></div>
-                    </div>
-                    <span class="bar-val">62.5%</span>
-                </div>
-
-                <div class="bar-row">
-                    <span class="bar-label">남성</span>
-                    <div class="bar-track" role="img" aria-label="남성 37.5%">
-                        <div class="bar-fill" style="--w:37.5%;" data-p="37.5%"></div>
-                    </div>
-                    <span class="bar-val">37.5%</span>
-                </div>
-
-                <p class="tiny-note mt-1">* 내부 기준(임시) 통계입니다. 실제 서비스에서는 구매 데이터/리뷰 기준으로 산출합니다.</p>
-            </article>
-
+        <div>
             <!-- 평점 분포 -->
             <article class="dist-card" aria-label="평점 분포">
                 <h3 class="dist-title">평점 분포</h3>
@@ -360,8 +337,6 @@
                        value="${fn:length(r.content) > 60 ? fn:substring(r.content,0,60).concat('…') : r.content}" />
                 <p class="review-card">📖 "<c:out value='${shortText}'/>"</p>
             </c:forEach>
-
-            <button class="btn-more" id="openReviewsBtn">+ 전체 리뷰 보기</button>
         </div>
     </section>
 
